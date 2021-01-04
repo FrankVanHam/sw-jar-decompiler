@@ -1,0 +1,20 @@
+_package user
+$
+
+
+_block
+	_dynamic !source_file!
+	write(!source_file!)
+
+	smallworld_product.add_product("C:\SW524\core\sw_core\modules\sw_dev_tools")
+	smallworld_product.add_product("C:\werk\munit-SW525")
+	smallworld_product.add_product("C:\werk\jar_decompiler")
+	sw_module_manager.load_module(:jar_decompiler)
+	sw_module_manager.load_module(:jar_decompiler_test)
+_endblock
+$
+
+_block 
+	simple_munit_gui.open()
+_endblock
+$

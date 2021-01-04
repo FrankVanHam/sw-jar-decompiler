@@ -1,0 +1,25 @@
+_package deco
+$
+
+#remex(:jpn_method)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_method,
+	{
+		{:args,       _unset, :readable},
+		{:body,       _unset, :readable},
+		{:annotation, _unset, :readable}
+	},
+	:jpn_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_method.init(p_name, p_args, p_body, p_annotation)
+	## 
+	.args << p_args
+	.body << p_body
+	.annotation << p_annotation
+	>> _super.init(p_name)
+_endmethod
+$
+

@@ -1,0 +1,13 @@
+_package user
+$
+
+def_slotted_exemplar(:deco_test,{})
+$
+
+
+_method deco_test.test()
+	_local a << 10
+	_return a+1
+_endmethod
+$
+

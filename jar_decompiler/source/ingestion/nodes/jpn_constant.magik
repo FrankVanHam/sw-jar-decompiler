@@ -1,0 +1,9 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_constant,
+	{},
+	:jpn_base)
+$
+

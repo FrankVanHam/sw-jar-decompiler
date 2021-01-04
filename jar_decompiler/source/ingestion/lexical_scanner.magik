@@ -1,0 +1,187 @@
+_package deco
+$
+
+#remex(:lexical_scanner)
+$
+_pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## Scans a stream and outputs lexemes.
+##
+def_slotted_exemplar(:lexical_scanner,
+	{
+		{:in, _unset},
+		{:line, _unset},
+		{:column, _unset},
+		{:cache, _unset}
+	})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+lexical_scanner.define_shared_constant(:operators,
+	equality_set.new_with( %{, %}, %(, %), %;, %, ),
+	:private)
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.new(p_stream)
+	>> _clone.init(p_stream)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method lexical_scanner.init(p_stream)
+	.in << p_stream
+	.line << 1
+	.column << 1
+	 >> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.peek()
+	#10.stop
+	_if .cache _is _unset
+	_then
+		.cache << _self.int!get()
+	_endif
+	>> .cache
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.get()
+	_self.peek()
+	_local lex << .cache ^<< _unset 
+	_return lex
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.int!get()
+	_loop 
+		_if .in.more_to_get?.not _then _return lexeme.new_eof(.line, .column) _endif
+		
+		_local char << .in.peek()
+		_if char.white_space?.not
+		_then
+			_if char = %/
+			_then
+				_return _self.get_comment()
+			_elif _self.operators.includes?(char)
+			_then 
+				_return _self.get_operator()
+			_elif char = %"
+			_then
+				_return _self.get_string()
+			_elif char = %@
+			_then
+				_return _self.get_annotation()
+			_elif char.decimal_digit?
+			_then
+				_return _self.get_number()
+			_else 
+				_return _self.get_keyword()
+			_endif 
+		_else
+			_self.get_char()
+		_endif
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.get_operator()
+	##
+	>> lexeme.new_operator(_self.get_char(), .line, .column)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.get_comment()
+	## 
+	>> lexeme.new_comment(_self.get_upto(%/), .line, .column)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.get_string()
+	## 
+	>> lexeme.new_string(_self.get_upto(%"), .line, .column)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.get_upto(p_end_char)
+	_local out << internal_text_output_stream.new()
+	_self.get_char()
+	_loop
+		_if .in.more_to_get?.not _then _leave _endif 
+		_local char << .in.peek()
+		
+		_if char <> p_end_char
+		_then
+			out.write(_self.get_char())
+		_else
+			_self.get_char()
+			_leave
+		_endif
+	_endloop
+	>> out.string
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.get_annotation()
+	##
+	_self.get_char()
+	>> lexeme.new_annotation(_self.get_token(), .line, .column)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.get_keyword()
+	##
+	>> lexeme.new_keyword(_self.get_token(), .line, .column)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.get_number()
+	##
+	>> lexeme.new_number(_self.get_token(), .line, .column)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.get_token()
+	_local out << internal_text_output_stream.new()
+	_loop
+		_if .in.more_to_get?.not _then _leave _endif 
+		_local char << .in.peek()
+		_if char.white_space? _orif
+		    _self.operators.includes?(char)
+		_then
+			_leave 
+		_else
+			out.write(_self.get_char())
+		_endif
+	_endloop
+	>> out.string
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.get_char()
+	_local ch << .in.get()
+	_if ch _is newline_char
+	_then
+		.line +<< 1
+		.column << 0
+	_else
+		.column +<< 1
+	_endif
+	>> ch
+_endmethod
+$

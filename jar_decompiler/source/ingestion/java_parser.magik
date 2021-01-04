@@ -1,0 +1,305 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## Construct a parser for java
+##
+def_slotted_exemplar(:java_parser,
+	{
+		{:scanner, _unset}
+	})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.new(p_scanner)
+	>> _clone.init(p_scanner)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.init(p_scanner)
+	.scanner << p_scanner
+	>> _self  
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.get()
+	##
+	_local l << .scanner.peek()
+	_if l.is_keyword?
+	_then
+		_if l.value = "package"
+		_then
+			_return _self.parse_package()
+		_elif l.value = "import"
+		_then
+			_return _self.parse_import()
+		_elif l.value = "public"
+		_then
+			_return _self.parse_class()
+		_endif
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_class()
+	##
+	_self.ensure_keyword("public")
+	_self.ensure_keyword("class")
+	_local name << .scanner.get().value
+
+	_local lex << .scanner.peek()
+	_if lex.is_keyword? _andif lex.value = "implements"
+	_then
+		.scanner.get()
+		parent << .scanner.get().value
+	_else
+		parent << _unset 
+	_endif 
+	_self.ensure_operator(%{)
+
+	_local methods << rope.new()
+	_loop
+		_local next << .scanner.peek()
+		_if next.is_operator? _then _leave _endif
+		_if next.is_eof? _then _leave _endif
+		
+		_local meth << _self.parse_method()
+		methods.add(meth)
+	_endloop 
+
+	_self.ensure_operator(%})
+	_return jpn_class.new(name, parent, methods)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_method()
+	##
+	_local lex << .scanner.peek()
+	_local annotation << _if lex.is_annotation?
+			     _then >> .scanner.get().value
+			     _endif
+	_self.ensure_keyword("public")
+	_self.optional_keyword("static")
+	_self.ensure_keyword("Object")
+	_local name << .scanner.get()
+	
+	_self.ensure_operator(%()
+	_local args << _self.parse_args()
+	_self.ensure_operator(%))
+	_self.ensure_operator(%{)
+	_local body << _self.ensure_body()
+	_self.ensure_operator(%})
+	_return jpn_method.new(name, args, body, annotation)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_args()
+	_local args << rope.new()
+	_loop
+		_local lex << .scanner.peek()
+		_if lex.is_operator?
+		_then
+			_if lex.value = %)
+			_then
+				_leave
+			_elif lex.value = %,
+			_then
+				.scanner.get()
+			_else
+				1.stop
+			_endif
+		_endif 
+		_local type << .scanner.get()
+		_local identifier << .scanner.get()
+		
+		args.add(jpn_arg.new(identifier, type))
+	_endloop
+	>> args
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.ensure_body()
+	_local stats << rope.new()
+	_loop
+		_local lex << .scanner.peek()
+		_if lex.is_operator?
+		_then
+			_if lex.value = %}
+			_then
+				_leave
+			_elif lex.value = %;
+			_then
+				.scanner.get()
+			_else
+				debug_print(lex)
+				13.stop
+			_endif
+		_else 
+			stats.add(_self.parse_statement())
+		_endif 
+	_endloop
+	>> jpn_body.new("body", stats)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_statement()
+	##
+	_local lex << .scanner.peek()
+	_if lex.value = "return"
+	_then
+		_return _self.parse_return_statement()
+	_else
+		_return _self.parse_expression()
+#		
+#		_local ident << .scanner.get()
+#		_local next << .scanner.peek()
+#		_if next.is_operator? _andif next.value = %(
+#		_then
+#			_return _self.parse_method_invocation(ident.value)
+#		_else
+#			20.stop
+#		_endif 
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_return_statement()
+	##
+	.scanner.get()
+	_local exp << _self.parse_expression()
+	_return jpn_return.new("return",exp)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_expression()
+	_local lex << .scanner.peek()
+	_if lex.is_keyword?
+	_then
+		_local ident << .scanner.get()
+		_local next << .scanner.peek()
+		_if next.is_operator? _andif next.value = %(
+		_then
+			_return _self.parse_method_invocation(ident.value)
+		_else
+			debug_print(lex)
+			show(1, ident.value)
+			debug_print(next)
+			1.stop
+		_endif
+	_elif lex.is_string?
+	_then
+		_return jpn_constant.new(.scanner.get())
+	_elif lex.is_number?
+	_then
+		_return jpn_constant.new(.scanner.get())
+	_else
+		show(2)
+		debug_print(lex)
+		1.stop
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_method_invocation(p_identifier)
+	##
+	_local args << rope.new()
+	_self.ensure_operator(%()
+	_loop
+		_local lex << .scanner.peek()
+		_if lex.is_operator?
+		_then
+			_if lex.value _is %)
+			_then
+				_leave
+			_elif lex.value _is %,
+			_then
+				.scanner.get()
+			_else
+				1.stop
+			_endif
+		_else 
+			args.add(_self.parse_expression())
+		_endif 
+	_endloop
+	_self.ensure_operator(%))
+	>> jpn_method_invocation.new(p_identifier,args)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_package()
+	##
+	_self.ensure_keyword("package")
+	_local name << .scanner.get()
+	_self.ensure_operator(%;)
+
+	_return jpn_package.new(name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_import()
+	##
+	_self.ensure_keyword("import")
+	_local name << .scanner.get()
+	_self.ensure_operator(%;)
+
+	_return jpn_import.new(name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.ensure_operator(p_op)
+	_local l << .scanner.get()
+	_if l.is_operator?.not
+	_then
+		condition.raise(:deco_expected_operator, :line, l.line, :column, l.column, :operator, p_op, :instead, l.value)
+	_endif
+	_if l.value <> p_op
+	_then
+		condition.raise(:deco_expected_operator, :line, l.line, :column, l.column, :operator, p_op, :instead, l.value)
+	_endif			 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.ensure_keyword(p_keyword)
+	_local l << .scanner.get()
+	_if l.is_keyword?.not
+	_then
+		condition.raise(:deco_expected_keyword, :line, l.line, :column, l.column, :keyword, p_keyword, :instead, l.value)
+	_endif
+	_if l.value <> p_keyword
+	_then
+		condition.raise(:deco_expected_keyword, :line, l.line, :column, l.column, :keyword, p_keyword, :instead, l.value)
+	_endif			 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.optional_keyword(p_keyword)
+	_local l << .scanner.peek()
+	_if l.is_keyword?.not
+	_then
+		condition.raise(:deco_expected_keyword, :line, l.line, :column, l.column, :keyword, p_keyword, :instead, l.value)
+	_else
+		_if l.value = p_keyword
+		_then 
+			.scanner.get()
+		_endif 
+	_endif
+				 
+_endmethod
+$

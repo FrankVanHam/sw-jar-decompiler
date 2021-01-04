@@ -1,0 +1,10 @@
+_package deco
+$
+
+
+def_slotted_exemplar(:jpn_package,
+	{{:name, _unset}},
+	:jpn_base)
+$
+
+

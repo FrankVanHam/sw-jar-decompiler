@@ -1,0 +1,129 @@
+_package deco
+$
+
+#remex(:lexeme)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:lexeme,
+	{
+		{:line,   _unset, :readable},
+		{:column, _unset, :readable},
+		{:type,   _unset},
+		{:value,  _unset, :readable}
+	})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.new_eof(p_line, p_column)
+	##
+	>> _self.new(:eof, _unset, p_line, p_column)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.new_comment(p_value, p_line, p_column)
+	##
+	>> _self.new(:comment, p_value, p_line, p_column)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.new_annotation(p_value, p_line, p_column)
+	##
+	>> _self.new(:annotation, p_value, p_line, p_column)
+_endmethod
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.new_keyword(p_value, p_line, p_column)
+	##
+	>> _self.new(:keyword, p_value, p_line, p_column)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.new_operator(p_value, p_line, p_column)
+	##
+	>> _self.new(:operator, p_value, p_line, p_column)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.new_string(p_value, p_line, p_column)
+	##
+	>> _self.new(:string, p_value, p_line, p_column)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.new_number(p_value, p_line, p_column)
+	##
+	>> _self.new(:number, p_value, p_line, p_column)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.new(p_type, p_value, p_line, p_column)
+	## 
+	>> _clone.init(p_type, p_value, p_line, p_column)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method lexeme.init(p_type, p_value, p_line, p_column)
+	##
+	.line << p_line
+	.column << p_column
+	.type << p_type
+	.value << p_value
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=debug, topic={jar_decompiler})
+_method lexeme.debug_type
+	>> .type
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.is_eof?
+	>> .type _is :eof	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.is_comment?
+	>> .type _is :comment	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.is_keyword?
+	>> .type _is :keyword	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.is_operator?
+	>> .type _is :operator	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.is_string?
+	>> .type _is :string	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.is_annotation?
+	>> .type _is :annotation	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.is_number?
+	>> .type _is :number	
+_endmethod
+$
+

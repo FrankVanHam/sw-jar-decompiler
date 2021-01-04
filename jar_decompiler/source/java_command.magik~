@@ -1,0 +1,7 @@
+_package user
+$
+
+_block
+	system.do_command("java -classpath 'E:\jar_decompiler\jar_decompiler\resources\base\java\lib\cfr-0.150.jar;C:\SW511\core\libs\com.gesmallworld.magik.runtime-5.1.1.0-109.jar;C:\SW511\core\libs\com.gesmallworld.magik.commons-5.1.1.0-109.jar' org.benf.cfr.reader.Main 'E:\jar_decompiler\libs\jar_decompiler_lp.decompile_target.1.jar'".substitute_character(%', %"))
+_endblock
+$

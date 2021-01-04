@@ -1,0 +1,14 @@
+_package deco;
+
+def_slotted_exemplar(:lexical_scanner_test,
+	{},
+	:test_case)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method lexical_scanner_test.test_one()
+	
+	
+_endmethod
+$
+

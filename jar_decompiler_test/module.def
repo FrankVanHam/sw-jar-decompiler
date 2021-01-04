@@ -1,0 +1,16 @@
+jar_decompiler_test	1
+
+description
+	Test for Decompiler for JAR files on SW5
+end
+tests_modules
+	jar_decompiler
+end
+
+requires
+	munit_base
+	simple_munit_gui
+end
+test
+	framework	munit
+end

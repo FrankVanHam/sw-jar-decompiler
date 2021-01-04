@@ -1,0 +1,93 @@
+_package user
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+def_slotted_exemplar(:lexical_scanner_test,
+	{},
+	:test_case)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method lexical_scanner_test.test_comment()
+
+	_local s << deco:lexical_scanner.new("/** hoi ***/".read_stream())
+	_local l << s.get()
+	_self.assert_true(l.is_comment?, "should be comment")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method lexical_scanner_test.test_keyword()
+	_local s << deco:lexical_scanner.new("package magik.decompile_target;".read_stream())
+	_local l << s.get()
+	_self.assert_true(l.is_keyword?, "should be keyword")
+	l << s.get()
+	_self.assert_equals("magik.decompile_target", l.value)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method lexical_scanner_test.test_keyword2()
+	_local s << deco:lexical_scanner.new(write_string("package", newline_char, "magik").read_stream())
+	_local l << s.get()
+	_self.assert_true(l.is_keyword?, "should be keyword")
+	_self.assert_equals("package", l.value)
+	l << s.get()
+	_self.assert_equals("magik", l.value)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method lexical_scanner_test.test_operator()
+
+	_local s << deco:lexical_scanner.new("test ()".read_stream())
+	_local l << s.get()
+	l << s.get()
+	_self.assert_true(l.is_operator?, "should be operator")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method lexical_scanner_test.test_operator2()
+
+	_local s << deco:lexical_scanner.new("test()".read_stream())
+	_local l << s.get()
+	l << s.get()
+	_self.assert_true(l.is_operator?, "should be operator")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method lexical_scanner_test.test_string()
+
+	_local s << deco:lexical_scanner.new(write_string(%", "frank", %").read_stream())
+	_local l << s.get()
+	_self.assert_true(l.is_string?, "should be string")
+	_self.assert_equals(l.value, "frank", "Value should be frank")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method lexical_scanner_test.test_annotation()
+
+	_local s << deco:lexical_scanner.new("  @Topics ".read_stream())
+	_local l << s.get()
+	_self.assert_true(l.is_annotation?, "should be annotation")
+	_self.assert_equals("Topics", l.value)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method lexical_scanner_test.test_number()
+
+	_local s << deco:lexical_scanner.new("  123 13.2 ".read_stream())
+	_local l << s.get()
+	_self.assert_true(l.is_number?, "should be number")
+	_self.assert_equals("123", l.value)
+	
+	l << s.get()
+	_self.assert_true(l.is_number?, "should be number")
+	_self.assert_equals("13.2", l.value)
+_endmethod
+$
+

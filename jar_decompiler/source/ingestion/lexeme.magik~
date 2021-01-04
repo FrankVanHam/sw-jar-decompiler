@@ -1,0 +1,34 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:lexeme,
+	{
+		{:type,  _unset},
+		{:value, _unset}
+	})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.new_eof()
+	##
+	>> _self.new(:eof, _unset)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.new(p_type, p_value)
+	## 
+	>> _clone.init(p_type, p_value)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method lexeme.init(p_type, p_value)
+	##
+	.type << p_type
+	.value << p_value
+	>> _self 
+_endmethod
+$
+
