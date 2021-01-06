@@ -11,3 +11,9 @@ _method deco_test.test()
 _endmethod
 $
 
+_method deco_test.test1()
+	_return _self.test()
+_endmethod
+$
+
+

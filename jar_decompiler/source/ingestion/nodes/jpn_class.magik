@@ -6,18 +6,22 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_class,
 	{
-		{:parent, _unset, :readable},
-		{:methods, _unset, :readable}
+		{:implementation, _unset, :readable},
+		{:methods,        _unset, :readable}
 	},
 	:jpn_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_class.new(p_name, p_parent, p_methods)
-	.parent << p_parent
+_method jpn_class.new(p_name, p_impl, p_methods)
+	.implementation << p_impl
 	.methods << p_methods
 	>> _super.init(p_name)
 _endmethod
 $
 
-
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_class.is_class?
+	>> _true
+_endmethod
+$

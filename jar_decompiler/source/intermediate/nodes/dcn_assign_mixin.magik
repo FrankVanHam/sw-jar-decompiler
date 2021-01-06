@@ -1,0 +1,62 @@
+##
+## File            : $File: (dcn_assign_mixin.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-04-01
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Mixin for the nodes that behave like an assignment (<<)
+def_mixin(:dcn_assign_mixin)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_abstract _method dcn_assign_mixin.decode_receiver_on( a_stream )
+	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_abstract _method dcn_assign_mixin.is_single_assign?
+	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_abstract _method dcn_assign_mixin.single_argument
+	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_abstract _method dcn_assign_mixin.chain_assign?(value)
+	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_assign_mixin.is_assign?
+	_return _true 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_assign_mixin.has_hidden_operator_assign?
+	## Is somehow an operator is hidden in the assignment +<<, -<<, etc.?
+	_return _false 
+_endmethod
+$
+

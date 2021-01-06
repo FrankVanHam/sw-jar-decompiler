@@ -1,0 +1,114 @@
+##
+## File            : $File: (dcn_shared_constant.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-01-27
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package deco
+$
+
+remex(:dcn_shared_constant)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Node for a shared_constant to decompile.
+def_slotted_exemplar( :dcn_shared_constant,
+		       {{:method,_unset}},
+		       :dcn_decompile_result)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_shared_constant.new(method)
+	_return _clone.init(method)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_shared_constant.init(method)
+	.method << method
+	_return _super.init()
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_shared_constant.comment
+	_return .compiler_info.comment_for_method(.method)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_shared_constant.level_topics_and_usages
+	level << .compiler_info.pragma_level_for_method(.method)
+	topics << .compiler_info.pragma_topics_for_method(.method)
+	usages << .compiler_info.pragma_usages_for_method(.method)
+	
+	_return level, topics, usages
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_shared_constant.decode_on( a_stream )
+	_self.decode_pragma_on(a_stream)
+	_self.decode_comment_on(a_stream)
+	value << .method.value
+	name << _self.method_name
+	a_stream.write( _self.exemplar_name, ".define_shared_constant(:")
+	_if name.requires_escape?
+	_then
+		a_stream.write( "|", name, "|")
+	_else
+		a_stream.write(name)
+	_endif
+	a_stream.write("," )
+	a_stream.newline()
+	_if value.is_kind_of?(procedure)
+	_then
+		dec << decompiler.new()
+		node << dec.decompile_procedure(value)
+		node.decode_on(a_stream)
+	_else 		
+		dcn_constant.new(value).decode_on( a_stream )
+	_endif 
+	a_stream.write( ",")
+	a_stream.newline()
+	_if _self.private?
+	_then 
+		a_stream.write(":private)")
+	_else
+		a_stream.write(":public)")
+	_endif
+	a_stream.newline()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_shared_constant.exemplar_name
+	_return .method.owner.meta_at(:class_name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_shared_constant.method_name
+	_return .method.name
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_shared_constant.private?
+	_return .method.private?
+_endmethod
+$

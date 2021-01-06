@@ -1,0 +1,277 @@
+##
+## File            : $File: (compiler_info_provider.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-01-28
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package deco
+$
+
+remex(:compiler_info_provider)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Handles and parses compiler info hidden in magik and the
+## method_finder.
+def_slotted_exemplar(:compiler_info_provider, {})
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+compiler_info_provider.define_shared_constant(:levels_in_method_finder,
+	{"basic", "advanced", "debug", "deprecated", "restricted"}, :private )
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+compiler_info_provider.define_shared_constant(:uages_in_method_finder,
+	{"subclass", "redefinable", "not_international","internal", "external"}, :private )
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+compiler_info_provider.define_shared_constant(:bs_in_method_finder,
+	{"classconst", "classvar", "private"}, :private )
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method compiler_info_provider.new()
+	## Create a new provider
+	_return _clone.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method compiler_info_provider.init()
+	_return _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method compiler_info_provider.comment_for_method(mth)
+	## Return a string for the comment of the method. Will include
+	## newline chars.
+	_try
+		ids << mth.deco_method_finder_ids
+		str << method_finder.get_method_public_comments( ids[1],ids[2],_true )
+		str << _self.tabify_comment(str)
+	_when error
+	      str << _unset
+	_endtry
+	_return str
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method compiler_info_provider.tabify_comment(str)
+	# Add tabs
+	_if str.empty?.not
+	_then
+		_if str.last _is newline_char
+		_then
+			str << str.slice(1, str.size-1)
+		_endif
+	_endif 
+	_if str.empty?.not
+	_then
+		str << write_string( tab_char, str)
+		str << str.substitute_string( newline_char, write_string(newline_char,tab_char))
+	_endif
+	_return str
+_endmethod
+$
+
+
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method compiler_info_provider.comment_for_exemplar(ex)
+	## Return a string for the comment of the exemplar.
+	_try
+		id << ex.deco_method_finder_id
+		str << method_finder.get_class_public_comments( id, _true )
+	_when error
+	      str << _unset
+	_endtry
+	_return str
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method compiler_info_provider.pragma_level_for_exemplar(ex)
+	## Return the pragma level (symbol) for the exemplar.
+	glb << ex.exemplar_global
+	_return glb.classify_level
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method compiler_info_provider.pragma_level_for_method(mth)
+	## Return the pragma level (symbol) for the method.
+	_return mth.classify_level
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method compiler_info_provider.pragma_usages_for_exemplar(ex)
+	## Return a set for the pragma usages (symbols) for the exemplar.
+	glb << ex.exemplar_global
+	_return _self.pragma_usages_for(glb)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method compiler_info_provider.pragma_usages_for_method(mth)
+	## Return a set for the pragma usages (symbols) for the method.
+	_return _self.pragma_usages_for(mth)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method compiler_info_provider.pragma_usages_for(glb)
+	## Return a set for the pragma usages (symbols) for the global.
+	usages << rope.new()
+	_if glb.redefinable?
+	_then
+		usages.add( :redefinable )
+	_endif
+	_if glb.subclassable?
+	_then
+		usages.add( :subclassable )
+	_endif
+	_return usages
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method compiler_info_provider.pragma_topics_for_method(mth)
+	## Return the pragma topics (symbols) for the method.
+	_try
+		ids << mth.deco_method_finder_ids
+		props << method_finder.get_method_info(ids[1],ids[2])
+		
+	_when error
+		props << _unset
+	_endtry
+	_return _self.pragma_topics_for_props(props)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method compiler_info_provider.pragma_topics_for_exemplar(ex)
+	## Return the pragma topics (symbols) for the exemplar.
+	_try
+		id << ex.deco_method_finder_id
+		props << method_finder.get_class_info(id)
+		
+	_when error
+		props << _unset
+	_endtry
+	_return _self.pragma_topics_for_props(props)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method compiler_info_provider.level_topics_and_usages_for_proc(pr)
+	## Return the topics and usages (symbols) for the procedure.
+	_try
+		ids << pr.deco_method_finder_ids
+		props << method_finder.get_method_info( ids[1],ids[2],_true )
+	_when error
+		props << _unset
+	_endtry
+	_return _self.level_topics_and_usages_for_props(props)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method compiler_info_provider.comment_for_proc(pr)
+	## Return a string for the comment of the procedure.
+	_try
+		ids << pr.deco_method_finder_ids
+		str << method_finder.get_method_public_comments( ids[1],ids[2],_true )
+	_when error
+		str << _unset
+	_endtry
+	_return str
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method compiler_info_provider.pragma_topics_for_props(props)
+	## filter the topics from the props that were given bij the
+	## method finder.
+	(level,topics,usages) << _self.level_topics_and_usages_for_props(props)
+	_return topics
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method compiler_info_provider.level_topics_and_usages_for_props(props)
+	## filter the topics and usages from the props that were given bij the
+	## method finder.
+	_if props _isnt _unset
+	_then
+		topics << props[:topics]
+	_endif
+	_if topics _isnt _unset
+	_then
+		list << topics.split_by(space_char)
+		topics << equality_set.new_from(list)
+	_else
+		topics << equality_set.new()
+	_endif 
+	usages << equality_set.new()
+	level << _unset 
+	_if topics.empty?.not 
+	_then
+		topics.remove("no_comment")
+		_for i_level _over _self.levels_in_method_finder.fast_elements()
+		_loop
+			was? << topics.remove(i_level)
+			_if was?
+			_then
+				level << i_level
+			_endif 
+		_endloop
+		_for i_usage _over _self.uages_in_method_finder.fast_elements()
+		_loop
+			was? << topics.remove(i_usage)
+			_if was?
+			_then
+				usages.add(i_usage)
+			_endif 
+		_endloop
+		_for i_usage _over _self.bs_in_method_finder.fast_elements()
+		_loop
+			topics.remove(i_usage)
+		_endloop
+	_endif
+	_for top _over topics.elements()
+	_loop
+		_if top.includes?(%:) _orif
+		    top.includes?(%/) _orif
+		    top.includes?(%\)
+		_then
+			topics.remove(top)
+		_endif 
+	_endloop
+	topics << topics.as_sorted_collection()
+	usages << usages.as_sorted_collection()
+	_return level, topics, usages
+_endmethod
+$
+

@@ -1,0 +1,22 @@
+packge deco
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+def_slotted_exemplar(:jpn_parser_test,
+	{},
+	:test_case)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method jpn_parser_test.test_int()
+	_local inp << write_string("Integer.valueOf(1)")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	_local jpn_exp << p.parse_expression()
+
+	_local jp << deco:jpn_parser.new()
+	_local dcn_node << jp.parse_expression(jpn_exp)
+	_self.assert_true(dcn_node.is_class_of?(deco:dcn_constant))
+_endmethod
+$

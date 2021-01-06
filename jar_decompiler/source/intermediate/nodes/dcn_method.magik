@@ -1,0 +1,99 @@
+
+_package deco
+$
+
+remex(:dcn_method)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Represents a node for a decompiled method from magik.
+def_slotted_exemplar( :dcn_method,
+		      {
+			      {:method, _unset}
+		      }, :dcn_callable )
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_method.new( p_method, statements, locals, literals )
+	_return _clone.init( p_method, statements, locals, literals )
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_method.init( p_method, statements, locals, literals )
+	.method << p_method
+	.proc << .method.value
+	_return _super.init(p_method.value, statements, locals, literals )
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_method.exemplar_name
+	_return .method.owner.meta_at(:class_name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_method.method_name
+	_return .method.name
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_method.iter?
+	_return .method.iter?
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_method.private?
+	_return .method.private?
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_method.abstract?
+	_return .method.abstract?
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_method.comment
+	_return .compiler_info.comment_for_method(.method)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_method.level_topics_and_usages
+	level << .compiler_info.pragma_level_for_method(.method)
+	topics << .compiler_info.pragma_topics_for_method(.method)
+	usages << .compiler_info.pragma_usages_for_method(.method)
+	_return level, topics, usages
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_method.decode_args_on(a_stream)
+	
+	proc << .method.value
+	name << _self.method_name
+	a_stream.write( ".", name.slice( 1, name.size-2))
+	a_stream.write( "(" )
+	_if proc.num_args > 0
+	_then
+		_self.int!decode_args_on(a_stream, 1)
+	_endif 
+	a_stream.write( ")" )
+_endmethod
+$
+
+
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_method.last_node_in_method?(node)
+#	_return _self.my_last_real_node?(node)
+#_endmethod
+#$

@@ -1,0 +1,348 @@
+##
+## File            : $File: (dcn_base.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-04-01
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package deco
+$
+
+
+remex(:dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Base class of all decompiled nodes.
+def_slotted_exemplar(:dcn_base,
+		     {} )
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_abstract _method dcn_base.decode_on(a_stream, _optional parent, statements)
+	## Every subclass must be able to decode on a a stream.
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_abstract _method dcn_base.result_count
+	## Every subclass must be able to tell the number of results of
+	## its avaluation.
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.decode_eval_exp_on(a_stream, _gather p_args)	
+	_return _self.decode_on(a_stream, _scatter p_args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.decode_base_on(a_stream, _gather p_args)	
+	_return _self.decode_on(a_stream, _scatter p_args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.accept_node_visitor(visitor)
+	_return visitor.visit(_self, _unset )
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.accept_body_visitor(visitor)
+	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.accept_node_visitor_in_vector(visitor, vec)
+	_for index, node _over vec.fast_keys_and_elements()
+	_loop
+		vec[index] << node.accept_node_visitor(visitor)
+	_endloop
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.accept_body_visitor_in_vector(visitor, vec)
+	_for index, node _over vec.fast_keys_and_elements()
+	_loop
+		node.accept_body_visitor(visitor)
+	_endloop
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.decode_as_receiver_on(a_stream, _gather a)
+	_return _self.decode_on(a_stream, _scatter a)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.decode_as_invocable_on(a_stream, _gather a)
+	_return _self.decode_on(a_stream, _scatter a)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.decode_scattered_on(a_stream, _gather a)
+	_return _self.decode_on(a_stream, _scatter a)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_test_for_true?
+	_return _false
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_slot?
+	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_return?
+	_return _false
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_lock?
+	_return _false
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_handling?
+	_return _false
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.callable?
+	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_local?
+	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_send?
+	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_local_assignment?
+	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_call?
+	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_constant?
+	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_dynamic?
+	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_send_scatter?
+	_return _false
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_op?
+	_return _false
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_pre_try?
+	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_catch?
+	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_case_or_branch?
+	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_break?
+	_return _false 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_continue?
+	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_chain_assign_for?(assign)
+	_return _false
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_assign?
+	_return _false
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.scattered?
+	_return _false
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.decode_as_top_body_on(a_stream, parent)
+	_return parent.decode_as_top_body_on(a_stream)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.decode_statements_on(a_stream, statements)
+	_for stat _over statements.fast_elements()
+	_loop
+		stat.decode_on(a_stream, _self, statements )
+		a_stream.newline()
+	_endloop
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.decode_node_list_on(a_stream, list)
+	comma? << _false
+	_for elem _over list.fast_elements()
+	_loop
+		_if comma? ^<< _true
+		_then
+			a_stream.write( ", ")
+		_endif
+		elem.decode_on(a_stream)
+	_endloop
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.decode_args_on(a_stream, results, scatter?, numres)
+	comma? << _false 
+	res << 0
+	_for val_node _over results.fast_elements()
+	_loop
+		_if comma? ^<< _true
+		_then
+			a_stream.write( ", " )
+		_endif 
+		_if scatter? _andif
+		    res = (numres-1)
+		_then
+			#last elements
+			val_node.decode_scattered_on(a_stream)
+			res +<< 1
+		_else
+			val_node.decode_on(a_stream)
+			res +<< val_node.result_count
+		_endif
+	_endloop 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.create_op()
+	_return _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.create_not_op(operand)
+	_return dcn_op.new( :not, _self)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.create_silent_true_op(operand)
+	_return dcn_op.new( :isss, dcn_constant.new(_true), _self)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.create_is_unset_op(operand)
+	_return dcn_op.new( :is, dcn_constant.new(_unset), _self)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.create_isnt_unset_op(operand)
+	_return dcn_op.new( :isnt, dcn_constant.new(_unset), _self)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.deco_decode_as_call_on(a_stream, call)
+	_return call.decode_as_call_on(a_stream, _self )
+_endmethod
+$
+
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_base.last_node_in_method?(node)
+#	_return _false 
+#_endmethod
+#$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.declare_top_statement()
+	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.declare_last_statement()
+	
+_endmethod
+$

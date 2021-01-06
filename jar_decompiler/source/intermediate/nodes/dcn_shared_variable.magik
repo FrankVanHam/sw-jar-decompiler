@@ -1,0 +1,63 @@
+##
+## File            : $File: (dcn_shared_variable.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-01-27
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Node for a shared_variable to decompile. Most
+## characteristics come from dcn_shared_constant.
+##
+def_slotted_exemplar( :dcn_shared_variable,
+		      {},
+		      :dcn_shared_constant )
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_shared_variable.decode_on( a_stream )
+	_self.decode_pragma_on(a_stream)
+	_self.decode_comment_on(a_stream)
+	value << .method.value
+	name << _self.method_name
+	a_stream.write( _self.exemplar_name, ".define_shared_variable(:")
+	_if name.requires_escape?
+	_then
+		a_stream.write( "|", name, "|")
+	_else
+		a_stream.write(name)
+	_endif
+	a_stream.write("," )
+	a_stream.newline()
+	_if value.is_kind_of?(procedure)
+	_then
+		dec << decompiler.new()
+		node << dec.decompile_procedure(value)
+		node.decode_on(a_stream)
+	_else
+		dcn_constant.new(value).decode_on( a_stream )
+	_endif 
+	a_stream.write( ",")
+	a_stream.newline()
+	_if _self.private?
+	_then 
+		a_stream.write(":private)")
+	_else
+		a_stream.write(":public)")
+	_endif
+	a_stream.newline()
+_endmethod
+$

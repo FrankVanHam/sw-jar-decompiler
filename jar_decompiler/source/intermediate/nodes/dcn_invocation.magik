@@ -1,0 +1,170 @@
+##
+## File            : $File: (dcn_invocation.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-04-05
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package deco
+$
+
+
+remex(:dcn_invocation)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Base call for send or call.
+def_slotted_exemplar(:dcn_invocation,
+	{
+		{:token,_unset},
+		{:args, _unset},
+		{:result, _unset}
+	},:dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_invocation.new(token, args)
+	_return _clone.init(token, args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_invocation.init(token, args)
+	assert(args _isnt _unset)
+	assert(_not args.includes?(_unset))
+	.args << rope.deco_check_type(args)
+	.token << token
+	.result << dcn_result.new(token)
+	_return _self
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_invocation.accept_node_visitor(visitor)
+	_self.accept_node_visitor_in_vector(visitor, .args)
+	.result << .result.accept_node_visitor(visitor)
+	_return _super.accept_node_visitor(visitor)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_invocation.accept_body_visitor(visitor)
+	_self.accept_body_visitor_in_vector(visitor, .args)
+	.result.accept_body_visitor(visitor)
+	_return _super.accept_body_visitor(visitor)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_invocation.scattered?
+	_return .result.scattered?
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_invocation.has_results?
+	_return .result.has_results?
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_invocation.callable?
+	_return _true 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_invocation.result_count
+	_return .result.result_count
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_invocation.int!decode_args_on(a_stream, args_start)
+	code_args << .args.slice_to_end(args_start)
+	_self.decode_args_on(a_stream, code_args, .token.scatter?, .token.numargs)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_invocation.decode_assign_parenthesis_args_on(a_stream, method_name, boot?, assign? )
+	_if boot?
+	_then 
+		a_stream.write( ".", method_name.slice( 1, method_name.size-5))
+	_else
+		a_stream.write( ".", method_name.slice( 1, method_name.size-4))
+	_endif 
+	a_stream.write( "(" )
+	_self.int!decode_args_on(a_stream, 2)
+	a_stream.write( ") ")
+	_if assign?
+	_then 
+		_self.decode_operator_on(a_stream)
+		_if boot? _then a_stream.write("^") _endif 
+		a_stream.write( "<< " )
+		.args.first.decode_on(a_stream)
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_invocation.decode_assign_args_on(a_stream, method_name, boot?, assign? )
+	_if boot?
+	_then 
+		a_stream.write( ".", method_name.slice( 1, method_name.size-3))
+	_else
+		a_stream.write( ".", method_name.slice( 1, method_name.size-2))
+	_endif
+	a_stream.write( " ")
+	_if assign?
+	_then 
+		_self.decode_operator_on(a_stream)
+		_if boot? _then a_stream.write("^") _endif
+		a_stream.write( "<< " )
+		.args.first.decode_on(a_stream)
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_invocation.decode_parenthesis_args_on(a_stream, method_name )
+	a_stream.write( ".", method_name.slice( 1, method_name.size-2))
+	a_stream.write( "(" )
+	_self.int!decode_args_on(a_stream, 1)
+	a_stream.write( ") ")	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_invocation.decode_assign_bracket_args_on(a_stream, method_name, boot?, assign? )
+	a_stream.write( "[" )
+	_self.int!decode_args_on(a_stream, 2)
+	a_stream.write( "] ")
+	_if assign?
+	_then 
+		_self.decode_operator_on(a_stream)
+		_if boot? _then a_stream.write("^") _endif 
+		a_stream.write( "<< " )
+		.args.first.decode_on(a_stream)
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_invocation.decode_bracket_args_on(a_stream, method_name )
+	a_stream.write( "[" )
+	_self.int!decode_args_on(a_stream, 1)
+	a_stream.write( "] ")
+	_self.decode_operator_on(a_stream)
+_endmethod
+$

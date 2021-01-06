@@ -1,0 +1,17 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_cast,
+	{
+		{:expression, _unset, :readable}
+	},
+	:jpn_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_case.init(p_name, p_exp)
+	.expression << p_exp
+	>> _super.init(p_name)
+_endmethod
+$

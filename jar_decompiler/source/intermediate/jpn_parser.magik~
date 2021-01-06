@@ -1,0 +1,24 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_parser,
+	{
+		{:top, _unset}
+	})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.new(p_jpn_node)
+	##
+	_clone.init(p_jpn_node)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_parser.init(p_jpn_node)
+	##
+	.top << p_jpn_node
+	>> _self
+_endmethod
+$

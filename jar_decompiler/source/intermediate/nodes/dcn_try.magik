@@ -1,0 +1,143 @@
+##
+## File            : $File: (dcn_try.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-04-06
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package deco
+$
+
+remex(:dcn_try)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Node for a try structure.
+def_slotted_exemplar( :dcn_try,
+	{{:condition, _unset},
+	 {:body,_unset},
+	 {:whens, _unset},
+	 {:results, _unset}}, :dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_try.new(condition, body, whens, results)
+	_return _clone.init(condition, body, whens, results)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_try.init(condition, body, whens, results)
+	.condition << condition
+	.body << rope.deco_check_type(body)
+	.whens << rope.deco_check_type(whens)
+	.results << rope.deco_check_type(results)
+	assert(.results _isnt _unset, "want results")
+	_return _self
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_try.accept_node_visitor(visitor)
+	_if .condition _isnt _unset
+	_then 
+		.condition << .condition.accept_node_visitor(visitor)
+	_endif 
+	_self.accept_node_visitor_in_vector(visitor, .body)
+	_for prop _over .whens.fast_elements()
+	_loop
+		_self.accept_node_visitor_in_vector(visitor, prop[:statements])
+		_self.accept_node_visitor_in_vector(visitor, prop[:results])
+	_endloop 
+	_self.accept_node_visitor_in_vector(visitor, .results)
+	_return _super.accept_node_visitor(visitor)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_try.accept_body_visitor(visitor)
+	_if .condition _isnt _unset
+	_then 
+		.condition.accept_body_visitor(visitor)
+	_endif 
+	_self.accept_body_visitor_in_vector(visitor, .body)
+	_for prop _over .whens.fast_elements()
+	_loop
+		_self.accept_body_visitor_in_vector(visitor, prop[:statements])
+		_self.accept_body_visitor_in_vector(visitor, prop[:results])
+	_endloop 
+	_self.accept_body_visitor_in_vector(visitor, .results)
+	
+	_for prop _over .whens.fast_elements()
+	_loop
+		visitor.visit(_self, prop[:statements])
+	_endloop 
+	_super.accept_body_visitor(visitor)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_try.result_count
+	_return .results.size
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_try.decode_list_on(a_stream, list)
+	_for index, elem _over list.fast_keys_and_elements()
+	_loop
+		a_stream.write(elem)
+		_if index <> list.size _then a_stream.write(", ") _endif 
+	_endloop
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_try.decode_on(a_stream, _optional parent, statements)
+	a_stream.write( "_try ")
+	_if .condition _isnt _unset
+	_then
+		a_stream.write( "_with ")
+		.condition.decode_on(a_stream)
+	_endif 
+	a_stream.newline()
+	a_stream.indent()
+	_self.decode_statements_on(a_stream, .body)
+	a_stream.unindent()
+	_if .results.empty?.not
+	_then
+		a_stream.write(">> ")
+		_self.decode_node_list_on(a_stream, .results)
+		a_stream.newline()
+	_endif 
+	_for prop _over .whens.fast_elements()
+	_loop
+		when_statements << prop[:statements]
+		when_results    << prop[:results]
+		conditions      << prop[:conditions]
+		a_stream.write( "_when ")
+		_self.decode_list_on(a_stream, conditions)
+		a_stream.newline()
+		a_stream.indent()
+		_self.decode_statements_on(a_stream, when_statements)
+		a_stream.unindent()
+		_if when_results.empty?.not
+		_then
+			a_stream.write(">> ")
+			_self.decode_node_list_on(a_stream, when_results )
+			a_stream.newline()	
+		_endif 
+	_endloop 
+	a_stream.write( "_endtry")
+_endmethod
+$

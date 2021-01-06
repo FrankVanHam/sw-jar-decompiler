@@ -1,0 +1,159 @@
+##
+## File            : $File: (dcn_handling_cluster.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-04-06
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package deco
+$
+
+
+remex(:dcn_handling_cluster)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Node for a cluster of handling statements
+def_slotted_exemplar( :dcn_handling_cluster,
+		       {{:top_statement?, _unset},
+			{:last_statement?, _unset},
+			{:handlers,_unset},
+			{:statements, _unset }}, :dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_handling_cluster.new(handlers, statements)
+	_return _clone.init(handlers, statements)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_handling_cluster.init(handlers, statements)
+	.top_statement? << _false
+	.last_statement? << _false 
+	.handlers << rope.deco_check_type(handlers)
+	.statements << rope.deco_check_type(statements)
+	_return _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_handling_cluster.accept_node_visitor(visitor)
+	_for i_handler _over .handlers.fast_elements()
+	_loop
+		i_handler.accept_node_visitor(visitor)
+	_endloop	
+	_self.accept_node_visitor_in_vector(visitor, .statements)
+	_return _super.accept_node_visitor(visitor)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_handling_cluster.accept_body_visitor(visitor)
+	_for i_handler _over .handlers.fast_elements()
+	_loop
+		i_handler.accept_body_visitor(visitor)
+	_endloop
+	_self.accept_body_visitor_in_vector(visitor, .statements)
+	visitor.visit(_self, .statements)
+	_super.accept_body_visitor(visitor)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_handling_cluster.try_handlers_and_statements
+	_return .handlers, .statements
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_handling_cluster.declare_top_statement()
+	.top_statement? << _true 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_handling_cluster.declare_last_statement()
+	.last_statement? << _true 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_handling_cluster.is_handling?
+	_return _true 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_handling_cluster.add_node(stat)
+	.statements.add(stat)
+_endmethod
+$
+
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_handling_cluster.last_node_in_method?(n)
+#	_if .top_statement? _orif .last_statement?
+#	_then 
+#		_return _self.my_last_real_node?(n)
+#	_else
+#		_return _false
+#	_endif 
+#_endmethod
+#$
+
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_handling_cluster.my_last_real_node?(a_node)
+#	_if .statements.empty? _then _return _false _endif
+#	_if .statements.last = a_node _then _return _true _endif
+#	_if .statements.size > 1 _andif
+#	    .statements[.statements.size-1] = a_node _andif
+#	    .statements.last.is_return? _andif
+#	    _not .statements.last.has_results?
+#	_then
+#		_return _true
+#	_endif
+#
+#	_return _false 
+#_endmethod
+#$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_handling_cluster.decode_on( a_stream, a_parent, p_statements )
+	skip_block? << (p_statements.size = 1) # one statement means; just me
+	_if _not skip_block?
+	_then 
+		a_stream.write( "_block")
+		a_stream.newline()
+	_endif
+	_self.decode_statements_on(a_stream, .handlers)
+	_self.decode_statements_on( a_stream, .statements )
+	_if _not skip_block?
+	_then 
+		a_stream.write( "_endblock")
+		a_stream.newline()
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_handling_cluster.decode_as_top_body_on( a_stream, a_parent )
+	_self.decode_statements_on(a_stream, .handlers)
+	a_parent.inject_global_and_locals(a_stream)
+	a_stream.indent()
+	_self.decode_statements_on( a_stream, .statements )
+	a_stream.unindent()
+_endmethod
+$

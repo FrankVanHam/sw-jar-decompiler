@@ -1,0 +1,73 @@
+##
+## File            : $File: (dcn_enumeration.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-01-28
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package deco
+$
+
+remex(:dcn_enumeration)
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+## class to store the definition of an enumeration
+def_slotted_exemplar(:dcn_enumeration,
+	{
+	},  :dcn_exemplar_base)
+$
+
+
+_pragma(classify_level=basic, topic={decompiler})
+_private _iter _method dcn_enumeration.values()
+	_for i_name _over .exemplar.values.fast_elements()
+	_loop
+		_loopbody( i_name ) 
+	_endloop
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_enumeration.decode_values_on(a_stream)
+	comma? << _false 
+	_for i_name _over _self.values()
+	_loop
+		_if (comma? ^<< _true) _then a_stream.write(", ") _endif 
+		a_stream.write( i_name )
+	_endloop
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_enumeration.decode_class_on(a_stream)
+	##
+	## Write a formated output on the stream
+	##
+	a_stream.write( "def_enumeration( :", .exemplar.deco_name, ", ")
+	_if .exemplar.naturally_ordered?
+	_then
+		a_stream.write("_true, ")
+	_else
+		a_stream.write("_false, ")
+	_endif
+	a_stream.newline()
+	a_stream.indent()
+	_self.decode_values_on(a_stream)
+	a_stream.write(")")
+	a_stream.unindent()
+	a_stream.newline()
+_endmethod
+$

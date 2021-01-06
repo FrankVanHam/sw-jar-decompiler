@@ -1,0 +1,12 @@
+_package deco
+$
+
+def_slotted_exemplar(:deco_integer, {}, :deco_execution_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_integer.valueof(p_parser, p_node)
+
+	>> p_parser.parse_constant(p_node, integer)
+_endmethod
+$

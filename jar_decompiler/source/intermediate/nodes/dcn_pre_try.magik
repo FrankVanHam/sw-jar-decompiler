@@ -1,0 +1,182 @@
+##
+## File            : $File: (dcn_pre_try.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-04-06
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package deco
+$
+
+remex(:dcn_pre_try)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Special node for a construction that will eventually become
+## a try statement. This node is constructed during
+## decompiling, lateron in the post_decompiler a dcn_try will
+## be constructed.
+def_slotted_exemplar( :dcn_pre_try,
+	{
+		{:catch_body, _unset},
+		{:catch_body_results, _unset},
+		{:when_body, _unset},
+		{:when_body_results, _unset }
+	}, :dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_pre_try.new(catch_body, catch_body_results,
+			when_body, when_body_results)
+	_return _clone.init(catch_body, catch_body_results,
+			    when_body, when_body_results)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_pre_try.init(catch_body, catch_body_results,
+			      when_body, when_body_results)
+	.catch_body << rope.deco_check_type(catch_body)
+	.catch_body_results << rope.deco_check_type(catch_body_results)
+	.when_body << rope.deco_check_type(when_body)
+	.when_body_results << rope.deco_check_type(when_body_results)
+	_return _self
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_pre_try.accept_node_visitor(visitor)
+	_self.accept_node_visitor_in_vector(visitor, .catch_body)
+	_self.accept_node_visitor_in_vector(visitor, .catch_body_results)
+	_self.accept_node_visitor_in_vector(visitor, .when_body)
+	_self.accept_node_visitor_in_vector(visitor, .when_body_results)
+	_return _super.accept_node_visitor(visitor)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_pre_try.accept_body_visitor(visitor)
+	_self.accept_body_visitor_in_vector(visitor, .catch_body)
+	_self.accept_body_visitor_in_vector(visitor, .catch_body_results)
+	_self.accept_body_visitor_in_vector(visitor, .when_body)
+	_self.accept_body_visitor_in_vector(visitor, .when_body_results)
+	
+	visitor.visit(_self, .catch_body)
+	visitor.visit(_self, .when_body)
+	_super.accept_body_visitor(visitor)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_pre_try.is_pre_try?
+	_return _true
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_pre_try.has_results?
+	_return _self.has_body_results?
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_pre_try.has_body_results?
+	_return .catch_body_results.empty?.not
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_pre_try.as_try()
+	_if _self.has_body_results?
+	_then
+		results << .catch_body_results
+	_else
+		results << rope.new()
+	_endif
+	
+	handler << .catch_body[1]
+	(handlers,try_statements) << handler.try_handlers_and_statements
+	
+	_if _self.has_body_results?
+	_then
+		cases << .when_body_results
+	_else
+		cases << .when_body
+	_endif
+	(whens, cond) << _self.construct_whens(handlers, cases)
+	
+	n << dcn_try.new(cond, try_statements, whens, results)
+	_return n
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_pre_try.construct_whens(handlers, cases)
+	sorted_indexes << rope.new()
+	whens << property_list.new()
+	_for case _over cases.fast_elements()
+	_loop
+		_for i_branch _over case.branches()
+		_loop
+			(try_index, branch_statements) << i_branch.register_for_try(whens)
+			cond << _self.nibble_condition(branch_statements)
+			sorted_indexes.add(try_index)
+		_endloop
+	_endloop 
+	_for i_handler _over handlers.fast_elements()
+	_loop
+		i_handler.register_for_try(whens)
+	_endloop
+	sorted_whens << rope.new()
+	_for i _over sorted_indexes.fast_elements()
+	_loop
+		sorted_whens.add(whens[i])
+	_endloop
+	_return sorted_whens, cond
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_pre_try.nibble_condition(stats)
+	_if stats.size < 1 _then _return _unset _endif
+	
+	stat << stats[1]
+	
+	_if _not stat.is_local_assignment? _then _return _unset _endif
+	_if _not stat.single_assignment? _then _return _unset _endif
+	ex << stat.expression
+	_if _not ex.is_local? _then _return _unset _endif
+	_if ex.name <> "try_cond" _then _return _unset _endif 
+	
+	stats.remove_first()
+	_return stat.local
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_pre_try.catch_body_results
+	_return .catch_body_results
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_pre_try.result_count
+	_return .catch_body_results.size
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_pre_try.decode_on(a_stream, _optional parent, statements)
+	assert(_false, "Should not be invoked")
+_endmethod
+$

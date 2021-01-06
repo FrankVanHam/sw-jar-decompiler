@@ -1,0 +1,205 @@
+##
+## File            : $File: (dcn_dynamic.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-04-06
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package deco
+$
+
+remex(:dcn_dynamic)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Node for a dynamic structure
+def_slotted_exemplar(:dcn_dynamic,
+		     {
+			     {:dis_node,_unset},
+			     {:dynamic_node, _unset},
+			     {:value_node, _unset},
+			     {:statements, _unset},
+			     {:top_of_stack, _unset}
+		     }, :dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_dynamic.new(dis_node, dynamic_node, value_node, statements, top_of_stack)
+	_return _clone.init(dis_node, dynamic_node, value_node, statements, top_of_stack)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_dynamic.init(dis_node, dynamic_node, value_node, statements, top_of_stack)
+	.dis_node << dis_node
+	.dynamic_node << dynamic_node
+	.value_node << value_node
+	.statements << rope.deco_check_type(statements)
+	.top_of_stack << top_of_stack
+	_return _self
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_dynamic.accept_node_visitor(visitor)
+	.dynamic_node << .dynamic_node.accept_node_visitor(visitor)
+	.value_node << .value_node.accept_node_visitor(visitor)
+	_self.accept_node_visitor_in_vector(visitor, .statements)
+	_return _super.accept_node_visitor(visitor)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_dynamic.accept_body_visitor(visitor)
+	.dynamic_node.accept_body_visitor(visitor)
+	.value_node.accept_body_visitor(visitor)
+	_self.accept_body_visitor_in_vector(visitor, .statements)
+	
+	visitor.visit(_self, .statements)
+	_super.accept_body_visitor(visitor)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_dynamic.handler_conditions
+	assert(_self.is_handler?)
+	_return .value_node.handler_conditions
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_dynamic.as_handling()
+	condition_vec << _self.handler_conditions
+	
+	procs << rope.new()
+	conditions << hash_table.new()
+	_for i_const, i_proc _over condition_vec.fast_elements_in_pairs()
+	_loop
+		# Could be more conditions, but the last one counts.
+		cond << i_const.value.last
+		_if _not conditions.includes_key?(i_proc)
+		_then
+			conditions[i_proc] << rope.new()
+			procs.add(i_proc)
+		_endif 
+		conditions[i_proc].add(cond)
+	_endloop
+	handlers << rope.new()
+	_for i_proc_node _over procs.fast_elements()
+	_loop
+		handlers.add( dcn_handling.new(conditions[i_proc_node], i_proc_node) )
+	_endloop
+	
+	_return dcn_handling_cluster.new( handlers, .statements)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_dynamic.is_dynamic?
+	_return _true
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_dynamic.is_handler?
+	_if _not .dynamic_node.is_constant? _then _return _false _endif
+	
+	_if _not .dynamic_node.is_global?(condition_handler_cluster) _then _return _false _endif
+	
+	_if _not .value_node.is_send? _then _return _false _endif
+	
+	_return .value_node.is_sys!create?
+	
+	_return _false
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_dynamic.add_node(stat)
+	.statements.add(stat)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_dynamic.top_of_stack_during_decompile
+	_return .top_of_stack
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_dynamic.decode_on( a_stream, _optional a_parent, p_statements )
+	skip_block? << .statements.empty? #_orif
+		       #a_parent.last_node_in_method?(_self)
+	_if _not skip_block?
+	_then
+		skip_block? << (p_statements.size = 1) # one statement = me
+	_endif 
+	_if _not skip_block?
+	_then
+		a_stream.write( "_block")
+		a_stream.newline()
+	_endif 
+	_if .dis_node.is_bind?
+	_then 
+		a_stream.write( "_dynamic " )
+	_endif 
+	.dynamic_node.decode_on( a_stream )
+	_if _self.is_assign?
+	_then 
+		a_stream.write( " << " )
+		.value_node.decode_on( a_stream )
+	_endif
+	a_stream.newline()
+	_self.decode_statements_on(a_stream, .statements)
+	_if _not skip_block?
+	_then
+		a_stream.write( "_endblock")
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_dynamic.decode_lhs_on(a_stream)
+	.dynamic_node.decode_on( a_stream )
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_dynamic.has_rhs?
+	_return _self.is_assign? 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_dynamic.decode_rhs_on(a_stream)
+	.value_node.decode_on( a_stream )
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_dynamic.expression
+	_return .value_node
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_dynamic.is_assign?
+	_return .dynamic_node _isnt .value_node
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_dynamic.is_single_assign?
+	_return _self.is_assign?
+_endmethod
+$

@@ -1,9 +1,28 @@
 _package deco
 $
 
+#remex(:jpn_constant)
+
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_constant,
-	{},
+	{
+		{:lex, _unset, :readable}
+	},
 	:jpn_base)
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_constant.init(p_lex)
+	##
+	.lex << p_lex
+	>> _super.init("constant")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_constant.string_value
+	##
+	##
+	>> .lex.value
+_endmethod
+$

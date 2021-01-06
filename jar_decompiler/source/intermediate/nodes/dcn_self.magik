@@ -1,0 +1,101 @@
+##
+## File            : $File: (dcn_self.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-04-02
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package deco
+$
+
+remex(:dcn_self)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Node for _self, _super or _clone.
+def_slotted_exemplar(:dcn_self,
+		     {
+			     {:self?, _unset},
+			     {:clone?,_unset},
+			     {:super?,_unset},
+			     {:nr, _unset},
+			     {:mt, _unset}
+		     }, :dcn_base )
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_self.new()
+	_return _clone.init(_true,_false,_false,_unset)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_self.new_clone(_optional nr)
+	_return _clone.init(_false,_true,_false,_unset, nr)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_self.new_super(mt)
+	_return _clone.init(_false,_false,_true,mt)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_self.init(self?,clone?,super?,mt, _optional nr)
+	.self? << self?
+	.clone? << clone?
+	.super? << super?
+	.mt << mt
+	.nr << nr
+	_return _self
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_self.result_count
+	_return 1
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_self.as_clone(_optional nr)
+	_return _self.new_clone(nr)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_self.decode_on( a_stream, _optional parent, statements )
+	_if .self?
+	_then
+		a_stream.write( "_self" )
+	_elif .clone?
+	_then
+		_if .nr _is _unset
+		_then
+			a_stream.write( "_clone" )
+		_else
+			a_stream.write( "_clone(")
+			.nr.decode_on(a_stream)
+			a_stream.write(  ")" )
+		_endif 
+	_elif .super?
+	_then
+		a_stream.write( "_super" )
+		_if .mt _isnt _unset
+		_then
+			a_stream.write( "(", .mt.meta_at(:class_name), ")")
+		_endif 
+	_endif 
+_endmethod
+$

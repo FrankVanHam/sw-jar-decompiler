@@ -1,0 +1,58 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_parser,
+	{
+		{:top, _unset}
+	})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.new()
+	##
+	>> _clone.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_parser.init()
+	##
+	#.top << p_jpn_node
+	>> _self
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_expression(p_node)
+	##
+	(exec, meth) << _self.executer_and_method(p_node.name)
+
+	_return exec.perform(meth, _self, _scatter p_node.args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_constant(p_node, p_exemplar)
+	##
+	_local v << p_exemplar.from_write_string(p_node.string_value)
+	>> dcn_constant.new(v)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.executer_and_method(p_name)
+	##
+	_local (exec_name, exec_meth_name) << (_scatter p_name.split_by(%.))
+
+	_local global_ex_name << write_string(:deco_ + exec_name.lowercase).as_symbol()
+	_local ex << !current_package!.all_packages[:deco][global_ex_name]
+	_if ex _is _unset _then condition.raise(:error, :string, write_string("No global for parser execution: ", global_ex_name)) _endif
+
+	_local exec_meth << write_string(exec_meth_name.lowercase,"()").as_symbol()
+	_if ex.method(exec_meth) _is _unset _then condition.raise(:error, :string, write_string("No method ", exec_meth, " for parser execution on ", global_ex_name)) _endif
+	>> ex, exec_meth
+_endmethod
+$
