@@ -1,4 +1,3 @@
-
 _package deco
 $
 
@@ -76,11 +75,11 @@ _method dcn_proc.result_count
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_proc.single_return_value
-	_return .statements[1].single_return_value
-_endmethod
-$
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_proc.single_return_value
+#	_return .statements[1].single_return_value
+#_endmethod
+#$
 
 
 _pragma(classify_level=restricted, topic={decompiler})

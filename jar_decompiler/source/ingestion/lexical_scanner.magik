@@ -18,7 +18,32 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 lexical_scanner.define_shared_constant(:operators,
-	equality_set.new_with( %{, %}, %(, %), %;, %, ),
+	equality_set.new_with("+", "-", "*", "/", "%", "^", "&", "|", "!", "~", "=", "+=", "-=", "*=", "/=", "%=", "^=", "++", "--", "==", "!=", "<", ">", "&=", ">>=", "<<=", ">=", "<=", "||", "&&", ">>", "<<", "?", ":"), #"
+	:private)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+lexical_scanner.define_shared_constant(:operator_characters,
+	set.new_with(%%,%&,%*,%+,%-,%/,%|,%~,%^,%:,%<,%=,%>,%?,%!),
+	:private)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+lexical_scanner.define_shared_constant(:separators,
+	set.new_with(%[, %], %(, %), %{, %}, %,, %;, %., %" ),
+	:private)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+lexical_scanner.define_shared_constant(:keywords,
+	equality_set.new_with("abstract","continue","for","new","switch","assert","default","goto",
+			      "package","synchronized","boolean","do","if","private","this","break",
+			      "double","implements","protected","throw","byte","else","import","public",
+			      "throws","case","enum","instanceof","return","transient","catch","extends",
+			      "int","short","try","char","final","interface","static","var",
+			      "class","finally","long","strictfp","void","const","float",
+			      "native","super","volatile","while","package","import",
+			      "class","if","then","else"),
 	:private)
 $
 
@@ -34,6 +59,7 @@ _private _method lexical_scanner.init(p_stream)
 	.in << p_stream
 	.line << 1
 	.column << 1
+	.cache << _unset 
 	 >> _self 
 _endmethod
 $
@@ -59,29 +85,35 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexical_scanner.int!get()
-	_loop 
-		_if .in.more_to_get?.not _then _return lexeme.new_eof(.line, .column) _endif
+	_loop
+		_if _self.more_to_get?.not _then _return lexeme.new_eof(.line, .column) _endif
 		
-		_local char << .in.peek()
+		_local char << _self.peek_char()
+		
 		_if char.white_space?.not
 		_then
 			_if char = %/
 			_then
+				_self.get_char()
 				_return _self.get_comment()
-			_elif _self.operators.includes?(char)
-			_then 
-				_return _self.get_operator()
 			_elif char = %"
 			_then
+				_self.get_char()
 				_return _self.get_string()
 			_elif char = %@
 			_then
 				_return _self.get_annotation()
+			_elif _self.separators.includes?(char)
+			_then
+				_return _self.get_separator()
+			_elif _self.operator_characters.includes?(char)
+			_then
+				_return _self.get_operator()
 			_elif char.decimal_digit?
 			_then
 				_return _self.get_number()
 			_else 
-				_return _self.get_keyword()
+				_return _self.get_keyword_or_identifier()
 			_endif 
 		_else
 			_self.get_char()
@@ -91,12 +123,34 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method lexical_scanner.get_operator()
-	##
-	>> lexeme.new_operator(_self.get_char(), .line, .column)
+_method lexical_scanner.get_separator()
+	>> lexeme.new_separator(_self.get_char(), .line, .column)
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.get_operator()
+	##
+	_local s << internal_text_output_stream.new()
+	_loop 
+		s.write(_self.get_char())
+		
+		_if _self.more_to_get?.not _then _leave _endif
+		
+		_local peek << _self.peek_char()
+		_if _self.operator_characters.includes?(peek).not 
+		_then
+			_leave
+		_endif 
+	_endloop
+	_local value << s.string
+	_if _self.operators.includes?(value).not
+	_then 
+		condition.raise(:deco_unexpected_operator, :line, .line, :column, .column, :operator, value)
+	_endif 
+	>> lexeme.new_operator(value, .line, .column)
+_endmethod
+$
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexical_scanner.get_comment()
@@ -113,26 +167,6 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method lexical_scanner.get_upto(p_end_char)
-	_local out << internal_text_output_stream.new()
-	_self.get_char()
-	_loop
-		_if .in.more_to_get?.not _then _leave _endif 
-		_local char << .in.peek()
-		
-		_if char <> p_end_char
-		_then
-			out.write(_self.get_char())
-		_else
-			_self.get_char()
-			_leave
-		_endif
-	_endloop
-	>> out.string
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexical_scanner.get_annotation()
 	##
 	_self.get_char()
@@ -141,31 +175,90 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method lexical_scanner.get_keyword()
+_method lexical_scanner.get_keyword_or_identifier()
 	##
-	>> lexeme.new_keyword(_self.get_token(), .line, .column)
+	_local value << _self.get_token()
+	>> _if _self.keywords.includes?(value)
+	   _then
+		   >> lexeme.new_keyword(value, .line, .column)
+	   _else
+		   >> lexeme.new_identifier(value, .line, .column)
+	   _endif 
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexical_scanner.get_number()
 	##
-	>> lexeme.new_number(_self.get_token(), .line, .column)
+	>> lexeme.new_number(_self.get_number_token(), .line, .column)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.get_number_token()
+	##
+	## Get the next string upto a space, newline or an operator.
+	##
+	_local out << internal_text_output_stream.new()
+	_loop
+		_if _self.more_to_get?.not _then _leave _endif 
+		_local char << _self.peek_char()
+		
+		_if char.decimal_digit? _orif (char = %.)
+		_then
+			out.write(_self.get_char())
+		_else
+			_leave 
+		_endif
+	_endloop
+	>> out.string
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexical_scanner.get_token()
+	##
+	## Get the next string upto a space, newline or an operator.
+	##
 	_local out << internal_text_output_stream.new()
 	_loop
-		_if .in.more_to_get?.not _then _leave _endif 
-		_local char << .in.peek()
-		_if char.white_space? _orif
-		    _self.operators.includes?(char)
-		_then
-			_leave 
-		_else
+		_if _self.more_to_get?.not _then _leave _endif
+		
+		_local char << _self.peek_char()
+
+		_if char = %.
+		_then 
 			out.write(_self.get_char())
+			
+		_elif _not(char.white_space? _orif _self.separators.includes?(char) _orif _self.operator_characters.includes?(char))
+		_then
+			out.write(_self.get_char())
+		_else
+			_leave 
+		_endif
+	_endloop
+	>> out.string
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.get_upto(p_end_char)
+	##
+	## Get a string next upto the P_END_CHAR
+	##
+	_local out << internal_text_output_stream.new()
+	_loop
+		_if _self.more_to_get?.not _then _leave _endif 
+		_local char << _self.peek_char()
+		
+		_if char <> p_end_char
+		_then
+			out.write(_self.get_char())
+		_else
+			# take the last char and stop
+			_self.get_char()
+			_leave
 		_endif
 	_endloop
 	>> out.string
@@ -183,5 +276,17 @@ _method lexical_scanner.get_char()
 		.column +<< 1
 	_endif
 	>> ch
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.peek_char()
+	>> .in.peek()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.more_to_get?
+	>> .in.more_to_get?
 _endmethod
 $

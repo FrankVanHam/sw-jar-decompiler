@@ -1,8 +1,10 @@
 define_package
+assert
 
 ingestion/
 intermediate/
 
 #java_command
-deco_dynamicaccessor
-decompiler
+#decompiler
+
+sw/

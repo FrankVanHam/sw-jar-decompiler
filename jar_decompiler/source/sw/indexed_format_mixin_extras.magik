@@ -1,0 +1,51 @@
+##
+## File            : $File: (indexed_format_mixin_extras.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-01-28
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method indexed_format_mixin.deco_name
+	_return _self.instance_metadata[:class_name]
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method indexed_format_mixin.deco_package
+	_return _self.instance_metadata[:exemplar_global].package.name
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method indexed_format_mixin.deco_data_type
+	_return _self.instance_metadata[:instance_data_type]
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method indexed_format_mixin.deco_method_finder_id
+	pac << _self.deco_package
+	name << _self.deco_name
+	_return write_string( pac, ":", name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method indexed_format_mixin.deco_decompile(decompiler)
+	_return decompiler.decompile_indexed_exemplar(_self)
+_endmethod
+$

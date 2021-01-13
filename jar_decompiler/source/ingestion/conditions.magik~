@@ -2,8 +2,8 @@
 condition.define_condition(:deco_error, :error, {})
 $
 
-condition.define_condition(:deco_expected_operator, :deco_error, {:line, :column, :operator})
+condition.define_condition(:deco_expected_operator, :deco_error, {:line, :column, :operator, :instead})
 $
 
-condition.define_condition(:deco_expected_keyword, :deco_error, {:line, :column, :keyword})
+condition.define_condition(:deco_expected_keyword, :deco_error, {:line, :column, :keyword, :instead})
 $

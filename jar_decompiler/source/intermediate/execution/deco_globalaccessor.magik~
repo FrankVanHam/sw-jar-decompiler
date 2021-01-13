@@ -1,0 +1,13 @@
+_package deco
+$
+
+def_slotted_exemplar(:deco_procinvoker, {}, :deco_execution_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_procinvoker.bootstrap(p_parser, p_brackets, p_value_node)
+
+	_local value << p_parser.parse_expression(p_value_node)
+	>> dcn_call.new(value, {})
+_endmethod
+$

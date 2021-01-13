@@ -1,146 +1,149 @@
-##
-## File            : $File: (dcn_return.magik) $
-## SCM             : $URL$
-##
-## Copyright       : Realworld Systems
-##                   e-mail  : support@realworld-systems.com
-##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
-##                   tel     : +31(0)345 614406
-##                   fax     : +31(0)345 614319
-##
-## Contains        : 
-##
-##
-## Date written    : 2012-04-04
-## Date changed    : $Date$
-## Revision        : $Rev$
-
 _package deco
 $
 
-
-remex(:dcn_return)
+#remex(:dcn_return)
 $
 
-_pragma(classify_level=restricted, topic={decompiler})
+_pragma(classify_level=restricted, topic={jar_decompiler})
 ## Node for the return statement
 def_slotted_exemplar(:dcn_return,
 		     {
-			     {:token,_unset},
-			     {:thing_nodes, _unset},
-			     {:can_migrate?, _unset, :readable}
+			     {:expression, _unset, :readable}
 		     }, :dcn_base)
 $
 
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_return.new(token, thing_nodes, can_migrate?)
-	_return _clone.init(token, thing_nodes, can_migrate?)
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_return.new(p_expression)
+	##
+	>> _clone.init(p_expression)
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_return.init(token, thing_nodes, can_migrate?)
-	assert(_not thing_nodes.includes?(_unset))
-	.token << token
-	.thing_nodes << rope.deco_check_type(thing_nodes)
-	.can_migrate? << can_migrate?
-	_return _self
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method dcn_return.init(p_expression)
+	.expression << p_expression
+	>> _self 
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_return.accept_node_visitor(visitor)
-	_self.accept_node_visitor_in_vector(visitor, .thing_nodes)
-	_return _super.accept_node_visitor(visitor)
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_return.decode_on(p_stream)
+	## 
+	p_stream.write("_return ")
+	.expression.decode_on(p_stream)
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_return.accept_body_visitor(visitor)
-	_self.accept_body_visitor_in_vector(visitor, .thing_nodes)
-	_return _super.accept_body_visitor(visitor)
-_endmethod
-$
 
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_return.scattered?
-	_return .token.scatter? _is _true
-_endmethod
-$
-
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_return.new(token, thing_nodes, can_migrate?)
+#	_return _clone.init(token, thing_nodes, can_migrate?)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_private _method dcn_return.init(token, thing_nodes, can_migrate?)
+#	assert(_not thing_nodes.includes?(_unset))
+#	.token << token
+#	.thing_nodes << rope.deco_check_type(thing_nodes)
+#	.can_migrate? << can_migrate?
+#	_return _self
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_return.accept_node_visitor(visitor)
+#	_self.accept_node_visitor_in_vector(visitor, .thing_nodes)
+#	_return _super.accept_node_visitor(visitor)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_return.accept_body_visitor(visitor)
+#	_self.accept_body_visitor_in_vector(visitor, .thing_nodes)
+#	_return _super.accept_body_visitor(visitor)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_return.scattered?
+#	_return .token.scatter? _is _true
+#_endmethod
+#$
+#
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_return.is_return?
 	_return _true
 _endmethod
 $
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_return.result_count
-	_return .token.result_count
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_return.has_results?
-	_return _self.result_count <> 0
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_return.tail_recursive?
-	_return .token.tail_recursive?
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_return.single_return_value
-	_return .thing_nodes[1]
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_return.decode_on( a_stream, _optional parent, p_statements )
-#	_if parent.last_node_in_method?(_self)	_andif .thing_nodes.empty?
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_return.result_count
+#	_return .token.result_count
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_return.has_results?
+#	_return _self.result_count <> 0
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_return.tail_recursive?
+#	_return .token.tail_recursive?
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_return.single_return_value
+#	_return .thing_nodes[1]
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_return.decode_on( a_stream, _optional parent, p_statements )
+##	_if parent.last_node_in_method?(_self)	_andif .thing_nodes.empty?
+##	_then
+##		_return
+##	_endif
+#	numres << .token.numres
+#	a_stream.write( "_return ")
+#	
+#	count << _self.result_count
+#	_if count <> 0
 #	_then
-#		_return
-#	_endif
-	numres << .token.numres
-	a_stream.write( "_return ")
-	
-	count << _self.result_count
-	_if count <> 0
-	_then
-		# Special hocus-pocus to get tail_recursive right.
-		_if count = 1
-		_then
-			a_node << .thing_nodes[1]
-			_if _self.tail_recursive?
-			_then
-				a_node.decode_on(a_stream, _self)
-				
-			_elif (numres = 1) _andif (a_node.is_send?)
-			_then
-				_if _not _self.tail_recursive?
-				_then
-					a_stream.write("(")
-					a_node.decode_on(a_stream, _self)
-					a_stream.write(")")
-				_else
-					a_node.decode_on(a_stream, _self)
-				_endif
-			_else
-				_if _self.scattered?
-				_then
-					a_node.decode_scattered_on(a_stream, _self)
-				_else 
-					a_node.decode_on(a_stream, _self)
-				_endif 
-			_endif
-		_else
-			scatter? << _self.scattered?
-			_self.decode_args_on(a_stream, .thing_nodes, scatter?, count)
-		_endif
-	_endif 
-_endmethod
-$
-
+#		# Special hocus-pocus to get tail_recursive right.
+#		_if count = 1
+#		_then
+#			a_node << .thing_nodes[1]
+#			_if _self.tail_recursive?
+#			_then
+#				a_node.decode_on(a_stream, _self)
+#				
+#			_elif (numres = 1) _andif (a_node.is_send?)
+#			_then
+#				_if _not _self.tail_recursive?
+#				_then
+#					a_stream.write("(")
+#					a_node.decode_on(a_stream, _self)
+#					a_stream.write(")")
+#				_else
+#					a_node.decode_on(a_stream, _self)
+#				_endif
+#			_else
+#				_if _self.scattered?
+#				_then
+#					a_node.decode_scattered_on(a_stream, _self)
+#				_else 
+#					a_node.decode_on(a_stream, _self)
+#				_endif 
+#			_endif
+#		_else
+#			scatter? << _self.scattered?
+#			_self.decode_args_on(a_stream, .thing_nodes, scatter?, count)
+#		_endif
+#	_endif 
+#_endmethod
+#$
+#

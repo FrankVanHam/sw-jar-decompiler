@@ -1,0 +1,114 @@
+_package deco
+$
+
+#remex(:dcn_file)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Node for a block statement.
+## note that the _block _endblock statement has no
+## representative in the code_vector, so there is no token for
+## it. 
+def_slotted_exemplar(:dcn_file,
+		      {{:statements, _unset, :readable},
+		       {:methods, _unset, :readable}
+		      },
+		      :dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_file.new()
+	_return _clone.init( )
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_file.init()
+	.statements << rope.new()
+	.methods << rope.new()
+	_return _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_file.add_statement(p_node)
+	.statements.add(p_node)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_file.add_method(p_method_node)
+	##
+	.methods.add(p_method_node)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_file.assign_magik_method_names(p_class_name, p_java_method_name, p_exemplar_name, p_method_name)
+	##
+	_local meth << _unset 
+	_for i_method _over .methods.fast_elements()
+	_loop
+		_if i_method.match_java?(p_class_name, p_java_method_name)
+		_then
+			meth << i_method
+			_leave
+		_endif
+	_endloop
+	_if meth _isnt _unset
+	_then
+		meth.bind_names(p_exemplar_name, p_method_name)
+	_else
+		condition.raise(:error, :string, "cannot find method to bind")
+	_endif
+	>> meth
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_file.decode_on(p_stream)
+	##
+	_for i_statement _over .statements.fast_elements()
+	_loop
+		_if i_statement.is_no_op? _then _continue _endif 
+		i_statement.decode_on(p_stream)
+		p_stream.newline()
+		p_stream.write("$")
+		p_stream.newline()
+		p_stream.newline()
+	_endloop 
+_endmethod
+$
+
+
+
+
+#
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_file.accept_node_visitor(visitor)
+#	_self.accept_node_visitor_in_vector(visitor, .statements)
+#	_return _super.accept_node_visitor(visitor)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_file.accept_body_visitor(visitor)
+#	_self.accept_body_visitor_in_vector(visitor, .statements)
+#	
+#	visitor.visit(_self, .statements)
+#	_super.accept_body_visitor(visitor)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_file.decode_on(a_stream, _optional parent, statements)
+#	a_stream.write( "_block")
+#	a_stream.newline()
+#	a_stream.indent()
+#	_self.decode_statements_on(a_stream, .statements)
+#	a_stream.unindent()
+#	a_stream.write( "_endblock")
+#	a_stream.newline()
+#_endmethod
+#$

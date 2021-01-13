@@ -1,0 +1,42 @@
+_package user
+$
+
+#remex(:jpn_parser_snippet_test)
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+def_slotted_exemplar(:jpn_parser_method_snippet_test,
+	{},
+	:test_case)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method jpn_parser_method_snippet_test.suite( _optional a_name, _gather suite_args)
+	##
+	_local a_name << a_name.default( _self.class_name )
+	_local suite << test_suite.new( _unset , a_name, _scatter suite_args )
+
+	_local snippet << deco_snippet.new("jpn_parser_snippets.txt")
+	_for i_name, i_before, i_after _over snippet.snippets()
+	_loop 
+		_self.add_test( _self.exemplar.new(:|test_snippet()|, i_before, i_after) )
+	_endloop 
+	>> suite
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method jpn_parser_method_snippet_test.test_snippet(p_input, p_output)
+	## 
+	_local s << deco:lexical_scanner.new(p_input.read_stream())
+	_local p << deco:java_parser.new(s)
+	_local jpn_meth << p.parse_method()
+
+	_local jp << deco:jpn_parser.new()
+	_local dcn_node << jp.parse_method("deco_test", jpn_meth)
+	dcn_node.bind_names("deco_test", "test()")
+	
+	_local out_ind << indentation_stream.new(out << internal_text_output_stream.new())
+	dcn_node.decode_on(out_ind)
+	_self.assert_equals_execution_strings(p_output, out.string)	
+_endmethod
+$

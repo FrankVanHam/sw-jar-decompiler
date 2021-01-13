@@ -6,22 +6,45 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_class,
 	{
-		{:implementation, _unset, :readable},
-		{:methods,        _unset, :readable}
+		{:lex_name,           _unset},
+		{:lex_implementation, _unset},
+		{:methods,            _unset, :readable},
+		{:annotations,        _unset, :readable}
 	},
 	:jpn_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_class.new(p_name, p_impl, p_methods)
-	.implementation << p_impl
+_method jpn_class.init(p_lex_name, p_lex_impl, p_methods, _optional p_annotations)
+
+	assert(p_lex_name.is_class_of?(lexeme))
+	assert(p_lex_impl _is _unset _orif p_lex_impl.is_class_of?(lexeme))
+		
+	.lex_name << p_lex_name
+	.lex_implementation << p_lex_impl
+	
 	.methods << p_methods
-	>> _super.init(p_name)
+	.annotations << p_annotations.default({})
+	>> _super.init()
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_class.is_class?
 	>> _true
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_class.name
+	>> .lex_name.value
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_class.implementation
+	>> _if .lex_implementation _isnt _unset
+	   _then >> .lex_implementation.value
+	   _endif 
 _endmethod
 $

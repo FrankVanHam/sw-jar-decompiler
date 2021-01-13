@@ -1,9 +1,23 @@
 _package deco
 $
 
+#remex(:jpn_import)
+
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_import,
-	{},
+	{
+		{:lex_value, _unset}
+	},
 	:jpn_base)
 $
 
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_import.init(p_lex_value)
+	##
+	assert(p_lex_value.is_class_of?(lexeme))
+	
+	.lex_value << p_lex_value
+	>> _super.init()
+_endmethod
+$

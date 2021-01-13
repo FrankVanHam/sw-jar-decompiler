@@ -1,0 +1,26 @@
+_package deco
+$
+
+#remex(:jpn_assignment)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_assignment,
+	{
+		{:left,  _unset, :readable},
+		{:right, _unset, :readable}
+	},
+	:jpn_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_assignment.init(p_left, p_right)
+
+	assert(p_left.is_kind_of?(jpn_base))
+	assert(p_right.is_kind_of?(jpn_base))
+	
+	.left << p_left
+	.right << p_right 
+	>> _super.init()
+_endmethod
+$
+

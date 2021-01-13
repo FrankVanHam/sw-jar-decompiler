@@ -5,5 +5,11 @@ $
 condition.define_condition(:deco_expected_operator, :deco_error, {:line, :column, :operator, :instead})
 $
 
+condition.define_condition(:deco_expected_separator, :deco_error, {:line, :column, :separator, :instead})
+$
+
 condition.define_condition(:deco_expected_keyword, :deco_error, {:line, :column, :keyword, :instead})
+$
+
+condition.define_condition(:deco_unexpected_operator, :deco_error, {:line, :column, :operator})
 $

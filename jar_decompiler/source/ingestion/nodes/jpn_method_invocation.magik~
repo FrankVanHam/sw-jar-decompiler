@@ -2,17 +2,19 @@ _package deco
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-def_slotted_exemplar(:jpn_return,
+def_slotted_exemplar(:jpn_method_invocation,
 	{
-		{:expression, _unset, :readable}
+		{:lex_name, _unset},
+		{:args, _unset, :readable}
 	},
 	:jpn_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_return.init(p_name, p_exp)
-	.expression << p_exp
-	>> _super.init(p_name)
+_method jpn_method_invocation.init(p_lex_name, p_args)
+	.lex_name << p_lex_name
+	.args << p_args
+	>> _super.init()
 _endmethod
 $
 

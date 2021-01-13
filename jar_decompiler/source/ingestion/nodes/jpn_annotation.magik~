@@ -1,0 +1,23 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_annotation,
+	{
+		{:lex_name,  _unset, :readable},
+		{:lex_value, _unset, :readable}
+	},
+	:jpn_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_annotation.init(p_lex_name, p_lex_value)
+
+	assert(p_lex_name.is_class_of?(lexeme))
+	assert(p_lex_value _is _unset _orif p_lex_value.is_class_of?(lexeme))
+	
+	.lex_name << p_lex_name
+	.lex_value << p_lex_value 
+	>> _super.init()
+_endmethod
+$

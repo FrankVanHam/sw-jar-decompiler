@@ -3,7 +3,17 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_package,
-	{},
+	{
+		{:lex_name, _unset}
+	},
 	:jpn_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_package.init(p_lex_name)
+	##
+	.lex_name << p_lex_name
+	>> _super.init()
+_endmethod
 $
 

@@ -1,0 +1,14 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:deco_resulttuple,
+	{},
+	:deco_execution_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_resulttuple.empty_tuple()
+	>> dcn_no_op.new()
+_endmethod
+$

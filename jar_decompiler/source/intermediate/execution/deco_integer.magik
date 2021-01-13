@@ -6,7 +6,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_integer.valueof(p_parser, p_node)
-
-	>> p_parser.parse_constant(p_node, integer)
+	_local v << integer.from_write_string(p_node.string_value)
+	>> dcn_constant.new(v)
 _endmethod
 $

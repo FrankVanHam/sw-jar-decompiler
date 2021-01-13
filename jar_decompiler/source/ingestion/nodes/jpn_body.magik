@@ -12,9 +12,9 @@ def_slotted_exemplar(:jpn_body,
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_body.new(p_name, p_statements)
+_method jpn_body.init(p_statements)
 	.statements << p_statements
-	>> _super.init(p_name)
+	>> _super.init()
 _endmethod
 $
 

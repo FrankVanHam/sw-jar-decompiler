@@ -1,0 +1,24 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+def_slotted_exemplar(:dcn_global,
+		     {
+			     {:package, _unset},
+			     {:name, _unset}
+		     }, :dcn_base )
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_global.new(p_name, p_package)
+	>> _clone.init(p_name, p_package)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_global.init(p_name, p_package)
+	.name << p_name
+	.package << p_package
+	>> _self 
+_endmethod
+$

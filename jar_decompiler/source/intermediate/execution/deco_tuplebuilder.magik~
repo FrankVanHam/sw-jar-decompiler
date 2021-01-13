@@ -1,0 +1,14 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:deco_tuplebuilder,
+	{},
+	:deco_execution_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_tuplebuilder.bootstrap(p_parser, p_name, p_expression_node)
+	>> p_parser.parse_expression(p_expression_node)
+_endmethod
+$

@@ -1,17 +1,21 @@
 _package deco
 $
 
+#remex(:jpn_cast)
+
 _pragma(classify_level=restricted, topic={jar_decompiler})
-def_slotted_exemplar(:jpn_arg,
+def_slotted_exemplar(:jpn_cast,
 	{
-		{:type, _unset, :readable}
+		{:lex_value, _unset},
+		{:expression, _unset, :readable}
 	},
 	:jpn_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_arg.init(p_name, p_type)
-	.type << p_type
-	>> _super.init(p_name)
+_method jpn_cast.init(p_lex_name, p_exp)
+	.lex_value << p_lex_name
+	.expression << p_exp
+	>> _super.init()
 _endmethod
 $

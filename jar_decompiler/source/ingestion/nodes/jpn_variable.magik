@@ -1,0 +1,28 @@
+_package deco
+$
+
+#remex(:jpn_variable)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_variable,
+	{
+		{:lex_type, _unset, :readable},
+		{:lex_name, _unset, :readable}
+	},
+	:jpn_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_variable.init(p_lex_name, _optional p_lex_type)
+	.lex_name << p_lex_name
+	.lex_type << p_lex_type
+	>> _super.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_variable.name
+	>> .lex_name.value
+_endmethod
+$
+

@@ -11,10 +11,10 @@ def_slotted_exemplar(:jpn_file,
 	:jpn_base)
 $
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_file.init(p_name)
+_method jpn_file.init()
 	##
 	.content << rope.new()
-	>> _super.init(p_name)
+	>> _super.init()
 _endmethod
 $
 

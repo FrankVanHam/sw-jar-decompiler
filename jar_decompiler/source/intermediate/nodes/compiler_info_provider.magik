@@ -1,24 +1,7 @@
-##
-## File            : $File: (compiler_info_provider.magik) $
-## SCM             : $URL$
-##
-## Copyright       : Realworld Systems
-##                   e-mail  : support@realworld-systems.com
-##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
-##                   tel     : +31(0)345 614406
-##                   fax     : +31(0)345 614319
-##
-## Contains        : 
-##
-##
-## Date written    : 2012-01-28
-## Date changed    : $Date$
-## Revision        : $Rev$
-
 _package deco
 $
 
-remex(:compiler_info_provider)
+#remex(:compiler_info_provider)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
@@ -64,7 +47,12 @@ _method compiler_info_provider.comment_for_method(mth)
 	_try
 		ids << mth.deco_method_finder_ids
 		str << method_finder.get_method_public_comments( ids[1],ids[2],_true )
-		str << _self.tabify_comment(str)
+		_if str = ""
+		_then
+			str << _unset
+		_else 
+			str << _self.tabify_comment(str)
+		_endif 
 	_when error
 	      str << _unset
 	_endtry
@@ -91,9 +79,6 @@ _method compiler_info_provider.tabify_comment(str)
 _endmethod
 $
 
-
-
-
 _pragma(classify_level=restricted, topic={decompiler})
 _method compiler_info_provider.comment_for_exemplar(ex)
 	## Return a string for the comment of the exemplar.
@@ -107,7 +92,6 @@ _method compiler_info_provider.comment_for_exemplar(ex)
 _endmethod
 $
 
-
 _pragma(classify_level=restricted, topic={decompiler})
 _method compiler_info_provider.pragma_level_for_exemplar(ex)
 	## Return the pragma level (symbol) for the exemplar.
@@ -117,24 +101,10 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method compiler_info_provider.pragma_level_for_method(mth)
-	## Return the pragma level (symbol) for the method.
-	_return mth.classify_level
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
 _method compiler_info_provider.pragma_usages_for_exemplar(ex)
 	## Return a set for the pragma usages (symbols) for the exemplar.
 	glb << ex.exemplar_global
 	_return _self.pragma_usages_for(glb)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method compiler_info_provider.pragma_usages_for_method(mth)
-	## Return a set for the pragma usages (symbols) for the method.
-	_return _self.pragma_usages_for(mth)
 _endmethod
 $
 
@@ -154,8 +124,9 @@ _method compiler_info_provider.pragma_usages_for(glb)
 _endmethod
 $
 
+
 _pragma(classify_level=restricted, topic={decompiler})
-_method compiler_info_provider.pragma_topics_for_method(mth)
+_method compiler_info_provider.level_topics_and_usages_for_method(mth)
 	## Return the pragma topics (symbols) for the method.
 	_try
 		ids << mth.deco_method_finder_ids
@@ -164,7 +135,7 @@ _method compiler_info_provider.pragma_topics_for_method(mth)
 	_when error
 		props << _unset
 	_endtry
-	_return _self.pragma_topics_for_props(props)
+	>> _self.level_topics_and_usages_for_props(props)
 _endmethod
 $
 
@@ -206,16 +177,6 @@ _method compiler_info_provider.comment_for_proc(pr)
 		str << _unset
 	_endtry
 	_return str
-_endmethod
-$
-
-
-_pragma(classify_level=restricted, topic={decompiler})
-_private _method compiler_info_provider.pragma_topics_for_props(props)
-	## filter the topics from the props that were given bij the
-	## method finder.
-	(level,topics,usages) << _self.level_topics_and_usages_for_props(props)
-	_return topics
 _endmethod
 $
 

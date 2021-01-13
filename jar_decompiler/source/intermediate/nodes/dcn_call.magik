@@ -18,112 +18,128 @@
 _package deco
 $
 
-remex(:dcn_call)
+#remex(:dcn_call)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
 ## Node for a call, a procedure invocation.
 def_slotted_exemplar(:dcn_call,
 		     {
-			     {:proc, _unset}
+			     {:value_node, _unset}
 		     }, :dcn_invocation)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_call.new(token, proc, args)
-	_return _clone.init(token, proc, args)
+_method dcn_call.new(p_value_node, p_args)
+	_return _clone.init(p_value_node, p_args)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_call.init(token, proc, args)
-	.proc << proc
-	_return _super.init(token, args)
+_private _method dcn_call.init(p_value_node, p_args)
+	.value_node << p_value_node
+	_return _super.init(p_args)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_call.accept_node_visitor(visitor)
-	.proc << .proc.accept_node_visitor(visitor)
-	_return _super.accept_node_visitor(visitor)
+_method dcn_call.decode_on(p_stream)
+	##
+	.value_node.decode_on(p_stream)
+	p_stream.write("(")
+	_local comma? << _false 
+	_for i_arg _over .args.fast_elements()
+	_loop
+		_if comma?^<< _true _then p_stream.write(", ") _endif 
+		i_arg.decode_on(p_stream)
+	_endloop 
+	p_stream.write(")")
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_call.accept_body_visitor(visitor)
-	.proc.accept_body_visitor(visitor)
-	_return _super.accept_body_visitor(visitor)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_call.handler_conditions
-	_return .args
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_call.is_call?
-	_return _true
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_call.decode_on( a_stream, _optional parent, statements )
-	_if _self.scattered?
-	_then
-		a_stream.write( "(")
-		a_stream.write( "_allresults ")
-		_self.decode_base_on(a_stream)
-		a_stream.write( ")")
-	_else
-		_self.decode_base_on(a_stream)
-	_endif 
-_endmethod
-$
-
-_method dcn_call.decode_as_call_on(a_stream,  thing)
-	_if _not .token.tail_recursive?
-	_then 
-		thing.decode_as_invocable_on(a_stream)
-	_else
-		thing.decode_on(a_stream)
-	_endif 
-	a_stream.write( "( ")
-	_self.decode_args_on(a_stream, .args, .token.scatter?, .token.numargs)
-	a_stream.write( " )")
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_call.decode_as_vector_on(a_stream,  thing)
-	a_stream.write( "{ ")
-	_self.decode_args_on(a_stream, .args, .token.scatter?, .token.numargs)
-	a_stream.write( " }")
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_call.decode_as_binary_operator_on(a_stream, bin)
-	a_stream.write( "( ")
-	.args[1].decode_on(a_stream)
-	a_stream.write( bin.ident )
-	.args[2].decode_on(a_stream)
-	a_stream.write( " )")
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_call.decode_as_global_on(a_stream, name)
-	a_stream.write(name)
-	a_stream.write( "( ")
-	_self.decode_args_on(a_stream, .args, .token.scatter?, .token.numargs)
-	a_stream.write( " )")
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_call.decode_base_on(a_stream)
-	.proc.deco_decode_as_call_on(a_stream, _self )
-_endmethod
-$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_call.accept_node_visitor(visitor)
+#	.proc << .proc.accept_node_visitor(visitor)
+#	_return _super.accept_node_visitor(visitor)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_call.accept_body_visitor(visitor)
+#	.proc.accept_body_visitor(visitor)
+#	_return _super.accept_body_visitor(visitor)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_call.handler_conditions
+#	_return .args
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_call.is_call?
+#	_return _true
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_call.decode_on( a_stream, _optional parent, statements )
+#	_if _self.scattered?
+#	_then
+#		a_stream.write( "(")
+#		a_stream.write( "_allresults ")
+#		_self.decode_base_on(a_stream)
+#		a_stream.write( ")")
+#	_else
+#		_self.decode_base_on(a_stream)
+#	_endif 
+#_endmethod
+#$
+#
+#_method dcn_call.decode_as_call_on(a_stream,  thing)
+#	_if _not .token.tail_recursive?
+#	_then 
+#		thing.decode_as_invocable_on(a_stream)
+#	_else
+#		thing.decode_on(a_stream)
+#	_endif 
+#	a_stream.write( "( ")
+#	_self.decode_args_on(a_stream, .args, .token.scatter?, .token.numargs)
+#	a_stream.write( " )")
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_call.decode_as_vector_on(a_stream,  thing)
+#	a_stream.write( "{ ")
+#	_self.decode_args_on(a_stream, .args, .token.scatter?, .token.numargs)
+#	a_stream.write( " }")
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_call.decode_as_binary_operator_on(a_stream, bin)
+#	a_stream.write( "( ")
+#	.args[1].decode_on(a_stream)
+#	a_stream.write( bin.ident )
+#	.args[2].decode_on(a_stream)
+#	a_stream.write( " )")
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_call.decode_as_global_on(a_stream, name)
+#	a_stream.write(name)
+#	a_stream.write( "( ")
+#	_self.decode_args_on(a_stream, .args, .token.scatter?, .token.numargs)
+#	a_stream.write( " )")
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_call.decode_base_on(a_stream)
+#	.proc.deco_decode_as_call_on(a_stream, _self )
+#_endmethod
+#$

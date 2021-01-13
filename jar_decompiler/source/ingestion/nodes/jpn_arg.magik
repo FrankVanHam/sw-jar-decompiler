@@ -4,15 +4,21 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_arg,
 	{
+		{:lex_name, _unset, :readable},
 		{:type, _unset, :readable}
 	},
 	:jpn_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_arg.init(p_name, p_type)
+_method jpn_arg.init(p_lex_name, p_type)
+
+	assert(p_lex_name.is_class_of?(lexeme))
+	assert(p_type.is_class_of?(lexeme))
+	
+	.lex_name << p_lex_name
 	.type << p_type
-	>> _super.init(p_name)
+	>> _super.init()
 _endmethod
 $
 

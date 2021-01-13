@@ -19,7 +19,7 @@ _package deco
 $
 
 
-remex(:dcn_base)
+#remex(:dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
@@ -27,6 +27,13 @@ _pragma(classify_level=restricted, topic={decompiler})
 def_slotted_exemplar(:dcn_base,
 		     {} )
 $
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.new(_gather p_args)
+	>> _clone.init(_scatter p_args)
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={decompiler})
 _abstract _method dcn_base.decode_on(a_stream, _optional parent, statements)
@@ -103,6 +110,14 @@ _method dcn_base.decode_scattered_on(a_stream, _gather a)
 	_return _self.decode_on(a_stream, _scatter a)
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_no_op?
+	##
+	>> _false 
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_base.is_test_for_true?

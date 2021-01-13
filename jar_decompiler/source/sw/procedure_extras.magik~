@@ -1,0 +1,57 @@
+##
+## File            : $File: (procedure_extras.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-01-29
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package sw
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method procedure.deco_unique_constant_name
+	name << _unset 
+	_for i_global _over package.all_globals()
+	_loop 
+		_if i_global.constant? _andif
+		    i_global.value _is _self
+		_then
+			_if name _is _unset
+			_then
+				name << i_global.key
+			_else
+				name << _unset
+				_leave
+			_endif 
+		_endif
+	_endloop
+	_return name
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method procedure.deco_method_finder_ids
+	name << _self.deco_unique_constant_name
+	_if name _is _unset
+	_then
+		name << ""
+	_endif
+	
+	_return {
+			name.as_charvec(),
+			"<global>"
+		}
+_endmethod
+$
+
+

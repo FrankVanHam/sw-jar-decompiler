@@ -2,3 +2,4 @@
 lexical_scanner_test
 java_parser_test
 jpn_parser_test
+deco_snippet

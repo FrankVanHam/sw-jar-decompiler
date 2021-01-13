@@ -1,0 +1,124 @@
+##
+## File            : $File: (slotted_format_mixin_extras.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-01-28
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method slotted_format_mixin.deco_name
+	_return _self.instance_metadata[:class_name]
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method slotted_format_mixin.deco_package
+	_return _self.instance_metadata[:exemplar_global].package.name
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method slotted_format_mixin.deco_method_finder_id
+	pac << _self.deco_package
+	name << _self.deco_name
+	_return write_string( pac, ":", name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method slotted_format_mixin.deco_flag_for_slot(name)
+	read << _self.method( name.as_symbol() )
+	write << _self.method( write_string( name, "<<").as_symbol() )
+	_if write _isnt _unset
+	_then
+		_return :writable
+	_else
+		_return :readable
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method slotted_format_mixin.deco_flavour_for_slot(name)
+	read << _self.method( name.as_symbol() )
+	write << _self.method( write_string( name, "<<").as_symbol() )
+	boot << _self.method( write_string( name, "^<<").as_symbol() )
+	_if write _is _unset _andif read _is _unset 
+	_then
+		_return :private
+	_elif write _is _unset _andif read _isnt _unset
+	_then
+		_if read.private?
+		_then
+			_return :private
+		_else
+			_return :public
+		_endif 
+	_elif write _isnt _unset _andif boot _is _unset
+	_then
+		_if write.private?
+		_then
+			_return :private
+		_else
+			_return :public
+		_endif 
+	_elif read _isnt _unset _andif write _isnt _unset _andif boot _isnt _unset
+	_then
+		_if read.private? _andif write.private? _andif boot.private?
+		_then
+			_return :private
+		_elif write.private? _andif boot.private?
+		_then
+			_return :read_only
+		_else
+			_return :public
+		_endif 
+	_else 
+		_return :private
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method slotted_format_mixin.deco_decompile(decompiler)
+	_return decompiler.decompile_slotted_exemplar(_self)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_iter _method slotted_format_mixin.deco_slot_descriptors()
+	_for descr _over _self.instance_metadata[:instance_slot_data].fast_elements()
+	_loop
+		_if descr.owner _is _self.define_method_target
+		_then 
+			_loopbody(descr)
+		_endif 
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_iter _method slotted_format_mixin.deco_pseudo_slot_descriptors()
+	slots << _self.instance_metadata[:pseudo_slot_names]
+	_if slots _isnt _unset
+	_then
+		_for descr _over slots.fast_elements()
+		_loop
+			_loopbody(descr)
+		_endloop
+	_endif
+_endmethod
+$

@@ -1,0 +1,48 @@
+##
+## File            : $File: (magikc_pragma_extras.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-02-03
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package sw
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method magikc_pragma.deco_level
+	_return .pragma_table[:classify_level]
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method magikc_pragma.deco_topics
+	tp << .pragma_table[:topic]
+	_if tp.is_class_of?(symbol)
+	_then
+		tp << {tp}
+	_endif
+	_return tp
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method magikc_pragma.deco_usages
+	usage << .pragma_table[:usage]
+	_if usage.is_class_of?(symbol)
+	_then
+		usage << {usage}
+	_endif
+	_return usage
+_endmethod
+$
+

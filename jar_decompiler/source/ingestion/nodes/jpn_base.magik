@@ -1,33 +1,24 @@
 _package deco
 $
 
+#remex(:jpn_base)
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_base,
-	{
-		{:value, _unset}
-	})
+	{})
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_base.new(p_value, _gather p_args)
+_method jpn_base.new(_gather p_args)
 	##
-	>> _clone.init(p_value, _scatter p_args)
+	>> _clone.init(_scatter p_args)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method jpn_base.init(p_value)
+_private _method jpn_base.init()
 	##
-	.value << p_value
 	>> _self
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_base.name
-	##
-	>> .value
 _endmethod
 $
 
@@ -35,5 +26,19 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_base.is_class?
 	##
 	>> _false
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_base.is_constant?
+	>> _false 
+_endmethod
+$
+
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_base.is_cast?
+	>> _false 
 _endmethod
 $

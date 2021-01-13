@@ -1,0 +1,23 @@
+_package deco
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+## No operation
+def_slotted_exemplar(:dcn_no_op,
+		     {}, :dcn_base )
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_no_op.new()
+	>> _clone.init()
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method dcn_no_op.init()
+	>> _self 	 
+_endmethod
+$
+

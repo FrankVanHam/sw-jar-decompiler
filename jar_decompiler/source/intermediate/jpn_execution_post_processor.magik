@@ -1,0 +1,20 @@
+_package deco
+$
+
+def_slotted_exemplar(:jpn_execution_post_processor,{})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_execution_post_processor.process(p_node)
+	##
+	
+	_if p_node.is_return?
+	_then
+		_return p_node.expression
+	_elif p_node.is_class_of?(dcn_dynamic_store) _andif p_node.name = "!current_package!"
+	_then
+		_return p_node.convert_to_package_declaration()
+	_endif
+	_return p_node
+_endmethod
+$

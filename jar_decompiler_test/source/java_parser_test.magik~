@@ -52,7 +52,7 @@ _method java_parser_test.test_class_with_implements()
 	_local node << p.get()
 	_self.assert_true(node.is_kind_of?(deco:jpn_class), "should be class")
 	_self.assert_equals("a_class", node.name)
-	_self.assert_equals("ExecutableMagik", node.parent)
+	_self.assert_equals("ExecutableMagik", node.implementation)
 _endmethod
 $
 
@@ -69,17 +69,17 @@ _method java_parser_test.test_class_with_error()
 	_when deco_expected_operator
 		_self.assert_equals(1, e[:line], "Line should be 1")
 		_self.assert_equals(26, e[:column], "Column should be 26")
-	_endtry 
+	_endtry
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_base_complete_class()
 	_local inp << write_string(
-			    "public class a_class {", newline_char,
-			    "    public static Object class__a_method() {",
-			    "    }",
-			    "}")
+			      "public class a_class {", newline_char,
+			      "    public static Object class__a_method() {",
+			      "    }",
+			      "}")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 
@@ -111,10 +111,25 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method java_parser_test.test_return_plus_method()
+_method java_parser_test.test_method_with_args()
 	_local inp << write_string(
 			      "public static Object deco_test__test(Object _self) {",newline_char,
-			      "return BinaryDispatcher.bootstrap("+", Integer.valueOf(10), Integer.valueOf(1));",newline_char,
+			      "}",newline_char)
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local m << p.parse_method()
+	_self.assert_equals(1, m.args.size)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_return_plus_method()
+	_local inp << write_string(
+			      "public static Object deco_test__test() {",newline_char,
+			      "return BinaryDispatcher.bootstrap(",
+			      %", "+", %",
+			      ", Integer.valueOf(10), Integer.valueOf(1));",newline_char,
 			      "}",newline_char)
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
@@ -126,7 +141,78 @@ _method java_parser_test.test_return_plus_method()
 
 	_local exp << stat.expression
 	_self.assert_true(exp.is_kind_of?(deco:jpn_method_invocation), "returning a method invoc")
-	_self.assert_true(_false)
+
+	_self.assert_equals(3,exp.args.size)
 _endmethod
 $
 
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_statement_and_return()
+	_local inp << write_string(
+			      "public static Object deco_test__test() {",newline_char,
+			      "ProcInvoker.naturalBootstrap(", %", "()", %", ");", newline_char,
+			      "return BinaryDispatcher.bootstrap("+", Integer.valueOf(10), Integer.valueOf(1));",newline_char,
+			      "}",newline_char)
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local m << p.parse_method()
+	_self.assert_equals(2, m.body.size)
+	_local stat << m.body[1]
+	_self.assert_true(stat.is_kind_of?(deco:jpn_method_invocation), "should be a statement")
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_casting()
+	_local inp << write_string(
+			      "public static Object deco_test__test() {",newline_char,
+			      "return (Object)BinaryDispatcher.bootstrap("+");",newline_char,
+			      "}",newline_char)
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local m << p.parse_method()
+	_local ret << m.body[1]
+	_self.assert_true(ret.is_kind_of?(deco:jpn_return), "should be a return statement")
+	_self.assert_true(ret.expression.is_kind_of?(deco:jpn_cast), "should be cast")
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_simple_exemplar_and_method()
+	_local inp << _self.simple_test_source_code()
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local m << p.parse_file()
+	_self.assert_true(m.is_kind_of?(deco:jpn_file), "should be a file")
+	_self.assert_equals(2, m.content.size)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.simple_test_source_code()
+	_local inp << write_string(
+			      "public class deco_test_34 {", newline_char,
+			      "    public static Object deco_test__test(Object _self) {", newline_char,
+			      "        return BinaryDispatcher.bootstrap('+', Integer.valueOf(10), Integer.valueOf(1));", newline_char,
+			      "    }", newline_char,
+			      "}", newline_char,
+			      "public class deco_test_33", newline_char,
+			      "implements ExecutableMagik {", newline_char,
+			      "    @Override", newline_char,
+			      "    public Object execute() {", newline_char,
+			      "        DynamicAccessor.bootstrapStorer('!source_file!', 'sw', (Object)ConstantBuilder.stringBootstrap('symbol', 'E:\\jar_decompiler\\decompile_target\\source\\deco_test.magik'));", newline_char,
+			      "        DynamicAccessor.bootstrapStorer('!current_package!', 'sw', (Object)ProcInvoker.bootstrap('()', GlobalAccessor.bootstrapFetcher2('fetchGlobal2', 'sw', 'package'), ConstantBuilder.stringBootstrap('symbol', 'user')));", newline_char,
+			      "        ProcInvoker.naturalBootstrap('()', (Object)GlobalAccessor.bootstrapFetcher2('fetchGlobal2', 'sw', 'def_slotted_exemplar'), (Object)ConstantBuilder.symbolBootstrap('symbol', 'deco_test'), (Object)VectorBuilder.EMPTY_VECTOR);", newline_char,
+			      "        return TupleBuilder.bootstrap('tb', MagikObjectUtils.createMethod('deco_test', 'test()', deco_test_34.class, 'deco_test__test', 1, 1));", newline_char,
+			      "    }", newline_char,
+			      "}", newline_char )
+	inp << inp.substitute_character(%', %")
+	>> inp
+_endmethod
+$

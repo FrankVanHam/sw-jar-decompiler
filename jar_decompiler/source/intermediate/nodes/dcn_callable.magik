@@ -18,7 +18,7 @@
 _package deco
 $
 
-remex(:dcn_callable)
+#remex(:dcn_callable)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
@@ -26,7 +26,7 @@ _pragma(classify_level=restricted, topic={decompiler})
 def_slotted_exemplar( :dcn_callable,
 		      {
 			      {:proc, _unset},
-			      {:statements, _unset},
+			      {:body, _unset, :readable},
 			      {:locals, _unset},
 			      {:literals, _unset}
 		      }, :dcn_decompile_result )
@@ -39,12 +39,19 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_callable.init( proc, statements, locals, literals )
+_private _method dcn_callable.init( proc, body, locals, literals )
 	.proc << proc
-	.statements << statements
+	.body << body
 	.locals << locals 
 	.literals << literals
 	_return _super.init() 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_callable.body << p_body
+	##
+	.body << p_body
 _endmethod
 $
 
@@ -98,7 +105,7 @@ _method dcn_callable.decode_on(a_stream, _optional parent, statements)
 	
 	a_stream.write( "_method", " ", _self.exemplar_name )
 	name << _self.method_name.as_charvec()
-	
+
 	_if name.index_of_seq( "()<<" ) _isnt _unset 
 	_then
 		_self.decode_assign_parenthesis_args_on(a_stream, name, _false )
@@ -128,23 +135,23 @@ _method dcn_callable.decode_on(a_stream, _optional parent, statements)
 	_self.decode_comment_on(a_stream)
 	_self.decode_body_on(a_stream)
 	a_stream.write( "_endmethod" )
-	a_stream.newline()
 _endmethod
 $
 
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_callable.decode_body_on(a_stream)
-	_if _not .statements.empty?
+_method dcn_callable.decode_body_on(a_stream)	
+	_if _not .body.empty?
 	_then
-		a_stream.indent()
-		_if .statements.size = 1
-		_then
-			.statements[1].decode_as_top_body_on(a_stream, _self)
-		_else
-			_self.decode_as_top_body_on(a_stream)
-		_endif 
-		a_stream.unindent()
+		a_stream.indent(4)
+		.body.decode_on(a_stream)
+#		_if .body.size = 1
+#		_then
+#			.body[1].decode_as_top_body_on(a_stream, _self)
+#		_else
+#			_self.decode_as_top_body_on(a_stream)
+#		_endif 
+		a_stream.unindent(4)
 	_endif 
 _endmethod
 $
@@ -152,7 +159,7 @@ $
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_callable.decode_as_top_body_on(a_stream)
 	_self.inject_global_and_locals(a_stream)
-	_self.decode_statements_on(a_stream, .statements)
+	_self.decode_body_on(a_stream, .body)
 _endmethod
 $
 

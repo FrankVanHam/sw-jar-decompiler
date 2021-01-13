@@ -1,6 +1,8 @@
 _package deco
 $
 
+#remex(:jpn_parser)
+
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_parser,
 	{
@@ -9,16 +11,214 @@ def_slotted_exemplar(:jpn_parser,
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_parser.new(p_jpn_node)
+_method jpn_parser.new()
 	##
-	_clone.init(p_jpn_node)
+	>> _clone.init()
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method jpn_parser.init(p_jpn_node)
+_private _method jpn_parser.init()
 	##
-	.top << p_jpn_node
+	#.top << p_jpn_node
 	>> _self
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_file(p_top_node)
+	## 
+	.top << dcn_file.new()
+	_for i_node _over p_top_node.content.fast_elements()
+	_loop
+		_local pn << _self.parse_expression(i_node)
+		.top.add_statement(pn)
+	_endloop
+	>> .top
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_expression(p_node)
+	##
+	_if p_node.is_class_of?(jpn_cast)
+	_then
+		_return _self.parse_cast(p_node)
+	_elif p_node.is_class_of?(jpn_method_invocation)
+	_then
+		(exec, meth) << _self.executer_and_method(p_node.name)
+		_return exec.perform(meth, _self, _scatter p_node.args)
+	_elif p_node.is_class_of?(jpn_constant)
+	_then
+		_if p_node.string_value.includes?(%.).not
+		_then
+			_return _self.parse_constant(p_node)
+		_else 
+			(exec, meth) << _self.executer_and_method(p_node.string_value)
+			_return exec.perform(meth, _self)
+		_endif 
+	_elif p_node.is_class_of?(jpn_return)
+	_then
+		_return _self.parse_return_statement(p_node)
+	_elif p_node.is_class_of?(jpn_class)
+	_then
+		_return _self.parse_class(p_node)
+	_elif p_node.is_class_of?(jpn_assignment)
+	_then
+		_return _self.parse_assignment(p_node)
+	_elif p_node.is_class_of?(jpn_if)
+	_then
+		_return _self.parse_branch(p_node)
+	_else
+		show(p_node)
+		1.stop		
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_branch(p_jnode)
+	_local cond_node << _self.parse_expression(p_jnode.condition)
+	_local then_body << _self.parse_statement(p_jnode.then)
+	_local else_body << _if p_jnode.else _isnt _unset
+			    _then >> _self.parse_statement(p_jnode.else)
+			    _endif
+	>> dcn_branch.new(cond_node, then_body, else_body)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_constant(p_jnode)
+	>> _if p_jnode.string_value = "_self"
+	   _then
+		   >> dcn_self.new()
+	   _else 
+		   >> dcn_constant.new(p_jnode.string_value)
+	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_assignment(p_jnode)
+	##
+	_local left << _self.parse_local(p_jnode.left)
+	_local right << _self.parse_expression(p_jnode.right)
+	>> dcn_local_assignment.new(_unset, _false, left, right, _unset )
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_local(p_jnode)
+	##
+	>> dcn_local.new(1, p_jnode.name, _unset)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_return_statement(p_jnode)
+	##
+	_local exp << _self.parse_expression(p_jnode.expression)
+	>> dcn_return.new(exp)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_class(p_class_node)
+	_if p_class_node.implementation = "ExecutableMagik"
+	_then
+		_self.parse_execution_class(p_class_node)
+	_else
+		_self.parse_implementation_class(p_class_node)
+	_endif
+	>> dcn_no_op.new()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_implementation_class(p_class_node)
+	_local class_name << p_class_node.name
+	_local super_name << p_class_node.implementation
+	_for i_meth _over p_class_node.methods.fast_elements()
+	_loop
+		_local m_node << _self.parse_method(class_name, i_meth)
+		.top.add_method(m_node)
+	_endloop
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_execution_class(p_class_node)
+	_local class_name << p_class_node.name
+	_local super_name << p_class_node.implementation
+	assert(p_class_node.methods.size = 1, "Only expect execute() method")
+
+	_local m_node << _self.parse_method(class_name, p_class_node.methods[1])
+	_for i_statement _over m_node.body.statements.fast_elements()
+	_loop
+		.top.add_statement(jpn_execution_post_processor.process(i_statement))
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_method(p_class_name, p_meth_node)
+	##
+	_local m_node << dcn_method.new(p_class_name, p_meth_node.name)
+	m_node.body << _self.parse_body(p_meth_node.body)
+	>> m_node
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_body(p_body_jnode)
+	##
+	_local b_node << dcn_body.new()
+	_for i_jnode _over p_body_jnode.statements.fast_elements()
+	_loop
+		_local statement_node << _self.parse_expression(i_jnode)
+		b_node.add(statement_node)
+	_endloop
+	>> b_node
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_cast(p_node)
+	##
+	>> _self.parse_expression(p_node.expression)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_sender(p_expression)
+	##
+	>> _if p_expression.is_cast?
+	   _then >> _self.parse_sender(p_expression.expression)
+	   _else >> _self.parse_expression(p_expression)
+	   _endif 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.assign_magik_method_names(p_class_name, p_java_method_name, p_exemplar_name, p_method_name)
+	##
+	>> .top.assign_magik_method_names(p_class_name, p_java_method_name, p_exemplar_name, p_method_name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.executer_and_method(p_name)
+	##
+	_local (exec_name, exec_meth_name) << (_scatter p_name.split_by(%.))
+	
+	_local global_ex_name << write_string(:deco_ + exec_name.lowercase).as_symbol()
+	_local ex << !current_package!.all_packages[:deco][global_ex_name]
+	_if ex _is _unset _then condition.raise(:error, :string, write_string("No global for parser execution: ", global_ex_name)) _endif
+
+	_local exec_meth << write_string(exec_meth_name.lowercase,"()").as_symbol()
+	_if ex.method(exec_meth) _is _unset _then condition.raise(:error, :string, write_string("No method ", exec_meth, " for parser execution on ", global_ex_name)) _endif
+	>> ex, exec_meth
 _endmethod
 $

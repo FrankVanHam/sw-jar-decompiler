@@ -13,3 +13,8 @@ _block
 	sw_module_manager.load_module(:jar_decompiler_test)
 _endblock
 $
+
+_block 
+	simple_munit_gui.open()
+_endblock
+$

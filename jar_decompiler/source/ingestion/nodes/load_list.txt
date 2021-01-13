@@ -10,3 +10,7 @@ jpn_constant
 jpn_body
 jpn_file
 jpn_cast
+jpn_annotation
+jpn_assignment
+jpn_variable
+jpn_if

@@ -1,6 +1,7 @@
 compiler_info_provider
 
 dcn_base
+dcn_no_op
 dcn_assign_mixin
 
 dcn_result
@@ -50,9 +51,12 @@ dcn_callable
 dcn_magikc_method
 dcn_method
 dcn_proc
+dcn_global
 
 dcn_proxy_proc
 dcn_shared_constant
 dcn_shared_variable
+dcn_file
 
 sw
+dcn_body

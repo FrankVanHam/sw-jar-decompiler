@@ -4,7 +4,6 @@ $
 def_slotted_exemplar(:deco_test,{})
 $
 
-
 _method deco_test.test()
 	_local a << 10
 	_return a+1
@@ -12,8 +11,27 @@ _endmethod
 $
 
 _method deco_test.test1()
-	_return _self.test()
+	gis_program_manager.do_a_thing()
+	_self.test()
 _endmethod
 $
 
 
+_method deco_test.test2()
+	_local a << 12
+	_if a > 10
+	_then
+		_self.test1()
+	_else
+		_self.test2()
+	_endif 
+_endmethod
+$
+
+#_method deco_test.test4()
+#	_for e _over _self.fast_elements()
+#	_loop
+#		_self.run(e)
+#	_endloop 
+#_endmethod
+#$

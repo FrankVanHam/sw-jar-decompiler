@@ -6,20 +6,29 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_method,
 	{
-		{:args,       _unset, :readable},
-		{:body,       _unset, :readable},
-		{:annotation, _unset, :readable}
+		{:lex_name,    _unset},
+		{:args,        _unset, :readable},
+		{:body,        _unset, :readable},
+		{:annotations, _unset, :readable}
 	},
 	:jpn_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_method.init(p_name, p_args, p_body, p_annotation)
-	## 
+_method jpn_method.init(p_lex_name, p_args, p_body, _optional p_annotations)
+	##
+	.lex_name << p_lex_name
 	.args << p_args
 	.body << p_body
-	.annotation << p_annotation
-	>> _super.init(p_name)
+	.annotations << p_annotations.default({})
+	>> _super.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_method.name
+	##
+	>> .lex_name.value
 _endmethod
 $
 

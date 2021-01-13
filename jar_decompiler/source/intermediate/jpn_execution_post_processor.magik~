@@ -1,0 +1,15 @@
+_package deco
+$
+
+def_slotted_exemplar(:jpn_execution_post_processor,{})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_execution_post_processor.process(p_node)
+	##
+	_if p_node.is_return?
+	_then
+		_return p_node.expression
+	_endif 
+_endmethod
+$

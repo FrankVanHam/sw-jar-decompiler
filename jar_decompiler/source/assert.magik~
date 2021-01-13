@@ -1,0 +1,13 @@
+_package deco
+$
+
+
+_global _constant assert << _proc@assertion(p_bool, _optional p_comment)
+
+	_if p_bool _is _false
+	_then
+		condition.raise(:error, :string, write_string("Assertion failed ",
+							      p_comment.default("")))
+	_endif
+_endproc
+$

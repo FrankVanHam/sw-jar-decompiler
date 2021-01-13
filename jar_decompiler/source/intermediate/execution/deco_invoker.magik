@@ -1,0 +1,18 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:deco_invoker,
+	{},
+	:deco_execution_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_invoker.tuplebootstrapprivate(p_parser, p_method, p_sender)
+	##
+	assert(p_method.is_kind_of?(jpn_constant))
+	_local meth << p_method.string_value
+	_local sender << p_parser.parse_sender(p_sender)
+	>> dcn_send.new(sender, meth)
+_endmethod
+$

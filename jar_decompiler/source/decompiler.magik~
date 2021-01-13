@@ -1,6 +1,83 @@
 _package deco
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:decompiler,
-	{})
+	{
+		{:top, _unset}
+	})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method decompiler.new(p_top)
+	>> _clone.init(p_top)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method decompiler.init(p_top)
+	.top << p_top
+	_self.process()
+	>> _self
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method decompiler.process()
+	##
+	_self.setup_executable()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method decompiler.setup_executable()
+	##
+	_local exec << _self.find_executable()
+	_local meth << _self.find_executable_method(exec)
+	_for i_stat _over meth.body.statements.fast_elements()
+	_loop
+		(exec_name, exec_name) << (_scatter i_stat.name.split_by(%.))
+
+		ex << !current_package!.all_packages[:deco][write_string(:deco_ + exec_name.lowercase).as_symbol()]
+		exec_meth << write_string(exec_name.lowercase,"()").as_symbol()
+		ex.perform(exec_meth, _scatter i_stat.args)
+	_endloop
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method decompiler.find_executable_method(p_class)
+	_for i_meth _over p_class.methods.fast_elements()
+	_loop
+		_if i_meth.name.value = "execute"
+		_then
+			_return i_meth
+		_endif
+	_endloop
+	condition.raise(:error, :string, "No execute method in class")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method decompiler.find_executable()
+	_for i_class _over .top.content.fast_elements()
+	_loop
+		_if i_class.is_class? _andif
+		    i_class.implementation = "ExecutableMagik"
+		_then
+			_return i_class
+		_endif
+	_endloop
+	condition.raise(:error, :string, "No executable in file")
+_endmethod
+$
+
+
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method decompiler.write_on(p_out)
+	##
+
+_endmethod
 $

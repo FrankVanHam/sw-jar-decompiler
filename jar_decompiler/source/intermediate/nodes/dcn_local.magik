@@ -19,7 +19,7 @@ _package deco
 $
 
 
-remex(:dcn_local)
+#remex(:dcn_local)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
@@ -49,6 +49,13 @@ _private _method dcn_local.init(index, name, type)
 	.declared? << _false 
 	assert(.type _is :local _orif .type _is :parameter)
 	_return _self
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_local.ignore?
+	##
+	>> .name.matches?("cfr_ignored*")
 _endmethod
 $
 

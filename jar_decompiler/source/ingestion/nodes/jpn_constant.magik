@@ -14,15 +14,22 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_constant.init(p_lex)
 	##
+	assert(p_lex.is_class_of?(lexeme))
+	
 	.lex << p_lex
-	>> _super.init("constant")
+	>> _super.init()
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_constant.string_value
 	##
-	##
 	>> .lex.value
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_constant.is_constant?
+	>> _true 
 _endmethod
 $

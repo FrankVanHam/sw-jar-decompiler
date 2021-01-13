@@ -1,9 +1,9 @@
-#% text_encoding = iso8859_1
-
 _package user
 $
 
 _block
+	#
+	# Create the deco package for the jar_decompiler
 	_if _not package.all_packages.includes_key?( :deco )
 	_then 
 		package.new( :deco )

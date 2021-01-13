@@ -2,6 +2,19 @@ _package user
 $
 
 _block
-	system.do_command("java -classpath 'C:\werk\jar_decompiler\jar_decompiler\resources\base\java\lib\cfr-0.150.jar;C:\SW524\core\libs\com.gesmallworld.magik.runtime-5.2.4.0-259.jar;C:\SW524\core\libs\com.gesmallworld.magik.commons-5.2.4.0-259.jar' org.benf.cfr.reader.Main 'C:\werk\jar_decompiler\libs\jar_decompiler_lp.decompile_target.1.jar'".substitute_character(%', %"))
+	_local base_dir << "C:\Users\frnkv\source\repos\sw-jar-decompiler\jar_decompiler\source"
+	system.do_command("java -classpath 'C:\Users\frnkv\source\repos\sw-jar-decompiler\jar_decompiler\resources\base\java\lib\cfr-0.150.jar;D:\SW53\core\libs\com.gesmallworld.magik.runtime-5.2.4.0-259.jar;D:\SW53\core\libs\com.gesmallworld.magik.commons-5.2.4.0-259.jar' org.benf.cfr.reader.Main 'C:\Users\frnkv\source\repos\sw-jar-decompiler\libs\jar_decompiler_lp.decompile_target.1.jar'".substitute_character(%', %"))
 _endblock
 $
+
+_block
+	_local base_dir << "C:\Users\frnkv\source\repos\sw-jar-decompiler\jar_decompiler\source"
+	system.do_command("java -jar 'C:\Users\frnkv\source\repos\sw-jar-decompiler\jar_decompiler\resources\base\java\lib\cfr-0.150.jar --help".substitute_character(%', %"))
+_endblock
+$
+_block
+	_local base_dir << "C:\Users\frnkv\source\repos\sw-jar-decompiler\jar_decompiler\source"
+	system.do_command("java -version".substitute_character(%', %"))
+_endblock
+$
+

@@ -354,14 +354,14 @@ _method dcn_op.decode_on( a_stream, _optional parent, statements )
 			.operand1.decode_as_receiver_on( a_stream )
 		_else 
 			a_stream.write( "(" )
-			a_stream.write( "(" )
+			#a_stream.write( "(" )
 			.operand2.decode_as_receiver_on( a_stream )
-			a_stream.write( ") " )
+			#a_stream.write( ") " )
 			a_stream.write( _self.translate_op(op) )
 			a_stream.write( " " )
-			a_stream.write( "(" )
+			#a_stream.write( "(" )
 			.operand1.decode_as_receiver_on( a_stream )
-			a_stream.write( ")" )
+			#a_stream.write( ")" )
 			a_stream.write( ")" )
 		_endif 
 	_endif 

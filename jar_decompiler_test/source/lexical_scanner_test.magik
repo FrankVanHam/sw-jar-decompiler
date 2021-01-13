@@ -22,6 +22,7 @@ _method lexical_scanner_test.test_keyword()
 	_local l << s.get()
 	_self.assert_true(l.is_keyword?, "should be keyword")
 	l << s.get()
+	_self.assert_true(l.is_identifier?, "should be identifier")
 	_self.assert_equals("magik.decompile_target", l.value)
 _endmethod
 $
@@ -40,10 +41,10 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method lexical_scanner_test.test_operator()
 
-	_local s << deco:lexical_scanner.new("test ()".read_stream())
+	_local s << deco:lexical_scanner.new("test()".read_stream())
 	_local l << s.get()
 	l << s.get()
-	_self.assert_true(l.is_operator?, "should be operator")
+	_self.assert_true(l.is_separator?, "should be separator")
 _endmethod
 $
 
@@ -53,7 +54,7 @@ _method lexical_scanner_test.test_operator2()
 	_local s << deco:lexical_scanner.new("test()".read_stream())
 	_local l << s.get()
 	l << s.get()
-	_self.assert_true(l.is_operator?, "should be operator")
+	_self.assert_true(l.is_separator?, "should be operator")
 _endmethod
 $
 
@@ -78,15 +79,58 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method lexical_scanner_test.test_annotation_with_number_value()
+
+	_local s << deco:lexical_scanner.new("  @Topics(value=3) ".read_stream())
+	_local l << s.get()
+	_self.assert_true(l.is_annotation?, "should be annotation")
+	_self.assert_equals("Topics", l.value)
+	l << s.get()
+	_self.assert_true(l.is_separator?, "should be (")
+	l << s.get()
+	_self.assert_true(l.is_identifier?, "should be keyword")
+	_self.assert_equals("value", l.value)
+	l << s.get()
+	_self.assert_true(l.is_operator?, "should be =")
+	l << s.get()
+	_self.assert_true(l.is_number?, "should be a number")
+	l << s.get()
+	_self.assert_true(l.is_separator?, "should be )")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method lexical_scanner_test.test_annotation_with_string_value()
+
+	_local inp << "  @Topics(value= 'Frank') ".substitute_character(%', %")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local l << s.get()
+	_self.assert_true(l.is_annotation?, "should be annotation")
+	_self.assert_equals("Topics", l.value)
+	l << s.get()
+	_self.assert_true(l.is_separator?, "should be (")
+	l << s.get()
+	_self.assert_true(l.is_identifier?, "should be keyword")
+	_self.assert_equals("value", l.value)
+	l << s.get()
+	_self.assert_true(l.is_operator?, "should be =")
+	l << s.get()
+	_self.assert_true(l.is_string?, "should be a string")
+	l << s.get()
+	_self.assert_true(l.is_separator?, "should be )")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method lexical_scanner_test.test_number()
 
 	_local s << deco:lexical_scanner.new("  123 13.2 ".read_stream())
 	_local l << s.get()
-	_self.assert_true(l.is_number?, "should be number")
+	_self.assert_true(l.is_number?, "should be number 123")
 	_self.assert_equals("123", l.value)
 	
 	l << s.get()
-	_self.assert_true(l.is_number?, "should be number")
+	_self.assert_true(l.is_number?, "should be number 13.2")
 	_self.assert_equals("13.2", l.value)
 _endmethod
 $
