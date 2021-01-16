@@ -1,0 +1,26 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_method_invocation,
+	{
+		{:lex_name, _unset},
+		{:args, _unset, :readable}
+	},
+	:jpn_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_method_invocation.init(p_lex_name, p_args)
+	assert(p_lex_name.is_class_of?(lexeme))
+	.lex_name << p_lex_name
+	.args << p_args
+	>> _super.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_method_invocation.name
+	>> .lex_name.value
+_endmethod
+$

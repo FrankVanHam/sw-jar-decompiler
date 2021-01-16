@@ -1,34 +1,34 @@
 _package user
 $
 
-#remex(:jpn_parser_method_snippet_test)
+#remex(:jpn_parser_class_snippet_test)
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-def_slotted_exemplar(:jpn_parser_method_snippet_test,
+def_slotted_exemplar(:jpn_parser_class_snippet_test,
 	{},
 	:jpn_parser_base_snippet_test)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-jpn_parser_method_snippet_test.define_shared_constant(:filename, "jpn_parser_method_snippets.txt", :private)
+jpn_parser_class_snippet_test.define_shared_constant(:filename, "jpn_parser_class_snippets.txt", :private)
 $
 
+
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method jpn_parser_method_snippet_test.get_name()
-	>> "Method Snippet"
+_method jpn_parser_class_snippet_test.get_name()
+	>> "Class Snippet"
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method jpn_parser_method_snippet_test.run_test()
+_method jpn_parser_class_snippet_test.run_test()
 	## 
 	_local s << deco:lexical_scanner.new(.before.read_stream())
 	_local p << deco:java_parser.new(s)
-	_local jpn_meth << p.parse_method()
+	_local jpn_file << p.parse_file()
 
 	_local jp << deco:jpn_parser.new()
-	_local dcn_node << jp.parse_method("deco_test", jpn_meth)
-	dcn_node.bind_names("deco_test", "test()")
+	_local dcn_node << jp.parse_file(jpn_file)
 	
 	_local out_ind << indentation_stream.new(out << internal_text_output_stream.new())
 	dcn_node.decode_on(out_ind)

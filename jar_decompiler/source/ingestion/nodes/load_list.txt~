@@ -13,3 +13,6 @@ jpn_cast
 jpn_annotation
 jpn_assignment
 jpn_variable
+jpn_if
+jpn_try
+jpn_new

@@ -1,2 +1,10 @@
 deco_execution_base
 deco_integer
+deco_binarydispatcher
+deco_constantbuilder
+deco_dynamicaccessor
+deco_globalaccessor
+deco_magikobjectutils
+deco_procinvoker
+deco_tuplebuilder
+deco_vectorbuilder

@@ -40,10 +40,67 @@ _method java_parser_test.test_class()
 	_self.assert_true(node.is_kind_of?(deco:jpn_class), "should be class")
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_new()
+	##
+	_local inp << write_string("new aClass()")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.parse_expression()
+	_self.assert_true(node.is_kind_of?(deco:jpn_new), "should be new")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_new_with_args()
+	##
+	_local inp << write_string("new aClass( obj, thing)")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.parse_expression()
+	_self.assert_true(node.is_kind_of?(deco:jpn_new), "should be new")
+	_self.assert_equals(2, node.args.size)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_throw()
+	##
+	_local inp << write_string("throw x;")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.parse_expression()
+	_self.assert_true(node.is_kind_of?(deco:jpn_throw), "should be throw")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_throw_new()
+	##
+	_local inp << write_string("throw new IllegalArgumentException(except);")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.parse_expression()
+	_self.assert_true(node.is_kind_of?(deco:jpn_throw), "should be throw")
+	_self.assert_true(node.expression.is_kind_of?(deco:jpn_new), "should be throwing a new")
+_endmethod
+$
+
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_class_annotation()
 	##
-	_local inp << deco_snippet.get_snippet(:test_class_annotation)
+	_local inp << write_string("@Override", newline_char,
+				   "@SourceHash(value=888600578)", newline_char,
+				   "@Debugger(value='MagikDebug')", newline_char,
+				   "@CodeType(value='Subsidiary')", newline_char,
+				   "public class a_class {}"
+		      )
+	inp << inp.substitute_character(%', %")
 	
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
@@ -189,7 +246,6 @@ _method java_parser_test.test_method_invocation_without_args()
 	_local p << deco:java_parser.new(s)
 	
 	_local m << p.parse_method()
-	show(m.body[1])
 	_self.assert_true(m.body[1].is_kind_of?(deco:jpn_assignment), "Should be an assigmnent")
 	_self.assert_true(m.body[2].is_kind_of?(deco:jpn_return), "Should be an return statement")
 _endmethod
@@ -251,6 +307,43 @@ _method java_parser_test.test_if_else()
 	_local m << p.parse_expression()
 	_self.assert_true(m.is_kind_of?(deco:jpn_if), "should be an if statement")
 	_self.assert_true(m.else _isnt _unset , "should be an else statement")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_try_catch()
+	_local inp << write_string(		      
+			      "	try {", newline_char, 
+			      "            _self.in_try()", newline_char, 
+			      "        }", newline_char, 
+			      "        catch (Throwable throwable) {", newline_char, 
+			      "            _self.in_catch();", newline_char, 
+			      "        }")
+	
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	_local m << p.parse_expression()
+	
+	_self.assert_true(m.is_kind_of?(deco:jpn_try), "should be an try")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_try_catches()
+	_local inp << write_string(		      
+			      "	try {", newline_char, 
+			      "            _self.in_try()", newline_char, 
+			      "        }", newline_char, 
+			      "        catch (NoSuchMethodException | IllegalAccessException throwable) {", newline_char, 
+			      "            _self.in_catch();", newline_char, 
+			      "        }")
+	
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	_local m << p.parse_expression()
+	
+	_self.assert_true(m.is_kind_of?(deco:jpn_try), "should be an try")
+	_self.assert_equals(m.exceptions.size, 2)
 _endmethod
 $
 

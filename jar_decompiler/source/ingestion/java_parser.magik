@@ -176,14 +176,37 @@ _method java_parser.parse_args()
 				1.stop
 			_endif
 		_endif
-		_local type << .scanner.get()
+		_local types << _self.parse_arg_types()
 		_local identifier << .scanner.get()
-		
-		args.add(jpn_arg.new(identifier, type))
+
+		_for i_type _over types.fast_elements()
+		_loop
+			args.add(jpn_arg.new(identifier, i_type))
+		_endloop 
 	_endloop
 	>> args
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_arg_types()
+	##
+	_local types << rope.new()
+	_loop
+		_local type << .scanner.get()
+		types.add(type)
+		_local lex << .scanner.peek()
+		_if lex.is_operator? _andif lex.value = "|"
+		_then
+			.scanner.get()
+		_else
+			_leave
+		_endif 
+	_endloop
+	>> types
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method java_parser.parse_body()
@@ -266,6 +289,15 @@ _method java_parser.parse_expression()
 			_if lex.value = "if"
 			_then
 				_return _self.parse_if()
+			_elif lex.value = "try"
+			_then
+				_return _self.parse_try()
+			_elif lex.value = "new"
+			_then
+				_return _self.parse_new()
+			_elif lex.value = "throw"
+			_then
+				_return _self.parse_throw()
 			_else
 				show(3)
 				debug_print(lex)
@@ -277,6 +309,46 @@ _method java_parser.parse_expression()
 			1.stop
 		_endif
 	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_throw()
+	## 
+	_self.ensure_keyword("throw")
+	_local exp << _self.parse_expression()
+	>> jpn_throw.new(exp)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_new()
+	## 
+	_self.ensure_keyword("new")
+	_local type << .scanner.get()
+	_local args << _self.parse_execution_args()
+	>> jpn_new.new(type, args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_try()
+	##
+	_self.ensure_keyword("try")
+	
+	_self.ensure_separator(%{)
+	_local try_body << _self.parse_body()
+	_self.ensure_separator(%})
+	
+	_self.ensure_keyword("catch")
+	_self.ensure_separator(%()
+	_local catch_args << _self.parse_args()
+	_self.ensure_separator(%))
+
+	_self.ensure_separator(%{)
+	_local catch_body << _self.parse_body()
+	_self.ensure_separator(%})
+	>> jpn_try.new(try_body, catch_args, catch_body)
 _endmethod
 $
 
@@ -344,6 +416,14 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method java_parser.parse_method_invocation(p_identifier)
 	##
+	_local args << _self.parse_execution_args()
+	>> jpn_method_invocation.new(p_identifier,args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_execution_args()
+	##
 	_local args << rope.new()
 	_self.ensure_separator(%()
 	_loop
@@ -362,10 +442,9 @@ _method java_parser.parse_method_invocation(p_identifier)
 		args.add(_self.parse_expression())
 	_endloop
 	_self.ensure_separator(%))
-	>> jpn_method_invocation.new(p_identifier,args)
+	>> args
 _endmethod
 $
-
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method java_parser.parse_package()

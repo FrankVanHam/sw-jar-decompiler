@@ -128,6 +128,55 @@ _method jpn_parser_test.test_exemplar()
 _endmethod
 $
 
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method jpn_parser_test.test_method_invocation_without_args()
+	##
+#	_method deco_test.test1()
+#	   _self.test()
+#       _endmethod
+#
+	_local inp << write_string(
+			      "public static Object deco_test__test1(Object _self) {", newline_char,
+			      "ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate('test()', (Object)_self));", newline_char,
+			      "return ResultTuple.EMPTY_TUPLE;", newline_char,
+			      "}")
+	inp << inp.substitute_character(%', %")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	_local jpn_meth << p.parse_method()
+
+	_local jp << deco:jpn_parser.new()
+	_local dcn_node << jp.parse_method("deco_test", jpn_meth)
+	dcn_node.bind_names("deco_test", "test1()")
+	
+	_local out_ind << indentation_stream.new(out << internal_text_output_stream.new())
+	dcn_node.decode_on(out_ind)
+	_self.assert_equals_execution_strings("_method deco_test.test1() _self.test() _return _endmethod", out.string)	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method jpn_parser_test.test_method_with_if()
+	#
+	_local inp << deco_snippet.get_snippet(:jpn_in_test_method_with_if)
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	_local jpn_meth << p.parse_method()
+
+	_local jp << deco:jpn_parser.new()
+	_local dcn_node << jp.parse_method("deco_test", jpn_meth)
+	dcn_node.bind_names("deco_test", "test1()")
+	
+	_local out_ind << indentation_stream.new(out << internal_text_output_stream.new())
+	dcn_node.decode_on(out_ind)
+	_local compare << deco_snippet.get_snippet(:jpn_out_test_method_with_if)
+	_self.assert_equals_execution_strings(compare, out.string)
+_endmethod
+$
+
+
+
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method jpn_parser_test.test_exemplar_and_method()
 	##
@@ -159,14 +208,13 @@ _method jpn_parser_test.test_simple_test_execution_source_code()
 	
 	_local out_indent << indentation_stream.new(out << internal_text_output_stream.new())
 	dcn_node.decode_on(out_indent)
-	write(out.string)
 
 	_local goal << write_string(
 			       "_package !current_package!", newline_char,
 			       "$", newline_char,
 			       "sw:def_slotted_exemplar(:deco_test, {})", newline_char,
 			       "$", newline_char,
-			       "_method deco_test", newline_char,
+			       "_method deco_test.test()", newline_char,
 			       "    _return ((1) + (10))", newline_char,
 			       "_endmethod", newline_char,
 			       "$")
@@ -225,3 +273,4 @@ _method jpn_parser_test.simple_test_execution_source_code()
 	>> inp
 _endmethod
 $
+

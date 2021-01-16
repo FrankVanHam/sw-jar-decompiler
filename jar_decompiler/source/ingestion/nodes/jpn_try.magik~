@@ -1,0 +1,29 @@
+_package deco
+$
+
+#remex(:jpn_if)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_if,
+	{
+		{:condition,  _unset, :readable},
+		{:then, _unset, :readable},
+		{:else, _unset, :readable}
+	},
+	:jpn_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_if.init(p_condition, p_then, p_else)
+
+	assert(p_condition.is_kind_of?(jpn_base))
+	assert(p_then.is_kind_of?(jpn_base))
+	assert(p_else _is _unset _orif p_else.is_kind_of?(jpn_base))
+	.condition << p_condition
+	.then << p_then
+	.else << p_else
+	
+	>> _super.init()
+_endmethod
+$
+
