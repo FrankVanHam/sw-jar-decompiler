@@ -21,3 +21,17 @@ _method jpn_annotation.init(p_lex_name, p_lex_value)
 	>> _super.init()
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_annotation.name
+	>> .lex_name.value	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_annotation.value
+	>> _if .lex_value _isnt _unset
+	   _then >> .lex_value.value
+	   _endif 
+_endmethod
+$

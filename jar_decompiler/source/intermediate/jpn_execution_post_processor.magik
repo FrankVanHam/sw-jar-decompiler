@@ -4,10 +4,80 @@ $
 def_slotted_exemplar(:jpn_execution_post_processor,{})
 $
 
+
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_execution_post_processor.process(p_node)
+_method jpn_execution_post_processor.process(p_file)
 	##
+	sts << p_file.statements
+	_for i_index, i_node _over sts.fast_keys_and_elements()
+	_loop
+		_if i_node.is_kind_of?(dcn_dynamic_store) _andif
+		    i_node.name = "!source_file!"
+		_then
+			sts[i_index] << dcn_no_op.new()
+		_elif i_node.is_kind_of?(dcn_dynamic_store) _andif
+		    i_node.name = "!current_package!"
+		_then
+			sts[i_index] << dcn_package.new(i_node.sys!slot(:value_node).args[1].value)
+		_endif 
+	_endloop 
 	
+	_local sts << p_file.methods[1].body.statements
+	_for i_index, i_node _over sts.fast_keys_and_elements()
+	_loop
+		_if i_node.is_kind_of?(dcn_local_assignment) _andif
+		    i_node.expression.is_kind_of?(dcn_unfinished_iter)
+		_then
+			_for i _over range(1,4)
+			_loop
+				sts[i_index-i] << dcn_no_op.new()
+			_endloop 
+			sts[i_index] << _self.convert_to_iter(p_file, i_node)
+		_endif
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_execution_post_processor.convert_to_iter(p_file, p_node)
+	##
+	_local ref << p_node.expression.ref
+	_local ref_method << _self.find_method(p_file, ref)
+	_local loopbody_method << _self.find_loopbody_method(p_file, ref_method)
+
+	_local iter_body << loopbody_method.body.statements[3].copy()
+	iter_body.statements.remove_last()
+
+	_local args << loopbody_method.args.slice_to_end(2)
+	_return dcn_iter.new(p_node.expression.sender, p_node.expression.name, args, iter_body)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_execution_post_processor.find_loopbody_method(p_file, p_method)
+	## 
+	_local egg << p_method.body.statements[1].statements[1].expression
+	_return _self.find_method(p_file, egg.name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_execution_post_processor.find_method(p_file, p_ref)
+	##
+	_for i_meth _over p_file.methods.fast_elements()
+	_loop
+		_if i_meth.sys!slot(:java_method_name) = p_ref _then _return i_meth _endif
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_execution_post_processor.process_node(p_node)
+	##
+	_if p_node.is_kind_of?(dcn_unfinished_iter)
+	_then
+		_return _self.finish_iter(p_node)
+	_endif 
 	_if p_node.is_return?
 	_then
 		_return p_node.expression

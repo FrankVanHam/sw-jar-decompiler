@@ -11,5 +11,11 @@ $
 condition.define_condition(:deco_expected_keyword, :deco_error, {:line, :column, :keyword, :instead})
 $
 
+condition.define_condition(:deco_expected_identifier, :deco_error, {:line, :column, :identifier, :instead})
+$
+
 condition.define_condition(:deco_unexpected_operator, :deco_error, {:line, :column, :operator})
+$
+
+condition.define_condition(:deco_unexpected_eof, :deco_error, {:line, :column, :while_doing})
 $

@@ -47,9 +47,23 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.new_identifier(p_value, p_line, p_column)
+	##
+	>> _self.new(:identifier, p_value, p_line, p_column)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexeme.new_operator(p_value, p_line, p_column)
 	##
 	>> _self.new(:operator, p_value, p_line, p_column)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.new_separator(p_value, p_line, p_column)
+	##
+	>> _self.new(:separator, p_value, p_line, p_column)
 _endmethod
 $
 
@@ -80,6 +94,7 @@ _private _method lexeme.init(p_type, p_value, p_line, p_column)
 	.line << p_line
 	.column << p_column
 	.type << p_type
+	assert(p_value _is _unset _orif p_value.is_class_of?(""))
 	.value << p_value
 	>> _self 
 _endmethod
@@ -93,31 +108,43 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexeme.is_eof?
-	>> .type _is :eof	
+	>> .type _is :eof
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexeme.is_comment?
-	>> .type _is :comment	
+	>> .type _is :comment
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexeme.is_keyword?
-	>> .type _is :keyword	
+	>> .type _is :keyword
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.is_identifier?
+	>> .type _is :identifier
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexeme.is_operator?
-	>> .type _is :operator	
+	>> .type _is :operator
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.is_separator?
+	>> .type _is :separator
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexeme.is_string?
-	>> .type _is :string	
+	>> .type _is :string
 _endmethod
 $
 
@@ -129,7 +156,37 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexeme.is_number?
-	>> .type _is :number	
+	>> .type _is :number
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.is_operator?(p_value)
+	##
+	>> _self.is_operator? _andif .value = p_value
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.is_separator?(p_value)
+	##
+	>> _self.is_separator? _andif .value = p_value
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.split(p_index)
+	##
+	_local v1 << .value.slice(1, p_index-1)
+	_local v2 << .value.slice_to_end(p_index+1)
+	_return _self.new(.type, v1, .line, .column ),_self.new(.type, v2, .line, .column+p_index )
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.append(p_lex)
+	##
+	_local v << write_string(.value, p_lex.value)
+	_return _self.new(.type, v, .line, .column )
+_endmethod
+$

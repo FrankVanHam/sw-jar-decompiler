@@ -124,7 +124,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexical_scanner.get_separator()
-	>> lexeme.new_separator(_self.get_char(), .line, .column)
+	>> lexeme.new_separator(_self.get_char().write_string, .line, .column)
 _endmethod
 $
 
@@ -227,11 +227,7 @@ _method lexical_scanner.get_token()
 		
 		_local char << _self.peek_char()
 
-		_if char = %.
-		_then 
-			out.write(_self.get_char())
-			
-		_elif _not(char.white_space? _orif _self.separators.includes?(char) _orif _self.operator_characters.includes?(char))
+		_if _not(char.white_space? _orif _self.separators.includes?(char) _orif _self.operator_characters.includes?(char))
 		_then
 			out.write(_self.get_char())
 		_else

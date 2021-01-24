@@ -22,7 +22,16 @@ _method deco_magikobjectutils.createmethod(p_parser,
 	_then
 		class_name << class_name.slice(1, class_name.size-6)
 	_endif
+	java_method_name << java_method_name.substitute_string("\\","\")
+	show(java_method_name)
 	_local meth << p_parser.assign_magik_method_names(class_name, java_method_name, exemplar_name, method_name)
 	>> meth
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_magikobjectutils.should_be_boolean(p_parser, p_expression)
+	##
+	>> p_parser.parse_expression(p_expression)
 _endmethod
 $

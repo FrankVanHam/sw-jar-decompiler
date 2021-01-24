@@ -1,0 +1,11 @@
+_package deco
+$
+
+def_slotted_exemplar(:deco_dynamicscope, {}, :deco_execution_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_dynamicscope.interjectframe(p_parser)
+>> dcn_no_op.new()
+_endmethod
+$

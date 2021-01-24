@@ -10,3 +10,6 @@ deco_tuplebuilder
 deco_vectorbuilder
 deco_invoker
 deco_resulttuple
+deco_dynamicscope
+deco_envaccessor
+deco_methodhandles

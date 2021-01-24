@@ -18,7 +18,7 @@
 _package deco
 $
 
-remex(:dcn_send)
+#remex(:dcn_send)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
@@ -33,6 +33,27 @@ def_slotted_exemplar(:dcn_send,
 			     {:top_of_stack, _unset}
 		     }, {:dcn_invocation, :dcn_assign_mixin})
 $
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_send.init(p_sender, p_method)
+	##
+	assert(p_sender.is_kind_of?(dcn_base))
+	.name << p_method
+	.sender << p_sender
+	>> _super.init({})
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_send.decode_on(p_stream)
+	##
+	.sender.decode_on(p_stream)
+	p_stream.write( "." )
+	p_stream.write( .name )
+_endmethod
+$
+
+
 #
 #_pragma(classify_level=restricted, topic={decompiler})
 #_method dcn_send.new(token, sender, name, args, top_of_stack)

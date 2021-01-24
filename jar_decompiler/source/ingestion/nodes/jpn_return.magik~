@@ -11,6 +11,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_return.init(p_exp)
+	assert(p_exp.is_kind_of?(jpn_base))
 	.expression << p_exp
 	>> _super.init()
 _endmethod

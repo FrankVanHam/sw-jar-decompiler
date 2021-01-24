@@ -27,3 +27,9 @@ _method jpn_constant.string_value
 	>> .lex.value
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_constant.is_constant?
+	>> _true 
+_endmethod
+$

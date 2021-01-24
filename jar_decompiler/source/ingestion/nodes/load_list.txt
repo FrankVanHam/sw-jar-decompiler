@@ -17,3 +17,6 @@ jpn_if
 jpn_try
 jpn_new
 jpn_throw
+jpn_declaration
+jpn_type
+jpn_this

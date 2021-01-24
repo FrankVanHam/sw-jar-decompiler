@@ -29,9 +29,11 @@ _method jpn_parser_class_snippet_test.run_test()
 
 	_local jp << deco:jpn_parser.new()
 	_local dcn_node << jp.parse_file(jpn_file)
+	deco:jpn_execution_post_processor.process(dcn_node)
 	
 	_local out_ind << indentation_stream.new(out << internal_text_output_stream.new())
 	dcn_node.decode_on(out_ind)
+	
 	_self.assert_equals_execution_strings(.after, out.string)
 _endmethod
 $

@@ -4,29 +4,29 @@ $
 def_slotted_exemplar(:deco_test,{})
 $
 
-_method deco_test.test()
-	_local a << 10
-	_return a+1
-_endmethod
-$
-
-_method deco_test.test1()
-	gis_program_manager.do_a_thing()
-	_self.test()
-_endmethod
-$
-
-
-_method deco_test.test2()
-	_local a << 12
-	_if a > 10
-	_then
-		_self.test1()
-	_else
-		_self.test2()
-	_endif 
-_endmethod
-$
+#_method deco_test.test()
+#	_local a << 10
+#	_return a+1
+#_endmethod
+#$
+#
+#_method deco_test.test1()
+#	gis_program_manager.do_a_thing()
+#	_self.test()
+#_endmethod
+#$
+#
+#
+#_method deco_test.test2()
+#	_local a << 12
+#	_if a > 10
+#	_then
+#		_self.test1()
+#	_else
+#		_self.test2()
+#	_endif 
+#_endmethod
+#$
 
 _method deco_test.test4()
 	_for i_var  _over _self.fast_elements()
@@ -35,11 +35,11 @@ _method deco_test.test4()
 	_endloop 
 _endmethod
 $
-
-_method deco_test.test5()
-	_for i_itervar  _over _self.slow_elements()
-	_loop
-		_self.run_slow(i_itervar)
-	_endloop 
-_endmethod
-$
+#
+#_method deco_test.test5()
+#	_for i_itervar  _over _self.slow_elements()
+#	_loop
+#		_self.run_slow(i_itervar)
+#	_endloop 
+#_endmethod
+#$

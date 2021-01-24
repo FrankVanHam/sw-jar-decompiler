@@ -2,17 +2,42 @@ _package deco
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-def_slotted_exemplar(:deco_binarydispatcher,
+def_slotted_exemplar(:deco_invoker,
 	{},
 	:deco_execution_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_binarydispatcher.bootstrap(p_parser, p_operator, p_value1, p_value2)
+_method deco_invoker.tuplebootstrapprivate(p_parser, p_method, p_sender, _gather p_args)
 	##
-	_local operator << p_operator.string_value.as_symbol()
-	_local v1 << p_parser.parse_expression(p_value1)
-	_local v2 << p_parser.parse_expression(p_value2)
-	>> dcn_op.new(operator, v1, v2)
+	_if _self.iter?(p_method, p_sender, _scatter p_args)
+	_then
+		_return _self.unfinished_iter(p_parser, p_method, p_sender, _scatter p_args)
+	_else
+		_local meth << p_method.string_value
+		_local sender << p_parser.parse_sender(p_sender)
+		_if sender _is _unset
+		_then
+			sender << dcn_self.new()
+		_endif 
+		_return dcn_send.new(sender, meth)
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method deco_invoker.iter?(p_method, p_sender, _gather p_args)
+	## 
+	>> p_sender.type.name = "MethodHandle" 	 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method deco_invoker.unfinished_iter(p_parser, p_method, p_sender, _gather p_args)
+	##
+	_local sender << p_parser.parse_sender(p_sender)
+	sender << dcn_self.new()
+	>> dcn_unfinished_iter.new(sender, p_method.string_value, p_sender.expression.name)
 _endmethod
 $

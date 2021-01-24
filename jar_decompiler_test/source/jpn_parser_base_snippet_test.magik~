@@ -1,10 +1,10 @@
 _package user
 $
 
-#remex(:jpn_parser_method_snippet_test)
+#remex(:jpn_parser_base_snippet_test)
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-def_slotted_exemplar(:jpn_parser_method_snippet_test,
+def_slotted_exemplar(:jpn_parser_base_snippet_test,
 	{
 		{:before, _unset},
 		{:after, _unset}
@@ -13,13 +13,17 @@ def_slotted_exemplar(:jpn_parser_method_snippet_test,
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method jpn_parser_method_snippet_test.new(p_name, p_before, p_after)
+jpn_parser_base_snippet_test.define_shared_constant(:filename, "no.txt", :private)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method jpn_parser_base_snippet_test.new(p_name, p_before, p_after)
 	>> _clone.init(p_name, p_before, p_after)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-_private _method jpn_parser_method_snippet_test.init(p_name, p_before, p_after)
+_private _method jpn_parser_base_snippet_test.init(p_name, p_before, p_after)
 	##
 	.before << p_before
 	.after << p_after
@@ -28,17 +32,25 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method jpn_parser_method_snippet_test.get_name()
-	>> :|test_snippet()|
+_method jpn_parser_base_snippet_test.get_name()
+	>> "Unknown"
 _endmethod
 $
+
+_pragma(classify_level=advanced,topic=MUnit)
+_method jpn_parser_base_snippet_test.infrastructure?
+	## Return false for all runnable children tests of test case.
+	>> _self _is jpn_parser_base_snippet_test
+_endmethod
+$
+
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method jpn_parser_method_snippet_test.suite( _optional a_name, _gather suite_args)
+_method jpn_parser_base_snippet_test.suite( _optional a_name, _gather suite_args)
 	##
 	_local a_name << a_name.default( _self.class_name )
 	_local suite << test_suite.new( _unset , a_name, _scatter suite_args )
 
-	_local snippet << deco_snippet.new("jpn_parser_method_snippets.txt")
+	_local snippet << deco_snippet.new(_self.filename)
 	_for i_name, i_before, i_after _over snippet.snippets()
 	_loop 
 		suite.add_test( _self.exemplar.new(write_string("Test ", i_name), i_before, i_after) )
@@ -48,7 +60,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method jpn_parser_method_snippet_test.run_test()
+_method jpn_parser_base_snippet_test.run_test()
 	## 
 	_local s << deco:lexical_scanner.new(.before.read_stream())
 	_local p << deco:java_parser.new(s)
@@ -65,7 +77,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method jpn_parser_method_snippet_test.assert_equals_execution_strings(p_goal, p_given)
+_method jpn_parser_base_snippet_test.assert_equals_execution_strings(p_goal, p_given)
 	##
 	_local goal << p_goal.substitute_string(space_char,"").substitute_string(newline_char,"")
 	_local given << p_given.substitute_string(space_char,"").substitute_string(newline_char,"")

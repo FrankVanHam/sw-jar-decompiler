@@ -35,12 +35,12 @@ def_slotted_exemplar(:dcn_send,
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_send.init(p_sender, p_method)
+_method dcn_send.init(p_sender, p_method, p_args)
 	##
 	assert(p_sender.is_kind_of?(dcn_base))
 	.name << p_method
 	.sender << p_sender
-	>> _super.init({})
+	>> _super.init(p_args)
 _endmethod
 $
 
@@ -49,7 +49,20 @@ _method dcn_send.decode_on(p_stream)
 	##
 	.sender.decode_on(p_stream)
 	p_stream.write( "." )
-	p_stream.write( .name )
+	_if .args.empty?.not
+	_then
+		_local meth << .name.slice(1, .name.size-2 )
+		p_stream.write(meth, "(")
+		_local comma? << _false
+		_for i_arg _over .args.fast_elements()
+		_loop
+			_if (comma?^<<_true) _then p_stream.write(", ") _endif
+			p_stream.write(i_arg.value)
+		_endloop 
+		p_stream.write(")")
+	_else 
+		p_stream.write( .name )
+	_endif 
 _endmethod
 $
 

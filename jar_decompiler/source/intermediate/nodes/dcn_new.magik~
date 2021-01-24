@@ -1,0 +1,23 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+##
+def_slotted_exemplar(:dcn_new,
+		      {{:node, _unset}},
+		      :dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_new.new(p_jnode)
+	_return _clone.init(p_jnode)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_new.init(p_jnode)
+	##
+	.node << p_jnode
+	>> _self 
+_endmethod
+$

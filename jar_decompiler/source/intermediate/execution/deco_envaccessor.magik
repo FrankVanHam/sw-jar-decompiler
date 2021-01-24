@@ -1,0 +1,23 @@
+_package deco
+$
+
+def_slotted_exemplar(:deco_envaccessor, {}, :deco_execution_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_envaccessor.bootstrapreseter(p_parser)
+	>> dcn_no_op.new()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_envaccessor.bootstrapstorer(p_parser)
+	>> dcn_no_op.new()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_envaccessor.bootstrapfetcher(p_parser)
+	>> dcn_self.new()
+_endmethod
+$

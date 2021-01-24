@@ -19,7 +19,7 @@ _package deco
 $
 
 
-remex(:dcn_local_assignment)
+#remex(:dcn_local_assignment)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
@@ -212,6 +212,11 @@ $
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_local_assignment.decode_on( a_stream, _optional parent, statements)
+	_if .local.ignore?
+	_then
+		.expression.decode_on( a_stream )
+		_return 
+	_endif 
 	local? << .must_declare_local?
 	_if local?
 	_then

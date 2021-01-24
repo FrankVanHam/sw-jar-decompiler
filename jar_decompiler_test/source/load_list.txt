@@ -1,6 +1,8 @@
 
 lexical_scanner_test
 java_parser_test
+java_parser_method_definition_test
+
 jpn_parser_test
 deco_snippet
 

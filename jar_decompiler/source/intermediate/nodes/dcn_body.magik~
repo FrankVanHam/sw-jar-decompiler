@@ -1,6 +1,7 @@
 _package deco
 $
 
+#remex(:dcn_body)
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:dcn_body,
@@ -24,9 +25,37 @@ _private _method dcn_body.init()
 _endmethod
 $
 
-
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method dcn_body.add(p_node)
 	.statements.add(p_node)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_body.empty?
+	>> .statements.empty?
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_body.size
+	>> .statements.size
+_endmethod
+$
+
+#_pragma(classify_level=restricted, topic={jar_decompiler})
+#_method dcn_body[x]
+#	>> .statements[x]
+#_endmethod
+#$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_body.decode_on(p_stream)
+	##
+	_for i_stat _over .statements.fast_elements()
+	_loop
+		i_stat.decode_on(p_stream)
+		p_stream.newline()
+	_endloop 
 _endmethod
 $

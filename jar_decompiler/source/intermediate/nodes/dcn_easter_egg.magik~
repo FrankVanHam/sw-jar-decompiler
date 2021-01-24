@@ -1,0 +1,26 @@
+_package deco
+$
+
+def_slotted_exemplar(:dcn_unfinished_iter,
+		     {
+			     {:name, _unset, :readable},
+			     {:ref, _unset, :readable}
+		     }
+)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_unfinished_iter.new(p_name, p_ref)
+	##
+	>> _clone.init(p_name, p_ref)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method dcn_unfinished_iter.init(p_name, p_ref)
+	.name << p_name
+	.ref << p_ref
+	>> _self 
+_endmethod
+$
+

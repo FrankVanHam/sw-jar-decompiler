@@ -1,0 +1,244 @@
+##
+## File            : $File: (dcn_iter.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-04-06
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package deco
+$
+
+#remex(:dcn_iter)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Node for an iterator loop
+def_slotted_exemplar(:dcn_iter,
+	{
+		{:sender, _unset, :readable},
+		{:name, _unset, :readable},
+		{:body, _unset, :readable}
+	},
+	:dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_iter.new(p_sender, p_name, p_body)
+	>> _clone.init(p_sender, p_name, p_body)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_iter.init(p_sender, p_name, p_body)
+	##
+	.sender << p_sender
+	.name << p_name
+	.body << p_body
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_iter.decode_on(p_stream)
+	##
+	p_stream.write("_for e _over ")
+	.sender.decode_on(p_stream)
+	p_stream.write(".", .name)
+	p_stream.newline()
+	p_stream.write("_loop")
+	p_stream.newline()
+	p_stream.indent(4)
+	.body.decode_on(p_stream)
+#	p_stream.newline()
+	p_stream.unindent(4)
+	p_stream.write("_endloop")
+_endmethod
+$
+
+
+#
+#	
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+### Node for an iterator loop
+#def_slotted_exemplar(:dcn_iter,
+#		     {
+#			     {:tag, _unset},
+#			     {:break_result_count, _unset},
+#			     {:sender, _unset},
+#			     {:yield_locals, _unset},
+#			     {:tkn_loop,_unset},
+#			     {:statements, _unset},
+#			     {:loop_results, _unset},
+#			     {:leave_results, _unset},
+#			     {:finally_statements, _unset},
+#			     {:finally_results, _unset}
+#		     }, :dcn_base)
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_iter.new(tkn_loop, break_result_count, tag, sender, yield_locals, statements,
+#		     loop_results, finally_statements, finally_results)
+#	_return _clone.init(tkn_loop, break_result_count, tag, sender, yield_locals, statements,
+#			    loop_results, finally_statements, finally_results)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_private _method dcn_iter.init(tkn_loop, break_result_count, tag, sender, yield_locals, statements,
+#			       loop_results,
+#			       finally_statements, finally_results)
+#	.tag << tag
+#	.sender << sender
+#	.tkn_loop << tkn_loop
+#	.break_result_count << break_result_count
+#	.statements <<  rope.deco_check_type(statements)
+#	.yield_locals << rope.deco_check_type(yield_locals)
+#	.loop_results << rope.deco_check_type(loop_results)
+#	.finally_statements << rope.deco_check_type(finally_statements)
+#	.finally_results << rope.deco_check_type(finally_results)
+#	.leave_results << rope.new()
+#	_return _self
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_iter.accept_node_visitor(visitor)
+#	.sender << .sender.accept_node_visitor(visitor)
+#	
+#	_self.accept_node_visitor_in_vector(visitor, .statements)
+#	_self.accept_node_visitor_in_vector(visitor, .loop_results)
+#	_self.accept_node_visitor_in_vector(visitor, .finally_statements)
+#	_self.accept_node_visitor_in_vector(visitor, .finally_results)
+#	_self.accept_node_visitor_in_vector(visitor, .leave_results)
+#	_return _super.accept_node_visitor(visitor)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_iter.accept_body_visitor(visitor)
+#	.sender.accept_body_visitor(visitor)
+#	
+#	_self.accept_body_visitor_in_vector(visitor, .statements)
+#	_self.accept_body_visitor_in_vector(visitor, .loop_results)
+#	_self.accept_body_visitor_in_vector(visitor, .finally_statements)
+#	_self.accept_body_visitor_in_vector(visitor, .finally_results)
+#	_self.accept_body_visitor_in_vector(visitor, .leave_results)
+#	
+#	visitor.visit(_self, .statements)
+#	visitor.visit(_self, .finally_statements)
+#	_super.accept_body_visitor(visitor)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_iter.gather_yield?
+#	_return .tkn_loop.numyield = -1
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_iter.scattered?
+#	_return .tkn_loop.numres = -1
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_iter.has_results?
+#	_if .sender.has_results?
+#	_then
+#		_return _true
+#	_else
+#		_return _self.result_count > 0
+#	_endif
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_iter.result_count
+#	numres << .tkn_loop.numres
+#	_if numres = -1
+#	_then
+#		_return 1
+#	_elif numres = 0 _andif (_not .finally_results.empty?)
+#	_then
+#		_return .finally_results.size
+#	_elif numres = 0 _andif (_not .leave_results.empty?)
+#	_then
+#		_return .leave_results.size
+#	_elif numres = 0 _andif .break_result_count <> 0
+#	_then
+#		_return .break_result_count
+#	_else 
+#		_return numres
+#	_endif
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_iter.decode_on( a_stream, _optional parent, statements )
+#	_if _not .yield_locals.empty?
+#	_then 
+#		a_stream.write( "_for " )
+#		_if _self.gather_yield?
+#		_then
+#			_for loc _over .yield_locals.fast_elements()
+#			_loop
+#				_if loc _isnt .yield_locals.last
+#				_then
+#					loc.decode_on( a_stream )
+#					a_stream.write( ", ")
+#				_else
+#					a_stream.write( "_gather ")
+#					loc.decode_on( a_stream )
+#				_endif 
+#			_endloop
+#		_else
+#			_self.decode_node_list_on(a_stream, .yield_locals)
+#		_endif 
+#	_endif 
+#	a_stream.write("  _over ")
+#	.sender.decode_base_on( a_stream )
+#	a_stream.newline()
+#	a_stream.write( "_loop")
+#	_if .tag _isnt _unset
+#	_then
+#		a_stream.write( " @", .tag )
+#	_endif 
+#	a_stream.newline()
+#	a_stream.indent()
+#	_self.decode_statements_on(a_stream, .statements)
+#	_if .loop_results.empty?.not
+#	_then
+#		a_stream.write( ">>")
+#		_self.decode_node_list_on(a_stream, .loop_results)
+#		a_stream.newline()
+#	_endif
+#	_if .finally_statements.empty?.not _orif .finally_results.empty?.not
+#	_then
+#		a_stream.unindent()
+#		a_stream.write( "_finally")
+#		a_stream.newline()
+#		a_stream.indent()
+#		_self.decode_statements_on(a_stream,.finally_statements)
+#		_if .finally_results.empty?.not
+#		_then
+#			a_stream.write( ">>")
+#			_self.decode_node_list_on(a_stream, .finally_results)
+#			a_stream.newline()
+#		_endif
+#	_endif
+#	a_stream.unindent()
+#	a_stream.write("_endloop")
+#_endmethod
+#$

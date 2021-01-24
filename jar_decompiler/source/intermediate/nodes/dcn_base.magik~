@@ -29,6 +29,13 @@ def_slotted_exemplar(:dcn_base,
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.new(_gather p_args)
+	>> _clone.init(_scatter p_args)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
 _abstract _method dcn_base.decode_on(a_stream, _optional parent, statements)
 	## Every subclass must be able to decode on a a stream.
 _endmethod

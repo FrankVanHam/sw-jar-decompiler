@@ -1,12 +1,13 @@
 _package user
 $
 
+#remex(:java_parser_test)
+
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 def_slotted_exemplar(:java_parser_test,
 	{},
 	:test_case)
 $
-
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_package()
@@ -16,6 +17,7 @@ _method java_parser_test.test_package()
 	
 	_local node << p.get()
 	_self.assert_true(node.is_kind_of?(deco:jpn_package), "should be package")
+	_self.assert_equals("magik.decompile_target", node.name)
 _endmethod
 $
 
@@ -27,6 +29,129 @@ _method java_parser_test.test_import()
 
 	_local node << p.get()
 	_self.assert_true(node.is_kind_of?(deco:jpn_import), "should be import")
+	_self.assert_equals("magik.decompile_target", node.name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_method_invocation()
+	##
+	_local inp << write_string("obj.dothing()")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.parse_expression()
+	
+	_self.assert_true(node.is_kind_of?(deco:jpn_method_invocation), "should be an invocation")
+	_self.assert_equals("obj", node.sender.name)
+	_self.assert_equals("dothing", node.name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_self_method_invocation()
+	##
+	_local inp << write_string("dothing()")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.parse_expression()
+	
+	_self.assert_true(node.is_kind_of?(deco:jpn_method_invocation), "should be an invocation")
+	_self.assert_true(node.sender.is_class_of?(deco:jpn_this))
+	_self.assert_equals("dothing", node.name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_concat_method_invocation()
+	##
+	_local inp << write_string("obj.dothing().doanother()")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.parse_expression()
+	_self.assert_true(node.is_kind_of?(deco:jpn_method_invocation), "should be an invocation")
+	_self.assert_equals("doanother", node.name)
+	_self.assert_true(node.sender.is_kind_of?(deco:jpn_method_invocation), "should be a nested invocation")
+	_self.assert_equals("dothing", node.sender.name)
+	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_method_invocation_with_args()
+	##
+	_local inp << write_string("obj.dothing(x, y)")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.parse_expression()
+	_self.assert_true(node.is_kind_of?(deco:jpn_method_invocation), "should be an invocation") 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_method_invocation_with_method_handle_args()
+	##
+	_local inp << write_string("obj.dothing((MethodHandle)cfr_ldc_0() )")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.parse_expression() 
+	_self.assert_true(node.is_kind_of?(deco:jpn_method_invocation), "should be an invocation")
+	_self.assert_true(node.args[1].expression.is_kind_of?(deco:jpn_method_invocation))
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_method_invocation_with_casted_args()
+	##
+	_local inp << write_string("obj.dothing((Object) x)")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.parse_expression() 
+	_self.assert_true(node.is_kind_of?(deco:jpn_method_invocation), "should be an invocation")
+	_global x
+	x << node 
+	_self.assert_true(node.args[1].expression.is_kind_of?(deco:jpn_variable))
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_assignment()
+	##
+	_local inp << write_string("AType t = obj.dothing()")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.parse_expression()
+	_self.assert_true(node.is_kind_of?(deco:jpn_assignment), "should be an assignment") 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_array_type_assignment()
+	##
+	_local inp << write_string("AType[] t = obj.dothing()")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.parse_expression()
+	_self.assert_true(node.is_kind_of?(deco:jpn_assignment), "should be an assignment") 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_array_type_direct_assignment()
+	##
+	_local inp << write_string("AType[] t = new Object[2]")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.parse_expression()
+	_self.assert_true(node.is_kind_of?(deco:jpn_assignment), "should be an assignment") 
 _endmethod
 $
 
@@ -50,6 +175,18 @@ _method java_parser_test.test_new()
 
 	_local node << p.parse_expression()
 	_self.assert_true(node.is_kind_of?(deco:jpn_new), "should be new")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_declaration()
+	##
+	_local inp << write_string("ResultTuple resultTuple;")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.parse_statement()
+	_self.assert_true(node.is_kind_of?(deco:jpn_declaration), "should be declaration")
 _endmethod
 $
 
@@ -96,7 +233,7 @@ _method java_parser_test.test_class_annotation()
 	##
 	_local inp << write_string("@Override", newline_char,
 				   "@SourceHash(value=888600578)", newline_char,
-				   "@Debugger(value='MagikDebug')", newline_char,
+				   "@Debugger(method='MagikDebug')", newline_char,
 				   "@CodeType(value='Subsidiary')", newline_char,
 				   "public class a_class {}"
 		      )
@@ -114,6 +251,23 @@ _method java_parser_test.test_class_annotation()
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_nested_annotation()
+	## 	
+	_local inp << write_string("@EnvVars(value={",
+				   "@EnvVar(name='__dynamic_frame__', type=Object.class, start=21, end=53, index=0), ",
+				   "@EnvVar(name='_self', type=Object.class, start=13, end=54, index=1)})", newline_char,
+				   "public class a_class {}")
+	inp << inp.substitute_character(%', %")
+	
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	_local node << p.get()
+	
+	_self.assert_true(node.is_class_of?(deco:jpn_class))
+	_self.assert_equals(1,node.annotations.size)
+_endmethod
+$
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_class_with_implements()
@@ -147,51 +301,7 @@ _method java_parser_test.test_class_with_error()
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method java_parser_test.test_base_complete_class()
-	_local inp << write_string(
-			      "public class a_class {", newline_char,
-			      "    public static Object class__a_method() {",
-			      "    }",
-			      "}")
-	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
 
-	_local node << p.get()
-	_self.assert_true(node.is_kind_of?(deco:jpn_class), "should be class")
-	_self.assert_equals(1, node.methods.size, "should have one method")
-
-	_local m << node.methods[1]
-	_self.assert_true(m.args.empty?, "should have no args")
-	_self.assert_true(m.body.empty?, "should have no body")
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method java_parser_test.test_class_method_with_annotation()
-	_local inp << write_string(
-			      "public class a_class {", newline_char,
-			      "@Override", newline_char,
-			      "@SourceHash(value=888600578)", newline_char,
-			      "@Debugger(value='MagikDebug')", newline_char,
-			      "@CodeType(value='Subsidiary')", newline_char,
-			      "    public static Object class__a_method() {",
-			      "    }",
-			      "}")
-	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
-
-	_local node << p.get()
-	_self.assert_true(node.is_kind_of?(deco:jpn_class), "should be class")
-	_self.assert_equals(1, node.methods.size, "should have one method")
-
-	_local m << node.methods[1]
-	_self.assert_true(m.args.empty?, "should have no args")
-	_self.assert_true(m.body.empty?, "should have no body")
-	_self.assert_equals(4, m.annotations.size)
-	
-_endmethod
-$
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_method_with_args()
@@ -201,87 +311,74 @@ _method java_parser_test.test_method_with_args()
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 
-	_local m << p.parse_method()
+	_local m << p.parse_method("deco_test")
 	_self.assert_equals(1, m.args.size)
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method java_parser_test.test_return_plus_method()
-	_local inp << write_string(
-			      "public static Object deco_test__test() {",newline_char,
-			      "return BinaryDispatcher.bootstrap(",
-			      %", "+", %",
-			      ", Integer.valueOf(10), Integer.valueOf(1));",newline_char,
-			      "}",newline_char)
-	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
-
-	_local m << p.parse_method()
-	_self.assert_equals(1, m.body.size)
-	_local stat << m.body[1]
-	_self.assert_true(stat.is_kind_of?(deco:jpn_return), "Return ")
-
-	_local exp << stat.expression
-	_self.assert_true(exp.is_kind_of?(deco:jpn_method_invocation), "returning a method invoc")
-
-	_self.assert_equals(3,exp.args.size)
-_endmethod
-$
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method java_parser_test.test_method_invocation_without_args()
+_method java_parser_test.test_method_definition_without_args()
 	##
-#	_method deco_test.test1()
-#	   _self.test()
-#       _endmethod
-#
 	_local inp << write_string(
-			      "public static Object deco_test__test1(Object _self) {", newline_char,
-			      "ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate('test()', (Object)_self));", newline_char,
-			      "return ResultTuple.EMPTY_TUPLE;", newline_char,
+			      "public static Object deco_test__test1() {", newline_char,
 			      "}")
 	inp << inp.substitute_character(%', %")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 	
-	_local m << p.parse_method()
-	_self.assert_true(m.body[1].is_kind_of?(deco:jpn_assignment), "Should be an assigmnent")
-	_self.assert_true(m.body[2].is_kind_of?(deco:jpn_return), "Should be an return statement")
+	_local m << p.parse_method("deco_test")
+	_self.assert_true(m.is_kind_of?(deco:jpn_method), "Should be an body")
 _endmethod
 $
-
-_pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method java_parser_test.test_statement_and_return()
-	_local inp << write_string(
-			      "public static Object deco_test__test() {",newline_char,
-			      "ProcInvoker.naturalBootstrap(", %", "()", %", ");", newline_char,
-			      "return BinaryDispatcher.bootstrap("+", Integer.valueOf(10), Integer.valueOf(1));",newline_char,
-			      "}",newline_char)
-	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
-
-	_local m << p.parse_method()
-	_self.assert_equals(2, m.body.size)
-	_local stat << m.body[1]
-	_self.assert_true(stat.is_kind_of?(deco:jpn_method_invocation), "should be a statement")
-_endmethod
-$
-
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_casting()
 	_local inp << write_string(
-			      "public static Object deco_test__test() {",newline_char,
-			      "return (Object)BinaryDispatcher.bootstrap("+");",newline_char,
-			      "}",newline_char)
+			      "(Object)a_var")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 
-	_local m << p.parse_method()
-	_local ret << m.body[1]
-	_self.assert_true(ret.is_kind_of?(deco:jpn_return), "should be a return statement")
-	_self.assert_true(ret.expression.is_kind_of?(deco:jpn_cast), "should be cast")
+	_local c << p.parse_expression()
+	_self.assert_true(c.is_kind_of?(deco:jpn_cast), "should be cast")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_array_casting()
+	_local inp << write_string(
+			      "(Object[])a_var")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local c << p.parse_expression()
+	_self.assert_true(c.is_kind_of?(deco:jpn_cast), "should be cast")
+	_self.assert_true(c.type.array?, "should be an array type")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_keyword_casting()
+	_local inp << write_string(
+			      "(int)a_var")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local c << p.parse_expression()
+	_self.assert_true(c.is_kind_of?(deco:jpn_cast), "should be cast")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_keyword_array_casting()
+	_local inp << write_string(
+			      "(int[])a_var")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local c << p.parse_expression()
+	_self.assert_true(c.is_kind_of?(deco:jpn_cast), "should be cast")
+	_self.assert_true(c.type.array?, "should be an array type")
 _endmethod
 $
 
@@ -348,36 +445,14 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method java_parser_test.test_simple_exemplar_and_method()
-	_local inp << _self.simple_test_source_code()
+_method java_parser_test.test_xxx()
+	_local inp << write_string("resultTuple = ResultTuple.EMPTY_TUPLE;")
+	inp << inp.substitute_character(%', %")
+	
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
-
-	_local m << p.parse_file()
-	_self.assert_true(m.is_kind_of?(deco:jpn_file), "should be a file")
-	_self.assert_equals(2, m.content.size)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method java_parser_test.simple_test_source_code()
-	_local inp << write_string(
-			      "public class deco_test_34 {", newline_char,
-			      "    public static Object deco_test__test(Object _self) {", newline_char,
-			      "        return BinaryDispatcher.bootstrap('+', Integer.valueOf(10), Integer.valueOf(1));", newline_char,
-			      "    }", newline_char,
-			      "}", newline_char,
-			      "public class deco_test_33", newline_char,
-			      "implements ExecutableMagik {", newline_char,
-			      "    @Override", newline_char,
-			      "    public Object execute() {", newline_char,
-			      "        DynamicAccessor.bootstrapStorer('!source_file!', 'sw', (Object)ConstantBuilder.stringBootstrap('symbol', 'E:\\jar_decompiler\\decompile_target\\source\\deco_test.magik'));", newline_char,
-			      "        DynamicAccessor.bootstrapStorer('!current_package!', 'sw', (Object)ProcInvoker.bootstrap('()', GlobalAccessor.bootstrapFetcher2('fetchGlobal2', 'sw', 'package'), ConstantBuilder.stringBootstrap('symbol', 'user')));", newline_char,
-			      "        ProcInvoker.naturalBootstrap('()', (Object)GlobalAccessor.bootstrapFetcher2('fetchGlobal2', 'sw', 'def_slotted_exemplar'), (Object)ConstantBuilder.symbolBootstrap('symbol', 'deco_test'), (Object)VectorBuilder.EMPTY_VECTOR);", newline_char,
-			      "        return TupleBuilder.bootstrap('tb', MagikObjectUtils.createMethod('deco_test', 'test()', deco_test_34.class, 'deco_test__test', 1, 1));", newline_char,
-			      "    }", newline_char,
-			      "}", newline_char )
-	inp << inp.substitute_character(%', %")
-	>> inp
+	_local m << p.parse_expression()
+	#debug_print(m.right)
+	#_self.assert_true(m.right.is_kind_of?(deco:jpn_method_invocation), "should be a method invoc")
 _endmethod
 $

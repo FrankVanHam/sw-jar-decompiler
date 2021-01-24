@@ -6,18 +6,24 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_import,
 	{
-		{:lex_value, _unset}
+		{:type, _unset}
 	},
 	:jpn_base)
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_import.init(p_type)
+	##
+	assert(p_type.is_class_of?(jpn_type))
+	
+	.type << p_type
+	>> _super.init()
+_endmethod
+$
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_import.init(p_lex_value)
-	##
-	assert(p_lex_value.is_class_of?(lexeme))
-	
-	.lex_value << p_lex_value
-	>> _super.init()
+_method jpn_import.name
+	## 
+	>> .type.name
 _endmethod
 $

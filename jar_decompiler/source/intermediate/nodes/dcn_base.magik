@@ -284,31 +284,6 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_base.decode_args_on(a_stream, results, scatter?, numres)
-	comma? << _false 
-	res << 0
-	_for val_node _over results.fast_elements()
-	_loop
-		_if comma? ^<< _true
-		_then
-			a_stream.write( ", " )
-		_endif 
-		_if scatter? _andif
-		    res = (numres-1)
-		_then
-			#last elements
-			val_node.decode_scattered_on(a_stream)
-			res +<< 1
-		_else
-			val_node.decode_on(a_stream)
-			res +<< val_node.result_count
-		_endif
-	_endloop 
-_endmethod
-$
-
-
-_pragma(classify_level=restricted, topic={decompiler})
 _method dcn_base.create_op()
 	_return _self 
 _endmethod

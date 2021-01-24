@@ -22,6 +22,7 @@ _method deco_magikobjectutils.createmethod(p_parser,
 	_then
 		class_name << class_name.slice(1, class_name.size-6)
 	_endif
+	java_method_name << java_method_name.substitute_string("\\","\")
 	_local meth << p_parser.assign_magik_method_names(class_name, java_method_name, exemplar_name, method_name)
 	>> meth
 _endmethod

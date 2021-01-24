@@ -94,6 +94,7 @@ _private _method lexeme.init(p_type, p_value, p_line, p_column)
 	.line << p_line
 	.column << p_column
 	.type << p_type
+	assert(p_value _is _unset _orif p_value.is_class_of?(""))
 	.value << p_value
 	>> _self 
 _endmethod
@@ -159,3 +160,46 @@ _method lexeme.is_number?
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.is_operator?(p_value)
+	##
+	>> _self.is_operator? _andif .value = p_value
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.is_separator?(p_value)
+	##
+	>> _self.is_separator? _andif .value = p_value
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.split(p_index)
+	##
+	_local v1 << .value.slice(1, p_index-1)
+	_local v2 << .value.slice_to_end(p_index+1)
+	_return _self.new(.type, v1, .line, .column ),_self.new(.type, v2, .line, .column+p_index )
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.append_dotted(p_lex)
+	##
+	_self.append_string(write_string(".", p_lex.value))
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.append(p_lex)
+	##
+	_self.append_string(p_lex.value)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.append_string(p_string)
+	##
+	.value << write_string(.value, p_string)
+_endmethod
+$

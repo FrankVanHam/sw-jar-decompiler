@@ -1,0 +1,127 @@
+_package user
+$
+
+#remex(:java_parser_method_definition_test)
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+def_slotted_exemplar(:java_parser_method_definition_test,
+	{},
+	:test_case)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_method_definition_test.test_method_no_args()
+	_local inp << write_string(
+			      "public class a_class {", newline_char,
+			      "    public static Object class__a_method() {",
+			      "    }",
+			      "}")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.get()
+	_self.assert_true(node.is_kind_of?(deco:jpn_class), "should be class")
+	_self.assert_equals(1, node.methods.size, "should have one method")
+
+	_local m << node.methods[1]
+	_self.assert_true(m.args.empty?, "should have no args")
+	_self.assert_true(m.body.empty?, "should have no body")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_method_definition_test.test_method_illegal_name()
+	_local inp << write_string(
+			      "public class a_class {", newline_char,
+			      "    public static Object deco_test__test_args_asign()\l\l_() {",
+			      "    }",
+			      "}")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.get()
+	_local m << node.methods[1]
+	_self.assert_equals("deco_test__test_args_asign()\l\l_", m.name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_method_definition_test.test_method_illegal_name2()
+	_local inp << write_string(
+			      "public class a_class {", newline_char,
+			      "    public static Object deco_test__\b]\l\l_() {",
+			      "    }",
+			      "}")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.get()
+	_local m << node.methods[1]
+	_self.assert_equals("deco_test__\b]\l\l_", m.name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_method_definition_test.test_method_with_args()
+	_local inp << write_string(
+			      "public class a_class {", newline_char,
+			      "    public static Object class__a_method(Object _self, Object c, Object a) {",
+			      "    }",
+			      "}")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.get()
+	_self.assert_true(node.is_kind_of?(deco:jpn_class), "should be class")
+	_self.assert_equals(1, node.methods.size, "should have one method")
+
+	_local m << node.methods[1]
+	_self.assert_equals(3, m.args.size, "should have 3 args")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_method_definition_test.test_method_with_gather_args()
+	_local inp << write_string(
+			      "public class a_class {", newline_char,
+			      "    public static Object class__a_method(Object _self, Object ... c) {",
+			      "    }",
+			      "}")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.get()
+	_self.assert_true(node.is_kind_of?(deco:jpn_class), "should be class")
+	_self.assert_equals(1, node.methods.size, "should have one method")
+
+	_local m << node.methods[1]
+	_self.assert_equals(2, m.args.size, "should have 2 args")
+	_self.assert_true(m.args[2].varargs?, "last is varargs")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_method_definition_test.test_class_method_with_annotation()
+	_local inp << write_string(
+			      "public class a_class {", newline_char,
+			      "@Override", newline_char,
+			      "@SourceHash(value=888600578)", newline_char,
+			      "@Debugger(value='MagikDebug')", newline_char,
+			      "@CodeType(value='Subsidiary')", newline_char,
+			      "    public static Object class__a_method() {",
+			      "    }",
+			      "}")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.get()
+	_self.assert_true(node.is_kind_of?(deco:jpn_class), "should be class")
+	_self.assert_equals(1, node.methods.size, "should have one method")
+
+	_local m << node.methods[1]
+	_self.assert_true(m.args.empty?, "should have no args")
+	_self.assert_true(m.body.empty?, "should have no body")
+	_self.assert_equals(4, m.annotations.size)
+	
+_endmethod
+$

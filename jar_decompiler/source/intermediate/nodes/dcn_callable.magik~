@@ -105,7 +105,7 @@ _method dcn_callable.decode_on(a_stream, _optional parent, statements)
 	
 	a_stream.write( "_method", " ", _self.exemplar_name )
 	name << _self.method_name.as_charvec()
-	
+
 	_if name.index_of_seq( "()<<" ) _isnt _unset 
 	_then
 		_self.decode_assign_parenthesis_args_on(a_stream, name, _false )

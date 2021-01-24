@@ -23,7 +23,7 @@ _method lexical_scanner_test.test_keyword()
 	_self.assert_true(l.is_keyword?, "should be keyword")
 	l << s.get()
 	_self.assert_true(l.is_identifier?, "should be identifier")
-	_self.assert_equals("magik.decompile_target", l.value)
+	_self.assert_equals("magik", l.value)
 _endmethod
 $
 

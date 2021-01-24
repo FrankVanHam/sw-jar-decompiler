@@ -1,0 +1,12 @@
+_package user
+$
+
+_method object.dp
+	debug_print(_self)
+_endmethod
+$
+
+_method object.p
+	print(_self)
+_endmethod
+$
