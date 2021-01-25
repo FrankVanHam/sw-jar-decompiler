@@ -20,7 +20,7 @@ $
 
 
 
-#remex(:dcn_literal_constant)
+remex(:dcn_literal_constant)
 $
 
 
@@ -31,10 +31,10 @@ def_slotted_exemplar(:dcn_literal_constant,
 			     
 		     }, :dcn_constant )
 $
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_literal_constant.decode_on( a_stream, _optional parent, statements)
-#	
-#	a_stream.write(.value)
-#_endmethod
-#$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_literal_constant.decode_on( a_stream, _optional parent, statements)
+	
+	a_stream.write(.value)
+_endmethod
+$

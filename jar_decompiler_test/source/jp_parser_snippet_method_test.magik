@@ -14,12 +14,6 @@ jpn_parser_method_snippet_test.define_shared_constant(:filename, "jpn_parser_met
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method jpn_parser_method_snippet_test.get_name()
-	>> "Method Snippet"
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method jpn_parser_method_snippet_test.run_test()
 	## 
 	_local s << deco:lexical_scanner.new(.before.read_stream())
@@ -28,7 +22,7 @@ _method jpn_parser_method_snippet_test.run_test()
 
 	_local jp << deco:jpn_parser.new()
 	_local dcn_node << jp.parse_method("deco_test", jpn_meth)
-	dcn_node.bind_names("deco_test", "test()")
+	dcn_node.bind_names("deco_test", "test()", 1, 1)
 	
 	_local out_ind << indentation_stream.new(out << internal_text_output_stream.new())
 	dcn_node.decode_on(out_ind)

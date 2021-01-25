@@ -25,47 +25,25 @@ _pragma(classify_level=restricted, topic={decompiler})
 ## Is the base for a magik method and amgikc method.
 def_slotted_exemplar( :dcn_callable,
 		      {
-			      {:proc, _unset},
 			      {:body, _unset, :readable},
-			      {:locals, _unset},
-			      {:literals, _unset}
+			      {:args, _unset, :readable}
 		      }, :dcn_decompile_result )
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_callable.new( proc, statements, locals, literals )
-	_return _clone.init( proc, statements, locals, literals )
+_method dcn_callable.new(p_args, p_body)
+	_return _clone.init(p_args, p_body)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_callable.init( proc, body, locals, literals )
-	.proc << proc
-	.body << body
-	.locals << locals 
-	.literals << literals
+_private _method dcn_callable.init(p_args, p_body)
+	.body << p_body
+	.args << p_args
 	_return _super.init() 
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_callable.body << p_body
-	##
-	.body << p_body
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_callable.method_name
-	_return .proc.name
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_callable.iter?
-	_return .proc.iter?
-_endmethod
-$
 
 #_pragma(classify_level=restricted, topic={decompiler})
 #_method dcn_callable.my_last_real_node?(a_node)
@@ -171,87 +149,87 @@ _method dcn_callable.inject_global_and_locals(a_stream)
 _endmethod
 $
 
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_private _method dcn_callable.decode_global_declarations_on(a_stream)
+#	globals << rope.new()
+#	dynamic_imports << rope.new()
+#	_for i_local _over .literals.fast_elements()
+#	_loop
+#		_if _not i_local.is_constant? _then _continue _endif
+#		_if _not i_local.is_global?(condition_handler_cluster)
+#		_then
+#			_if _not i_local.indirect? _andif i_local.dynamic_loaded? _andif
+#			    _not i_local.dynamic?
+#			_then
+#				dynamic_imports.add(i_local)
+#			_elif i_local.indirect? _andif _not i_local.dynamic_loaded?
+#			_then 
+#				globals.add(i_local)
+#			_endif
+#		_endif 
+#	_endloop
+#	
+#	_if _not globals.empty?
+#	_then 
+#		a_stream.write( "_global ")
+#		comma? << _false 
+#		_for i_local _over globals.fast_elements()
+#		_loop
+#			_if (comma?^<< _true) _then a_stream.write( ", ") _endif 
+#			i_local.decode_on(a_stream)
+#		_endloop
+#		a_stream.newline()
+#	_endif 
+#	_if _not dynamic_imports.empty?
+#	_then 
+#		a_stream.write( "_dynamic _import ")
+#		comma? << _false 
+#		_for i_local _over dynamic_imports.fast_elements()
+#		_loop
+#			_if (comma?^<< _true) _then a_stream.write( ", ") _endif 
+#			i_local.decode_on(a_stream)
+#		_endloop
+#		a_stream.newline()
+#	_endif 
+#_endmethod
+#$
 
-_pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_callable.decode_global_declarations_on(a_stream)
-	globals << rope.new()
-	dynamic_imports << rope.new()
-	_for i_local _over .literals.fast_elements()
-	_loop
-		_if _not i_local.is_constant? _then _continue _endif
-		_if _not i_local.is_global?(condition_handler_cluster)
-		_then
-			_if _not i_local.indirect? _andif i_local.dynamic_loaded? _andif
-			    _not i_local.dynamic?
-			_then
-				dynamic_imports.add(i_local)
-			_elif i_local.indirect? _andif _not i_local.dynamic_loaded?
-			_then 
-				globals.add(i_local)
-			_endif
-		_endif 
-	_endloop
-	
-	_if _not globals.empty?
-	_then 
-		a_stream.write( "_global ")
-		comma? << _false 
-		_for i_local _over globals.fast_elements()
-		_loop
-			_if (comma?^<< _true) _then a_stream.write( ", ") _endif 
-			i_local.decode_on(a_stream)
-		_endloop
-		a_stream.newline()
-	_endif 
-	_if _not dynamic_imports.empty?
-	_then 
-		a_stream.write( "_dynamic _import ")
-		comma? << _false 
-		_for i_local _over dynamic_imports.fast_elements()
-		_loop
-			_if (comma?^<< _true) _then a_stream.write( ", ") _endif 
-			i_local.decode_on(a_stream)
-		_endloop
-		a_stream.newline()
-	_endif 
-_endmethod
-$
 
-
-_pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_callable.decode_locals_on(a_stream)
-
-	locals << rope.new()
-	_for i_local _over .locals.fast_elements()
-	_loop
-		_if _not i_local.declared?
-		_then
-			locals.add(i_local)
-		_endif 
-	_endloop
-	
-	_if locals.empty? _then _return _endif
-	a_stream.write( "_local ")
-	_for i_local _over locals.fast_elements()
-	_loop
-		i_local.decode_on(a_stream)
-		_if i_local <> locals.last
-		_then
-			a_stream.write( ", ")
-		_endif 
-	_endloop
-	a_stream.newline()
-_endmethod
-$
+#_pragma(classify_level=restricted, topic={decompiler})
+#_private _method dcn_callable.decode_locals_on(a_stream)
+#
+#	locals << rope.new()
+#	_for i_local _over .locals.fast_elements()
+#	_loop
+#		_if _not i_local.declared?
+#		_then
+#			locals.add(i_local)
+#		_endif 
+#	_endloop
+#	
+#	_if locals.empty? _then _return _endif
+#	a_stream.write( "_local ")
+#	_for i_local _over locals.fast_elements()
+#	_loop
+#		i_local.decode_on(a_stream)
+#		_if i_local <> locals.last
+#		_then
+#			a_stream.write( ", ")
+#		_endif 
+#	_endloop
+#	a_stream.newline()
+#_endmethod
+#$
 
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_callable.decode_bracket_args_on(a_stream, method_name)
 	a_stream.write( "[" )
-	_for i, name _over .proc.basic_arglist.fast_keys_and_elements()
+	_for i, name _over .args.fast_keys_and_elements()
 	_loop
 		a_stream.write( name )
-		_if i <> .proc.num_args
+		_if i <> .args.size
 		_then
 			a_stream.write( ", ")
 		_endif
@@ -273,7 +251,7 @@ _method dcn_callable.decode_assign_parenthesis_args_on(a_stream, method_name, bo
 	a_stream.write( ") ")
 	_if boot? _then a_stream.write("^") _endif 
 	a_stream.write( "<< " )
-	a_stream.write( .proc.basic_arglist.first )
+	a_stream.write( .args.first )
 _endmethod
 $
 
@@ -293,7 +271,7 @@ _method dcn_callable.decode_assign_bracket_args_on(a_stream, method_name, boot?)
 	a_stream.write( "]")
 	_if boot? _then a_stream.write( "^") _endif 
 	a_stream.write( "<< " )
-	a_stream.write( .proc.basic_arglist.first )
+	a_stream.write( .args.first )
 _endmethod
 $
 
@@ -303,7 +281,7 @@ _method dcn_callable.decode_args_on(a_stream)
 	name << _self.method_name
 	a_stream.write( ".", name.slice( 1, name.size-2))
 	a_stream.write( "(" )
-	_if .proc.num_args > 0
+	_if .args > 0
 	_then
 		_self.int!decode_args_on(a_stream, 1)
 	_endif 
@@ -311,18 +289,26 @@ _method dcn_callable.decode_args_on(a_stream)
 _endmethod
 $
 
-
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_callable.decode_assign_on(a_stream)
 	name << _self.method_name
 	a_stream.write( ".", name.slice( 1, name.size-2))
 	a_stream.write( "<< " )
-	a_stream.write( .proc.basic_arglist[1] )
+	a_stream.write( .args[1] )
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_callable.int!decode_args_on(a_stream, start)
-	_return _super.decode_args_on(a_stream, .proc, start)
+_method dcn_callable.int!decode_args_on(p_stream, p_start_index)
+	##
+	_local comma? << _false
+	_for i_idx, i_arg _over .args.fast_keys_and_elements()
+	_loop
+		_if i_idx >= p_start_index
+		_then 
+			_if (comma?^<<_true) _then p_stream.write(", ") _endif
+			p_stream.write(i_arg)
+		_endif 
+	_endloop 
 _endmethod
 $

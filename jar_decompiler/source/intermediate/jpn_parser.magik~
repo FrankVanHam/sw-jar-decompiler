@@ -53,7 +53,7 @@ _method jpn_parser.parse_expression(p_node)
 		_return _self.parse_cast(p_node)
 	_elif p_node.is_class_of?(jpn_method_invocation)
 	_then
-		_if p_node.identifier _isnt _unset
+		_if p_node.sender.is_class_of?(jpn_this).not
 		_then 
 			(exec, meth) << _self.executer_and_method_from_node(p_node)
 			_return exec.perform(meth, _self, _scatter p_node.args)
@@ -61,7 +61,8 @@ _method jpn_parser.parse_expression(p_node)
 			_return dcn_constant.new(p_node.name)
 		_endif 
 	_elif p_node.is_class_of?(jpn_constant) _orif
-	      p_node.is_class_of?(jpn_type) 
+	      p_node.is_class_of?(jpn_type) _orif
+	      p_node.is_class_of?(jpn_variable) 
 	_then
 		_if p_node.string_value.includes?(%.).not
 		_then
@@ -141,8 +142,6 @@ _method jpn_parser.parse_assignment(p_jnode)
 	##
 	_local left << _self.parse_local(p_jnode.left)
 	_local right << _self.parse_expression(p_jnode.right)
-	_global x
-	x << p_jnode
 	>> dcn_local_assignment.new(_unset, _false, left, right, _unset )
 _endmethod
 $
@@ -216,9 +215,19 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_method(p_class_name, p_meth_node)
 	##
+	_local java_args << p_meth_node.args.copy()
+	_if java_args.empty?.not _then java_args.remove_first() _endif
+	
+	_local scatter? << _if java_args.empty?.not
+			   _then >> java_args.last.varargs?
+			   _else >> _false
+			   _endif
+	_local args << java_args.map(_proc(x) >> x.name _endproc)
+	
+	_local body << _self.parse_body(p_meth_node.body)
+	
 	_local type << p_meth_node.type 
-	_local m_node << dcn_method.new(p_class_name, p_meth_node.name, type )
-	m_node.body << _self.parse_body(p_meth_node.body)
+	_local m_node << dcn_method.new(p_class_name, p_meth_node.name, args, scatter?, body, type )
 	>> m_node
 _endmethod
 $
@@ -230,11 +239,6 @@ _method jpn_parser.parse_body(p_body_jnode)
 	_for i_jnode _over p_body_jnode.statements.fast_elements()
 	_loop
 		_local statement_node << _self.parse_expression(i_jnode)
-		_if statement_node _is _unset
-		_then
-			_global x
-			x << i_jnode
-		_endif 
 		b_node.add(statement_node)
 	_endloop
 	>> b_node
@@ -260,9 +264,9 @@ $
 
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_parser.assign_magik_method_names(p_class_name, p_java_method_name, p_exemplar_name, p_method_name)
+_method jpn_parser.assign_magik_method_names(p_class_name, p_java_method_name, p_exemplar_name, p_method_name, p_nr_args, p_nmandatory_args)
 	##
-	>> .top.assign_magik_method_names(p_class_name, p_java_method_name, p_exemplar_name, p_method_name)
+	>> .top.assign_magik_method_names(p_class_name, p_java_method_name, p_exemplar_name, p_method_name, p_nr_args, p_nmandatory_args)
 _endmethod
 $
 _pragma(classify_level=restricted, topic={jar_decompiler})

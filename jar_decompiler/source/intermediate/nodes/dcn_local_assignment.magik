@@ -212,8 +212,6 @@ $
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_local_assignment.decode_on( a_stream, _optional parent, statements)
-	_global x
-	x << _self 
 	_if .local.ignore?
 	_then
 		.expression.decode_on( a_stream )

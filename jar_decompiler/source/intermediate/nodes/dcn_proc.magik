@@ -1,151 +1,151 @@
 _package deco
 $
 
-remex(:dcn_proc)
+#remex(:dcn_proc)
 $
-
-_pragma(classify_level=restricted, topic={decompiler})
-## Node to represent a procedure declaration. Note that the
-## declaration could be inside a body (method or proc) or
-## outside in the cli environment.
-def_slotted_exemplar( :dcn_proc,
-		      {
-			      {:inline_proc?, _unset},
-			      {:imports, _unset},
-			      {:sorted_imports, _unset}
-		      }, :dcn_callable )
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_proc.new( p_proc, inline_proc?, statements, locals, literals, imports, sorted_imports )
-	##
-	## Return a new nde for the procedure. In INLINE_PROC? is true,
-	## then the procedure is declared inside a body.
-	_return _clone.init( p_proc, inline_proc?, statements, locals, literals, imports, sorted_imports  )
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_proc.init( p_proc,inline_proc?,  statements, locals, literals, imports, sorted_imports  )
-	.inline_proc? << inline_proc?
-	.imports << imports
-	_if sorted_imports _is _unset
-	_then
-		.sorted_imports << imports
-	_else 
-		.sorted_imports << sorted_imports
-	_endif
-	assert(.imports.size = .sorted_imports.size, "sizes should be identical because sorted_imports is only to preserver the order of declaration")
-	_super.init(p_proc, statements, locals, literals)
-	_self.rename_locals()
-	_return _self 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_proc.rename_locals()
-	_for i_node _over .locals.fast_elements()
-	_loop
-		i_node.make_name_local()
-	_endloop
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_proc.try_index
-	_return .literals[1].value
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_proc.named?
-	_return .proc.name _isnt :unnamed
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_proc.name
-	_return .proc.name
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_proc.result_count
-	_return 1
-_endmethod
-$
-
+#
 #_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_proc.single_return_value
-#	_return .statements[1].single_return_value
+### Node to represent a procedure declaration. Note that the
+### declaration could be inside a body (method or proc) or
+### outside in the cli environment.
+#def_slotted_exemplar( :dcn_proc,
+#		      {
+#			      {:inline_proc?, _unset},
+#			      {:imports, _unset},
+#			      {:sorted_imports, _unset}
+#		      }, :dcn_callable )
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_proc.new( p_proc, inline_proc?, statements, locals, literals, imports, sorted_imports )
+#	##
+#	## Return a new nde for the procedure. In INLINE_PROC? is true,
+#	## then the procedure is declared inside a body.
+#	_return _clone.init( p_proc, inline_proc?, statements, locals, literals, imports, sorted_imports  )
 #_endmethod
 #$
-
-
-_pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_proc.level_topics_and_usages
-	_return .compiler_info.level_topics_and_usages_for_proc(.proc)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_proc.comment
-	_return .compiler_info.comment_for_proc(.proc)
-_endmethod
-$
-
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_proc.decode_args_on(a_stream)
-	a_stream.write( "(" )
-	_self.int!decode_args_on(a_stream, 1)
-	a_stream.write( ") ")
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_proc.decode_on(a_stream, _optional parent, statements)
-	##
-	## Write a formated output on the stream
-	##
-	_if _not .inline_proc?
-	_then 
-		_self.decode_pragma_on(a_stream)
-	_endif 
-	_if .proc.is_class_of?(iter_procedure)
-	_then
-		a_stream.write( "_iter ")
-	_endif 
-	a_stream.write( "_proc")
-	_if _self.named?
-	_then
-		a_stream.write( " @", _self.name )
-	_endif
-	_self.decode_args_on(a_stream)
-	a_stream.newline()
-	a_stream.indent()
-	_self.decode_comment_on(a_stream)
-	_self.decode_body_on(a_stream)
-	a_stream.unindent()
-	a_stream.write( "_endproc" )
-_endmethod
-$
-
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_proc.inject_global_and_locals(a_stream)
-	## subclassed to inject _import statement.
-	_self.decode_imports_on(a_stream)
-	_super.inject_global_and_locals(a_stream)
-_endmethod
-$
-
-
-_pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_proc.decode_imports_on(a_stream)
-	_if .imports.empty? _then _return _endif
-	a_stream.write( "_import ")
-	_self.decode_node_list_on(a_stream, .sorted_imports )
-	a_stream.newline()
-_endmethod
-$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_private _method dcn_proc.init( p_proc,inline_proc?,  statements, locals, literals, imports, sorted_imports  )
+#	.inline_proc? << inline_proc?
+#	.imports << imports
+#	_if sorted_imports _is _unset
+#	_then
+#		.sorted_imports << imports
+#	_else 
+#		.sorted_imports << sorted_imports
+#	_endif
+#	assert(.imports.size = .sorted_imports.size, "sizes should be identical because sorted_imports is only to preserver the order of declaration")
+#	_super.init(p_proc, statements, locals, literals)
+#	_self.rename_locals()
+#	_return _self 
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_private _method dcn_proc.rename_locals()
+#	_for i_node _over .locals.fast_elements()
+#	_loop
+#		i_node.make_name_local()
+#	_endloop
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_proc.try_index
+#	_return .literals[1].value
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_private _method dcn_proc.named?
+#	_return .proc.name _isnt :unnamed
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_private _method dcn_proc.name
+#	_return .proc.name
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_proc.result_count
+#	_return 1
+#_endmethod
+#$
+#
+##_pragma(classify_level=restricted, topic={decompiler})
+##_method dcn_proc.single_return_value
+##	_return .statements[1].single_return_value
+##_endmethod
+##$
+#
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_private _method dcn_proc.level_topics_and_usages
+#	_return .compiler_info.level_topics_and_usages_for_proc(.proc)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_private _method dcn_proc.comment
+#	_return .compiler_info.comment_for_proc(.proc)
+#_endmethod
+#$
+#
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_proc.decode_args_on(a_stream)
+#	a_stream.write( "(" )
+#	_self.int!decode_args_on(a_stream, 1)
+#	a_stream.write( ") ")
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_proc.decode_on(a_stream, _optional parent, statements)
+#	##
+#	## Write a formated output on the stream
+#	##
+#	_if _not .inline_proc?
+#	_then 
+#		_self.decode_pragma_on(a_stream)
+#	_endif 
+#	_if .proc.is_class_of?(iter_procedure)
+#	_then
+#		a_stream.write( "_iter ")
+#	_endif 
+#	a_stream.write( "_proc")
+#	_if _self.named?
+#	_then
+#		a_stream.write( " @", _self.name )
+#	_endif
+#	_self.decode_args_on(a_stream)
+#	a_stream.newline()
+#	a_stream.indent()
+#	_self.decode_comment_on(a_stream)
+#	_self.decode_body_on(a_stream)
+#	a_stream.unindent()
+#	a_stream.write( "_endproc" )
+#_endmethod
+#$
+#
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_proc.inject_global_and_locals(a_stream)
+#	## subclassed to inject _import statement.
+#	_self.decode_imports_on(a_stream)
+#	_super.inject_global_and_locals(a_stream)
+#_endmethod
+#$
+#
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_private _method dcn_proc.decode_imports_on(a_stream)
+#	_if .imports.empty? _then _return _endif
+#	a_stream.write( "_import ")
+#	_self.decode_node_list_on(a_stream, .sorted_imports )
+#	a_stream.newline()
+#_endmethod
+#$

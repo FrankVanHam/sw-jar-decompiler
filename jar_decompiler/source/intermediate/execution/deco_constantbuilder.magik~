@@ -13,6 +13,9 @@ _method deco_constantbuilder.stringbootstrap(p_parser, p_type_node, p_value_node
 	>> _if type = "symbol"
 	   _then
 		   >> dcn_constant.new(str_value.as_symbol())
+	   _elif type = "string"
+	   _then
+		   >> dcn_constant.new(str_value)
 	   _else
 		   1.stop
 	   _endif

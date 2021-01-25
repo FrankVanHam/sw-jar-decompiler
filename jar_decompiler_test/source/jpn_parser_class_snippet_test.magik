@@ -15,12 +15,6 @@ $
 
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method jpn_parser_class_snippet_test.get_name()
-	>> "Class Snippet"
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method jpn_parser_class_snippet_test.run_test()
 	## 
 	_local s << deco:lexical_scanner.new(.before.read_stream())

@@ -135,3 +135,22 @@ _method lexical_scanner_test.test_number()
 _endmethod
 $
 
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method lexical_scanner_test.test_special_identifiers()
+	##
+	_local strs << {"args_asign()\l\l_",
+			"test_args_asign()\l\l_",
+			"deco_test__\b]_",
+			"deco_test__\b]\l\l_",
+			"boot_becomes^\l\l_",
+			"test_boot_par()^\l\l_",
+			"deco_test__\b]^\l\l_"}
+	_for i_string _over strs.fast_elements()
+	_loop
+		_local s << deco:lexical_scanner.new(i_string.read_stream())
+		_local l << s.get()
+		_self.assert_equals(i_string, l.value)
+	_endloop 
+_endmethod
+$

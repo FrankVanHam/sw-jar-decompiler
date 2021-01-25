@@ -14,12 +14,6 @@ jpn_parser_method_definition_snippet_test.define_shared_constant(:filename, "jpn
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method jpn_parser_method_definition_snippet_test.get_name()
-	>> "Method Definition Snippet"
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method jpn_parser_method_definition_snippet_test.run_test()
 	## 
 	_local s << deco:lexical_scanner.new(.before.read_stream())

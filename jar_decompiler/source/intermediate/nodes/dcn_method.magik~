@@ -12,23 +12,26 @@ def_slotted_exemplar( :dcn_method,
 			      {:java_method_name, _unset},
 			      {:type, _unset, :readable},
 			      {:exemplar_name, _unset, :readable},
-			      {:name, _unset}
+			      {:name, _unset, :readable}
 		      }, :dcn_callable )
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_method.new(p_class_name, p_method_name, p_type)
+_method dcn_method.new(p_class_name, p_method_name, p_args, p_scatter?, p_body, p_type)
 	##
-	>> _clone.init(p_class_name, p_method_name, p_type )
+	>> _clone.init(p_class_name, p_method_name, p_args, p_scatter?, p_body, p_type )
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_method.init(p_class_name, p_method_name, p_type )
+_private _method dcn_method.init(p_class_name, p_method_name, p_args, p_scatter?, p_body, p_type )
+
+	assert(p_body.is_kind_of?(dcn_body))
+	
 	.java_class_name << p_class_name
 	.java_method_name << p_method_name
-	.type << p_type 
-	>> _super.init(_unset, _unset, {}, {})
+	.type << p_type
+	>> _super.init(p_args, p_scatter?, p_body)
 _endmethod
 $
 
@@ -47,10 +50,12 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_method.bind_names(p_exemplar_name, p_method_name)
+_method dcn_method.bind_names(p_exemplar_name, p_method_name, p_nr_args, p_mandatory_args)
 	##
 	.exemplar_name << p_exemplar_name
 	.name << p_method_name
+	.nr_args << p_nr_args
+	.nr_mandatory_args << p_mandatory_args
 _endmethod
 $
 
@@ -71,12 +76,6 @@ _method dcn_method.iter?
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_method.int!decode_args_on(a_stream, start)
-	show("dcn_method.int!decode_args_on(")
-	#_return _super.decode_args_on(a_stream, .proc, start)
-_endmethod
-$
 
 #_pragma(classify_level=restricted, topic={decompiler})
 ### Represents a node for a decompiled method from magik.

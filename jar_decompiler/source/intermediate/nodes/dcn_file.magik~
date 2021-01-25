@@ -31,7 +31,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_file.add_node(p_node)
+_method dcn_file.add_statement(p_node)
 	.statements.add(p_node)
 _endmethod
 $
@@ -61,8 +61,25 @@ _method dcn_file.assign_magik_method_names(p_class_name, p_java_method_name, p_e
 	_else
 		condition.raise(:error, :string, "cannot find method to bind")
 	_endif
+	>> meth
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_file.decode_on(p_stream)
+	##
+	_for i_statement _over .statements.fast_elements()
+	_loop
+		_if i_statement.is_no_op? _then _continue _endif 
+		i_statement.decode_on(p_stream)
+		p_stream.newline()
+		p_stream.write("$")
+		p_stream.newline()
+		p_stream.newline()
+	_endloop 
+_endmethod
+$
+
 
 
 

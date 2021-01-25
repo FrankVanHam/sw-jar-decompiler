@@ -6,17 +6,19 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_constant,
 	{
-		{:lex, _unset, :readable}
+		{:lex, _unset, :readable},
+		{:array?, _unset, :readable}
 	},
 	:jpn_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_constant.init(p_lex)
+_method jpn_constant.init(p_lex, _optional p_array?)
 	##
 	assert(p_lex.is_class_of?(lexeme))
 	
 	.lex << p_lex
+	.array? << p_array?.default(_false)
 	>> _super.init()
 _endmethod
 $

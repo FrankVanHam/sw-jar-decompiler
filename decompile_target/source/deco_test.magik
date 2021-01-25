@@ -4,54 +4,55 @@ $
 def_slotted_exemplar(:deco_test,{})
 $
 
-_method deco_test.test_no_args()
-	
+_method deco_test.test_invocation()
+	_self.do()
 _endmethod
 $
 
-_method deco_test.test_no_parenthesis
-	
+_method deco_test.test_invocation_with_args()
+	_self.do(1, "str")
 _endmethod
 $
 
-_method deco_test.test_args(a, b)
+_method deco_test.test_invocation_with_invocation()
+	_self.do(_self.get())
 _endmethod
 $
 
-_method deco_test.test_args_asign(a, b)<<c
+_method deco_test.test_invocation_all_results()
+	_self.do(_scatter _self.result())
 _endmethod
 $
 
-_method deco_test.test_optional_args(a, _optional b, c)
+_method deco_test.test_invocation_concatenation()
+	_self.do().do1().do2()
 _endmethod
 $
 
-_method deco_test.test_gather_args(a, _optional b, c, _gather extras)
+_method deco_test.test_invocation_result()
+	_local a << _self.do()
+	_self.use(a)
 _endmethod
 $
 
-_method deco_test[a]
-	
+_method deco_test.test_multiple_invocation_results()
+	_local (a,b) << _self.do()
+	_self.use(a,b)
 _endmethod
 $
 
-_method deco_test[a] << b
-	
+_method deco_test.test_allresults_results()
+	 _local a << _allresults _self.do()
+	 _self.use(a)
 _endmethod
 $
 
-#
-#
-#_method deco_test.test2()
-#	_local a << 12
-#	_if a > 10
-#	_then
-#		_self.test1()
-#	_else
-#		_self.test2()
-#	_endif 
-#_endmethod
-#$
+_method deco_test.test_gather_scatter_results()
+	_local (_gather a) << (_scatter _self.do())
+	_self.use(a)
+_endmethod
+$
+
 #
 #_method deco_test.test4()
 #	_for i_var  _over _self.fast_elements()

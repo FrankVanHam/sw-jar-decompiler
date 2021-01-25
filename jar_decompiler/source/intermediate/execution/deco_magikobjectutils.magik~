@@ -11,7 +11,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_magikobjectutils.createmethod(p_parser,
 					   p_exemplar_name, p_method_name,
 					   p_class_name, p_java_method_name,
-					   p_nr1, p_nr2)
+					   p_nr_args, p_nr_mandatory_args)
 	_local exemplar_name << p_exemplar_name.string_value
 	_local method_name << p_method_name.string_value
 	_local class_name << p_class_name.string_value
@@ -23,8 +23,11 @@ _method deco_magikobjectutils.createmethod(p_parser,
 		class_name << class_name.slice(1, class_name.size-6)
 	_endif
 	java_method_name << java_method_name.substitute_string("\\","\")
-	show(java_method_name)
-	_local meth << p_parser.assign_magik_method_names(class_name, java_method_name, exemplar_name, method_name)
+
+	nr_args << p_nr_args.string_value.as_number()
+	nr_mandatory_args << p_nr_mandatory_args.string_value.as_number()
+	
+	_local meth << p_parser.assign_magik_method_names(class_name, java_method_name, exemplar_name, method_name, nr_args, nr_mandatory_args)
 	>> meth
 _endmethod
 $

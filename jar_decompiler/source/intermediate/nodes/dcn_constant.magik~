@@ -125,7 +125,7 @@ $
 
 _pragma(classify_level=restricted, topic={decompiler})
 _private _iter _method dcn_constant.chars_and_specials(string)
-	_for i_char _over string.fast_elements()
+	_for i_char _over string.fast_elements() 
 	_loop
 		_if (i_char _is %")
 		_then

@@ -9,6 +9,24 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_invoker.tuplebootstrapprivate(p_parser, p_method, p_sender, _gather p_args)
+	>> _self.bootstrap(p_parser, p_method, p_sender, _scatter p_args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_invoker.tuplebootstrap(p_parser, p_method, p_sender, _gather p_args)
+	>> _self.bootstrap(p_parser, p_method, p_sender, _scatter p_args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_invoker.bootstrapprivate(p_parser, p_method, p_sender, _gather p_args)
+	>> _self.bootstrap(p_parser, p_method, p_sender, _scatter p_args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_invoker.bootstrap(p_parser, p_method, p_sender, _gather p_args)
 	##
 	_if _self.iter?(p_method, p_sender, _scatter p_args)
 	_then
@@ -32,8 +50,13 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method deco_invoker.iter?(p_method, p_sender, _gather p_args)
-	## 
-	>> p_sender.type.name = "MethodHandle" 	 
+	##
+	>> _if p_sender.is_kind_of?(jpn_variable)
+	   _then 
+		   >> p_sender.type.name = "MethodHandle"
+	   _else
+		   >> _false
+	   _endif 
 _endmethod
 $
 

@@ -19,8 +19,13 @@ _method deco_invoker.tuplebootstrapprivate(p_parser, p_method, p_sender, _gather
 		_if sender _is _unset
 		_then
 			sender << dcn_self.new()
-		_endif 
-		_return dcn_send.new(sender, meth)
+		_endif
+		_local args << rope.new()
+		_for i_arg _over p_args.fast_elements()
+		_loop
+			args.add(p_parser.parse_expression(i_arg))
+		_endloop 
+		_return dcn_send.new(sender, meth, args)
 	_endif 
 _endmethod
 $
