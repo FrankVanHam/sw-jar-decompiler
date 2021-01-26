@@ -323,7 +323,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method java_parser.parse_return_statement()
 	##
 	.scanner.get()
-	_local exp << _self.parse_expression()
+	_local exp << _self.parse_expression(_true)
 	_return jpn_return.new(exp)
 _endmethod
 $

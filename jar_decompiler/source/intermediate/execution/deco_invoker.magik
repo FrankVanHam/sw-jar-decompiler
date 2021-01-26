@@ -32,19 +32,25 @@ _method deco_invoker.bootstrap(p_parser, p_method, p_sender, _gather p_args)
 	_then
 		_return _self.unfinished_iter(p_parser, p_method, p_sender, _scatter p_args)
 	_else
-		_local meth << p_method.string_value
-		_local sender << p_parser.parse_sender(p_sender)
-		_if sender _is _unset
-		_then
-			sender << dcn_self.new()
-		_endif
-		_local args << rope.new()
-		_for i_arg _over p_args.fast_elements()
-		_loop
-			args.add(p_parser.parse_expression(i_arg))
-		_endloop 
-		_return dcn_send.new(sender, meth, args)
-	_endif 
+		_return _self.boot_method(p_parser, p_method.string_value, p_sender, _scatter p_args)
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_invoker.boot_method(p_parser, p_method_name, p_sender, _gather p_args)
+	##
+	_local sender << p_parser.parse_sender(p_sender)
+	_if sender _is _unset
+	_then
+		sender << dcn_self.new()
+	_endif
+	_local args << rope.new()
+	_for i_arg _over p_args.fast_elements()
+	_loop
+		args.add(p_parser.parse_expression(i_arg))
+	_endloop
+	_return dcn_send.new(sender, p_method_name, args)
 _endmethod
 $
 
@@ -52,11 +58,11 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method deco_invoker.iter?(p_method, p_sender, _gather p_args)
 	##
 	>> _if p_sender.is_kind_of?(jpn_variable)
-	   _then 
+	   _then
 		   >> p_sender.type.name = "MethodHandle"
 	   _else
 		   >> _false
-	   _endif 
+	   _endif
 _endmethod
 $
 

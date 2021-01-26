@@ -22,7 +22,7 @@ _method jpn_parser_method_snippet_test.run_test()
 
 	_local jp << deco:jpn_parser.new()
 	_local dcn_node << jp.parse_method("deco_test", jpn_meth)
-	dcn_node.bind_names("deco_test", "test()", 1, 1, _false, _false )
+	dcn_node.bind_names("deco_test", "test()", 1, 1)
 	
 	_local out_ind << indentation_stream.new(out << internal_text_output_stream.new())
 	dcn_node.decode_on(out_ind)

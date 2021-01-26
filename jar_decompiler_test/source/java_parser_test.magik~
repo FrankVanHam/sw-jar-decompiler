@@ -203,19 +203,6 @@ _method java_parser_test.test_return()
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method java_parser_test.test_return_empty_tuple()
-	##
-	_local inp << write_string("return ResultTuple.EMPTY_TUPLE;")
-	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
-
-	_local node << p.parse_statement()
-	_self.assert_true(node.is_kind_of?(deco:jpn_return), "should be return")
-	_self.assert_true(node.expression.is_kind_of?(deco:jpn_constant, "should be returning a constant"))
-_endmethod
-$
-
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_new_with_args()

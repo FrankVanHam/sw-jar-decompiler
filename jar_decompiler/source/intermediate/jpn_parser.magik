@@ -27,7 +27,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_file(p_top_node)
-	## 
+	##
 	.top << dcn_file.new()
 	_for i_node _over p_top_node.content.fast_elements()
 	_loop
@@ -54,27 +54,27 @@ _method jpn_parser.parse_expression(p_node)
 	_elif p_node.is_class_of?(jpn_method_invocation)
 	_then
 		_if p_node.sender.is_class_of?(jpn_this).not
-		_then 
+		_then
 			(exec, meth) << _self.executer_and_method_from_node(p_node)
 			_return exec.perform(meth, _self, _scatter p_node.args)
 		_else
-			_return dcn_constant.new(p_node.name)
+			_return deco_invoker.boot_method(_self, p_node.name, p_node.sender, _scatter p_node.args)
 		_endif
 	_elif p_node.is_class_of?(jpn_variable)
 	_then
 		_return _self.parse_variable(p_node)
-		
+
 	_elif p_node.is_class_of?(jpn_constant) _orif
 	      p_node.is_class_of?(jpn_type) _orif
-	      p_node.is_class_of?(jpn_variable) 
+	      p_node.is_class_of?(jpn_variable)
 	_then
 		_if p_node.string_value.includes?(%.).not
 		_then
 			_return _self.parse_constant(p_node)
-		_else 
+		_else
 			(exec, meth) << _self.executer_and_method_from_string(p_node.string_value)
 			_return exec.perform(meth, _self)
-		_endif 
+		_endif
 	_elif p_node.is_class_of?(jpn_return)
 	_then
 		_return _self.parse_return_statement(p_node)
@@ -102,13 +102,16 @@ _method jpn_parser.parse_expression(p_node)
 	_elif p_node.is_class_of?(jpn_try)
 	_then
 		_return _self.parse_body(p_node.try_body)
+	_elif p_node.is_class_of?(jpn_this)
+	_then
+		_return dcn_self.new()
 	_else
 		_global x
 		x << p_node
 		debug_print(p_node)
-		
-		1.stop		
-	_endif 
+
+		1.stop
+	_endif
 _endmethod
 $
 
@@ -144,8 +147,8 @@ _method jpn_parser.parse_constant(p_jnode)
 			      >> dcn_constant.new_number(p_jnode.string_value)
 		      _else
 			      13.stop
-		      _endif 
-	   _endif 
+		      _endif
+	   _endif
 _endmethod
 $
 
@@ -213,14 +216,14 @@ _method jpn_parser.parse_execution_class(p_class_node)
 	_for i_meth _over p_class_node.methods.fast_elements()
 	_loop
 		_if i_meth.type = "TopLevel"
-		_then 
+		_then
 			_local m_node << _self.parse_method(class_name, i_meth)
 			_for i_statement _over m_node.body.statements.fast_elements()
 			_loop
 				.top.add_statement(i_statement)
 			_endloop
 		_endif
-	_endloop 
+	_endloop
 _endmethod
 $
 
@@ -229,16 +232,16 @@ _method jpn_parser.parse_method(p_class_name, p_meth_node)
 	##
 	_local java_args << p_meth_node.args.copy()
 	_if java_args.empty?.not _then java_args.remove_first() _endif
-	
+
 	_local scatter? << _if java_args.empty?.not
 			   _then >> java_args.last.varargs?
 			   _else >> _false
 			   _endif
 	_local args << java_args.map(_proc(x) >> x.name _endproc)
-	
+
 	_local body << _self.parse_body(p_meth_node.body)
-	
-	_local type << p_meth_node.type 
+
+	_local type << p_meth_node.type
 	_local m_node << dcn_method.new(p_class_name, p_meth_node.name, args, scatter?, body, type )
 	>> m_node
 _endmethod
@@ -270,7 +273,7 @@ _method jpn_parser.parse_sender(p_expression)
 	>> _if p_expression.is_cast?
 	   _then >> _self.parse_sender(p_expression.expression)
 	   _else >> _self.parse_expression(p_expression)
-	   _endif 
+	   _endif
 _endmethod
 $
 
@@ -325,8 +328,8 @@ _method jpn_parser.executer_and_method(exec_name, exec_meth_name)
 	_if exec_name _is _unset
 	_then
 		_return _self, :|exec()|
-	_endif 
-	
+	_endif
+
 	_local global_ex_name << write_string(:deco_ + exec_name.lowercase).as_symbol()
 	_local ex << !current_package!.all_packages[:deco][global_ex_name]
 	_if ex _is _unset _then condition.raise(:error, :string, write_string("No global for parser execution: ", global_ex_name)) _endif

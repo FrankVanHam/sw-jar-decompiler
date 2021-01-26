@@ -1,4 +1,4 @@
-g_package deco
+_package deco
 $
 
 def_slotted_exemplar(:deco_integer, {}, :deco_execution_base)
@@ -6,7 +6,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_integer.valueof(p_parser, p_node)
-	_local v << p_exemplar.from_write_string(p_node.string_value)
+	_local v << integer.from_write_string(p_node.string_value)
 	>> dcn_constant.new(v)
 _endmethod
 $

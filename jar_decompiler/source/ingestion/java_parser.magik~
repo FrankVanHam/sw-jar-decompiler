@@ -20,7 +20,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.init(p_scanner)
-	.scanner << p_scanner
+	.scanner << peekable_input_stream.new(p_scanner)
 	>> _self
 _endmethod
 $
@@ -173,33 +173,9 @@ _method java_parser.parse_method(p_class_name, _optional p_annotations )
 	_endif 
 	
 	_local lex << .scanner.peek()
-	
-	_if lex.is_separator?("]")
-	_then
-		lex << .scanner.get()
-		name.append(lex)
-		lex << .scanner.peek()
-		_if lex.is_identifier?
-		_then
-			lex << .scanner.get()
-			name.append(lex)
-		_endif
-	_endif 
 	_self.ensure_separator("(")
 	_local args << _self.parse_args()
 	_self.ensure_separator(")")
-	
-	lex << .scanner.peek()
-	_if lex.is_identifier?
-	_then
-		lex << .scanner.get()
-		name.append_string("()")
-		name.append(lex)
-
-		_self.ensure_separator("(")
-		args << _self.parse_args()
-		_self.ensure_separator(")")
-	_endif
 	
 	_self.ensure_separator("{")
 	_local body << _self.parse_body()
