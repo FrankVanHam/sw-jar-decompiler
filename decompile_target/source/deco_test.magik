@@ -4,68 +4,129 @@ $
 def_slotted_exemplar(:deco_test,{})
 $
 
-_method deco_test.test_invocation()
-	_self.do()
+_method deco_test.test_all_operators(a, b)
+	c << a + b
+	_self.use(c)
+	c << a - b
+	_self.use(c)
+	c << a * b
+	_self.use(c)
+	c << a / b
+	_self.use(c)
+	c << a _div b
+	_self.use(c)
+	c << a _mod b
+	_self.use(c)
+	c << a ** b
+	_self.use(c)
+	c +<< b
+	_self.use(c)
+	c -<< b
+	_self.use(c)
+	c *<< b
+	_self.use(c)
+	c /<< b
+	_self.use(c)
+	c _div<< b
+	_self.use(c)
+	c _mod<< b
+	_self.use(c)
+	c **<< b
+	
+	_self.use(c)
 _endmethod
 $
 
-_method deco_test.test_invocation_with_args()
-	_self.do(1, "str")
+_method deco_test.test_compare_operators(a, b)
+	c << a < b
+	_self.use(c)
+	c << a <= b
+	_self.use(c)
+	c << a > b
+	_self.use(c)
+	c << a >= b
+	_self.use(c)
+	c << a = b
+	_self.use(c)
+	c << a ~= b
+	_self.use(c)
+	c << a <> b
+	_self.use(c)
+	c << a _is b
+	_self.use(c)
+	c << a = b
+	_self.use(c)
+	c << a _isnt b
+	_self.use(c)
+	c << a _cf b	
+	_self.use(c)
 _endmethod
 $
 
-_method deco_test.test_invocation_with_invocation()
-	_self.do(_self.get())
+_method deco_test.test_logical_operators(a, b)
+	c << a _and  b
+	_self.use(c)
+	c << a _andif b
+	_self.use(c)
+	c << a _or b
+	_self.use(c)
+	c << a _orif b
+	_self.use(c)
+	c << a _xor b
+	_self.use(c)
+	c _and<<  b
+	_self.use(c)
+	c _or<< b
+	_self.use(c)
+	c _xor<< b
+	_self.use(c)
 _endmethod
 $
 
-_method deco_test.test_invocation_all_results()
-	_self.do(_scatter _self.result())
+_method deco_test.test_unary_operators(a, b)
+	c << _not b
+	_self.use(c)
+	c << ~ b	
+	_self.use(c)
 _endmethod
 $
 
-_method deco_test.test_invocation_concatenation()
-	_self.do().do1().do2()
+_method deco_test.test_operator(a, b)
+	c << a + b
+	_self.use(c)
 _endmethod
 $
 
-_method deco_test.test_invocation_result()
-	_local a << _self.do()
-	_self.use(a)
+
+_method deco_test.test_operator_and_constant(a, b)
+	c << a + b + 10
+	_self.use(c)
 _endmethod
 $
 
-_method deco_test.test_multiple_invocation_results()
-	_local (a,b) << _self.do()
-	_self.use(a,b)
+_method deco_test.test_operator_and_method(a, b)
+	c << a + _self.value + b
+	_self.use(c)
 _endmethod
 $
 
-_method deco_test.test_allresults_results()
-	 _local a << _allresults _self.do()
-	 _self.use(a)
+_method deco_test.test_method_operator(a, b)
+	_self.use(a + b)
 _endmethod
 $
 
-_method deco_test.test_gather_scatter_results()
-	_local (_gather a) << (_scatter _self.do())
-	_self.use(a)
+_method deco_test.test_if_operator(a, b)
+	_if (a + b) > 10
+	_then
+		_self.do_a()
+	_else
+		_self.do_b()
+	_endif 
 _endmethod
 $
 
-#
-#_method deco_test.test4()
-#	_for i_var  _over _self.fast_elements()
-#	_loop
-#		_self.run(i_var)
-#	_endloop 
-#_endmethod
-#$
-#
-#_method deco_test.test5()
-#	_for i_itervar  _over _self.slow_elements()
-#	_loop
-#		_self.run_slow(i_itervar)
-#	_endloop 
-#_endmethod
-#$
+_method deco_test.test_return_operator(a, b)
+	_return (a + b)
+_endmethod
+$
+

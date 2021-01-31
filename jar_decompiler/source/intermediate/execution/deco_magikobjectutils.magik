@@ -48,3 +48,21 @@ _method deco_magikobjectutils.should_be_boolean(p_parser, p_expression)
 	>> p_parser.parse_expression(p_expression)
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_magikobjectutils.is(p_parser, p_value1, p_value2) 
+	##
+	_local v1 << p_parser.parse_expression(p_value1)
+	_local v2 << p_parser.parse_expression(p_value2)
+	>> dcn_op.new("_is", v1, v2)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_magikobjectutils.isnt(p_parser, p_value1, p_value2) 
+	##
+	_local v1 << p_parser.parse_expression(p_value1)
+	_local v2 << p_parser.parse_expression(p_value2)
+	>> dcn_op.new("_isnt", v1, v2)
+_endmethod
+$

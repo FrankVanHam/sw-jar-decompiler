@@ -18,7 +18,7 @@
 _package deco
 $
 
-remex(:dcn_block)
+#remex(:dcn_block)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
@@ -27,46 +27,54 @@ _pragma(classify_level=restricted, topic={decompiler})
 ## representative in the code_vector, so there is no token for
 ## it. 
 def_slotted_exemplar(:dcn_block,
-		      {{:statements, _unset}},
+		      {
+			      {:name, _unset, :readable},
+			      {:body, _unset, :readable}
+			      },
 		      :dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_block.new(statements)
-	_return _clone.init( statements)
+_method dcn_block.new(p_body, _optional p_name)
+	_return _clone.init(p_body, p_name)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_block.init(statements)
-	.statements << rope.deco_check_type(statements)
+_private _method dcn_block.init(p_body, _optional p_name)
+	.body << p_body
+	.name << p_name
 	_return _self 
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_block.accept_node_visitor(visitor)
-	_self.accept_node_visitor_in_vector(visitor, .statements)
-	_return _super.accept_node_visitor(visitor)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_block.accept_body_visitor(visitor)
-	_self.accept_body_visitor_in_vector(visitor, .statements)
-	
-	visitor.visit(_self, .statements)
-	_super.accept_body_visitor(visitor)
-_endmethod
-$
-
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_block.accept_node_visitor(visitor)
+#	_self.accept_node_visitor_in_vector(visitor, .statements)
+#	_return _super.accept_node_visitor(visitor)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_block.accept_body_visitor(visitor)
+#	_self.accept_body_visitor_in_vector(visitor, .statements)
+#	
+#	visitor.visit(_self, .statements)
+#	_super.accept_body_visitor(visitor)
+#_endmethod
+#$
+#
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_block.decode_on(a_stream, _optional parent, statements)
 	a_stream.write( "_block")
+	_if .name _isnt _unset
+	_then
+		a_stream.write(" @", .name)
+	_endif 
 	a_stream.newline()
-	a_stream.indent()
-	_self.decode_statements_on(a_stream, .statements)
-	a_stream.unindent()
+	a_stream.indent(4)
+	.body.decode_on(a_stream)
+	a_stream.unindent(4)
 	a_stream.write( "_endblock")
 	a_stream.newline()
 _endmethod

@@ -28,24 +28,27 @@ def_slotted_exemplar(:dcn_local,
 		     {
 			     {:index,_unset, :readable},
 			     {:name, _unset, :readable},
-			     {:type, _unset},
+			     {:object_type, _unset, :readable},
+			     {:type, _unset, :readable},
 			     {:must_declare_local?, _unset, :readable},
 			     {:declared?, _unset, :readable}
 		     }, :dcn_base )
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local.new(index, name, _optional type)
-	_return _clone.init(index, name, type)
+_method dcn_local.new(index, name, _optional type, p_object_type)
+	
+	_return _clone.init(index, name, type, p_object_type)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_local.init(index, name, type)
+_private _method dcn_local.init(index, name, type, p_object_type)
 	.index << index
 	.name << name
 	.must_declare_local? << _false
 	.type << type.default(:local)
+	.object_type << p_object_type
 	.declared? << _false 
 	assert(.type _is :local _orif .type _is :parameter)
 	_return _self
@@ -111,6 +114,20 @@ $
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_local.scattered?
 	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_local.pop()
+	##
+	>> dcn_pop.new(_self)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_local.remainder(p_nr)
+	##
+	>> dcn_remainder.new(p_nr)
 _endmethod
 $
 

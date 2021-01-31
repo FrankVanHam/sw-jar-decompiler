@@ -80,6 +80,16 @@ _method dcn_file.decode_on(p_stream)
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_file.accept_body_visitor(p_visitor)
+	_for i_statement _over .statements.fast_elements()
+	_loop
+		i_statement.accept_body_visitor(p_visitor)
+	_endloop 
+_endmethod
+$
+
+
 
 
 

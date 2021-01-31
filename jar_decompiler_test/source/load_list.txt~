@@ -11,3 +11,5 @@ jpn_parser_base_snippet_test
 jp_parser_snippet_method_test
 jpn_parser_class_snippet_test
 jpn_parser_method_definition_snippet_test
+jpn_parser_method_invocation_snippet_test
+jpn_parser_if_snippet_test

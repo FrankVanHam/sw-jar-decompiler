@@ -1,6 +1,9 @@
 _package deco
 $
 
+#remex(:jpn_execution_post_processor)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_execution_post_processor,{})
 $
 
@@ -8,9 +11,16 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_execution_post_processor.process(p_file)
 	##
-	_global y
-	y << p_file
+	_self.process_file(p_file)
+	p_file.accept_body_visitor(jpn_block_if_visitor.new())
+	p_file.accept_body_visitor(jpn_cleanup_visitor.new())
+	p_file.accept_body_visitor(jpn_iter_visitor.new(p_file))
+_endmethod
+$
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_execution_post_processor.process_file(p_file)
+	## 
 	sts << p_file.statements
 	_for i_index, i_node _over sts.fast_keys_and_elements()
 	_loop
@@ -21,68 +31,8 @@ _method jpn_execution_post_processor.process(p_file)
 		_elif i_node.is_kind_of?(dcn_dynamic_store) _andif
 		    i_node.name = "!current_package!"
 		_then
-			sts[i_index] << dcn_package.new(i_node.sys!slot(:value_node).args[1].value)
+			sts[i_index] << dcn_package.new(i_node.sys!slot(:value_node).args[1].string_value)
 		_endif 
-	_endloop 
-	
-	_local sts << p_file.methods[1].body.statements
-	_for i_index, i_node _over sts.fast_keys_and_elements()
-	_loop
-		_if i_node.is_kind_of?(dcn_local_assignment) _andif
-		    i_node.expression.is_kind_of?(dcn_unfinished_iter)
-		_then
-			sts[i_index] << _self.convert_to_iter(p_file, i_node)
-		_endif
-	_endloop 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_execution_post_processor.convert_to_iter(p_file, p_node)
-	##
-	_local ref << p_node.expression.ref
-	_local ref_method << _self.find_method(p_file, ref)
-	_local loopbody_method << _self.find_loopbody_method(p_file, ref_method)
-
-	_local iter_body << loopbody_method.body.statements[3].copy()
-	iter_body.statements.remove_last()
-	
-	_return dcn_iter.new(p_node.expression.sender, p_node.expression.name, iter_body)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_execution_post_processor.find_loopbody_method(p_file, p_method)
-	## 
-	_local egg << p_method.body.statements[1].statements[1].expression
-	_return _self.find_method(p_file, egg.name)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_execution_post_processor.find_method(p_file, p_ref)
-	##
-	_for i_meth _over p_file.methods.fast_elements()
-	_loop
-		_if i_meth.sys!slot(:java_method_name) = p_ref _then _return i_meth _endif
-	_endloop 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_execution_post_processor.process_node(p_node)
-	##
-	_if p_node.is_kind_of?(dcn_unfinished_iter)
-	_then
-		_return _self.finish_iter(p_node)
-	_endif 
-	_if p_node.is_return?
-	_then
-		_return p_node.expression
-	_elif p_node.is_class_of?(dcn_dynamic_store) _andif p_node.name = "!current_package!"
-	_then
-		_return p_node.convert_to_package_declaration()
-	_endif
-	_return p_node
+	_endloop
 _endmethod
 $

@@ -18,7 +18,6 @@
 _package deco
 $
 
-
 #remex(:dcn_local_assignment)
 $
 
@@ -26,233 +25,278 @@ _pragma(classify_level=restricted, topic={decompiler})
 ## Node for a single assignment to a local.
 def_slotted_exemplar(:dcn_local_assignment,
 		     {
-			     {:dis_node, _unset},
-			     {:local,_unset},
-			     {:boot?, _unset},
-			     {:expression,_unset},
-			     {:must_declare_local?, _unset},
-			     {:top_of_stack, _unset}
+			     {:local_nodes, _unset},
+			     {:expression,_unset, :readable},
+			     {:gather?, _unset, :readable}
 		     }, {:dcn_base, :dcn_assign_mixin})
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.new(dis_node, boot?, local,expression, top_of_stack)
-	_return _clone.init(dis_node, boot?, local, expression, top_of_stack)
+_method dcn_local_assignment.new(p_local, p_expression)
+	_return _clone.init(p_local, p_expression)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_local_assignment.init(dis_node, boot?, local, expression, top_of_stack)
-	.dis_node << dis_node
-	 .boot? << boot?
-	.local << local
-	.expression << expression
-	.must_declare_local? << _false
-	.top_of_stack << top_of_stack
+_private _method dcn_local_assignment.init(p_local, p_expression)
+	
+	.local_nodes << rope.new()
+	_if p_local _isnt _unset
+	_then
+		.local_nodes.add(p_local)
+	_endif
+	.gather? << _false 
+	.expression << p_expression
 	_return _self
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.is_local_assignment?
-	_return _true  
+_method dcn_local_assignment.expression << p_exp
+	##
+	.expression << p_exp
 _endmethod
 $
 
+
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.accept_node_visitor(visitor)
-	.local << .local.accept_node_visitor(visitor)
-	.expression << .expression.accept_node_visitor(visitor)
-	_return _super.accept_node_visitor(visitor)
+_method dcn_local_assignment.only_local()
+	##
+	>> _if .local_nodes.size = 1
+	   _then >> .local_nodes.an_element()
+	   _endif 
 _endmethod
 $
 
+
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.accept_body_visitor(visitor)
-	.local.accept_body_visitor(visitor)
-	.expression.accept_body_visitor(visitor)
-	_return _super.accept_body_visitor(visitor)
+_method dcn_local_assignment.set_gather(p_nr)
+	##  
+	.gather? << _true 
 _endmethod
 $
 
+
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.expression << e
-	.expression << e
+_method dcn_local_assignment.append_local(p_node)
+	##
+	assert(p_node _isnt _unset)
+	.local_nodes.add_first(p_node)
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.local
-	_return .local
-_endmethod
-$
+
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.accept_node_visitor(visitor)
+#	#.local << .local.accept_node_visitor(visitor)
+#	.expression << .expression.accept_node_visitor(visitor)
+#	_return _super.accept_node_visitor(visitor)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.accept_body_visitor(visitor)
+#	#.local.accept_body_visitor(visitor)
+#	.expression.accept_body_visitor(visitor)
+#	_return _super.accept_body_visitor(visitor)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.expression << e
+#	.expression << e
+#_endmethod
+#$
+
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.local
+#	_return .local
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.is_self_assigning_parameter?
+#	_return (.local _is .expression) _andif
+#		.local.is_local? _andif 
+#		.local.parameter?
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.is_assign?
+#	_return _true 
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.force_declare_local(loc)
+#	.must_declare_local? << _true
+#	.local.force_declare_local()
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.includes_local?(loc)
+#	_return .local _is loc
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.result_count
+#	_return 1
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.top_of_stack_during_decompile
+#	_return .top_of_stack
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.decode_eval_exp_on( a_stream )	
+#	a_stream.write( "(" )
+#	_self.decode_on(a_stream)
+#	a_stream.write( ")" )
+#	
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.single_assignment?
+#	_return _true 
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.is_single_assign?
+#	_return _self.single_assignment?
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.single_argument
+#	_return _self.expression
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.expression
+#	_return .expression
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.chain_assign_operator?()
+#	_return _false
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.chain_assign?(value)
+#	_if value _is _unset _then _return _false _endif
+#	
+#	_if _self.expression _is value
+#	_then
+#		_return _true
+#	_else
+#		_return value.is_chain_assign_for?(_self)
+#	_endif
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.decode_as_receiver_on( a_stream, _gather a)
+#	a_stream.write( "(")
+#	_self.decode_on( a_stream, _scatter a )
+#	a_stream.write( ")")
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.decode_lhs_on(a_stream)
+#	.local.decode_on( a_stream )
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.decode_receiver_on( a_stream )
+#	_self.decode_lhs_on( a_stream )
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.has_rhs?
+#	_return .expression _isnt _unset 
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.decode_rhs_on(a_stream)
+#	.expression.decode_on( a_stream )
+#_endmethod
+#$
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.is_self_assigning_parameter?
-	_return (.local _is .expression) _andif
-		.local.is_local? _andif 
-		.local.parameter?
-_endmethod
-$
+_method dcn_local_assignment.decode_on(a_stream)
 
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.is_assign?
-	_return _true 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.force_declare_local(loc)
-	.must_declare_local? << _true
-	.local.force_declare_local()
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.includes_local?(loc)
-	_return .local _is loc
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.result_count
-	_return 1
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.top_of_stack_during_decompile
-	_return .top_of_stack
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.decode_eval_exp_on( a_stream )	
-	a_stream.write( "(" )
-	_self.decode_on(a_stream)
-	a_stream.write( ")" )
-	
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.single_assignment?
-	_return _true 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.is_single_assign?
-	_return _self.single_assignment?
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.single_argument
-	_return _self.expression
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.expression
-	_return .expression
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.chain_assign_operator?()
-	_return _false
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.chain_assign?(value)
-	_if value _is _unset _then _return _false _endif
-	
-	_if _self.expression _is value
-	_then
-		_return _true
-	_else
-		_return value.is_chain_assign_for?(_self)
-	_endif
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.decode_as_receiver_on( a_stream, _gather a)
-	a_stream.write( "(")
-	_self.decode_on( a_stream, _scatter a )
-	a_stream.write( ")")
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.decode_lhs_on(a_stream)
-	.local.decode_on( a_stream )
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.decode_receiver_on( a_stream )
-	_self.decode_lhs_on( a_stream )
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.has_rhs?
-	_return .expression _isnt _unset 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.decode_rhs_on(a_stream)
-	.expression.decode_on( a_stream )
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.decode_on( a_stream, _optional parent, statements)
-	_if .local.ignore?
+	_if .local_nodes.empty?
 	_then
 		.expression.decode_on( a_stream )
 		_return 
-	_endif 
-	local? << .must_declare_local?
-	_if local?
-	_then
-		a_stream.write( "_local ")
 	_endif
-	ok? << _self.try_decode_combined_assignment(a_stream)
-	_if ok? _then _return _endif
-	
-	par? << .expression.is_send_scatter?
-	
-	_if par? _then a_stream.write( "(" ) _endif 
-	.local.decode_on( a_stream )
-	_if par? _then a_stream.write( ")" ) _endif 
-	
-	_if .boot?
+
+	_local gather? << .gather? _orif .expression.is_class_of?(dcn_gathered)
+
+	_if gather?
 	_then
-		a_stream.write( " ^<< " )
+		a_stream.write( "(" )
+		_local comma? << _false 
+		_for i_node _over .local_nodes.fast_elements()
+		_loop
+			_if comma?^<<_true _then a_stream.write(", ") _endif
+			_if i_node _is .local_nodes.last
+			_then
+				a_stream.write( "_gather " )
+			_endif 
+			i_node.decode_on( a_stream )
+		_endloop 
+		a_stream.write( ")" ) 
 	_else 
-		a_stream.write( " << " )
+		par? << .local_nodes.size>1
+		_if .local_nodes.empty?.not
+		_then 
+			_if par? _then a_stream.write( "(" ) _endif
+			_local comma? << _false 
+			_for i_node _over .local_nodes.fast_elements()
+			_loop
+				_if comma?^<<_true _then a_stream.write(", ") _endif 
+				i_node.decode_on( a_stream )
+			_endloop 
+			_if par? _then a_stream.write( ")" ) _endif 
+		_endif
 	_endif 
-	_if par? _then a_stream.write( "(" ) _endif
-	.expression.decode_on( a_stream )
-	_if par? _then a_stream.write( ")" ) _endif 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.try_decode_combined_assignment(a_stream)
-	_if _not .expression.is_op? _then _return _false _endif
-	_if .expression.is_combined_assignment?(.local)
+	
+	a_stream.write( " << " )
+	_if gather?
 	_then
-		.expression.decode_combined_assignment(a_stream, .boot?)
-		_return _true
+		.expression.decode_on( a_stream, _true )
 	_else
-		_return _false
+		.expression.decode_on( a_stream )
 	_endif 
 _endmethod
 $
-
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_local_assignment.try_decode_combined_assignment(a_stream)
+#	_if _not .expression.is_op? _then _return _false _endif
+#	_if .expression.is_combined_assignment?(.local)
+#	_then
+#		.expression.decode_combined_assignment(a_stream, .boot?)
+#		_return _true
+#	_else
+#		_return _false
+#	_endif 
+#_endmethod
+#$
+#

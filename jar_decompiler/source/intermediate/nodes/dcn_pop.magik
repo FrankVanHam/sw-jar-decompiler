@@ -1,0 +1,40 @@
+_package deco
+$
+#remex(:dcn_pop)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+## No operation
+def_slotted_exemplar(:dcn_pop,
+		     {
+			     {:expression, _unset, :readable}
+		     }, :dcn_base )
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_pop.new(p_exp)
+	>> _clone.init(p_exp)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method dcn_pop.init(p_exp)
+	.expression << p_exp
+	>> _self 	 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_pop.is_pop?
+	##
+	>> _true 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_pop.decode_on(p_stream)
+	##
+	p_stream.write("pop")
+_endmethod
+$

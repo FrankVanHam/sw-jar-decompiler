@@ -28,6 +28,21 @@ _method jpn_type.add_dotted(p_lex)
 _endmethod
 $
 
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_type.as_variable()
+	>> jpn_variable.new(.lex_name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_type.become_dotted(p_ident)
+	##
+	_return jpn_dotted.new(_self , p_ident)
+_endmethod
+$
+
+
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_type.split_in_identifier_and_method()
 	##

@@ -38,3 +38,10 @@ _method jpn_method_invocation.identifier
 	   _endif 
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_method_invocation.become_dotted(p_ident)
+	##
+	_return jpn_dotted.new(_self , p_ident)
+_endmethod
+$

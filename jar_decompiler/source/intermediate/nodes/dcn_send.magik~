@@ -57,7 +57,8 @@ _method dcn_send.decode_on(p_stream)
 		_for i_arg _over .args.fast_elements()
 		_loop
 			_if (comma?^<<_true) _then p_stream.write(", ") _endif
-			p_stream.write(i_arg.value)
+			
+			i_arg.decode_on(p_stream)
 		_endloop 
 		p_stream.write(")")
 	_else 

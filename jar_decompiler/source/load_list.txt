@@ -4,7 +4,6 @@ assert
 ingestion/
 intermediate/
 
-#java_command
 #decompiler
 
 sw/

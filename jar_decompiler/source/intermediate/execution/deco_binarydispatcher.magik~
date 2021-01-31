@@ -8,9 +8,17 @@ def_slotted_exemplar(:deco_binarydispatcher,
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+deco_binarydispatcher.define_shared_constant(:mapping,
+	equality_hash_table.new_with(
+		"\\g", :|<|),
+	:private )
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_binarydispatcher.bootstrap(p_parser, p_operator, p_value1, p_value2)
 	##
-	_local operator << p_operator.string_value.as_symbol()
+	_local operator << _self.mapping[p_operator.string_value]
 	_local v1 << p_parser.parse_expression(p_value1)
 	_local v2 << p_parser.parse_expression(p_value2)
 	>> dcn_op.new(operator, v1, v2)

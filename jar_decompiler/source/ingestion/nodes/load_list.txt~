@@ -19,3 +19,8 @@ jpn_new
 jpn_throw
 jpn_declaration
 jpn_type
+jpn_this
+jpn_dotted
+jpn_parenthesis
+jpn_block
+jpn_break

@@ -1,0 +1,53 @@
+_package deco
+$
+
+#remex(:jpn_dotted)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_dotted,
+	{
+		{:list, _unset, :readable}
+	},
+	:jpn_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_dotted.new(p_one, p_other)
+	##
+	>> _clone.init(p_one, p_other)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_dotted.init(p_one, p_other)
+	##
+	.list << rope.new_with(p_one, p_other)
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_dotted.split_in_identifier_and_method()
+	>> .list[1], .list[2]
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_dotted.string_value
+	##
+	_local s << internal_text_output_stream.new()
+	_local comma? << _false 
+	_for idx, lex _over .list.fast_keys_and_elements()
+	_loop
+		_if (comma?^<<_true) _then s.write(".")  _endif
+		_if idx=1
+		_then
+			s.write(lex.string_value)
+		_else 
+			s.write(lex.value)
+		_endif 
+	_endloop
+	>> s.string
+_endmethod
+$

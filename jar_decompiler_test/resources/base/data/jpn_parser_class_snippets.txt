@@ -66,6 +66,17 @@ implements ExecutableMagik {
     }
 }
 ###########
-
+_package user
+$
+sw:def_slotted_exemplar(:deco_test, {})
+$
+_method deco_test.test4() 
+    _for i_var _over _self.fast_elements()
+    _loop
+        _self.run(i_var)
+    _endloop
+    _return 
+_endmethod
+$
 
 ###########

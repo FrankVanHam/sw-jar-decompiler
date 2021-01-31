@@ -1,8 +1,11 @@
 _package deco
 $
 
+#remex(:dcn_unfinished_iter)
+
 def_slotted_exemplar(:dcn_unfinished_iter,
 		     {
+			     {:sender, _unset, :readable},
 			     {:name, _unset, :readable},
 			     {:ref, _unset, :readable}
 		     }
@@ -10,14 +13,15 @@ def_slotted_exemplar(:dcn_unfinished_iter,
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method dcn_unfinished_iter.new(p_name, p_ref)
+_method dcn_unfinished_iter.new(p_sender, p_name, p_ref)
 	##
-	>> _clone.init(p_name, p_ref)
+	>> _clone.init(p_sender, p_name, p_ref)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method dcn_unfinished_iter.init(p_name, p_ref)
+_private _method dcn_unfinished_iter.init(p_sender, p_name, p_ref)
+	.sender << p_sender
 	.name << p_name
 	.ref << p_ref
 	>> _self 

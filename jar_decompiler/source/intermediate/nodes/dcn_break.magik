@@ -18,78 +18,33 @@
 _package deco
 $
 
-remex(:dcn_break)
+#remex(:dcn_break)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
 ## Node a _leave statement.
 def_slotted_exemplar( :dcn_break,
 		       {
-			       {:token, _unset},
-			       {:tag, _unset},
-			       {:results, _unset}
+			       {:name, _unset, :readable}
 		       }, :dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_break.new(token, tag, results)
-	_return _clone.init(token, tag, results)
+_method dcn_break.new(p_name)
+	_return _clone.init(p_name)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_break.init(token, tag, results)
-	.tag << tag
-	.token << token
-	.results << rope.deco_check_type(results)
+_private _method dcn_break.init(p_name)
+	.name << p_name
 	_return _self 
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_break.accept_node_visitor(visitor)
-	_self.accept_node_visitor_in_vector(visitor, .results)
-	_return _super.accept_node_visitor(visitor)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_break.accept_body_visitor(visitor)
-	_self.accept_body_visitor_in_vector(visitor, .results)
-	_return _super.accept_body_visitor(visitor)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_break.decode_on( a_stream, _optional parent, statements )
-	_if .tag _isnt _unset 
-	_then
-		a_stream.write("_leave @", .tag)
-	_else 
-		a_stream.write("_leave")
-	_endif
-	_if _not .results.empty?
-	_then
-		a_stream.write( " _with ")
-		_self.decode_node_list_on(a_stream, .results)
-	_endif 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_break.is_break?
-	_return _true 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_break.has_results?
-	_return .results.empty?.not
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_break.result_count
-	_return .results.size
+_method dcn_break.decode_on(p_stream)
+	##
+	p_stream.write(" _leave @", .name)
 _endmethod
 $

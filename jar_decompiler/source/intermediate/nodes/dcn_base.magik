@@ -36,8 +36,10 @@ $
 
 
 _pragma(classify_level=restricted, topic={decompiler})
-_abstract _method dcn_base.decode_on(a_stream, _optional parent, statements)
+_method dcn_base.decode_on(a_stream, _optional parent, statements)
 	## Every subclass must be able to decode on a a stream.
+	show(_self.class_name)
+	condition.raise(:error, :string, "abstract")
 _endmethod
 $
 
@@ -334,5 +336,12 @@ $
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_base.declare_last_statement()
 	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_pop?
+	## 
+	>> _false 
 _endmethod
 $

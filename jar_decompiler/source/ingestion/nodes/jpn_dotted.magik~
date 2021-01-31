@@ -1,0 +1,13 @@
+_package deco
+$
+
+#remex(:jpn_dotted)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_dotted,
+	{
+		{:list, _unset, :readable}
+	},
+	:jpn_base)
+$
+

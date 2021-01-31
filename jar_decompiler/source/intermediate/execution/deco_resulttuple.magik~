@@ -2,17 +2,27 @@ _package deco
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-def_slotted_exemplar(:deco_binarydispatcher,
+def_slotted_exemplar(:deco_resulttuple,
 	{},
 	:deco_execution_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_binarydispatcher.bootstrap(p_parser, p_operator, p_value1, p_value2)
+_method deco_resulttuple.empty_tuple()
+	>> dcn_no_op.new()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_resulttuple.pop()
 	##
-	_local operator << p_operator.string_value.as_symbol()
-	_local v1 << p_parser.parse_expression(p_value1)
-	_local v2 << p_parser.parse_expression(p_value2)
-	>> dcn_op.new(operator, v1, v2)
+	>> dcn_pop.new()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_resulttuple.remainder(p_parser, p_nr)
+	##
+	>> dcn_remainder.new(p_nr)
 _endmethod
 $

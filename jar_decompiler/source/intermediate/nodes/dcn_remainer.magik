@@ -1,0 +1,32 @@
+_package deco
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+## No operation
+def_slotted_exemplar(:dcn_remainder,
+		     {
+			     {:nr, _unset, :readable}
+		     }, :dcn_base )
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_remainder.new(p_nr)
+	>> _clone.init(p_nr)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method dcn_remainder.init(p_nr)
+	.nr << p_nr
+	>> _self 	 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_remainder.decode_on(p_stream)
+	##
+	p_stream.write("remainder")
+_endmethod
+$

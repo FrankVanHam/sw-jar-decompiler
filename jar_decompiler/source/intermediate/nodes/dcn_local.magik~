@@ -19,7 +19,7 @@ _package deco
 $
 
 
-remex(:dcn_local)
+#remex(:dcn_local)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
@@ -28,7 +28,7 @@ def_slotted_exemplar(:dcn_local,
 		     {
 			     {:index,_unset, :readable},
 			     {:name, _unset, :readable},
-			     {:type, _unset},
+			     {:type, _unset, :readable},
 			     {:must_declare_local?, _unset, :readable},
 			     {:declared?, _unset, :readable}
 		     }, :dcn_base )
@@ -36,6 +36,7 @@ $
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_local.new(index, name, _optional type)
+	
 	_return _clone.init(index, name, type)
 _endmethod
 $
@@ -49,6 +50,13 @@ _private _method dcn_local.init(index, name, type)
 	.declared? << _false 
 	assert(.type _is :local _orif .type _is :parameter)
 	_return _self
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_local.ignore?
+	##
+	>> .name.matches?("cfr_ignored*")
 _endmethod
 $
 

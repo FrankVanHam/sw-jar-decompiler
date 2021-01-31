@@ -13,7 +13,6 @@ _pragma(classify_level=restricted, topic={jar_decompiler, test})
 jpn_parser_class_snippet_test.define_shared_constant(:filename, "jpn_parser_class_snippets.txt", :private)
 $
 
-
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method jpn_parser_class_snippet_test.run_test()
 	## 

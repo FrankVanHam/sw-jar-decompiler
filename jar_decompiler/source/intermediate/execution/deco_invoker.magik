@@ -50,14 +50,21 @@ _method deco_invoker.boot_method(p_parser, p_method_name, p_sender, _gather p_ar
 	_loop
 		args.add(p_parser.parse_expression(i_arg))
 	_endloop
-	_return dcn_send.new(sender, p_method_name, args)
+	
+	_if p_method_name = "for_scatter()"
+	_then
+		_return dcn_scatter.new(sender)
+	_else
+		_return dcn_send.new(sender, p_method_name, args)
+	_endif 
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method deco_invoker.iter?(p_method, p_sender, _gather p_args)
 	##
-	>> _if p_sender.is_kind_of?(jpn_variable)
+	
+	>> _if p_sender.is_kind_of?(jpn_cast)
 	   _then
 		   >> p_sender.type.name = "MethodHandle"
 	   _else

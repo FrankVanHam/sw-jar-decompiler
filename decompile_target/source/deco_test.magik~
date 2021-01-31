@@ -4,34 +4,46 @@ $
 def_slotted_exemplar(:deco_test,{})
 $
 
-_method deco_test.test_boot_becomes^<< a
-	
+_method deco_test.test_block()
+
+	_local a << 1
+	_self.use(a)
+	_block
+		_local a << 2
+		_self.use(a)
+	_endblock 
 _endmethod
 $
 
-_method deco_test.test_boot_par()^<< a
-	
+_method deco_test.test_leave_block()
+
+	_local a << 1
+	_block @outer
+		_self.use(a)
+		_if a > 10
+		_then
+			_self.do()
+			_leave @outer
+		_endif 
+		_self.use(b)
+	_endblock 
 _endmethod
 $
 
-_method deco_test.test_boot_bracket()^<< a
-	
+_method deco_test.test_leave_block1()
+
+	_local a << 1
+	_block @outer
+		_block @inner
+			_self.use(a)
+			_if a > 10
+			_then
+				_self.do()
+				_leave @outer
+			_endif 
+			_self.use(b)
+		_endblock
+		_self.do_do()
+	_endblock 
 _endmethod
 $
-
-#
-#_method deco_test.test4()
-#	_for i_var  _over _self.fast_elements()
-#	_loop
-#		_self.run(i_var)
-#	_endloop 
-#_endmethod
-#$
-#
-#_method deco_test.test5()
-#	_for i_itervar  _over _self.slow_elements()
-#	_loop
-#		_self.run_slow(i_itervar)
-#	_endloop 
-#_endmethod
-#$

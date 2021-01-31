@@ -18,31 +18,27 @@
 _package deco
 $
 
-remex(:dcn_branch)
+#remex(:dcn_branch)
 $
 _pragma(classify_level=restricted, topic={decompiler})
 ## Node for a branch statement. Branch contains an if and
 ## optionally and else statement, both with results.
 def_slotted_exemplar(:dcn_branch,
 		     {
-			     {:condition, _unset, :readable},
-			     {:then_body, _unset, :readable},
-			     {:else_body, _unset, :readable}
+			     {:input, _unset, :readable}
 		     }, :dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_branch.new(p_condition, p_then, p_else)
+_method dcn_branch.new(p_input)
 	##
-	>> _clone.init(p_condition, p_then, p_else)
+	>> _clone.init(p_input)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_branch.init(p_condition, p_then, p_else)
-	.condition << p_condition
-	.then_body << p_then
-	.else_body << p_else
+_private _method dcn_branch.init(p_input)
+	.input << p_input
 	>> _self 
 _endmethod
 $
@@ -348,108 +344,146 @@ $
 #
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_branch.decode_on( a_stream, _optional parent, statements )
-	a_stream.write( "_if ")
-	_self.decode_condition_on(a_stream)
-	a_stream.newline()
-	_self.decode_then(a_stream)
-	_self.decode_else(a_stream)
-	a_stream.write("_endif")
+_method dcn_branch.if_condition
+	## 
+	_for i_tag, i_cond, i_body _over _self.condition_and_bodies()
+	_loop
+		_if i_tag = :if
+		_then
+			_return i_cond
+		_endif
+	_endloop 
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_branch.decode_condition_on(a_stream)
+_method dcn_branch.if_body
+	## 
+	_for i_tag, i_cond, i_body _over _self.condition_and_bodies()
+	_loop
+		_if i_tag = :if
+		_then
+			_return i_body
+		_endif
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.just_if?
 	##
-	.condition.decode_on(a_stream)
+	>> .input.size = 1
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.decode_on(p_stream)
+	_for i_tag, i_cond, i_body _over _self.condition_and_bodies()
+	_loop
+		_if i_tag = :if
+		_then
+			p_stream.write( "_if ")
+			i_cond.decode_on(p_stream)
+			p_stream.newline()
+			_self.decode_body(i_body, "_then", p_stream)
+		_elif i_tag = :elif
+		_then
+			p_stream.write( "_elif ")
+			i_cond.decode_on(p_stream)
+			p_stream.newline()
+			_self.decode_body(i_body, "_then", p_stream)
+		_else
+			p_stream.newline()
+			_self.decode_body(i_body, "_else", p_stream)
+		_endif
+	_endloop 
+	p_stream.newline()
+	p_stream.write("_endif")
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_branch.decode_then(a_stream)
-	a_stream.write("_then")
-	a_stream.indent(4)
-	a_stream.newline()
-	.then_body.decode_on(a_stream)
-	a_stream.unindent(4)
+_iter _method dcn_branch.condition_and_bodies()
+	_for i_index, i_vec _over .input.fast_keys_and_elements()
+	_loop
+		_local (cond, body) << (_scatter i_vec)
+		_local tag << _if i_index = 1
+			      _then >> :if
+			      _elif cond _isnt _unset
+			      _then >> :elif
+			      _else >> :else
+			      _endif
+		_loopbody(tag, cond, body)
+	_endloop 
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_branch.decode_else(a_stream)
-	_if .else_body _isnt _unset
-	_then
-		_self.decode_like_else_on(a_stream)
-	_endif 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_branch.decode_like_else_on( a_stream )
-	
-	a_stream.write( "_else ")
-	a_stream.newline()
-	a_stream.indent(4)
-	.else_body.decode_on(a_stream)
-	a_stream.unindent(4)
+_method dcn_branch.decode_body(p_body, p_keyword, p_stream)
+	p_stream.write(p_keyword)
+	p_stream.indent(4)
+	p_stream.newline()
+	p_body.decode_on(p_stream)
+	p_stream.unindent(4)
 _endmethod
 $
 
 #
 #_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_branch.decode_test_on(a_stream)
+#_method dcn_branch.decode_test_on(p_stream)
 #	_if .token _is _unset
 #	_then
-#		a_stream.write( "(")
-#		.expression.decode_on( a_stream )
-#		a_stream.write( ")")
+#		p_stream.write( "(")
+#		.expression.decode_on( p_stream )
+#		p_stream.write( ")")
 #		_return
 #	_endif 
 #	
 #	_if .token.sys!slot(:is?) _is _true _andif
 #	    .token.sys!slot(:compare_value) _is _true
 #	_then
-#		a_stream.write( "_not (")
-#		.expression.decode_on( a_stream )
-#		a_stream.write( ")")
+#		p_stream.write( "_not (")
+#		.expression.decode_on( p_stream )
+#		p_stream.write( ")")
 #	_else 
-#		a_stream.write( "(")
+#		p_stream.write( "(")
 #		
 #		_if .token.test_for_false?
 #		_then
-#			.expression.decode_on( a_stream )
+#			.expression.decode_on( p_stream )
 #		_elif .token.test_for_true?
 #		_then
-#			a_stream.write( "_not ")
-#			.expression.decode_on( a_stream )
+#			p_stream.write( "_not ")
+#			.expression.decode_on( p_stream )
 #		_else
-#			.expression.decode_eval_exp_on( a_stream )
+#			.expression.decode_eval_exp_on( p_stream )
 #			_if .token.sys!slot(:is?)
 #			_then
-#				a_stream.write( " _isnt ")
+#				p_stream.write( " _isnt ")
 #			_else
-#				a_stream.write( " _is ")
+#				p_stream.write( " _is ")
 #			_endif
-#			a_stream.write( "_", .token.sys!slot(:compare_value).write_string.lowercase )
+#			p_stream.write( "_", .token.sys!slot(:compare_value).write_string.lowercase )
 #		_endif 
-#		a_stream.write( ")")
+#		p_stream.write( ")")
 #	_endif
 #_endmethod
 #$
 #
 #_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_branch.decode_like_else_on( a_stream )
+#_method dcn_branch.decode_like_else_on( p_stream )
 #	
-#	a_stream.write( "_else ")
-#	a_stream.newline()
-#	a_stream.indent()
-#	_self.decode_statements_on(a_stream, .else_statements)
+#	p_stream.write( "_else ")
+#	p_stream.newline()
+#	p_stream.indent()
+#	_self.decode_statements_on(p_stream, .else_statements)
 #	_if .else_results.empty?.not
 #	_then
-#		a_stream.write(">> ")
-#		_self.decode_node_list_on(a_stream, .else_results)
-#		a_stream.newline()
+#		p_stream.write(">> ")
+#		_self.decode_node_list_on(p_stream, .else_results)
+#		p_stream.newline()
 #	_endif
-#	a_stream.unindent()
+#	p_stream.unindent()
 #_endmethod
 #$

@@ -1,35 +1,12 @@
 _package deco
 $
 
-def_slotted_exemplar(:deco_constantbuilder, {}, :deco_execution_base)
+def_slotted_exemplar(:deco_vectorbuilder, {}, :deco_execution_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_constantbuilder.stringbootstrap(p_parser, p_type_node, p_value_node)
-	##
-	_local type << p_type_node.string_value
-	_local str_value << p_value_node.string_value
-
-	>> _if type = "symbol"
-	   _then
-		   >> dcn_constant.new(str_value.as_symbol())
-	   _else
-		   1.stop
-	   _endif
+_method deco_vectorbuilder.empty_vector()
+	>> dcn_constant.new({})
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_constantbuilder.symbolbootstrap(p_parser, p_type_node, p_value_node)
-	##
-	_local type << p_type_node.string_value
-	_local str_value << p_value_node.string_value
-
-	>> _if type = "symbol"
-	   _then
-		   >> dcn_constant.new(str_value.as_symbol())
-	   _else
-		   1.stop
-	   _endif
-_endmethod
-$

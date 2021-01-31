@@ -1,12 +1,10 @@
 define_package
 assert
 
-fix_compiler_info_mixin_hierarchy
-
 ingestion/
 intermediate/
 
 #java_command
-decompiler
+#decompiler
 
 sw/

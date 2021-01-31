@@ -44,7 +44,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_file.assign_magik_method_names(p_class_name, p_java_method_name, p_exemplar_name, p_method_name)
+_method dcn_file.assign_magik_method_names(p_class_name, p_java_method_name, p_exemplar_name, p_method_name, p_nr_args, p_nr_mandatory_args, p_abstract?, p_private?)
 	##
 	_local meth << _unset 
 	_for i_method _over .methods.fast_elements()
@@ -57,7 +57,7 @@ _method dcn_file.assign_magik_method_names(p_class_name, p_java_method_name, p_e
 	_endloop
 	_if meth _isnt _unset
 	_then
-		meth.bind_names(p_exemplar_name, p_method_name)
+		meth.bind_names(p_exemplar_name, p_method_name, p_nr_args, p_nr_mandatory_args, p_abstract?, p_private?)
 	_else
 		condition.raise(:error, :string, "cannot find method to bind")
 	_endif

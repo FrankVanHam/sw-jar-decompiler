@@ -1,0 +1,36 @@
+_package user
+$
+
+def_slotted_exemplar(:deco_test,{})
+$
+
+
+
+
+
+
+
+
+
+
+
+_method deco_test.test_method_operator(a, b)
+	_self.use(a + b)
+_endmethod
+$
+
+_method deco_test.test_if_operator(a, b)
+	_if (a + b) > 10
+	_then
+		_self.do_a()
+	_else
+		_self.do_b()
+	_endif 
+_endmethod
+$
+
+_method deco_test.test_return_operator(a, b)
+	_return (a + b)
+_endmethod
+$
+

@@ -118,6 +118,7 @@ _method dcn_callable.decode_on(a_stream, _optional parent, statements)
 	a_stream.newline()
 	_self.decode_comment_on(a_stream)
 	_self.decode_body_on(a_stream)
+	a_stream.newline()
 	a_stream.write( "_endmethod" )
 _endmethod
 $
@@ -326,5 +327,13 @@ _method dcn_callable.int!decode_args_on(p_stream, p_start_index)
 			p_stream.write(i_arg)
 		_endif 
 	_endloop 
+_endmethod
+$
+
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_callable.accept_body_visitor(p_visitor)
+	.body.accept_body_visitor(p_visitor)
 _endmethod
 $

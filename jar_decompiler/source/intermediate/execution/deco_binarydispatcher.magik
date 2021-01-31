@@ -10,7 +10,24 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 deco_binarydispatcher.define_shared_constant(:mapping,
 	equality_hash_table.new_with(
-		"\\g", :|<|),
+		"+", "+",
+		"-", "-",
+		"*", "*",
+		"**", "**",
+		"div", "_div",
+		"mod", "_mod",
+		"or", "_or",
+		"and", "_and",
+		"xor", "_xor",
+		"\\s", "/",
+		"\\l", "<",
+		"\\l=", "<=",
+		"\\g", ">",
+		"\\g=", ">=",
+		"=", "=",
+		"~=", "~=",
+		"cf", "_cf"
+			    ),
 	:private )
 $
 

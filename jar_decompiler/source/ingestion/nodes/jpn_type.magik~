@@ -21,6 +21,23 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_type.add_dotted(p_lex)
+	##
+	.lex_name.append_dotted(p_lex)
+	>> _self 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_type.become_dotted(p_ident)
+	##
+	_return jpn_dotted.new(_self , p_ident)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_type.split_in_identifier_and_method()
 	##
 	_local idx << .lex_name.value.rindex_of(%.)
@@ -28,7 +45,7 @@ _method jpn_type.split_in_identifier_and_method()
 	_then 
 		_return .lex_name.split(idx)
 	_else
-		_return _unset, .lex_name 
+		_return jpn_this.new(), .lex_name 
 	_endif 
 _endmethod
 $

@@ -17,10 +17,10 @@ public static Object deco_test__test2(Object _self) {
 }
 ###########
 _method deco_test.test() 
-    _if (10< 12)
+    _if (12 > 10)
     _then
         _self.test1()
-    _else 
+    _else
         _self.test2()
     _endif
     _return 

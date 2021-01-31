@@ -8,8 +8,8 @@ def_slotted_exemplar(:dcn_unfinished_iter,
 			     {:sender, _unset, :readable},
 			     {:name, _unset, :readable},
 			     {:ref, _unset, :readable}
-		     }
-)
+		     },
+		     :dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})

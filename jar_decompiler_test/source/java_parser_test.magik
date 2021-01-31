@@ -80,6 +80,18 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_concat_cast_method_invocation()
+	##
+	_local inp << write_string("(a).asAllResults();")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.parse_expression()
+	_self.assert_true(node.is_kind_of?(deco:jpn_method_invocation), "should be an invocation")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_method_invocation_with_args()
 	##
 	_local inp << write_string("obj.dothing(x, y)")
@@ -212,7 +224,7 @@ _method java_parser_test.test_return_empty_tuple()
 
 	_local node << p.parse_statement()
 	_self.assert_true(node.is_kind_of?(deco:jpn_return), "should be return")
-	_self.assert_true(node.expression.is_kind_of?(deco:jpn_constant, "should be returning a constant"))
+	_self.assert_true(node.expression.is_kind_of?(deco:jpn_dotted), "should be returning dotted")
 _endmethod
 $
 
@@ -362,7 +374,31 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_casting()
 	_local inp << write_string(
-			      "(Object)a_var")
+			      "(Object)a_var;")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local c << p.parse_expression()
+	_self.assert_true(c.is_kind_of?(deco:jpn_cast), "should be cast")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_double_casting()
+	_local inp << write_string(
+			      "(Object)((AType)a_var);")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local c << p.parse_expression()
+	_self.assert_true(c.is_kind_of?(deco:jpn_cast), "should be cast")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_double_casting_method()
+	_local inp << write_string(
+			      "(Object)((AType)a_var.do());")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 
@@ -481,5 +517,69 @@ _method java_parser_test.test_xxx()
 	_local m << p.parse_expression()
 	#debug_print(m.right)
 	#_self.assert_true(m.right.is_kind_of?(deco:jpn_method_invocation), "should be a method invoc")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_local_execution()
+	_local inp << write_string("resultTuple.pop();")
+	inp << inp.substitute_character(%', %")
+
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	_local m << p.parse_expression()
+	_self.assert_true(m.is_kind_of?(deco:jpn_method_invocation), "should be a method")
+	_self.assert_true(m.sender.is_kind_of?(deco:jpn_variable), "should be a local variable method")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_assign_typed_local_with_local()
+	_local inp << write_string("Object obj = a;")
+	inp << inp.substitute_character(%', %")
+
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	_local m << p.parse_expression()
+	
+	_self.assert_true(m.is_kind_of?(deco:jpn_assignment), "should be a local assignment")
+	_self.assert_true(m.right.is_kind_of?(deco:jpn_variable), "should be a variable")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_assign_local_with_local()
+	_local inp << write_string("obj = a;")
+	inp << inp.substitute_character(%', %")
+
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	_local m << p.parse_expression()
+	
+	_self.assert_true(m.is_kind_of?(deco:jpn_assignment), "should be a local assignment")
+	m.right.dp
+	_self.assert_true(m.right.is_kind_of?(deco:jpn_variable), "should be a variable")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_block()
+	_local inp << write_string("block0: {}")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	
+	_local m << p.parse_expression()
+	_self.assert_true(m.is_kind_of?(deco:jpn_block), "should be a block")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_break()
+	_local inp << write_string("break block0")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	
+	_local m << p.parse_expression()
+	_self.assert_true(m.is_kind_of?(deco:jpn_break), "should be a break")
 _endmethod
 $

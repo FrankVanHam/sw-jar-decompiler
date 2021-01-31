@@ -63,3 +63,8 @@ dcn_body
 dcn_easter_egg
 dcn_new
 dcn_unfinished_iter
+dcn_gathered
+dcn_pop
+dcn_scatter
+dcn_remainer
+dcn_not
