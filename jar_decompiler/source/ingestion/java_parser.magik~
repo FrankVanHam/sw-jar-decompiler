@@ -600,7 +600,7 @@ _method java_parser.parse_assignment(p_ident)
 	##
 	_local left << jpn_variable.new(p_ident)
 	_self.ensure_operator("=")
-	_local right << _self.parse_expression()
+	_local right << _self.parse_expression(_true)
 	>> jpn_assignment.new(left, right)
 _endmethod
 $
@@ -626,7 +626,7 @@ _method java_parser.parse_typed_assignment(p_type)
 	_if next.is_operator?("=")
 	_then 
 		_self.ensure_operator("=")
-		_local right << _self.parse_expression()
+		_local right << _self.parse_expression(_true)
 		_return jpn_assignment.new(left, right)
 	_else
 		_return jpn_declaration.new( p_type, ident)
@@ -666,7 +666,11 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method java_parser.parse_method_invocation(p_identifier, p_method)
 	##
 	_local args << _self.parse_execution_args()
-	>> jpn_method_invocation.new(p_identifier, p_method, args)
+	_local indent << _if p_identifier.is_class_of?(jpn_type)
+			 _then >> p_identifier.as_variable()
+			 _else >> p_identifier
+			 _endif 
+	>> jpn_method_invocation.new(indent, p_method, args)
 _endmethod
 $
 
@@ -688,7 +692,7 @@ _method java_parser.parse_execution_args()
 				_continue
 			_endif
 		_endif
-		args.add(_self.parse_expression())
+		args.add(_self.parse_expression(_true))
 	_endloop
 	_self.ensure_separator(")")
 	>> args

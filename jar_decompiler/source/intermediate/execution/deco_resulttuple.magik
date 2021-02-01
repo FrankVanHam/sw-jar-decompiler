@@ -1,29 +1,16 @@
 _package deco
 $
+
 #remex(:deco_resulttuple)
 
-#_pragma(classify_level=restricted, topic={jar_decompiler})
-#def_slotted_exemplar(:deco_resulttuple,
-#	{},
-#	:deco_execution_base)
-#$
-#
-#_pragma(classify_level=restricted, topic={jar_decompiler})
-#_method deco_resulttuple.empty_tuple()
-#	>> dcn_no_op.new()
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={jar_decompiler})
-#_method deco_resulttuple.pop()
-#	##
-#	>> dcn_pop.new()
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={jar_decompiler})
-#_method deco_resulttuple.remainder(p_parser, p_nr)
-#	##
-#	>> dcn_remainder.new(p_nr)
-#_endmethod
-#$
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:deco_resulttuple,
+	{},
+	:deco_execution_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_resulttuple.empty_tuple()
+	>> dcn_no_op.new()
+_endmethod
+$

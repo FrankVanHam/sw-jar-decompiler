@@ -521,6 +521,48 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_local_execution()
+	_local inp << write_string("resultTuple.pop();")
+	inp << inp.substitute_character(%', %")
+
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	_local m << p.parse_expression()
+	_self.assert_true(m.is_kind_of?(deco:jpn_method_invocation), "should be a method")
+	_self.assert_true(m.sender.is_kind_of?(deco:jpn_variable), "should be a local variable method")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_assign_typed_local_with_local()
+	_local inp << write_string("Object obj = a;")
+	inp << inp.substitute_character(%', %")
+
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	_local m << p.parse_expression()
+	
+	_self.assert_true(m.is_kind_of?(deco:jpn_assignment), "should be a local assignment")
+	_self.assert_true(m.right.is_kind_of?(deco:jpn_variable), "should be a variable")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_assign_local_with_local()
+	_local inp << write_string("obj = a;")
+	inp << inp.substitute_character(%', %")
+
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	_local m << p.parse_expression()
+	
+	_self.assert_true(m.is_kind_of?(deco:jpn_assignment), "should be a local assignment")
+	m.right.dp
+	_self.assert_true(m.right.is_kind_of?(deco:jpn_variable), "should be a variable")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_block()
 	_local inp << write_string("block0: {}")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
