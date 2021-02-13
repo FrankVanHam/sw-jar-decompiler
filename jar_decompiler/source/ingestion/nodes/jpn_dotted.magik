@@ -32,6 +32,17 @@ _method jpn_dotted.split_in_identifier_and_method()
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_dotted.convert_to_type()
+	_local t << jpn_type.new(.list[1])
+	_for i _over range(2, .list.size)
+	_loop
+		t.add_dotted(.list[i])
+	_endloop
+	>> t
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_dotted.string_value

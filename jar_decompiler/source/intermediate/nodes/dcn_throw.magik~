@@ -1,0 +1,78 @@
+##
+## File            : $File: (dcn_throw.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-04-06
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package deco
+$
+remex(:dcn_throw)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Node for a throw statement
+def_slotted_exemplar( :dcn_throw,
+		       {{:token, _unset},
+			{:value,_unset},
+			{:results, _unset}}, :dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_throw.new(token, value, results)
+	
+	_return _clone.init(token, value, results)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_throw.init(token, value, results)
+	.token << token
+	.value << value
+	.results << rope.deco_check_type(results)
+	_return _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_throw.accept_node_visitor(visitor)
+	.value << .value.accept_node_visitor(visitor)
+	_self.accept_node_visitor_in_vector(visitor, .results)
+	_return _super.accept_node_visitor(visitor)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_throw.accept_body_visitor(visitor)
+	.value.accept_body_visitor(visitor)
+	_self.accept_body_visitor_in_vector(visitor, .results)
+	_return _super.accept_body_visitor(visitor)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_throw.decode_on( a_stream, _optional parent, statements)
+	a_stream.write("_throw ")
+	.value.decode_on(a_stream)
+	scatter? << .token.scatter?
+	numres << .token.numres
+	assert(numres >= 0)
+	
+	_if numres > 0
+	_then
+		a_stream.write( " _with ")
+		
+		_self.decode_args_on(a_stream, .results, scatter?, numres)
+	_endif 
+_endmethod
+$

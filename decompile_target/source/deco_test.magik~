@@ -4,46 +4,44 @@ $
 def_slotted_exemplar(:deco_test,{})
 $
 
-_method deco_test.test_block()
-
-	_local a << 1
-	_self.use(a)
-	_block
-		_local a << 2
-		_self.use(a)
-	_endblock 
+_method deco_test.test_loop()
+	##
+	_loop
+		_self.use()
+	_endloop 
 _endmethod
 $
 
-_method deco_test.test_leave_block()
-
-	_local a << 1
-	_block @outer
-		_self.use(a)
-		_if a > 10
-		_then
-			_self.do()
-			_leave @outer
-		_endif 
-		_self.use(b)
-	_endblock 
+_method deco_test.test_loop_leave()
+	##
+	_loop
+		_self.use()
+		_if _self.test? _then _leave _endif 
+		_self.dont_use()
+	_endloop 
 _endmethod
 $
 
-_method deco_test.test_leave_block1()
+_method deco_test.test_loop_continue()
+	##
+	_loop
+		_self.use()
+		_if _self.test? _then _continue _endif 
+		_self.dont_use()
+	_endloop 
+_endmethod
+$
 
-	_local a << 1
-	_block @outer
-		_block @inner
-			_self.use(a)
-			_if a > 10
-			_then
-				_self.do()
-				_leave @outer
-			_endif 
-			_self.use(b)
-		_endblock
-		_self.do_do()
-	_endblock 
+_method deco_test.test_loop_leave_outer()
+	##
+	_loop @outer
+		_self.pre()
+		_loop
+			_self.use()
+			_if _self.test? _then _continue @outer _endif 
+			_self.dont_use()
+		_endloop
+		_self.post()
+	_endloop 
 _endmethod
 $

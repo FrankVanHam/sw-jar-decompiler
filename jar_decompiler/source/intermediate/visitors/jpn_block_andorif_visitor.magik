@@ -49,7 +49,7 @@ _method jpn_block_andorif_visitor.is_andif?(n1, n2, n3)
 	
 	_local a_local << n1.only_local()
 	_if a_local _is _unset _then _return _false, :no_single_local_1 _endif
-	_if a_local.object_type <> "Object" _then _return _false, :no_type_object _endif
+	_if a_local.is_type?("Object").not _then _return _false, :no_type_object _endif
 	_local exp1 << n1.expression
 	
 	_local local_name << a_local.name
@@ -96,7 +96,7 @@ _method jpn_block_andorif_visitor.is_orif?(n1, n2, n3)
 	
 	_local a_local << n1.only_local()
 	_if a_local _is _unset _then _return _false, :no_single_local_1 _endif
-	_if a_local.object_type <> "Object" _then _return _false, :no_type_object _endif
+	_if a_local.is_type?("Object").not _then _return _false, :no_type_object _endif
 	_local exp1 << n1.expression
 	
 	_local local_name << a_local.name

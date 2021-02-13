@@ -6,9 +6,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_parser,
 	{
-		{:top, _unset},
-		{:last_assignment, _unset},
-		{:contexts, _unset}
+		{:top, _unset}
 	})
 $
 
@@ -23,25 +21,9 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method jpn_parser.init()
 	##
 	#.top << p_jpn_node
-	.contexts << rope.new()
 	>> _self
 _endmethod
 $
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_parser.has_local?(p_name)
-	##
-	_for i_set _over .contexts.fast_elements()
-	_loop
-		_if i_set.includes?(p_name)
-		_then
-			_return _true
-		_endif
-	_endloop
-	_return _false 
-_endmethod
-$
-
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_file(p_top_node)
@@ -65,31 +47,20 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_sender(p_node)
 	##
-	show(:parse_sender, p_node)
-	_if p_node.is_class_of?(jpn_variable)
-	_then
-		show(:parse_sender_var, p_node.name)
-		_if _self.has_local?(p_node.name)
-		_then
-			_return _self.parse_variable(p_node)
-		_endif
-	_endif 
-	_if p_node.is_class_of?(jpn_type) _orif
-	      p_node.is_class_of?(jpn_variable)
-	_then
-		_return _self.parse_executer(p_node)
-	_else
-		_return _self.parse_expression(p_node)
-	_endif 
+	_return _self.parse_expression(p_node)
 _endmethod
 $
-
-
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_expression(p_node)
 	##
-	_if p_node.is_class_of?(jpn_cast)
+	_if p_node.is_class_of?(jpn_variable)
+	_then
+		_return _self.parse_variable(p_node)
+	_elif p_node.is_class_of?(jpn_type)
+	_then
+		_return _self.parse_executer(p_node)
+	_elif p_node.is_class_of?(jpn_cast)
 	_then
 		_return _self.parse_cast(p_node)
 	_elif p_node.is_class_of?(jpn_parenthesis)
@@ -104,21 +75,9 @@ _method jpn_parser.parse_expression(p_node)
 		_else
 			_return deco_invoker.boot_method(_self, p_node.name, p_node.sender, _scatter p_node.args)
 		_endif
-	_elif p_node.is_class_of?(jpn_constant) _orif
-	      p_node.is_class_of?(jpn_type)
+	_elif p_node.is_class_of?(jpn_constant)
 	_then
-		_global x
-		x << p_node
-		_if p_node.string_value.includes?(%.).not
-		_then
-			_return _self.parse_constant(p_node)
-		_else
-			(exec, meth) << _self.executer_and_method_from_string(p_node.string_value)
-			_return exec.perform(meth, _self)
-		_endif
-	_elif p_node.is_class_of?(jpn_variable)
-	_then
-		_return _self.parse_variable(p_node)
+		_return _self.parse_constant(p_node)
 	_elif p_node.is_class_of?(jpn_dotted)
 	_then
 		(exec, meth) << _self.executer_and_method_from_string(p_node.string_value)
@@ -143,7 +102,7 @@ _method jpn_parser.parse_expression(p_node)
 		_return _self.parse_new(p_node)
 	_elif p_node.is_class_of?(jpn_declaration)
 	_then
-		_return dcn_no_op.new()
+		_return _self.parse_declaration(p_node)
 	_elif p_node.is_class_of?(jpn_try)
 	_then
 		_return _self.parse_body(p_node.try_body)
@@ -159,6 +118,12 @@ _method jpn_parser.parse_expression(p_node)
 	_elif p_node.is_class_of?(jpn_break)
 	_then
 		_return _self.parse_break(p_node)
+	_elif p_node.is_class_of?(jpn_continue)
+	_then
+		_return _self.parse_continue(p_node)
+	_elif p_node.is_class_of?(jpn_loop)
+	_then
+		_return _self.parse_loop(p_node)
 	_else
 		_global x
 		x << p_node
@@ -166,6 +131,12 @@ _method jpn_parser.parse_expression(p_node)
 
 		1.stop
 	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_declaration(p_jnode)
+	>> dcn_local_declaration.new(p_jnode.name, p_jnode.type)
 _endmethod
 $
 
@@ -222,35 +193,22 @@ _method jpn_parser.parse_assignment(p_jnode)
 	##
 	_local left << _self.parse_variable(p_jnode.left)
 	_local right << _self.parse_expression(p_jnode.right)
+	>> dcn_local_assignment.new(left, right)
 	
-	_if right.is_pop?
-	_then
-		.last_assignment.append_local(left)
-		_return dcn_no_op.new()
-	_elif right.is_class_of?(dcn_remainder)
-	_then
-		.last_assignment.append_local(left)
-		.last_assignment.set_gather(_unset)
-		_return dcn_no_op.new()
-	_else
-		_if p_jnode.left.type _isnt _unset _andif
-		    p_jnode.left.type = "ResultTuple"
-		_then 
-			.last_assignment << dcn_local_assignment.new(_unset, right)
-		_else
-			.last_assignment << dcn_local_assignment.new(left, right)
-		_endif 
-	_endif
-	>> .last_assignment
+#		.last_assignment.append_local(left)
+#		.last_assignment.set_gather(_unset)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_variable(p_jnode)
 	##
-	show(:adding, p_jnode.name)
-	.contexts.last.add(p_jnode.name)
-	>> dcn_local.new(1, p_jnode.name, _unset, p_jnode.type)
+	>> _if p_jnode.is_kind_of?(jpn_declaration)
+	   _then
+		   >> dcn_local_declaration.new(p_jnode.name, p_jnode.type)
+	   _else 
+		   >> dcn_local.new(1, p_jnode.name, _unset, p_jnode.type)
+	   _endif 
 _endmethod
 $
 
@@ -322,9 +280,7 @@ _method jpn_parser.parse_method(p_class_name, p_meth_node)
 			   _endif
 	_local args << java_args.map(_proc(x) >> x.name _endproc)
 	
-	.contexts.add_last(equality_set.new_from(args))
 	_local body << _self.parse_body(p_meth_node.body)
-	.contexts.remove_last()
 	_local type << p_meth_node.type
 	_local m_node << dcn_method.new(p_class_name, p_meth_node.name, args, scatter?, body, type )
 	>> m_node
@@ -334,14 +290,12 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_body(p_body_jnode)
 	##
-	.contexts.add_last(equality_set.new())
 	_local statements << rope.new()
 	_for i_jnode _over p_body_jnode.statements.fast_elements()
 	_loop
 		_local statement_node << _self.parse_expression(i_jnode)
 		statements.add(statement_node)
 	_endloop
-	.contexts.remove_last()
 	>> dcn_body.new(statements)
 _endmethod
 $
@@ -354,6 +308,13 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_continue(p_jnode)
+	##
+	>> dcn_continue.new(p_jnode.name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_not(p_jnode)
 	##
 	_local exp << _self.parse_expression(p_jnode.expression)
@@ -361,11 +322,21 @@ _method jpn_parser.parse_not(p_jnode)
 _endmethod
 $
 
-
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_block(p_jnode)
 	##
+	
 	>> dcn_block.new(_self.parse_body(p_jnode.body) ,p_jnode.name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_loop(p_jnode)
+	##
+	_local exp << _if p_jnode.while _isnt _unset
+		      _then >> _self.parse_expression(p_jnode.while)
+		      _endif 
+	>> dcn_loop.new(_self.parse_body(p_jnode.body),exp,  p_jnode.tag)
 _endmethod
 $
 

@@ -39,6 +39,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method peekable_input_stream.peek(_optional p_nr)
+#	1.stop
 	_local nr << p_nr.default(1)
 	_loop
 		_if .cache.size<nr

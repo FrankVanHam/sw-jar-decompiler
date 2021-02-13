@@ -17,6 +17,8 @@ _block
 _endblock
 $
 
+#sw_module_manager.save_compiled_module(sw_module_manager.module(:decompile_target))
+
 _block 
 	simple_munit_gui.open()
 _endblock

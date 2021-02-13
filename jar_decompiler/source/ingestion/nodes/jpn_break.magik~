@@ -18,3 +18,10 @@ _method jpn_break.init(p_lex_name)
 	>> _super.init()
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_break.name
+	## 
+	>> .lex_name.value
+_endmethod
+$

@@ -1,0 +1,50 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_ignore_assignment_visitor,{})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_ignore_assignment_visitor.new()
+	>> _clone 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_ignore_assignment_visitor.accept(p_body)
+	##
+	_local sts << p_body.statements
+	_for i_index, i_node _over sts.fast_keys_and_elements()
+	_loop
+		_if i_node.is_kind_of?(dcn_local_assignment) _andif
+		    _self.ignore_left?(i_node)
+		_then
+			sts[i_index] << i_node.expression
+		_elif i_node.is_kind_of?(dcn_local_assignment) _andif
+		      _self.ignore?(i_node)
+		_then
+			sts[i_index] << dcn_no_op.new()
+		_endif 
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_ignore_assignment_visitor.ignore_left?(p_node)
+	##
+	_local loc << p_node.only_local()
+	>> loc _isnt _unset _andif
+		loc.name.matches?("*ignored*")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_ignore_assignment_visitor.ignore?(p_node)
+	##
+	_local loc << p_node.only_local()
+	>> loc _isnt _unset _andif
+		loc.is_kind_of?(dcn_local_declaration) _andif 
+		loc.type.name = "ResultTuple"
+_endmethod
+$

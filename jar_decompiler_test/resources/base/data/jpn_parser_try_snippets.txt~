@@ -1,0 +1,18 @@
+## jpn_method_test_all_operators
+@CodeType(value="Subsidiary")
+public class deco_test_3468 {
+    @CodeType(value="Method")
+    
+}
+
+@CodeType(value="Primary")
+public class deco_test_3457
+implements ExecutableMagik {
+    @CodeType(value="TopLevel")
+    public Object execute() {
+    
+    }
+}
+###########
+
+###########

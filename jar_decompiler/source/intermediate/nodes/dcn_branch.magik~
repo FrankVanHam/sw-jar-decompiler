@@ -385,16 +385,20 @@ _method dcn_branch.decode_on(p_stream)
 		_then
 			p_stream.write( "_if ")
 			i_cond.decode_on(p_stream)
+			p_stream.newline()
 			_self.decode_body(i_body, "_then", p_stream)
 		_elif i_tag = :elif
 		_then
 			p_stream.write( "_elif ")
 			i_cond.decode_on(p_stream)
+			p_stream.newline()
 			_self.decode_body(i_body, "_then", p_stream)
 		_else
+			p_stream.newline()
 			_self.decode_body(i_body, "_else", p_stream)
 		_endif
 	_endloop 
+	p_stream.newline()
 	p_stream.write("_endif")
 _endmethod
 $
@@ -417,7 +421,6 @@ $
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_branch.decode_body(p_body, p_keyword, p_stream)
-	p_stream.newline()
 	p_stream.write(p_keyword)
 	p_stream.indent(4)
 	p_stream.newline()

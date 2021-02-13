@@ -45,7 +45,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_all_operators(a, b) 
-    c << (a + b)
+    _local c << (a + b)
     _self.use(c)
     c << (a - b)
     _self.use(c)
@@ -118,7 +118,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_compare_operators(a, b) 
-    c << (a < b)
+    _local c << (a < b)
     _self.use(c)
     c << (a <= b)
     _self.use(c)
@@ -187,7 +187,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_logical_operators(a, b) 
-    c << (a _and b)
+    _local c << (a _and b)
     _self.use(c)
     c << (a _andif b)
     _self.use(c)
@@ -230,7 +230,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_unary_operators(a, b) 
-    c << b.not
+    _local c << b.not
     _self.use(c)
     c << b.not
     _self.use(c)
@@ -259,7 +259,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_operator(a, b)
-	c << (a + b)
+	_local c << (a + b)
 	_self.use(c)
     _return 
 _endmethod
@@ -287,7 +287,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_operator_and_constant(a, b)
-	c << ((a + b) + 10)
+	_local c << ((a + b) + 10)
 	_self.use(c)
 	_return
 _endmethod
@@ -314,7 +314,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_operator_and_method(a, b)
-	c << ((a + _self.value) + b)
+	_local c << ((a + _self.value) + b)
 	_self.use(c)
 	_return
 _endmethod

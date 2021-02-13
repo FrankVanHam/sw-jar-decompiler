@@ -52,6 +52,24 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
+_method dcn_local_assignment.expression << p_exp
+	##
+	.expression << p_exp
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_local_assignment.only_local()
+	##
+	>> _if .local_nodes.size = 1
+	   _then >> .local_nodes.an_element()
+	   _endif 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
 _method dcn_local_assignment.set_gather(p_nr)
 	##  
 	.gather? << _true 

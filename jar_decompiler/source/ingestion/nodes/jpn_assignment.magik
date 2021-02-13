@@ -14,7 +14,6 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_assignment.init(p_left, p_right)
-	#show(:jpn_assignment, p_left, p_right)
 	assert(p_left.is_kind_of?(jpn_base))
 	assert(p_right.is_kind_of?(jpn_base))
 	

@@ -1,20 +1,15 @@
 _package deco
 $
 
-def_slotted_exemplar(:deco_constantbuilder, {}, :deco_execution_base)
+def_slotted_exemplar(:deco_dynamicaccessor, {}, :deco_execution_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_constantbuilder.stringbootstrap(p_parser, p_type_node, p_value_node)
+_method deco_dynamicaccessor.bootstrapstorer(p_parser, p_name_node, p_package_node, p_value_node)
 
-	_local type << p_type_node.string_value
-	_local str_value << p_value_node.string_value
-
-	>> _if type = "symbol"
-	   _then
-		   >> dcn_constant.new(str_value.as_symbol())
-	   _else
-		   1.stop
-	   _endif
+	_local name << p_name_node.string_value
+	_local package << p_package_node.string_value
+	_local value << p_parser.parse_expression(p_value_node)
+	>> dcn_dynamic_store.new(name, package, value)
 _endmethod
 $

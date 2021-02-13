@@ -21,3 +21,13 @@ _block
 	simple_munit_gui.open()
 _endblock
 $
+
+_method object.dp
+	debug_print(_self)
+_endmethod
+$
+
+_method object.p
+	print(_self)
+_endmethod
+$

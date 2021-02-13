@@ -1,25 +1,76 @@
 _package deco
 $
 
+#remex(:jpn_iter_visitor)
+
 _pragma(classify_level=restricted, topic={jar_decompiler})
-def_slotted_exemplar(:jpn_cleanup_visitor,{})
+def_slotted_exemplar(:jpn_iter_visitor,
+	{
+		{:file, _unset}
+	})
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_cleanup_visitor.new()
-	>> _clone 
+_method jpn_iter_visitor.new(p_file)
+	>> _clone.init(p_file)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_cleanup_visitor.accept(p_body)
+_private _method jpn_iter_visitor.init(p_file)
+	.file << p_file
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_iter_visitor.accept(p_body)
 	##
 	_local sts << p_body.statements
 	_for i_index, i_node _over sts.fast_keys_and_elements()
 	_loop
-		_if i_node.is_kind_of?(dcn_remainder) _orif
-		    i_node.is_kind_of?(dcn_pop) 
-		_then sts[i_index] << dcn_no_op.new() _endif 
+		_if i_node.is_kind_of?(dcn_local_assignment) _andif
+		    i_node.expression.is_kind_of?(dcn_unfinished_iter)
+		_then
+			_for i _over range(1,4)
+			_loop
+				sts[i_index-i] << dcn_no_op.new()
+			_endloop 
+			sts[i_index] << _self.convert_to_iter(i_node)
+		_endif
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_iter_visitor.convert_to_iter(p_node)
+	##
+	_local ref << p_node.expression.ref
+	_local ref_method << _self.find_method(ref)
+	_local loopbody_method << _self.find_loopbody_method(ref_method)
+
+	_local iter_body << loopbody_method.body.statements[3].copy()
+	iter_body.statements.remove_last()
+
+	_local args << loopbody_method.args
+	_return dcn_iter.new(p_node.expression.sender, p_node.expression.name, args, iter_body)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_iter_visitor.find_loopbody_method(p_method)
+	## 
+	_local egg << p_method.body.statements[1].statements[1].expression
+	_return _self.find_method(egg.name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_iter_visitor.find_method(p_ref)
+	##
+	_for i_meth _over .file.methods.fast_elements()
+	_loop
+		_if i_meth.sys!slot(:java_method_name) = p_ref _then _return i_meth _endif
 	_endloop 
 _endmethod
 $

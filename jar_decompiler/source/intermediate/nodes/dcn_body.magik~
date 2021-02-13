@@ -46,11 +46,13 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method dcn_body.decode_on(p_stream)
 	##
+	_local c? << _false 
 	_for i_stat _over .statements.fast_elements()
 	_loop
-		_if i_stat.is_no_op? _then _continue _endif 
+		_if i_stat.is_no_op? _then _continue _endif
+		_if (c?^<< _true) _then p_stream.newline() _endif
+		
 		i_stat.decode_on(p_stream)
-		p_stream.newline()
 	_endloop 
 _endmethod
 $

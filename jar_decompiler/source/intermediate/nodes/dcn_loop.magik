@@ -18,56 +18,53 @@
 _package deco
 $
 
-
-remex(:dcn_loop)
+#remex(:dcn_loop)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-## Node for a loop structure. Note that their is no matching
-## token in the code_vector for a loop. the loop is constructed
-## from a backwards jump at some point. that is the reason why
-## there is no token object.
+## 
 def_slotted_exemplar(:dcn_loop,
-		      {{:tag, _unset},
-		       {:statements, _unset},
-		       {:results, _unset}},
-		      :dcn_base)
+	{
+		{:tag,   _unset, :readable},
+		{:body,  _unset, :readable},
+		{:while, _unset, :readable}
+	},
+	:dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_loop.new(tag, statements, results)
-	_return _clone.init(tag, statements, results)
+_method dcn_loop.new(p_body, _optional p_while, p_tag)
+	_return _clone.init(p_body,p_while,  p_tag)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_loop.init(tag, statements, results )
-	assert(results _isnt _unset )
-	.tag << tag
-	.statements << rope.deco_check_type(statements)
-	.results << rope.deco_check_type(results)
+_private _method dcn_loop.init(p_body, p_while, p_tag)
+	.body << p_body
+	.tag << p_tag
+	.while << p_while
 	_return _self 
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_loop.accept_node_visitor(visitor)
-	_self.accept_node_visitor_in_vector(visitor, .statements)
-	_self.accept_node_visitor_in_vector(visitor, .results)
-	_return _super.accept_node_visitor(visitor)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_loop.accept_body_visitor(visitor)
-	_self.accept_body_visitor_in_vector(visitor, .statements)
-	_self.accept_body_visitor_in_vector(visitor, .results)
-	
-	visitor.visit(_self, .statements)
-	_super.accept_body_visitor(visitor)
-_endmethod
-$
-
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_loop.accept_node_visitor(visitor)
+#	_self.accept_node_visitor_in_vector(visitor, .statements)
+#	_self.accept_node_visitor_in_vector(visitor, .results)
+#	_return _super.accept_node_visitor(visitor)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_loop.accept_body_visitor(visitor)
+#	_self.accept_body_visitor_in_vector(visitor, .statements)
+#	_self.accept_body_visitor_in_vector(visitor, .results)
+#	
+#	visitor.visit(_self, .statements)
+#	_super.accept_body_visitor(visitor)
+#_endmethod
+#$
+#
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_loop.decode_on(a_stream, _optional parent, statements)
 	a_stream.write( "_loop")
@@ -76,21 +73,29 @@ _method dcn_loop.decode_on(a_stream, _optional parent, statements)
 		a_stream.write( " @", .tag)
 	_endif 
 	a_stream.newline()
-	a_stream.indent()
-	_self.decode_statements_on(a_stream, .statements)
-	a_stream.unindent()
+	a_stream.indent(4)
+	.body.decode_on(a_stream)
+	a_stream.newline()
+	a_stream.unindent(4)
 	a_stream.write( "_endloop")
 _endmethod
 $
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_loop.result_count
+#	_return .results.size
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_loop.has_results?
+#	_return .results.empty?.not 
+#_endmethod
+#$
+
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_loop.result_count
-	_return .results.size
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_loop.has_results?
-	_return .results.empty?.not 
+_method dcn_loop.accept_body_visitor(p_visitor)
+	.body.accept_body_visitor(p_visitor)
 _endmethod
 $

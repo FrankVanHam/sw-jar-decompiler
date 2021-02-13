@@ -174,10 +174,10 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_return_if() 
+    _local resultTuple
     _if _self.test?
     _then
         resultTuple << _self.doa()
-    
     _else
         _self.test1?
         resultTuple << _self.dob()
@@ -185,6 +185,7 @@ _method deco_test.test_return_if()
     _return resultTuple
 _endmethod
 $
+
 ###########
 ## jpn_method_test_param_if
 @CodeType(value="Subsidiary")
@@ -213,10 +214,10 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_param_if() 
+    _local callSite
     _if _self.test?
     _then
         callSite << _self.doa()
-    
     _else
         _self.test1?
         callSite << _self.dob()

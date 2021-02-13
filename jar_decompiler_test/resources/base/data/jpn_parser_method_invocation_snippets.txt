@@ -149,7 +149,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_invocation_result()
-	a << _self.do()
+	_local a << _self.do()
     	_self.use(a)
     _return 
 _endmethod
@@ -179,7 +179,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_multiple_invocation_results()
-	 (a,b) << _self.do()
+	 _local (a,b) << _self.do()
 	_self.use(a, b)
 	_return 
 _endmethod
@@ -207,7 +207,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_allresults_results()
-	 a << _allresults _self.do()
+	 _local a << _allresults _self.do()
 	 _self.use(a)
     _return 
 _endmethod
@@ -234,7 +234,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_gather_scatter_results()
-	(_gather a) << (_scatter _self.do())
+	_local (_gather a) << (_scatter _self.do())
 	_self.use(a)
     _return 
 _endmethod
@@ -265,7 +265,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_gather_leftover_invocation()
-	(a, b, _gather c) << (_scatter _self.do())
+	_local (a, b, _gather c) << (_scatter _self.do())
 	_self.use(a,b,c)
 	_return
 _endmethod
@@ -295,7 +295,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_send_leftover_invocation()
-	(a, b, _gather c) << _self.do()
+	_local (a, b, _gather c) << _self.do()
 	_self.use(a,b,c)
 	_return
 _endmethod
@@ -325,7 +325,7 @@ implements ExecutableMagik {
 }
 ########### (_gather c) got lost because c is not used
 _method deco_test.test_gather_leftover_invocation2()
-	(a, b) << (_scatter _self.do())
+	_local (a, b) << (_scatter _self.do())
 	_self.use(a,b)
 	_return
 _endmethod

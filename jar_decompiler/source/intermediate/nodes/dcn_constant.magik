@@ -61,6 +61,13 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
+_method dcn_constant.new_proc(p_value)
+	##
+	>> _clone.init(:proc, p_value)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
 _private _method dcn_constant.init(p_type, p_string_value)
 	## 
 	.type << p_type
@@ -81,6 +88,9 @@ _method dcn_constant.decode_on(p_stream)
 	_then
 		p_stream.write(.string_value)
 	_elif .type _is :literal
+	_then
+		p_stream.write(.string_value)
+	_elif .type _is :proc
 	_then
 		p_stream.write(.string_value)
 	_else

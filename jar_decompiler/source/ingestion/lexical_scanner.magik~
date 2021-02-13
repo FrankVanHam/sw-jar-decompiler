@@ -11,8 +11,7 @@ def_slotted_exemplar(:lexical_scanner,
 	{
 		{:in, _unset},
 		{:line, _unset},
-		{:column, _unset},
-		{:cache, _unset}
+		{:column, _unset}
 	})
 $
 
@@ -56,35 +55,15 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method lexical_scanner.init(p_stream)
-	.in << p_stream
+	.in << peekable_input_stream.new(p_stream)
 	.line << 1
 	.column << 1
-	.cache << _unset 
 	 >> _self 
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method lexical_scanner.peek()
-	#10.stop
-	_if .cache _is _unset
-	_then
-		.cache << _self.int!get()
-	_endif
-	>> .cache
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexical_scanner.get()
-	_self.peek()
-	_local lex << .cache ^<< _unset 
-	_return lex
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method lexical_scanner.int!get()
 	_loop
 		_if _self.more_to_get?.not _then _return lexeme.new_eof(.line, .column) _endif
 		
@@ -224,9 +203,15 @@ _method lexical_scanner.get_token()
 	_local out << internal_text_output_stream.new()
 	_loop
 		_if _self.more_to_get?.not _then _leave _endif
-		
-		_local char << _self.peek_char()
 
+		_local str << _self.proces_special_construct()
+		_if str.empty?.not
+		_then
+			out.write(str)
+			_continue
+		_endif 
+		
+		_local char << _self.peek_char()	
 		_if _not(char.white_space? _orif _self.separators.includes?(char) _orif _self.operator_characters.includes?(char))
 		_then
 			out.write(_self.get_char())
@@ -237,6 +222,44 @@ _method lexical_scanner.get_token()
 	>> out.string
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.proces_special_construct()
+	##
+	## Special handling for the java decompiler failure to
+	## decompile the method names property.
+	
+	_local char << _self.peek_char()
+	_if char = %( _andif _self.peek_char(2) = %) _andif
+	    (_self.peek_char(3)=%\ _orif _self.peek_char(3)=%^)
+	_then
+		_self.get_char()
+		_self.get_char()
+		_return "()"
+	_endif
+	_if char = %\ _andif _self.peek_char(2) = %l
+	_then
+		_self.get_char()
+		_self.get_char()
+		_return "\l"
+	_endif
+	_if char = %^ _andif _self.peek_char(2) = %\
+	_then
+		_self.get_char()
+		_return "^" 
+	_endif
+	_if char = %\ _andif _self.peek_char(2) = %b _andif _self.peek_char(3)=%]
+	_then
+		_self.get_char()
+		_self.get_char()
+		_self.get_char()
+		_return "\b]" 
+	_endif
+	_return "" 
+_endmethod
+$
+
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexical_scanner.get_upto(p_end_char)
@@ -276,8 +299,8 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method lexical_scanner.peek_char()
-	>> .in.peek()
+_method lexical_scanner.peek_char(_optional how_far)
+	>> .in.peek(how_far)
 _endmethod
 $
 

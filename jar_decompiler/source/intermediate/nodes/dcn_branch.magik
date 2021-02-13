@@ -370,6 +370,18 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.accept_body_visitor(p_visitor)
+	_for i_tag, i_cond, i_body _over _self.condition_and_bodies()
+	_loop
+		_if i_body _isnt _unset
+		_then
+			i_body.accept_body_visitor(p_visitor)
+		_endif
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
 _method dcn_branch.just_if?
 	##
 	>> .input.size = 1

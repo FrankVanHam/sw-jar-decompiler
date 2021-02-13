@@ -1,0 +1,31 @@
+_package deco
+$
+
+#remex(:jpn_loop)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_loop,
+	{
+		{:lex_tag, _unset, :readable},
+		{:body,    _unset, :readable}
+	},
+	:jpn_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_loop.init(p_body, _optional p_lex_tag)
+	
+	.lex_tag << p_lex_tag
+	.body << p_body
+	>> _super.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_loop.tag
+	## 
+	>> _if .lex_tag _isnt _unset
+	   _then >> .lex_tag.value
+	   _endif 
+_endmethod
+$

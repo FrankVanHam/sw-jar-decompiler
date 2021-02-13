@@ -120,13 +120,13 @@ _method lexical_scanner.get_operator()
 		_if _self.operator_characters.includes?(peek).not 
 		_then
 			_leave
+		_endif
+		_if _self.operators.includes?(write_string(s.string,peek)).not
+		_then
+			_leave
 		_endif 
 	_endloop
 	_local value << s.string
-	_if _self.operators.includes?(value).not
-	_then 
-		condition.raise(:deco_unexpected_operator, :line, .line, :column, .column, :operator, value)
-	_endif 
 	>> lexeme.new_operator(value, .line, .column)
 _endmethod
 $

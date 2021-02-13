@@ -68,3 +68,4 @@ dcn_pop
 dcn_scatter
 dcn_remainer
 dcn_not
+dcn_local_declaration

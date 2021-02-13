@@ -6,6 +6,11 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_dynamicscope.interjectframe(p_parser)
->> dcn_no_op.new()
+	>> dcn_no_op.new()
+_endmethod
+$
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_dynamicscope.destroyframe(p_parser)
+	>> dcn_no_op.new()
 _endmethod
 $

@@ -16,7 +16,8 @@ _method jpn_parser_test.test_int()
 	_local p << deco:java_parser.new(s)
 	_local jpn_exp << p.parse_expression()
 	_self.assert_true(jpn_exp.is_kind_of?(deco:jpn_method_invocation))
-
+	_self.assert_true(jpn_exp.sender.is_kind_of?(deco:jpn_type), "should be type")
+	
 	_local jp << deco:jpn_parser.new()
 	_local dcn_node << jp.parse_expression(jpn_exp)
 	_self.assert_true(dcn_node.is_class_of?(deco:dcn_constant))

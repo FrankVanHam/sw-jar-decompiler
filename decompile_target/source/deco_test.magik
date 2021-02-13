@@ -4,129 +4,55 @@ $
 def_slotted_exemplar(:deco_test,{})
 $
 
-_method deco_test.test_all_operators(a, b)
-	c << a + b
-	_self.use(c)
-	c << a - b
-	_self.use(c)
-	c << a * b
-	_self.use(c)
-	c << a / b
-	_self.use(c)
-	c << a _div b
-	_self.use(c)
-	c << a _mod b
-	_self.use(c)
-	c << a ** b
-	_self.use(c)
-	c +<< b
-	_self.use(c)
-	c -<< b
-	_self.use(c)
-	c *<< b
-	_self.use(c)
-	c /<< b
-	_self.use(c)
-	c _div<< b
-	_self.use(c)
-	c _mod<< b
-	_self.use(c)
-	c **<< b
-	
-	_self.use(c)
+_method deco_test.test_loop_exit_condition()
+	_local var << _loop
+			      a << _self.use()
+			      _if _self.test _then _leave _with a _endif
+			      _self.use2()
+		      _endloop
+	_self.show(var)
 _endmethod
 $
 
-_method deco_test.test_compare_operators(a, b)
-	c << a < b
-	_self.use(c)
-	c << a <= b
-	_self.use(c)
-	c << a > b
-	_self.use(c)
-	c << a >= b
-	_self.use(c)
-	c << a = b
-	_self.use(c)
-	c << a ~= b
-	_self.use(c)
-	c << a <> b
-	_self.use(c)
-	c << a _is b
-	_self.use(c)
-	c << a = b
-	_self.use(c)
-	c << a _isnt b
-	_self.use(c)
-	c << a _cf b	
-	_self.use(c)
+_method deco_test.try()
+	_try
+		_self.do()
+	_when error
+		_self.error()
+	_endtry 
 _endmethod
 $
 
-_method deco_test.test_logical_operators(a, b)
-	c << a _and  b
-	_self.use(c)
-	c << a _andif b
-	_self.use(c)
-	c << a _or b
-	_self.use(c)
-	c << a _orif b
-	_self.use(c)
-	c << a _xor b
-	_self.use(c)
-	c _and<<  b
-	_self.use(c)
-	c _or<< b
-	_self.use(c)
-	c _xor<< b
-	_self.use(c)
+_method deco_test.try_when_when()
+	_try
+		_self.do()
+	_when warning
+		_self.warning()
+	_when error
+		_self.error()
+	_endtry 
 _endmethod
 $
 
-_method deco_test.test_unary_operators(a, b)
-	c << _not b
-	_self.use(c)
-	c << ~ b	
-	_self.use(c)
+_method deco_test.try_with_condition()
+	_try _with c
+		_self.do()
+	_when error
+		c.report_error()
+		_self.error()
+	_endtry 
 _endmethod
 $
 
-_method deco_test.test_operator(a, b)
-	c << a + b
-	_self.use(c)
-_endmethod
-$
-
-
-_method deco_test.test_operator_and_constant(a, b)
-	c << a + b + 10
-	_self.use(c)
-_endmethod
-$
-
-_method deco_test.test_operator_and_method(a, b)
-	c << a + _self.value + b
-	_self.use(c)
-_endmethod
-$
-
-_method deco_test.test_method_operator(a, b)
-	_self.use(a + b)
-_endmethod
-$
-
-_method deco_test.test_if_operator(a, b)
-	_if (a + b) > 10
-	_then
-		_self.do_a()
-	_else
-		_self.do_b()
-	_endif 
-_endmethod
-$
-
-_method deco_test.test_return_operator(a, b)
-	_return (a + b)
+_method deco_test.try_assign()
+	_local a << _try
+			    _self.do()
+			    >> 1
+		    _when error
+			    _self.error()
+			    >> 2
+		    _endtry
+	_self.use(a)
 _endmethod
 $
 

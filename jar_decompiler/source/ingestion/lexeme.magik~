@@ -184,9 +184,22 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.append_dotted(p_lex)
+	##
+	_self.append_string(write_string(".", p_lex.value))
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexeme.append(p_lex)
 	##
-	_local v << write_string(.value, p_lex.value)
-	_return _self.new(.type, v, .line, .column )
+	_self.append_string(p_lex.value)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.append_string(p_string)
+	##
+	.value << write_string(.value, p_string)
 _endmethod
 $

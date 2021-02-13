@@ -6,7 +6,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:peekable_input_stream,
 	{
-		{:input, _unset}
+		{:input, _unset},
 		{:cache, _unset}
 	})
 $
@@ -60,7 +60,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method peekable_input_stream.more_to_get?
 	##
-	>> .cache.empty?.not _orif .input.more_to_get?
+	>> _self.peek() _isnt _unset 
 _endmethod
 $
 

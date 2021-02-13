@@ -30,7 +30,7 @@ def_slotted_exemplar( :dcn_break,
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_break.new(p_name)
+_method dcn_break.new(_optional p_name)
 	_return _clone.init(p_name)
 _endmethod
 $
@@ -45,6 +45,11 @@ $
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_break.decode_on(p_stream)
 	##
-	p_stream.write(" _leave @", .name)
+	_if .name _isnt _unset
+	_then 
+		p_stream.write(" _leave @", .name)
+	_else
+		p_stream.write(" _leave")
+	_endif 
 _endmethod
 $

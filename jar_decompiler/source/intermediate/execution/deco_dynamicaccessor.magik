@@ -13,3 +13,13 @@ _method deco_dynamicaccessor.bootstrapstorer(p_parser, p_name_node, p_package_no
 	>> dcn_dynamic_store.new(name, package, value)
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_dynamicaccessor.bootstrapbinder(p_parser, p_name_node, p_package_node, p_value_node)
+
+	_local name << p_name_node.string_value
+	_local package << p_package_node.string_value
+	_local value << p_parser.parse_expression(p_value_node)
+	>> dcn_dynamic_store.new(name, package, value)
+_endmethod
+$

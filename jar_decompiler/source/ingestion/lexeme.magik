@@ -168,6 +168,13 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexeme.is_keyword?(p_value)
+	##
+	>> _self.is_keyword? _andif .value = p_value
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexeme.is_separator?(p_value)
 	##
 	>> _self.is_separator? _andif .value = p_value
