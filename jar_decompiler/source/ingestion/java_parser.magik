@@ -251,9 +251,14 @@ _method java_parser.parse_type()
 			_leave 
 		_elif lex.is_separator?(".")
 		_then
-			.scanner.get()
-			_local ident << .scanner.get()
-			type << type.become_dotted(ident)
+			_if .scanner.peek(2).is_separator?(".").not
+			_then 
+				.scanner.get()
+				_local ident << .scanner.get()
+				type << type.become_dotted(ident)
+			_else
+				_leave 				
+			_endif 
 		_else
 			_leave
 		_endif
@@ -408,7 +413,9 @@ _method java_parser.parse_sub_expression(_optional p_identifier?)
 	_elif lex.is_operator?("?")
 	_then
 		_return _self.parse_identifier(_false)
-		
+	_elif lex.is_identifier? _andif lex.value = "null"
+	_then
+		_return jpn_constant.new(.scanner.get())
 	_elif lex.is_separator?(";") _orif lex.is_separator?(")") _orif lex.is_eof?
 	_then
 		_return _unset
@@ -471,7 +478,6 @@ _method java_parser.parse_sub_expression(_optional p_identifier?)
 				_return type
 			_endif
 		_else
-			show(2)
 			debug_print(lex)
 			2.stop
 		_endif
@@ -526,7 +532,6 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method java_parser.parse_identifier(_optional p_identifier?)
 	## 
 	_local ident_lex << .scanner.get()
-	show(:parse_identifier, ident_lex.value)
 	_local ident << _if _self.is_variable?(ident_lex.value)
 			_then
 				>> jpn_variable.new(ident_lex)
@@ -783,8 +788,6 @@ _method java_parser.parse_execution_args(p_p1, p_p2)
 	.scanner.get()
 	_loop
 		_local lex << .scanner.peek()
-		show(:args_peek, lex.value)
-		lex.dp
 		_if lex.is_separator? _orif lex.is_operator?
 		_then
 			_if lex.value = p_p2

@@ -32,9 +32,14 @@ _method jpn_iter_visitor.accept(p_body)
 		_if i_node.is_kind_of?(dcn_local_assignment) _andif
 		    i_node.expression.is_kind_of?(dcn_unfinished_iter)
 		_then
-			_for i _over range(1,4)
+			# remove the local assignment before the no_op
+			_for i _over range(i_index-1, 1, -1)
 			_loop
-				sts[i_index-i] << dcn_no_op.new()
+				_if sts[i].is_kind_of?(dcn_local_assignment)
+				_then
+					sts[i] << dcn_no_op.new()
+					_leave 
+				_endif 
 			_endloop 
 			sts[i_index] << _self.convert_to_iter(i_node)
 		_endif
@@ -49,18 +54,21 @@ _method jpn_iter_visitor.convert_to_iter(p_node)
 	_local ref_method << _self.find_method(ref)
 	_local loopbody_method << _self.find_loopbody_method(ref_method)
 
-	_local iter_body << loopbody_method.body.statements[3].copy()
+	_local sts << loopbody_method.body.statements
+	_local iter_node << sts.select(predicate.using(_proc(x) >> x.is_kind_of?(dcn_unfinished_try) _endproc)).an_element()	       
+	_local iter_body << iter_node.try_body.copy()
 	iter_body.statements.remove_last()
-
-	_local args << loopbody_method.args
-	_return dcn_iter.new(p_node.expression.sender, p_node.expression.name, args, iter_body)
+		
+	_return dcn_iter.new(p_node.expression.sender, p_node.expression.name,
+			     loopbody_method.scatter?, loopbody_method.args,
+			     iter_body)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_iter_visitor.find_loopbody_method(p_method)
 	## 
-	_local egg << p_method.body.statements[1].statements[1].expression
+	_local egg << p_method.body.statements[1].try_body.statements[1].expression
 	_return _self.find_method(egg.name)
 _endmethod
 $

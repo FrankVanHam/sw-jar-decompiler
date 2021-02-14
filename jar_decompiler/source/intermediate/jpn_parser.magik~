@@ -105,7 +105,7 @@ _method jpn_parser.parse_expression(p_node)
 		_return _self.parse_declaration(p_node)
 	_elif p_node.is_class_of?(jpn_try)
 	_then
-		_return _self.parse_body(p_node.try_body)
+		_return _self.parse_try(p_node)
 	_elif p_node.is_class_of?(jpn_this)
 	_then
 		_return dcn_self.new()
@@ -124,6 +124,9 @@ _method jpn_parser.parse_expression(p_node)
 	_elif p_node.is_class_of?(jpn_loop)
 	_then
 		_return _self.parse_loop(p_node)
+	_elif p_node.is_class_of?(jpn_throw)
+	_then
+		_return _self.parse_throw(p_node)
 	_else
 		_global x
 		x << p_node
@@ -315,6 +318,14 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_throw(p_jnode)
+	##
+	_local exp << _self.parse_expression(p_jnode.expression)
+	>> dcn_throw.new(exp, {})
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_not(p_jnode)
 	##
 	_local exp << _self.parse_expression(p_jnode.expression)
@@ -323,9 +334,16 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_try(p_jnode)
+	##
+	>> dcn_unfinished_try.new(_self.parse_body(p_jnode.try_body), _unset)
+	#_self.parse_body(p_jnode.catch_body))
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_block(p_jnode)
 	##
-	
 	>> dcn_block.new(_self.parse_body(p_jnode.body) ,p_jnode.name)
 _endmethod
 $

@@ -64,6 +64,12 @@ $
 #_endmethod
 #$
 #
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_block.accept_body_visitor(p_visitor)
+	.body.accept_body_visitor(p_visitor)
+_endmethod
+$
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_block.decode_on(a_stream, _optional parent, statements)
 	a_stream.write( "_block")

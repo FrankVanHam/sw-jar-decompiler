@@ -18,45 +18,42 @@
 _package deco
 $
 
-#remex(:dcn_block)
+#remex(:dcn_unfinished_try)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-## Node for a block statement.
-## note that the _block _endblock statement has no
-## representative in the code_vector, so there is no token for
-## it. 
-def_slotted_exemplar(:dcn_block,
+## Node for a unfinished try statement.
+def_slotted_exemplar(:dcn_unfinished_try,
 		      {
-			      {:name, _unset, :readable},
-			      {:body, _unset, :readable}
+			      {:try_body,   _unset, :readable},
+			      {:catch_body, _unset, :readable}
 			      },
 		      :dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_block.new(p_body, _optional p_name)
-	_return _clone.init(p_body, p_name)
+_method dcn_unfinished_try.new(p_try_body, p_catch_body)
+	_return _clone.init(p_try_body, p_catch_body)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_block.init(p_body, _optional p_name)
-	.body << p_body
-	.name << p_name
+_private _method dcn_unfinished_try.init(p_try_body, p_catch_body)
+	.try_body << p_try_body
+	.catch_body << p_catch_body
 	_return _self 
 _endmethod
 $
 
 #_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_block.accept_node_visitor(visitor)
+#_method dcn_unfinished_try.accept_node_visitor(visitor)
 #	_self.accept_node_visitor_in_vector(visitor, .statements)
 #	_return _super.accept_node_visitor(visitor)
 #_endmethod
 #$
 #
 #_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_block.accept_body_visitor(visitor)
+#_method dcn_unfinished_try.accept_body_visitor(visitor)
 #	_self.accept_body_visitor_in_vector(visitor, .statements)
 #	
 #	visitor.visit(_self, .statements)
@@ -66,22 +63,22 @@ $
 #
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_block.accept_body_visitor(p_visitor)
-	.body.accept_body_visitor(p_visitor)
-_endmethod
-$
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_block.decode_on(a_stream, _optional parent, statements)
-	a_stream.write( "_block")
-	_if .name _isnt _unset
-	_then
-		a_stream.write(" @", .name)
-	_endif 
+_method dcn_unfinished_try.decode_on(a_stream, _optional parent, statements)
+	a_stream.write( "_unfinished_try")
 	a_stream.newline()
 	a_stream.indent(4)
-	.body.decode_on(a_stream)
+	.try_body.decode_on(a_stream)
 	a_stream.newline()
 	a_stream.unindent(4)
-	a_stream.write( "_endblock")
+	a_stream.write( "_catch")
+	_if .catch_body _isnt _unset
+	_then 
+		a_stream.newline()
+		a_stream.indent(4)
+		.catch_body.decode_on(a_stream)
+		a_stream.newline()
+		a_stream.unindent(4)
+	_endif 
+	a_stream.write( "_endunfinished_try")
 _endmethod
 $

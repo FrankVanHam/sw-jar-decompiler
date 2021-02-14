@@ -4,44 +4,40 @@ $
 def_slotted_exemplar(:deco_test,{})
 $
 
-_method deco_test.test_loop()
-	##
+_method deco_test.test_gather_iter()
+	_for i_index, _gather i_var _over _self.fast_elements()
 	_loop
-		_self.use()
-	_endloop 
+		_self.run(i_index, _scatter i_var)
+	_endloop
+	_return 
 _endmethod
 $
 
-_method deco_test.test_loop_leave()
-	##
+_method deco_test.test_nested_iter()
+	_for i_var _over _self.fast_elements()
 	_loop
-		_self.use()
-		_if _self.test? _then _leave _endif 
-		_self.dont_use()
-	_endloop 
+		_for i_var2 _over _self.fast_elements()
+		_loop 
+			_self.run(i_var, i_var2)
+		_endloop 
+	_endloop
+	_return 
 _endmethod
 $
 
-_method deco_test.test_loop_continue()
-	##
-	_loop
-		_self.use()
-		_if _self.test? _then _continue _endif 
-		_self.dont_use()
-	_endloop 
-_endmethod
-$
-
-_method deco_test.test_loop_leave_outer()
-	##
+_method deco_test.test_nested_break_iter()
+	_for i_var _over _self.fast_elements()
 	_loop @outer
-		_self.pre()
-		_loop
-			_self.use()
-			_if _self.test? _then _continue @outer _endif 
-			_self.dont_use()
-		_endloop
-		_self.post()
-	_endloop 
+		_for i_var2 _over _self.fast_elements()
+		_loop 
+			_self.run1(i_var, i_var2)
+			_if _self.exit? _then _leave @outer _endif
+			_self.run2(i_var, i_var2)
+			_self.self.exit? _then _continue @outer _endif
+			_self.run3(i_var, i_var2)
+		_endloop 
+	_endloop
+	_return 
 _endmethod
 $
+

@@ -1,11 +1,51 @@
 _package deco
 $
 
-def_slotted_exemplar(:deco_envaccessor, {}, :deco_execution_base)
+#remex(:deco_envaccessor)
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:deco_envaccessor,
+	{
+		{:cache, _unset}
+	}, :deco_execution_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_envaccessor.bootstrapreseter(p_parser)
+_private _method deco_envaccessor.cache
+	>> _if .cache _is _unset
+	   _then >> .cache << equality_property_list.new()
+	   _else >> .cache
+	   _endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method deco_envaccessor.cache(p_index, p_value)
+	##
+	assert(p_index.is_class_of?(""))
+	assert(p_value.is_kind_of?(dcn_base))
+	_self.cache[p_index] << p_value
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method deco_envaccessor.from_cache(p_index)
+	##
+	assert(p_index.is_class_of?(""))
+	>> _self.cache[p_index]
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_envaccessor.bootstrapreseter(p_parser, p_action, p_var, p_env, p_index)
+	_if p_action.string_value = "resetEnv"
+	_then 
+		_local var << p_parser.parse_expression(p_var)
+		_local index << p_parser.parse_expression(p_index)
+
+		_self.cache(index.string_value, var)
+	_endif 
 	>> dcn_no_op.new()
 _endmethod
 $
@@ -17,7 +57,13 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_envaccessor.bootstrapfetcher(p_parser)
-	>> dcn_self.new()
+_method deco_envaccessor.bootstrapfetcher(p_parser, p_action, p_env, p_index)
+	_if p_action.string_value = "fetchEnv"
+	_then 
+		_local index << p_parser.parse_expression(p_index)
+		_return _self.from_cache(index.string_value)
+	_else 
+		_return dcn_no_op.new()
+	_endif 
 _endmethod
 $

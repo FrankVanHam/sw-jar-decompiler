@@ -77,8 +77,8 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method deco_invoker.unfinished_iter(p_parser, p_method, p_sender, _gather p_args)
 	##
-	_local sender << p_parser.parse_sender(p_sender)
-	sender << dcn_self.new()
+	
+	_local sender << p_parser.parse_sender(p_args.last)
 	>> dcn_unfinished_iter.new(sender, p_method.string_value, p_sender.expression.name)
 _endmethod
 $

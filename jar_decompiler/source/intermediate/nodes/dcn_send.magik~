@@ -27,7 +27,7 @@ def_slotted_exemplar(:dcn_send,
 		     {
 			     {:name, _unset, :readable},
 			     {:sender, _unset, :readable},
-			     
+			     {:allresults?, _unset, :readable},
 			     {:operator, _unset},
 			     
 			     {:top_of_stack, _unset}
@@ -40,6 +40,7 @@ _method dcn_send.init(p_sender, p_method, p_args)
 	assert(p_sender.is_kind_of?(dcn_base))
 	.name << p_method
 	.sender << p_sender
+	.allresults? << _false 
 	>> _super.init(p_args)
 _endmethod
 $
@@ -47,6 +48,10 @@ $
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_send.decode_on(p_stream)
 	##
+	_if .allresults?
+	_then
+		p_stream.write(" _allresults ")
+	_endif 
 	.sender.decode_on(p_stream)
 	p_stream.write( "." )
 	_if .args.empty?.not
@@ -66,6 +71,15 @@ _method dcn_send.decode_on(p_stream)
 	_endif 
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_send.asallresults()
+	##
+	.allresults? << _true
+	>> _self 
+_endmethod
+$
+
 
 
 #

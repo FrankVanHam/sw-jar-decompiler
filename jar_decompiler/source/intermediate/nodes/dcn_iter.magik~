@@ -51,6 +51,12 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
+_method dcn_iter.accept_body_visitor(visitor)
+	.body.accept_body_visitor(visitor)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
 _method dcn_iter.decode_on(p_stream)
 	##
 	p_stream.write("_for ")
@@ -68,7 +74,7 @@ _method dcn_iter.decode_on(p_stream)
 	p_stream.newline()
 	p_stream.indent(4)
 	.body.decode_on(p_stream)
-#	p_stream.newline()
+	p_stream.newline()
 	p_stream.unindent(4)
 	p_stream.write("_endloop")
 _endmethod

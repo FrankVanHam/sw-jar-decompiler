@@ -74,7 +74,7 @@ _method lexical_scanner.get()
 			_if char = %/
 			_then
 				_self.get_char()
-				_return _self.get_comment()
+				_self.get_comment()
 			_elif char = %"
 			_then
 				_self.get_char()

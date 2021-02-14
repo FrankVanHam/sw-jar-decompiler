@@ -1,58 +1,80 @@
 _package user
 $
+remex(:deco_test)
+$
 
 def_slotted_exemplar(:deco_test,{})
 $
 
-_method deco_test.test_loop_exit_condition()
-	_local var << _loop
-			      a << _self.use()
-			      _if _self.test _then _leave _with a _endif
-			      _self.use2()
-		      _endloop
-	_self.show(var)
+
+_method deco_test.test_access_local_iter()
+	_local a << "hoi"
+	_for i_index _over _self.fast_elements()
+	_loop
+		_self.run(a, i_index)
+	_endloop
+	_return 
 _endmethod
 $
 
-_method deco_test.try()
-	_try
-		_self.do()
-	_when error
-		_self.error()
-	_endtry 
-_endmethod
-$
+#_method deco_test.test_access_local_iter(arg)
+#	_local thing << _self.get_thing()
+#	thing.do()
+#	_for i_index _over _self.fast_elements()
+#	_loop
+#		_self.run(thing, arg, i_index)
+#	_endloop
+#	_return 
+#_endmethod
+#$
 
-_method deco_test.try_when_when()
-	_try
-		_self.do()
-	_when warning
-		_self.warning()
-	_when error
-		_self.error()
-	_endtry 
-_endmethod
-$
+#_method deco_test.test_send_iter()
+#	_local thing << _self.get_thing()
+#	_for i_index _over thing.fast_elements()
+#	_loop
+#		_self.run(i_index)
+#	_endloop
+#	_return 
+#_endmethod
+#$
 
-_method deco_test.try_with_condition()
-	_try _with c
-		_self.do()
-	_when error
-		c.report_error()
-		_self.error()
-	_endtry 
-_endmethod
-$
 
-_method deco_test.try_assign()
-	_local a << _try
-			    _self.do()
-			    >> 1
-		    _when error
-			    _self.error()
-			    >> 2
-		    _endtry
-	_self.use(a)
-_endmethod
-$
 
+
+#_method deco_test.test_gather_iter()
+#	_for i_index, _gather i_var _over _self.fast_elements()
+#	_loop
+#		_self.run(i_index, _scatter i_var)
+#	_endloop
+#	_return 
+#_endmethod
+#$
+
+#_method deco_test.test_nested_iter()
+#	_for i_var1 _over _self.fast_elements()
+#	_loop
+#		_for i_var2 _over _self.fast_elements()
+#		_loop 
+#			_self.run(i_var1, i_var2)
+#		_endloop 
+#	_endloop
+#	_return 
+#_endmethod
+#$
+
+#_method deco_test.test_nested_break_iter()
+#	_for i_var1 _over _self.fast_elements()
+#	_loop @outer
+#		_for i_var2 _over _self.fast_elements()
+#		_loop 
+#			_self.run1(i_var1)
+#			_if _self.exit? _then _leave @outer _endif
+#			_self.run2(i_var2)
+#			_if _self.self.exit? _then _continue @outer _endif
+#			_self.run3(i_var2)
+#		_endloop 
+#	_endloop
+#	_return 
+#_endmethod
+#$
+#

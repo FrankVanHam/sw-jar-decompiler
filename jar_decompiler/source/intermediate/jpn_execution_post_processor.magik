@@ -17,6 +17,7 @@ _method jpn_execution_post_processor.process(p_file)
 	
 	p_file.accept_body_visitor(jpn_block_andorif_visitor.new())
 	p_file.accept_body_visitor(jpn_block_if_visitor.new())
+	p_file.accept_body_visitor(jpn_try_visitor.new())
 	p_file.accept_body_visitor(jpn_loop_while_visitor.new())
 	p_file.accept_body_visitor(jpn_iter_visitor.new(p_file))
 	

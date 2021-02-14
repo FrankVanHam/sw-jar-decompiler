@@ -10,8 +10,16 @@ def_slotted_exemplar(:jpn_parser_class_snippet_test,
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-jpn_parser_class_snippet_test.define_shared_constant(:filename, "jpn_parser_class_snippets.txt", :private)
+jpn_parser_class_snippet_test.define_shared_constant(:filename, "none.txt", :private)
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method jpn_parser_class_snippet_test.infrastructure?
+	##
+	>> _self.exemplar _is jpn_parser_class_snippet_test
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method jpn_parser_class_snippet_test.run_test()

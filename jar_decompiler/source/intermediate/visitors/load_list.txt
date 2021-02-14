@@ -5,3 +5,4 @@ jpn_block_andorif_visitor
 jpn_loop_while_visitor
 jpn_ignore_assignment_visitor
 jpn_pop_visitor
+jpn_try_visitor

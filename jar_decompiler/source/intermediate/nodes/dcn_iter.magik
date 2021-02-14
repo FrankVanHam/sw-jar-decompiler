@@ -28,23 +28,27 @@ def_slotted_exemplar(:dcn_iter,
 		{:sender, _unset, :readable},
 		{:name, _unset, :readable},
 		{:body, _unset, :readable},
+		{:scatter?, _unset, :readable},
 		{:args, _unset, :readable}
 	},
 	:dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_iter.new(p_sender, p_name, p_args, p_body)
-	>> _clone.init(p_sender, p_name, p_args, p_body)
+_method dcn_iter.new(p_sender, p_name, p_scatter?, p_args, p_body)
+	>> _clone.init(p_sender, p_name, p_scatter?, p_args, p_body)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_iter.init(p_sender, p_name, p_args, p_body)
+_private _method dcn_iter.init(p_sender, p_name, p_scatter?, p_args, p_body)
 	##
+	assert(p_sender _isnt _unset)
+	assert(p_body _isnt _unset)
 	.sender << p_sender
 	.name << p_name
 	.body << p_body
+	.scatter?  << p_scatter?
 	.args << p_args
 	>> _self 
 _endmethod
@@ -61,9 +65,13 @@ _method dcn_iter.decode_on(p_stream)
 	##
 	p_stream.write("_for ")
 	_local comma? << _false 
-	_for i_arg _over .args.fast_elements()
+	_for i_index, i_arg _over .args.fast_keys_and_elements()
 	_loop
-		_if (comma?^<<_true) _then p_stream.write(", ") _endif 
+		_if (comma?^<<_true) _then p_stream.write(", ") _endif
+		_if .scatter? _andif i_index=.args.size
+		_then
+			p_stream.write("_scatter ")
+		_endif 
 		p_stream.write(i_arg)
 	_endloop 
 	p_stream.write(" _over ")

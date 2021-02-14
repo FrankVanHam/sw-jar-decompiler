@@ -17,7 +17,6 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_arg.init(p_lex_name, p_type, p_varargs?)
 
 	assert(p_lex_name.is_class_of?(lexeme))
-	show(p_type)
 	assert(p_type.is_class_of?(jpn_type) _orif p_type.is_class_of?(jpn_dotted))
 	
 	.lex_name << p_lex_name
