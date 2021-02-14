@@ -70,3 +70,4 @@ dcn_remainer
 dcn_not
 dcn_local_declaration
 dcn_unfinished_try
+dcn_negated

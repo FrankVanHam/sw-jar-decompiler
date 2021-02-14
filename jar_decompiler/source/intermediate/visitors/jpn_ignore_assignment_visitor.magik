@@ -43,9 +43,10 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_ignore_assignment_visitor.ignore?(p_node)
 	##
 	_local loc << p_node.only_local()
-	>> loc _isnt _unset _andif
-		(loc.is_kind_of?(dcn_local_declaration) _andif 
-		loc.type.name = "ResultTuple") _orif
-		(loc.name = "__env__")
+	_if loc _is _unset _then _return _false _endif 
+
+	_if (loc.is_kind_of?(dcn_local_declaration) _andif loc.type.name = "ResultTuple") _then _return _true _endif
+	_if loc.is_kind_of?(dcn_local) _andif (loc.name = "__env__") _then _return _true  _endif
+	_return _false 
 _endmethod
 $

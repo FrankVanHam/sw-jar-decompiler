@@ -40,6 +40,8 @@ $
 
 _pragma(classify_level=restricted, topic={decompiler})
 _private _method dcn_local_declaration.init(p_name, p_type)
+	assert(p_name _isnt _unset)
+	assert(p_type _isnt _unset)
 	.name << p_name
 	.type << p_type
 	_return _self

@@ -1,0 +1,35 @@
+_package deco
+$
+
+#remex(:dcn_not)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:dcn_not,
+	{
+		{:expression, _unset, :readable}
+	}, :dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_not.new(p_expression)
+	>> _clone.init(p_expression)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method dcn_not.init(p_expression)
+	##
+	.expression << p_expression
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_not.decode_on(p_stream)
+	## 
+	p_stream.write(" _not(")
+	.expression.decode_on(p_stream)
+	p_stream.write(")")
+_endmethod
+$

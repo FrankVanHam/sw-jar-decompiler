@@ -1,5 +1,5 @@
 ##
-## File            : $File: (dcn_local.magik) $
+## File            : $File: (dcn_local_declaration.magik) $
 ## SCM             : $URL$
 ##
 ## Copyright       : Realworld Systems
@@ -19,126 +19,48 @@ _package deco
 $
 
 
-#remex(:dcn_local)
+#remex(:dcn_local_declaration)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
 ## node for a local.
-def_slotted_exemplar(:dcn_local,
+def_slotted_exemplar(:dcn_local_declaration,
 		     {
-			     {:index,_unset, :readable},
 			     {:name, _unset, :readable},
-			     {:object_type, _unset, :readable},
-			     {:type, _unset, :readable},
-			     {:must_declare_local?, _unset, :readable},
-			     {:declared?, _unset, :readable}
+			     {:type, _unset, :readable}
 		     }, :dcn_base )
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local.new(index, name, _optional type, p_object_type)
+_method dcn_local_declaration.new(p_name, p_type)
 	
-	_return _clone.init(index, name, type, p_object_type)
+	_return _clone.init(p_name, p_type)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_local.init(index, name, type, p_object_type)
-	.index << index
-	.name << name
-	.must_declare_local? << _false
-	.type << type.default(:local)
-	.object_type << p_object_type
-	.declared? << _false 
-	assert(.type _is :local _orif .type _is :parameter)
+_private _method dcn_local_declaration.init(p_name, p_type)
+	.name << p_name
+	.type << p_type
 	_return _self
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local.ignore?
-	##
-	>> .name.matches?("cfr_ignored*")
+_method dcn_local_declaration.is_type?(p_type)
+	>> .type.name = p_type
 _endmethod
 $
 
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local.is_local?
-	_return _true  
+_method dcn_local_declaration.decode_on(p_stream)
+	p_stream.write("_local ", .name )
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local.make_name_local()
-	.name << write_string("p", .name)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local.declare()
-	_if _not _self.parameter?
-	_then 
-		.declared? << _true 
-	_endif 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local.force_declare_local()
-	_if _not _self.parameter?
-	_then 
-		.must_declare_local? << _true
-	_endif 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local.parameter?
-	_return .type _is :parameter
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local.is_test_for_true?
-	_return _true
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local.result_count
-	_return 1
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local.scattered?
-	_return _false 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local.pop()
-	##
-	>> dcn_pop.new(_self)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method dcn_local.remainder(p_nr)
-	##
-	>> dcn_remainder.new(p_nr)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local.decode_on( a_stream, _optional parent, statements)
-	a_stream.write( .name )
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local.show_on( a_stream)
-	a_stream.write( _self.class_name, "(", .name, ")" )
+_method dcn_local_declaration.decode_none_declaring_on(p_stream)
+	p_stream.write(.name)
 _endmethod
 $

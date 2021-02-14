@@ -27,3 +27,4 @@ jpn_break
 jpn_not
 jpn_loop
 jpn_continue
+jpn_array_access

@@ -49,6 +49,18 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_negative_constant()
+	##
+	_local inp << write_string("-100")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local node << p.parse_expression()
+	_self.assert_true(node.is_kind_of?(deco:jpn_negated), "should be an negative")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_self_method_invocation()
 	##
 	_local inp << write_string("dothing()")
@@ -327,17 +339,15 @@ _method java_parser_test.test_class_annotation()
 	_self.assert_true(node.is_class_of?(deco:jpn_class))
 	_self.assert_equals(4,node.annotations.size)
 	_self.assert_equals("Override", node.annotations[1].name)
-	_self.assert_equals("888600578", node.annotations[2].value)
-	_self.assert_equals("MagikDebug", node.annotations[3].value)
+	_self.assert_equals("888600578", node.annotations[2].value.string_value)
+	_self.assert_equals("MagikDebug", node.annotations[3].property(:method).string_value)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method java_parser_test.test_nested_annotation()
+_method java_parser_test.test_multi_value_annotation()
 	##
-	_local inp << write_string("@EnvVars(value={",
-				   "@EnvVar(name='__dynamic_frame__', type=Object.class, start=21, end=53, index=0), ",
-				   "@EnvVar(name='_self', type=Object.class, start=13, end=54, index=1)})", newline_char,
+	_local inp << write_string("@EnvVar(name='__dynamic_frame__', type=Object.class, start=21, end=74, index=0)", newline_char,
 				   "public class a_class {}")
 	inp << inp.substitute_character(%', %")
 
@@ -347,6 +357,27 @@ _method java_parser_test.test_nested_annotation()
 
 	_self.assert_true(node.is_class_of?(deco:jpn_class))
 	_self.assert_equals(1,node.annotations.size)
+	_local anno << node.annotations[1]
+	anno.dp
+	_self.assert_equals("__dynamic_frame__", anno.property(:name).string_value)
+_endmethod 
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_nested_annotation()
+	##
+	_local inp << write_string("@EnvVars(value={@EnvVar(name='__dynamic_frame__', type=Object.class, start=21, end=74, index=0), @EnvVar(name='a', type=Object.class, start=29, end=74, index=1), @EnvVar(name='_self', type=Object.class, start=13, end=74, index=2)})", newline_char,
+				   "public class a_class {}")
+	inp << inp.substitute_character(%', %")
+
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	_local node << p.get()
+
+	_self.assert_true(node.is_class_of?(deco:jpn_class))
+	_self.assert_equals(1,node.annotations.size)
+	_local anno << node.annotations[1]
+	_self.assert_true(anno.value[1].is_kind_of?(deco:jpn_annotation))
 _endmethod
 $
 

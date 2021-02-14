@@ -1,37 +1,45 @@
 _package deco
 $
 
+#remex(:jpn_annotation)
+
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_annotation,
 	{
-		{:lex_name,  _unset, :readable},
-		{:lex_value, _unset, :readable}
+		{:lex_name,   _unset, :readable},
+		{:properties, _unset, :readable}
 	},
 	:jpn_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_annotation.init(p_lex_name, p_lex_value)
+_method jpn_annotation.init(p_lex_name, p_properties)
 
 	assert(p_lex_name.is_class_of?(lexeme))
-	assert(p_lex_value _is _unset _orif p_lex_value.is_class_of?(lexeme))
 	
 	.lex_name << p_lex_name
-	.lex_value << p_lex_value 
+	.properties << p_properties
 	>> _super.init()
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_annotation.name
-	>> .lex_name.value	
+	>> .lex_name.value
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_annotation.value
-	>> _if .lex_value _isnt _unset
-	   _then >> .lex_value.value
+	>> _self.property(:value)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_annotation.property(p_key)
+	>> _if .properties _isnt _unset
+	   _then
+		   >> .properties[p_key]
 	   _endif 
 _endmethod
 $

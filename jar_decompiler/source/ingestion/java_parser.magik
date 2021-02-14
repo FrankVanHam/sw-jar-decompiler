@@ -96,42 +96,64 @@ _method java_parser.parse_annotation()
 	_local lex << .scanner.peek()
 	_if lex.is_separator?("(")
 	_then
-		value << _self.parse_annotation_value()
+		props << _self.parse_annotation_properties()
 	_else
-		value << _unset
+		props << _unset
 	_endif 
-	>> jpn_annotation.new(name, value)
+	>> jpn_annotation.new(name, props)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_annotation_value()
-	## 
+_method java_parser.parse_annotation_properties()
+	##
+	_local props << property_list.new()
 	_self.ensure_separator("(")
-	.scanner.get() # dont care about the name at the moment
-	_self.ensure_operator("=")
-	_local lex << .scanner.peek()
-	_if lex.is_separator?("{")
-	_then
-		_loop
+	_loop
+		_local lex << .scanner.peek()
+		_if lex.is_separator?(")") _then _leave _endif
+		_if lex.is_separator?(",")
+		_then
 			.scanner.get()
-			lex << .scanner.peek()
-			_self.check_eof(lex, "parsing separator")
-			_if lex.is_separator?("}")
-			_then
-				lex << .scanner.get()
-				_leave
-			_endif
-		_endloop
-		value << lex
-	_else 
-		value << .scanner.get()
-	_endif 
-	_self.ensure_separator(")")
+		_endif
+		
+		_local key << .scanner.get() # dont care about the name at the moment
+		_self.ensure_operator("=")
+		_local lex << .scanner.peek()
+		_if lex.is_separator?("{")
+		_then
+			value << _self.parse_annotation_list_of_properties()
+		_else 
+			value << _self.parse_expression()
+		_endif
+		props[key.value.as_symbol()] << value 
+	_endloop
 	
-	>> value 
+	_self.ensure_separator(")")
+	>> props
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_annotation_list_of_properties()
+	##
+	list << rope.new()
+	_self.ensure_separator("{")
+	_loop
+		_local lex << .scanner.peek()
+		_if lex.is_separator?("}") _then _leave _endif
+		_if lex.is_separator?(",")
+		_then
+			.scanner.get()
+		_endif
+		_local anno << _self.parse_annotation()
+		list.add(anno)
+	_endloop
+	_self.ensure_separator("}")
+	>> list		
+_endmethod
+$
+
 
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
@@ -413,6 +435,11 @@ _method java_parser.parse_sub_expression(_optional p_identifier?)
 	_elif lex.is_operator?("?")
 	_then
 		_return _self.parse_identifier(_false)
+
+	_elif lex.is_operator?("-")
+	_then
+		_return _self.parse_negative()
+		
 	_elif lex.is_identifier? _andif lex.value = "null"
 	_then
 		_return jpn_constant.new(.scanner.get())
@@ -762,6 +789,15 @@ _method java_parser.parse_not()
 	_self.ensure_operator("!")
 	_local exp << _self.parse_expression()
 	>> jpn_not.new(exp)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_negative()
+	##
+	_self.ensure_operator("-")
+	_local exp << _self.parse_expression()
+	>> jpn_negated.new(exp)
 _endmethod
 $
 

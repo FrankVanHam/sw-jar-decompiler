@@ -115,6 +115,9 @@ _method jpn_parser.parse_expression(p_node)
 	_elif p_node.is_class_of?(jpn_not)
 	_then
 		_return _self.parse_not(p_node)
+	_elif p_node.is_class_of?(jpn_negated)
+	_then
+		_return _self.parse_negated(p_node)
 	_elif p_node.is_class_of?(jpn_break)
 	_then
 		_return _self.parse_break(p_node)
@@ -242,8 +245,17 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_implementation_class(p_class_node)
 	_local class_name << p_class_node.name
 	_local super_name << p_class_node.implementation
+
+	# First parse the methods, then then loopbodies, etc.
 	_for i_meth _over p_class_node.methods.fast_elements()
 	_loop
+		_if i_meth.type <> "Method" _then _continue _endif 
+		_local m_node << _self.parse_method(class_name, i_meth)
+		.top.add_method(m_node)
+	_endloop
+	_for i_meth _over p_class_node.methods.fast_elements()
+	_loop
+		_if i_meth.type=  "Method" _then _continue _endif 
 		_local m_node << _self.parse_method(class_name, i_meth)
 		.top.add_method(m_node)
 	_endloop
@@ -333,6 +345,14 @@ _method jpn_parser.parse_not(p_jnode)
 	##
 	_local exp << _self.parse_expression(p_jnode.expression)
 	>> dcn_not.new(exp)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_negated(p_jnode)
+	##
+	_local exp << _self.parse_expression(p_jnode.expression)
+	>> dcn_negated.new(exp)
 _endmethod
 $
 

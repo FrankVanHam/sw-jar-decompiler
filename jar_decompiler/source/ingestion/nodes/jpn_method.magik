@@ -39,7 +39,7 @@ _method jpn_method.type
 	_loop
 		_if i_ann.name = "CodeType"
 		_then
-			_return i_ann.value
+			_return i_ann.value.string_value
 		_endif
 	_endloop 
 _endmethod
