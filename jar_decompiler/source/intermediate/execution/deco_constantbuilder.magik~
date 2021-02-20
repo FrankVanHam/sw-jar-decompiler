@@ -36,3 +36,17 @@ _method deco_constantbuilder.symbolbootstrap(p_parser, p_type_node, p_value_node
 	   _endif
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_constantbuilder.procbootstrap(p_parser, p_type_node, p_class_node, _gather p_args)
+	##
+	_local type << p_type_node.string_value
+	
+	>> _if type = "proc"
+	   _then
+		   >> dcn_constant.new_proc(:class)
+	   _else
+		   1.stop
+	   _endif
+_endmethod
+$

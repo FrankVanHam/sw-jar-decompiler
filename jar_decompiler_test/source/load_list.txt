@@ -15,3 +15,4 @@ jpn_parser_if_snippet_test
 jpn_parser_operator_snippet_test
 jpn_parser_try_snippet_test
 jpn_parser_iter_snippet_test
+jpn_parser_catch_snippet_test

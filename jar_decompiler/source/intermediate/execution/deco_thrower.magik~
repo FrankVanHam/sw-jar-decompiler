@@ -9,3 +9,16 @@ _method deco_thrower.make(p_parser)
 	>> dcn_no_op.new()
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_thrower.checktag(p_parser)
+	# return _self as the next invocation will be peek()
+	>> _self
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_thrower.peek(p_parser)
+	>> dcn_no_op.new()
+_endmethod
+$

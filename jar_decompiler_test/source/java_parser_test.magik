@@ -358,7 +358,6 @@ _method java_parser_test.test_multi_value_annotation()
 	_self.assert_true(node.is_class_of?(deco:jpn_class))
 	_self.assert_equals(1,node.annotations.size)
 	_local anno << node.annotations[1]
-	anno.dp
 	_self.assert_equals("__dynamic_frame__", anno.property(:name).string_value)
 _endmethod 
 $

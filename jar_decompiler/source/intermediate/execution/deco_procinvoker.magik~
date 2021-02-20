@@ -23,6 +23,7 @@ _method deco_procinvoker.naturalbootstrap(p_parser, p_brackets, p_value_node, p_
 	##
 	_local value << p_parser.parse_expression(p_value_node)
 	_local name << p_parser.parse_expression(p_name_node)
+
 	_local slots << p_parser.parse_expression(p_slot_nodes)
 	
 	>> dcn_call.new(value, {name, slots})
