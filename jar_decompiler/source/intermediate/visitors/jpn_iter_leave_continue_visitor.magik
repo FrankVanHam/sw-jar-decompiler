@@ -1,0 +1,143 @@
+_package deco
+$
+
+#remex(:jpn_iter_leave_continue_visitor)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## If an unfinished_try precedes an iter, then it could set the
+## tag for the loop.
+##
+##
+def_slotted_exemplar(:jpn_iter_leave_continue_visitor,
+	{})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_iter_leave_continue_visitor.new()
+	>> _clone.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_iter_leave_continue_visitor.init()
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_iter_leave_continue_visitor.accept(p_body)
+	##
+	_local sts << p_body.statements
+	_for i_index, i_node _over sts.fast_keys_and_elements()
+	_loop
+		_if _self.should_tag?(i_node)
+		_then
+			sts[i_index] << _self.tag(i_node)
+		_endif
+		_if _self.is_throw_break?(i_node)
+		_then
+			sts[i_index] << _self.convert_throw_break(i_node)
+		_endif 
+		_if _self.is_throw_continue?(i_node)
+		_then
+			sts[i_index] << _self.convert_throw_continue(i_node)
+		_endif 
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_iter_leave_continue_visitor.is_throw_break?(p_node)
+	##
+	_if p_node.is_class_of?(dcn_throw) _andif
+	    p_node.value.is_class_of?(dcn_unfinished_break)
+	_then
+		_return _true
+	_else
+		_return _false
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_iter_leave_continue_visitor.convert_throw_break(p_node)
+	## 
+	_local name << p_node.value.local.name
+	name << _self.loop_tag(name)
+	>> _if name.empty?
+	   _then >> dcn_break.new()
+	   _else >> dcn_break.new(name)
+	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_iter_leave_continue_visitor.is_throw_continue?(p_node)
+	##
+	_if p_node.is_class_of?(dcn_throw) _andif
+	    p_node.value.is_class_of?(dcn_unfinished_continue)
+	_then
+		_return _true
+	_else
+		_return _false
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_iter_leave_continue_visitor.convert_throw_continue(p_node)
+	## 
+	_local name << p_node.value.local.name
+	name << _self.loop_tag(name)
+	>> _if name.empty?
+	   _then >> dcn_continue.new()
+	   _else >> dcn_continue.new(name)
+	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_iter_leave_continue_visitor.loop_tag(p_name)
+	_local idx << p_name.rindex_of_seq("__")
+	>> _if idx _isnt _unset
+	   _then >> p_name.slice_to_end(idx+2)
+	   _else >> ""
+	   _endif 
+_endmethod
+$
+
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_iter_leave_continue_visitor.tag(p_node)
+	##
+	_local new_node << p_node.try_body.statements.last
+	_local name << p_node.catch_body.statements[1].local.name
+	name << _self.loop_tag(name)
+	_if name.empty?.not
+	_then 
+		new_node.expression.assign_tag(name)
+	_endif 
+	>> new_node
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_iter_leave_continue_visitor.should_tag?(p_node)
+	##
+	_if p_node.is_class_of?(dcn_unfinished_try).not _then _return _false, :dcn_unfinished_try _endif
+	_if p_node.catch_body _is _unset _then _return _false, :no_catch _endif
+
+	_for i_stat _over p_node.catch_body.statements.fast_elements()
+	_loop
+		_if i_stat.is_class_of?(dcn_leave_result)
+		_then
+			_return i_stat.local.name.matches?("*__leave_catcher_*")
+		_endif
+	_endloop
+	_return _false 
+_endmethod
+$
+
+

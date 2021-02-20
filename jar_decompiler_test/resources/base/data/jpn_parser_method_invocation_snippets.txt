@@ -19,7 +19,7 @@ implements ExecutableMagik {
 ###########
 _method deco_test.test_invocation()
 	_self.do()
-    _return 
+    _return _unset
 _endmethod
 $
 
@@ -45,7 +45,7 @@ implements ExecutableMagik {
 ###########
 _method deco_test.test_invocation_with_args()
 	_self.do(1, "str")
-    _return 
+    _return _unset
 _endmethod
 $
 
@@ -71,7 +71,7 @@ implements ExecutableMagik {
 ###########
 _method deco_test.test_invocation_with_invocation()
 	_self.do(_self.get())
-    _return 
+    _return _unset
 _endmethod
 $
 
@@ -97,7 +97,7 @@ implements ExecutableMagik {
 ###########
 _method deco_test.test_invocation_all_results()
 	_self.do((_scatter _self.result()))
-    _return 
+    _return _unset
 _endmethod
 $
 
@@ -123,7 +123,7 @@ implements ExecutableMagik {
 ###########
 _method deco_test.test_invocation_concatenation()
 	_self.do().do1().do2()
-    _return 
+    _return _unset
 _endmethod
 $
 
@@ -151,7 +151,7 @@ implements ExecutableMagik {
 _method deco_test.test_invocation_result()
 	_local a << _self.do()
     	_self.use(a)
-    _return 
+    _return _unset
 _endmethod
 $
 
@@ -181,7 +181,7 @@ implements ExecutableMagik {
 _method deco_test.test_multiple_invocation_results()
 	 _local (a,b) << _self.do()
 	_self.use(a, b)
-	_return 
+	_return _unset
 _endmethod
 $
 
@@ -209,7 +209,7 @@ implements ExecutableMagik {
 _method deco_test.test_allresults_results()
 	 _local a << _allresults _self.do()
 	 _self.use(a)
-    _return 
+    _return _unset
 _endmethod
 $
 ###########
@@ -236,7 +236,7 @@ implements ExecutableMagik {
 _method deco_test.test_gather_scatter_results()
 	_local (_gather a) << (_scatter _self.do())
 	_self.use(a)
-    _return 
+    _return _unset
 _endmethod
 $
 
@@ -267,7 +267,7 @@ implements ExecutableMagik {
 _method deco_test.test_gather_leftover_invocation()
 	_local (a, b, _gather c) << (_scatter _self.do())
 	_self.use(a,b,c)
-	_return
+	_return _unset
 _endmethod
 $
 ###########
@@ -297,7 +297,7 @@ implements ExecutableMagik {
 _method deco_test.test_send_leftover_invocation()
 	_local (a, b, _gather c) << _self.do()
 	_self.use(a,b,c)
-	_return
+	_return _unset
 _endmethod
 $
 ###########
@@ -327,7 +327,7 @@ implements ExecutableMagik {
 _method deco_test.test_gather_leftover_invocation2()
 	_local (a, b) << (_scatter _self.do())
 	_self.use(a,b)
-	_return
+	_return _unset
 _endmethod
 $
 ###########
@@ -355,7 +355,7 @@ implements ExecutableMagik {
 ###########  (a, b, _gather c) got lost because that are not used
 _method deco_test.test_gather_leftover_invocation3()
 	(_scatter _self.do())
-	_return
+	_return _unset
 _endmethod
 $
 ###########

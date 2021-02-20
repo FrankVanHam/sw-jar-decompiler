@@ -25,7 +25,7 @@ _method deco_test.test_if()
     _then
         _self.doa()
     _endif
-    _return 
+    _return _unset
 _endmethod
 $
 ###########
@@ -59,7 +59,7 @@ _method deco_test.test_if_else()
     _else 
         _self.dob()
     _endif
-    _return 
+    _return _unset
 _endmethod
 $
 ###########
@@ -103,7 +103,7 @@ _method deco_test.test_nested()
     _else
         _self.dob()
     _endif
-    _return 
+    _return  _unset
 _endmethod
 $
 
@@ -143,7 +143,7 @@ _method deco_test.test_if_elif()
     _else
         _self.doc()
     _endif
-    _return 
+    _return  _unset
 _endmethod
 $
 
@@ -223,7 +223,7 @@ _method deco_test.test_param_if()
         callSite << _self.dob()
     _endif
     _self.run(callSite)
-    _return 
+    _return  _unset
 _endmethod
 $
 ###########

@@ -68,14 +68,19 @@ _method dcn_local_assignment.only_local()
 _endmethod
 $
 
-
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.set_gather(p_nr)
-	##  
-	.gather? << _true 
+_method dcn_local_assignment.reset()
+	.local_nodes.empty()
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_local_assignment.set_gather(p_node)
+	##
+	.gather? << _true
+	.local_nodes.add_first(p_node)
+_endmethod
+$
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_local_assignment.append_local(p_node)
@@ -246,10 +251,20 @@ _method dcn_local_assignment.decode_on(a_stream)
 		_return 
 	_endif
 
+	_local declare? << _false
+	_for i_node _over .local_nodes.fast_elements()
+	_loop
+		_if i_node.is_kind_of?(dcn_local_declaration)
+		_then
+			declare? << _true
+		_endif
+	_endloop 
+	
 	_local gather? << .gather? _orif .expression.is_class_of?(dcn_gathered)
 
 	_if gather?
 	_then
+		_if declare? _then a_stream.write( " _local " ) _endif 
 		a_stream.write( "(" )
 		_local comma? << _false 
 		_for i_node _over .local_nodes.fast_elements()
@@ -259,19 +274,28 @@ _method dcn_local_assignment.decode_on(a_stream)
 			_then
 				a_stream.write( "_gather " )
 			_endif 
-			i_node.decode_on( a_stream )
+			i_node.decode_none_declaring_on( a_stream )
 		_endloop 
 		a_stream.write( ")" ) 
 	_else 
 		par? << .local_nodes.size>1
 		_if .local_nodes.empty?.not
-		_then 
-			_if par? _then a_stream.write( "(" ) _endif
+		_then
+			_if declare? _then a_stream.write( " _local " ) _endif 
+			_if par?
+			_then
+				a_stream.write( "(" )
+			_endif
 			_local comma? << _false 
 			_for i_node _over .local_nodes.fast_elements()
 			_loop
-				_if comma?^<<_true _then a_stream.write(", ") _endif 
-				i_node.decode_on( a_stream )
+				_if comma?^<<_true _then a_stream.write(", ") _endif
+				_if declare?
+				_then 
+					i_node.decode_none_declaring_on( a_stream )
+				_else
+					i_node.decode_on( a_stream )
+				_endif 
 			_endloop 
 			_if par? _then a_stream.write( ")" ) _endif 
 		_endif

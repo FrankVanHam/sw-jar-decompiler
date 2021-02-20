@@ -1,11 +1,11 @@
 _package deco
 $
 
-def_slotted_exemplar(:deco_interruptinfrastructure, {}, :deco_execution_base)
+def_slotted_exemplar(:deco_thrower, {}, :deco_execution_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_interruptinfrastructure.checkandprocessinterrupts(p_parser)
+_method deco_thrower.make(p_parser)
 	>> dcn_no_op.new()
 _endmethod
 $

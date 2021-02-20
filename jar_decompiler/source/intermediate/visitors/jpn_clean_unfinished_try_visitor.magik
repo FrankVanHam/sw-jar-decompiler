@@ -1,0 +1,72 @@
+_package deco
+$
+
+#remex(:jpn_clean_unfinished_try_visitor)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_clean_unfinished_try_visitor,
+	{})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_clean_unfinished_try_visitor.new()
+	>> _clone.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_clean_unfinished_try_visitor.init()
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_clean_unfinished_try_visitor.accept(p_body)
+	##
+	_local sts << p_body.statements
+	_loop
+		_local idx << _self.index_to_clean(sts)
+		_if idx _is _unset _then _leave _endif
+
+		_self.clean_index(sts, idx)
+	_endloop
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_clean_unfinished_try_visitor.index_to_clean(p_sts)
+	## 
+	_for i_index, i_node _over p_sts.keys_and_elements()
+	_loop
+		_if _self.must_clean?(i_node)
+		_then
+			_return i_index
+		_endif
+	_endloop
+	_return _unset 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_clean_unfinished_try_visitor.clean_index(p_sts, p_index)
+	##
+	_local try_node << p_sts[p_index]
+	p_sts.remove_nth(p_index)
+	p_sts.insert(p_index, try_node.try_body.statements)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_clean_unfinished_try_visitor.must_clean?(p_node)
+	##
+	_if p_node.is_kind_of?(dcn_unfinished_try).not _then _return _false _endif
+	_if p_node.catch_body _is _unset _then _return _false _endif
+
+	_return _true 
+	_local sts << p_node.catch_body.statements
+	_if sts.size <> 2 _then _return _false _endif
+	
+	>> sts[1].is_class_of?(dcn_no_op) _andif
+		sts[2].is_class_of?(dcn_throw)
+_endmethod
+$

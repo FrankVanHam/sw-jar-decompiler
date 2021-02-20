@@ -25,22 +25,24 @@ _pragma(classify_level=restricted, topic={decompiler})
 ## 
 def_slotted_exemplar(:dcn_loop,
 	{
-		{:tag,  _unset},
-		{:body, _unset}
+		{:tag,   _unset, :readable},
+		{:body,  _unset, :readable},
+		{:while, _unset, :readable}
 	},
 	:dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_loop.new(p_body, _optional p_tag)
-	_return _clone.init(p_body, p_tag)
+_method dcn_loop.new(p_body, _optional p_while, p_tag)
+	_return _clone.init(p_body,p_while,  p_tag)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_loop.init(p_body, p_tag)
+_private _method dcn_loop.init(p_body, p_while, p_tag)
 	.body << p_body
 	.tag << p_tag
+	.while << p_while
 	_return _self 
 _endmethod
 $
@@ -90,3 +92,10 @@ $
 #	_return .results.empty?.not 
 #_endmethod
 #$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_loop.accept_body_visitor(p_visitor)
+	.body.accept_body_visitor(p_visitor)
+_endmethod
+$

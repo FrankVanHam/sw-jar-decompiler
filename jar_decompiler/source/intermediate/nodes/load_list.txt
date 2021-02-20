@@ -71,3 +71,7 @@ dcn_not
 dcn_local_declaration
 dcn_unfinished_try
 dcn_negated
+dcn_leave_result
+dcn_unfinished_break
+dcn_unfinished_continue
+dcn_continue_result

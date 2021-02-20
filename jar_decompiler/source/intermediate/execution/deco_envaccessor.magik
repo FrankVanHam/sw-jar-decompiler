@@ -7,8 +7,18 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:deco_envaccessor,
 	{
-		{:cache, _unset}
+		{:var_names, _unset},
+		{:cache,     _unset}
 	}, :deco_execution_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method deco_envaccessor.var_names
+	>> _if .var_names _is _unset
+	   _then >> .var_names << equality_property_list.new()
+	   _else >> .var_names
+	   _endif
+_endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
@@ -19,6 +29,7 @@ _private _method deco_envaccessor.cache
 	   _endif
 _endmethod
 $
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method deco_envaccessor.cache(p_index, p_value)
@@ -38,6 +49,21 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_envaccessor.set_var_name(p_index, p_name)
+	##
+	assert(p_index.is_class_of?(""))
+	assert(p_name.is_class_of?(""))
+	_self.var_names[p_index] << p_name
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_envaccessor.reset()
+	.cache.empty()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_envaccessor.bootstrapreseter(p_parser, p_action, p_var, p_env, p_index)
 	_if p_action.string_value = "resetEnv"
 	_then 
@@ -51,8 +77,21 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_envaccessor.bootstrapstorer(p_parser)
-	>> dcn_no_op.new()
+_method deco_envaccessor.bootstrapstorer(p_parser, p_action, p_exp, p_env, p_index)
+	_if p_action.string_value = "storeEnv"
+	_then
+		_local index << p_parser.parse_expression(p_index)
+		
+		_local name << _self.var_names[index.string_value]
+		_local left  << dcn_local_declaration.new(name, "Object")
+		_local left_local  << dcn_local.new("Object", name)
+		_local right << p_parser.parse_expression(p_exp)
+		
+		_self.cache(index.string_value, left_local)
+		
+		_return dcn_local_assignment.new(left, right)
+	_endif 
+	_return dcn_no_op.new()
 _endmethod
 $
 

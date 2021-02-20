@@ -339,8 +339,7 @@ _method java_parser.parse_body()
 			_then
 				.scanner.get()
 			_else
-				debug_print(lex)
-				13.stop
+				stats.add(_self.parse_statement())
 			_endif
 		_else
 			stats.add(_self.parse_statement())

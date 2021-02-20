@@ -90,6 +90,12 @@ _method dcn_local_assignment.append_local(p_node)
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_local_assignment.accept_body_visitor(visitor)
+	.expression.accept_body_visitor(visitor)
+_endmethod
+$
+
 
 #_pragma(classify_level=restricted, topic={decompiler})
 #_method dcn_local_assignment.accept_node_visitor(visitor)

@@ -47,6 +47,7 @@ _private _method dcn_loop.init(p_body, p_while, p_tag)
 _endmethod
 $
 
+
 #_pragma(classify_level=restricted, topic={decompiler})
 #_method dcn_loop.accept_node_visitor(visitor)
 #	_self.accept_node_visitor_in_vector(visitor, .statements)

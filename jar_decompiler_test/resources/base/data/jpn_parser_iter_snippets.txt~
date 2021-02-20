@@ -75,7 +75,7 @@ _method deco_test.test4()
     _loop
         _self.run(i_var)
     _endloop
-    _return 
+    _return  _unset
 _endmethod
 $
 ###########
@@ -142,7 +142,7 @@ _method deco_test.test_gather_iter()
     _loop
         _self.run(i_index, ( _scatter i_var))
     _endloop
-    _return 
+    _return  _unset
 _endmethod
 $
 ###########

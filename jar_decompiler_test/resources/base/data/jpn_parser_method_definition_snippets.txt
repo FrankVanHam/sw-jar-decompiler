@@ -17,7 +17,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_no_args() 
-    _return 
+    _return _unset
 _endmethod
 $
 ###########
@@ -40,7 +40,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_no_parenthesis
-    _return 
+    _return _unset
 _endmethod
 $
 ###########
@@ -63,7 +63,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_args(a, b)
-    _return 
+    _return _unset
 _endmethod
 $
 ###########
@@ -86,7 +86,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_args_asign(a, b)<<c
-    _return 
+    _return _unset
 _endmethod
 $
 ###########
@@ -109,7 +109,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_optional_args(a, _optional b, c)
-    _return 
+    _return _unset
 _endmethod
 $
 ###########
@@ -132,7 +132,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_gather_args(a, _optional b, c, _gather extras)
-    _return 
+    _return _unset
 _endmethod
 $
 ###########
@@ -155,7 +155,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test[a]
-    _return 
+    _return _unset
 _endmethod
 $
 ###########
@@ -178,7 +178,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test[a]<< b
-    _return 
+    _return _unset
 _endmethod
 $
 ###########
@@ -201,7 +201,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_boot_becomes^<< a
-	_return
+	_return _unset
 _endmethod
 $
 ###########
@@ -224,7 +224,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_boot_par()^<< a
-	_return
+	_return _unset
 _endmethod
 $
 ###########
@@ -247,7 +247,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test[a]^<< b
-	_return
+	_return _unset
 _endmethod
 $
 ###########
@@ -270,7 +270,7 @@ implements ExecutableMagik {
 }
 ###########
 _private _method deco_test.private() 
-    _return 
+    _return _unset
 _endmethod
 $
 ###########
@@ -293,7 +293,7 @@ implements ExecutableMagik {
 }
 ###########
 _abstract _method deco_test.abstract() 
-    _return 
+    _return _unset
 _endmethod
 $
 ###########

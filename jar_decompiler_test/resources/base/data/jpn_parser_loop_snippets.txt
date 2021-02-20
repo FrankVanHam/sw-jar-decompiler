@@ -54,7 +54,7 @@ _method deco_test.test_loop_leave()
 		_if _self.test? _then _leave _endif 
 		_self.dont_use()
 	_endloop 
-	_return
+	_return _unset
 _endmethod
 $
 ###########
@@ -164,7 +164,7 @@ _method deco_test.test_loop_exit_condition_last()
     _endloop
     _local var << 1
     _self.show(var)
-    _return 
+    _return  _unset
 _endmethod
 $
 ###########
@@ -204,7 +204,7 @@ _method deco_test.test_loop_exit_condition()
     _endloop
     _local var << 1
     _self.show(var)
-    _return 
+    _return  _unset
 _endmethod
 $
 ###########
@@ -246,7 +246,7 @@ _method deco_test.test_loop_exit_var_condition()
     _endloop
     _local var << a
     _self.show(var)
-    _return 
+    _return  _unset
 _endmethod
 $
 ###########

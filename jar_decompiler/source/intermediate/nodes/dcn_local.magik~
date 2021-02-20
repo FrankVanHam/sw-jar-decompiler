@@ -56,12 +56,18 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
+_method dcn_local.is_type?(p_type)
+	>> _false 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
 _method dcn_local.ignore?
 	##
 	>> .name.matches?("cfr_ignored*")
 _endmethod
 $
-
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_local.is_local?
@@ -132,8 +138,14 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local.decode_on( a_stream, _optional parent, statements)
-	a_stream.write( .name )
+_method dcn_local.decode_on(p_stream)
+	p_stream.write( .name )
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_local.decode_none_declaring_on(p_stream)
+	_self.decode_on(p_stream)
 _endmethod
 $
 

@@ -14,12 +14,18 @@ _method jpn_execution_post_processor.process(p_file)
 	_self.process_file(p_file)
 	
 	p_file.accept_body_visitor(jpn_pop_visitor.new())
-	
 	p_file.accept_body_visitor(jpn_block_andorif_visitor.new())
 	p_file.accept_body_visitor(jpn_block_if_visitor.new())
 	p_file.accept_body_visitor(jpn_try_visitor.new())
 	p_file.accept_body_visitor(jpn_loop_while_visitor.new())
 	p_file.accept_body_visitor(jpn_iter_visitor.new(p_file))
+	
+	p_file.accept_body_visitor(jpn_iter_leave_continue_visitor.new())
+	
+	# any unfinised tries are removed now. So All unfinised_try
+	# handling should precede.
+	p_file.accept_body_visitor(jpn_clean_unfinished_try_visitor.new())
+	p_file.accept_body_visitor(jpn_iter_result_hider_visitor.new())
 	
 	p_file.accept_body_visitor(jpn_ignore_assignment_visitor.new())
 	p_file.accept_body_visitor(jpn_cleanup_visitor.new())

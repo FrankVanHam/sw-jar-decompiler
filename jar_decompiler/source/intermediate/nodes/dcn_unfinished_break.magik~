@@ -1,0 +1,30 @@
+_package user
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Node a _leave statement.
+def_slotted_exemplar( :dcn_unfinished_break,
+		       {
+			       {:local, _unset, :readable}
+		       }, :dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_unfinished_break.new(p_local)
+	>> _clone.init(p_local)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_unfinished_break.init(p_local)
+	.local << p_local
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_unfinished_break.decode_on(p_stream)
+	p_stream.write("_unfinished_break ")
+	.local.decode_on(p_stream)
+_endmethod
+$

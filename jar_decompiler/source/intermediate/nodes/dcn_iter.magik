@@ -25,6 +25,7 @@ _pragma(classify_level=restricted, topic={decompiler})
 ## Node for an iterator loop
 def_slotted_exemplar(:dcn_iter,
 	{
+		{:tag, _unset, :readable},
 		{:sender, _unset, :readable},
 		{:name, _unset, :readable},
 		{:body, _unset, :readable},
@@ -54,6 +55,14 @@ _private _method dcn_iter.init(p_sender, p_name, p_scatter?, p_args, p_body)
 _endmethod
 $
 
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_iter.assign_tag(p_string)
+	##
+	.tag << p_string
+_endmethod
+$
+
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_iter.accept_body_visitor(visitor)
 	.body.accept_body_visitor(visitor)
@@ -79,6 +88,10 @@ _method dcn_iter.decode_on(p_stream)
 	p_stream.write(".", .name)
 	p_stream.newline()
 	p_stream.write("_loop")
+	_if .tag _isnt _unset
+	_then
+		p_stream.write(" @", .tag)
+	_endif 
 	p_stream.newline()
 	p_stream.indent(4)
 	.body.decode_on(p_stream)

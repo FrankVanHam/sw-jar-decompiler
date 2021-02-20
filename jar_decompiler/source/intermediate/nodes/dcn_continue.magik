@@ -25,22 +25,31 @@ _pragma(classify_level=restricted, topic={decompiler})
 ## Node for a continue structure.
 def_slotted_exemplar( :dcn_continue,
 		       {
-			       {:tag, _unset}
+			       {:results, _unset, :writable},
+			       {:tag,     _unset, :writable}
 		       }, :dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_continue.new(_optional tag)
-	_return _clone.init(tag)
+_method dcn_continue.new(_optional p_tag, _gather p_results)
+	_return _clone.init(p_tag, _scatter p_results)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_continue.init(tag)
-	.tag << tag
+_private _method dcn_continue.init(p_tag, _gather p_results)
+	.tag << p_tag
+	.results << p_results
 	_return _self 
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_continue.empty_results()
+	.results << {}	
+_endmethod
+$
+
 
 #_pragma(classify_level=restricted, topic={decompiler})
 #_method dcn_continue.accept_node_visitor(visitor)
@@ -64,11 +73,11 @@ _method dcn_continue.decode_on( a_stream )
 	_else 
 		a_stream.write("_continue")
 	_endif
-#	_if _not .results.empty?
-#	_then
-#		a_stream.write( " _with ")
-#		_self.decode_node_list_on(a_stream, .results)
-#	_endif 
+	_if _not .results.empty?
+	_then
+		a_stream.write( " _with ")
+		_self.decode_node_list_on(a_stream, .results)
+	_endif 
 _endmethod
 $
 

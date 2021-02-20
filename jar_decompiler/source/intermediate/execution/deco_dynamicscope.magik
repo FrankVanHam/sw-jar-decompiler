@@ -14,3 +14,8 @@ _method deco_dynamicscope.destroyframe(p_parser)
 	>> dcn_no_op.new()
 _endmethod
 $
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_dynamicscope.getframe(p_parser)
+	>> dcn_no_op.new()
+_endmethod
+$

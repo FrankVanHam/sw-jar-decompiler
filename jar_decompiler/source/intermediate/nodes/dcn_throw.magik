@@ -25,8 +25,8 @@ _pragma(classify_level=restricted, topic={decompiler})
 ## Node for a throw statement
 def_slotted_exemplar( :dcn_throw,
 	{
-		{:value,_unset},
-		{:results, _unset}
+		{:value,_unset, :readable},
+		{:results, _unset, :readable}
 	}, :dcn_base)
 $
 

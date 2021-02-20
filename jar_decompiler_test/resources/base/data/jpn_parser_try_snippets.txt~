@@ -72,7 +72,7 @@ _method deco_test.try()
 	_when error
 		_self.error()
 	_endtry 
-	_return
+	_return _unset
 _endmethod
 $
 ###########
@@ -155,7 +155,7 @@ _method deco_test.try_when_when()
 	_when error
 		_self.error()
 	_endtry 
-	_return
+	_return _unset
 _endmethod
 $
 ###########
@@ -235,7 +235,7 @@ _method deco_test.try_with_condition()
 		object.report_error()
 		_self.error()
 	_endtry 
-	_return
+	_return _unset
 _endmethod
 $
 ###########
@@ -325,7 +325,7 @@ _method deco_test.try_assign()
     _endtry
      _local a << n
     _self.use(a)
-    _return 
+    _return _unset
 _endmethod
 $
 ###########

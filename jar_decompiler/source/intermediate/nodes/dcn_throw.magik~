@@ -17,29 +17,30 @@
 
 _package deco
 $
-remex(:dcn_throw)
+
+#remex(:dcn_throw)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
 ## Node for a throw statement
 def_slotted_exemplar( :dcn_throw,
-		       {{:token, _unset},
-			{:value,_unset},
-			{:results, _unset}}, :dcn_base)
+	{
+		{:value,_unset},
+		{:results, _unset}
+	}, :dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_throw.new(token, value, results)
+_method dcn_throw.new(value, results)
 	
-	_return _clone.init(token, value, results)
+	_return _clone.init(value, results)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_throw.init(token, value, results)
-	.token << token
+_private _method dcn_throw.init(value, results)
 	.value << value
-	.results << rope.deco_check_type(results)
+	.results << results
 	_return _self 
 _endmethod
 $
@@ -64,10 +65,12 @@ _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_throw.decode_on( a_stream, _optional parent, statements)
 	a_stream.write("_throw ")
 	.value.decode_on(a_stream)
-	scatter? << .token.scatter?
-	numres << .token.numres
-	assert(numres >= 0)
-	
+	#scatter? << .token.scatter?
+	#numres << .token.numres
+	#assert(numres >= 0)
+
+	scatter? << _false 
+	numres << .results.size
 	_if numres > 0
 	_then
 		a_stream.write( " _with ")
