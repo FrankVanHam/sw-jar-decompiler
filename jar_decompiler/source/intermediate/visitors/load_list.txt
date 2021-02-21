@@ -9,3 +9,4 @@ jpn_try_visitor
 jpn_clean_unfinished_try_visitor
 jpn_iter_leave_continue_visitor
 jpn_iter_result_hider_visitor
+jpn_catch_builder_visitor

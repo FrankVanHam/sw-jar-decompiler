@@ -5,15 +5,15 @@ def_slotted_exemplar(:deco_thrower, {}, :deco_execution_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_thrower.make(p_parser)
-	>> dcn_no_op.new()
+_method deco_thrower.make(p_parser, p_value_node)
+	>> p_parser.parse_expression(p_value_node)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_thrower.checktag(p_parser)
 	# return _self as the next invocation will be peek()
-	>> _self
+	>> dcn_no_op.new()
 _endmethod
 $
 

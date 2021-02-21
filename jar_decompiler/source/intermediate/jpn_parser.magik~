@@ -6,6 +6,8 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_parser,
 	{
+		{:in_loopbody?, _unset, :writable},
+		{:java_class, _unset},
 		{:top, _unset}
 	})
 $
@@ -21,6 +23,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method jpn_parser.init()
 	##
 	#.top << p_jpn_node
+	.in_loopbody? << _false 
 	>> _self
 _endmethod
 $
@@ -115,6 +118,9 @@ _method jpn_parser.parse_expression(p_node)
 	_elif p_node.is_class_of?(jpn_not)
 	_then
 		_return _self.parse_not(p_node)
+	_elif p_node.is_class_of?(jpn_negated)
+	_then
+		_return _self.parse_negated(p_node)
 	_elif p_node.is_class_of?(jpn_break)
 	_then
 		_return _self.parse_break(p_node)
@@ -139,7 +145,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_declaration(p_jnode)
-	>> dcn_local_declaration.new(p_jnode.name, p_jnode.type)
+	>> dcn_local_declaration.new(p_jnode.name, p_jnode.type.name)
 _endmethod
 $
 
@@ -177,6 +183,9 @@ _method jpn_parser.parse_constant(p_jnode)
 	>> _if p_jnode.string_value = "_self"
 	   _then
 		   >> dcn_self.new()
+	   _elif p_jnode.string_value = "null"
+	   _then
+		   >> dcn_constant.new_literal("null")
 	   _else
 		   >> _if p_jnode.is_string?
 		      _then
@@ -208,7 +217,7 @@ _method jpn_parser.parse_variable(p_jnode)
 	##
 	>> _if p_jnode.is_kind_of?(jpn_declaration)
 	   _then
-		   >> dcn_local_declaration.new(p_jnode.name, p_jnode.type)
+		   >> dcn_local_declaration.new(p_jnode.name, p_jnode.type.name)
 	   _else 
 		   >> dcn_local.new(1, p_jnode.name, _unset, p_jnode.type)
 	   _endif 
@@ -219,7 +228,12 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_return_statement(p_jnode)
 	##
 	_local exp << _self.parse_expression(p_jnode.expression)
-	>> dcn_return.new(exp)
+	>> _if .in_loopbody?
+	   _then
+		    >> dcn_continue.new(_unset, exp)
+	   _else 
+		   >> dcn_return.new(exp)
+	   _endif 
 _endmethod
 $
 
@@ -239,11 +253,23 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_implementation_class(p_class_node)
 	_local class_name << p_class_node.name
 	_local super_name << p_class_node.implementation
+	
+	.java_class << p_class_node
+	
+	# First parse the methods, then then loopbodies, etc.
 	_for i_meth _over p_class_node.methods.fast_elements()
 	_loop
+		_if i_meth.type <> "Method" _then _continue _endif 
 		_local m_node << _self.parse_method(class_name, i_meth)
 		.top.add_method(m_node)
 	_endloop
+#	_for i_meth _over p_class_node.methods.fast_elements()
+#	_loop
+#		_if i_meth.type=  "Method" _then _continue _endif 
+#		_local m_node << _self.parse_method(class_name, i_meth)
+#		.top.add_method(m_node)
+#	_endloop
+	.java_class << _unset 
 _endmethod
 $
 
@@ -272,6 +298,18 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_loopbody_method(p_class_name, p_meth_node)
+	## 
+	_local old << .in_loopbody? ^<< _true
+	_protect 
+		_return _self.parse_method(p_class_name, p_meth_node)
+	_protection 
+		.in_loopbody? << old
+	_endprotect 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_method(p_class_name, p_meth_node)
 	##
 	_local java_args << p_meth_node.args.copy()
@@ -282,11 +320,30 @@ _method jpn_parser.parse_method(p_class_name, p_meth_node)
 			   _else >> _false
 			   _endif
 	_local args << java_args.map(_proc(x) >> x.name _endproc)
-	
+	_self.apply_annotations(p_meth_node)
 	_local body << _self.parse_body(p_meth_node.body)
 	_local type << p_meth_node.type
 	_local m_node << dcn_method.new(p_class_name, p_meth_node.name, args, scatter?, body, type )
 	>> m_node
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.apply_annotations(p_meth_node)
+	##
+	_local anno << p_meth_node.annotations.select(
+			       predicate.using(
+				       _proc(x) >> x.name="EnvVars" _endproc
+					 )).an_element()
+	_if anno _isnt _unset
+	_then
+		_for i_anno _over anno.value.fast_elements()
+		_loop
+			_local name << i_anno.property(:name).string_value
+			_local index << i_anno.property(:index).string_value
+			deco_envaccessor.set_var_name(index, name)
+		_endloop 
+	_endif 
 _endmethod
 $
 
@@ -334,10 +391,18 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_negated(p_jnode)
+	##
+	_local exp << _self.parse_expression(p_jnode.expression)
+	>> dcn_negated.new(exp)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_try(p_jnode)
 	##
-	>> dcn_unfinished_try.new(_self.parse_body(p_jnode.try_body), _unset)
-	#_self.parse_body(p_jnode.catch_body))
+	>> dcn_unfinished_try.new(_self.parse_body(p_jnode.try_body), _self.parse_body(p_jnode.catch_body))
+	#
 _endmethod
 $
 
@@ -369,6 +434,41 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_parenthesis(p_node)
 	##
 	>> _self.parse_expression(p_node.expression)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_iter(p_method, p_sender, _gather p_args)
+	##
+	_local sender << _self.parse_sender(p_args.last)
+	
+	# (MethodHandle)cfr_ldc_0(), ref=cfr_ldc_0
+	_local ref << p_sender.expression.name
+	_local ref_method << .java_class.find_method(ref)
+
+	_local java_loopbody_method << _self.find_loopbody_method(ref_method)
+	_local loopbody_method << _self.parse_loopbody_method(.java_class.name, java_loopbody_method)
+	
+#	_local sts << loopbody_method.body.statements
+#	_local iter_node << sts.select(predicate.using(_proc(x) >> x.is_kind_of?(dcn_unfinished_try) _endproc)).an_element()	       
+#	_local iter_body << iter_node.try_body.copy()
+#	iter_body.statements.remove_last()
+	
+	>> dcn_iter.new(sender, p_method.string_value,
+			loopbody_method.scatter?, loopbody_method.args,
+			loopbody_method.body)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.find_loopbody_method(p_method)
+	##
+	#static MethodHandle cfr_ldc_0() {
+	#        try {
+	#            return MethodHandles.lookup().findStatic(deco_test_3293.class, "__loopbody_", 
+
+	_local loopbody_name << p_method.body.statements[1].try_body.statements[1].expression.args[2].string_value
+	_return .java_class.find_method(loopbody_name)
 _endmethod
 $
 

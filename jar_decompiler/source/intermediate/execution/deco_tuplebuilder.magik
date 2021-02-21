@@ -8,7 +8,26 @@ def_slotted_exemplar(:deco_tuplebuilder,
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_tuplebuilder.bootstrap(p_parser, p_thing, p_expression_node)
-	>> p_parser.parse_expression(p_expression_node)
+_method deco_tuplebuilder.bootstrap(p_parser, p_thing, _gather p_expression_nodes)
+	_local exprs << _self.expressions(p_parser, _scatter p_expression_nodes)
+	>> _if exprs.size = 1
+	   _then 
+		   >> exprs[1]
+	   _else
+		   >> dcn_multiple.new(exprs)
+	   _endif 
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_tuplebuilder.expressions(p_parser, _gather p_expression_nodes)
+	## 
+	_local exprs << rope.new_for(p_expression_nodes.size)
+	_for i_exp _over p_expression_nodes.fast_elements()
+	_loop
+		exprs.add(p_parser.parse_expression(i_exp))
+	_endloop
+	>> exprs
+_endmethod
+$
+

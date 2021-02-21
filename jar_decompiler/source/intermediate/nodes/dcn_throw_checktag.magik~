@@ -1,0 +1,30 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Node a _continue statement.
+def_slotted_exemplar( :dcn_continue_result,
+		       {
+			       {:local, _unset, :readable}
+		       }, :dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_continue_result.new(p_local)
+	>> _clone.init(p_local)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_continue_result.init(p_local)
+	.local << p_local
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_continue_result.decode_on(p_stream)
+	p_stream.write("_continue_result ")
+	.local.decode_on(p_stream)
+_endmethod
+$

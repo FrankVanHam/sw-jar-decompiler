@@ -345,3 +345,9 @@ _method dcn_base.is_pop?
 	>> _false 
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_null?
+	>> _false 
+_endmethod
+$

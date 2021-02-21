@@ -1,0 +1,34 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Node a _continue statement.
+def_slotted_exemplar( :dcn_throw_checktag,
+		       {}, :dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_throw_checktag.new()
+	>> _clone.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_throw_checktag.init()
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_throw_checktag.peek()
+	## 
+	>> dcn_no_op.new()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_continue_result.decode_on(p_stream)
+	p_stream.write("_throw_checktag")
+	.local.decode_on(p_stream)
+_endmethod
+$

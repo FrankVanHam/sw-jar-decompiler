@@ -74,3 +74,7 @@ dcn_negated
 dcn_leave_result
 dcn_unfinished_break
 dcn_unfinished_continue
+dcn_continue_result
+dcn_throw_checktag
+dcn_multiple
+dcn_soft_return

@@ -52,15 +52,16 @@ $
 #_endmethod
 #$
 #
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_unfinished_try.accept_body_visitor(visitor)
-#	_self.accept_body_visitor_in_vector(visitor, .statements)
-#	
-#	visitor.visit(_self, .statements)
-#	_super.accept_body_visitor(visitor)
-#_endmethod
-#$
-#
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_unfinished_try.accept_body_visitor(visitor)
+	.try_body.accept_body_visitor(visitor)
+	_if .catch_body _isnt _unset
+	_then
+		.catch_body.accept_body_visitor(visitor)
+	_endif 
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_unfinished_try.decode_on(a_stream, _optional parent, statements)

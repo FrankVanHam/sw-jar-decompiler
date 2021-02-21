@@ -1,229 +1,202 @@
-## jpn_method_test_if
+## jpn_method_test_simple_catch_throw
+@Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
-public class deco_test_3468 {
+public class deco_test_3861 {
+    @SourceHash(value=-1479963659)
+    @Debugger(value="MagikDebug")
     @CodeType(value="Method")
-    public static Object deco_test__test_if(Object _self) {
-        block0: {
-            if (!MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("test?", (Object)_self))) break block0;
-            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("doa()", (Object)_self));
-        }
-        return ResultTuple.EMPTY_TUPLE;
-    }
-}
-
-@CodeType(value="Primary")
-public class deco_test_3457
-implements ExecutableMagik {
-    @CodeType(value="TopLevel")
-    public Object execute() {
-        MagikObjectUtils.createMethod("deco_test", "test_if()", deco_test_3468.class, "deco_test__test_if", 1, 1);
-    }
-}
-###########
-_method deco_test.test_if() 
-    _if _self.test?
-    _then
-        _self.doa()
-    _endif
-    _return _unset
-_endmethod
-$
-###########
-## jpn_method_test_if_else
-@CodeType(value="Subsidiary")
-public class deco_test_3468 {
-    @CodeType(value="Method")
-    public static Object deco_test__test_if_else(Object _self) {
-        if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("test?", (Object)_self))) {
-            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("doa()", (Object)_self));
-        } else {
-            ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("dob()", (Object)_self));
-        }
-        return ResultTuple.EMPTY_TUPLE;
-    }
-}
-
-@CodeType(value="Primary")
-public class deco_test_3457
-implements ExecutableMagik {
-    @CodeType(value="TopLevel")
-    public Object execute() {
-        MagikObjectUtils.createMethod("deco_test", "test_if_else()", deco_test_3468.class, "deco_test__test_if_else", 1, 1);
-    }
-}
-###########
-_method deco_test.test_if_else() 
-    _if _self.test?
-    _then
-        _self.doa()
-    _else 
-        _self.dob()
-    _endif
-    _return _unset
-_endmethod
-$
-###########
-## jpn_method_test_nested
-@CodeType(value="Subsidiary")
-public class deco_test_3468 {
-    @CodeType(value="Method")
-    public static Object deco_test__test_nested(Object _self) {
-        if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("test?", (Object)_self))) {
-            if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("test2?", (Object)_self))) {
-                ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("doa1()", (Object)_self));
-            } else {
-                ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("doa2()", (Object)_self));
+    public static Object deco_test__test_simple_catch_throw(Object _self) {
+        DynamicAccessor.bootstrapBinder("__catch_tags_dynamic__", "sw", 1);
+        CallSite callSite = ConstantBuilder.globalAccessorBootstrap("findCell", "user", "ball");
+        DynamicAccessor.bootstrapStorer("__catch_tags_dynamic__", "sw", (Object)callSite);
+        try {
+            try {
+                ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("run1()", (Object)_self));
+                if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("test?", (Object)_self))) {
+                    InterruptInfrastructure.checkAndProcessInterrupts();
+                    throw Thrower.make(ConstantBuilder.globalAccessorBootstrap("findCell", "user", "ball"), (ResultTuple)((Object)TupleBuilder.bootstrap("tb", null)));
+                }
+                ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("run2()", (Object)_self));
+                ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)ConstantBuilder.stringBootstrap("string", "ball"));
             }
-        } else {
-            ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("dob()", (Object)_self));
+            catch (Thrower.Throw throw_) {
+                Thrower.checkTag(throw_, callSite);
+            }
         }
+        catch (Throwable throwable) {
+            DynamicScope.destroyFrame();
+            throw throwable;
+        }
+        DynamicScope.destroyFrame();
         return ResultTuple.EMPTY_TUPLE;
     }
 }
 
+
+@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
-public class deco_test_3457
+public class deco_test_3860
 implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_3860() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
     @CodeType(value="TopLevel")
     public Object execute() {
-        MagikObjectUtils.createMethod("deco_test", "test_nested()", deco_test_3468.class, "deco_test__test_nested", 1, 1);
+        MagikObjectUtils.createMethod("deco_test", "test_simple_catch_throw()", deco_test_3861.class, "deco_test__test_simple_catch_throw", 1, 1);
     }
 }
 ###########
-_method deco_test.test_nested() 
-    _if _self.test?
-    _then
-        _if _self.test2?
-        _then
-            _self.doa1()
-        
-        _else
-            _self.doa2()
-        _endif
-    _else
-        _self.dob()
-    _endif
-    _return  _unset
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.test_simple_catch_throw()
+	## 
+	_catch @ball
+		_self.run1()
+		_if _self.test? _then _throw @ball _endif 
+		_self.run2()
+		show("ball")
+	_endcatch
 _endmethod
 $
-
 ###########
-## jpn_method_test_if_elif
+## jpn_method_test_simple_catch_throw_with_gather_result
+@Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
-public class deco_test_3468 {
+public class deco_test_3861 {
+    @SourceHash(value=3072222)
+    @Debugger(value="MagikDebug")
     @CodeType(value="Method")
-    public static Object deco_test__test_if_elif(Object _self) {
-        if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("test?", (Object)_self))) {
-            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("doa()", (Object)_self));
-        } else if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("test1?", (Object)_self))) {
-            ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("dob()", (Object)_self));
-        } else {
-            ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("doc()", (Object)_self));
+    public static Object deco_test__test_simple_catch_throw_with_result(Object _self) {
+        Object object;
+        DynamicAccessor.bootstrapBinder("__catch_tags_dynamic__", "sw", 1);
+        CallSite callSite = ConstantBuilder.globalAccessorBootstrap("findCell", "user", "ball");
+        DynamicAccessor.bootstrapStorer("__catch_tags_dynamic__", "sw", (Object)callSite);
+        try {
+            try {
+                ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("run1()", (Object)_self));
+                if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("test?", (Object)_self))) {
+                    InterruptInfrastructure.checkAndProcessInterrupts();
+                    throw Thrower.make(ConstantBuilder.globalAccessorBootstrap("findCell", "user", "ball"), (ResultTuple)((Object)TupleBuilder.bootstrap("tb", ConstantBuilder.stringBootstrap("string", "waarde"))));
+                }
+                ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("run2()", (Object)_self));
+                object = null;
+            }
+            catch (Thrower.Throw throw_) {
+                Object object2;
+                object = object2 = Thrower.checkTag(throw_, callSite).peek();
+            }
         }
+        catch (Throwable throwable) {
+            DynamicScope.destroyFrame();
+            throw throwable;
+        }
+        DynamicScope.destroyFrame();
+        Object res = object;
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)res);
         return ResultTuple.EMPTY_TUPLE;
     }
 }
 
+
+@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
-public class deco_test_3457
+public class deco_test_3860
 implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_3860() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
     @CodeType(value="TopLevel")
     public Object execute() {
-        MagikObjectUtils.createMethod("deco_test", "test_if_elif()", deco_test_3468.class, "deco_test__test_if_elif", 1, 1);
+        MagikObjectUtils.createMethod("deco_test", "test_simple_catch_throw_with_result()", deco_test_3861.class, "deco_test__test_simple_catch_throw_with_result", 1, 1);
     }
 }
 ###########
-_method deco_test.test_if_elif() 
-    _if _self.test?
-    _then
-        _self.doa()
-    _elif _self.test1?
-    _then
-        _self.dob()
-    _else
-        _self.doc()
-    _endif
-    _return  _unset
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.test_simple_catch_throw_with_result()
+	## 
+	_local res << _catch @ball
+			      _self.run1()
+			      _if _self.test? _then _throw @ball _with "waarde" _endif 
+			      _self.run2()
+		      _endcatch
+	show(res)
 _endmethod
 $
-
 ###########
-## jpn_method_test_return_if
+## jpn_method_test_simple_catch_throw_with_result
+@Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
-public class deco_test_3468 {
+public class deco_test_3861 {
+    @SourceHash(value=185250139)
+    @Debugger(value="MagikDebug")
     @CodeType(value="Method")
-    public static Object deco_test__test_return_if(Object _self) {
-        ResultTuple resultTuple;
-        if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("test?", (Object)_self))) {
-            resultTuple = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("doa()", (Object)_self));
-        } else {
-            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("test1?", (Object)_self));
-            resultTuple = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("dob()", (Object)_self));
+    public static Object deco_test__test_simple_catch_throw_with_gather_result(Object _self) {
+        Object object;
+        DynamicAccessor.bootstrapBinder("__catch_tags_dynamic__", "sw", 1);
+        CallSite callSite = ConstantBuilder.globalAccessorBootstrap("findCell", "user", "ball");
+        DynamicAccessor.bootstrapStorer("__catch_tags_dynamic__", "sw", (Object)callSite);
+        try {
+            try {
+                ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("run1()", (Object)_self));
+                if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("test?", (Object)_self))) {
+                    InterruptInfrastructure.checkAndProcessInterrupts();
+                    throw Thrower.make(ConstantBuilder.globalAccessorBootstrap("findCell", "user", "ball"), (ResultTuple)((Object)TupleBuilder.bootstrap("tb", ConstantBuilder.stringBootstrap("string", "fail1"), ConstantBuilder.stringBootstrap("string", "fail2"))));
+                }
+                ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("run2()", (Object)_self));
+                object = TupleBuilder.bootstrap("tb", ConstantBuilder.stringBootstrap("string", "ok1"), ConstantBuilder.stringBootstrap("string", "ok2"));
+            }
+            catch (Thrower.Throw throw_) {
+                ResultTuple resultTuple = Thrower.checkTag(throw_, callSite);
+                object = resultTuple;
+            }
         }
-        return resultTuple;
-    }
-}
-
-@CodeType(value="Primary")
-public class deco_test_3457
-implements ExecutableMagik {
-    @CodeType(value="TopLevel")
-    public Object execute() {
-        MagikObjectUtils.createMethod("deco_test", "test_return_if()", deco_test_3468.class, "deco_test__test_return_if", 1, 1);
-    }
-}
-###########
-_method deco_test.test_return_if() 
-    _local resultTuple
-    _if _self.test?
-    _then
-        resultTuple << _self.doa()
-    _else
-        _self.test1?
-        resultTuple << _self.dob()
-    _endif
-    _return resultTuple
-_endmethod
-$
-
-###########
-## jpn_method_test_param_if
-@CodeType(value="Subsidiary")
-public class deco_test_3468 {
-    @CodeType(value="Method")
-    public static Object deco_test__test_param_if(Object _self) {
-        CallSite callSite;
-        if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("test?", (Object)_self))) {
-            callSite = Invoker.bootstrapPrivate("doa()", (Object)_self);
-        } else {
-            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("test1?", (Object)_self));
-            callSite = Invoker.bootstrapPrivate("dob()", (Object)_self);
+        catch (Throwable throwable) {
+            DynamicScope.destroyFrame();
+            throw throwable;
         }
-        ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("run()", (Object)_self, (Object)callSite));
+        DynamicScope.destroyFrame();
+        Object b = ((ResultTuple)object).pop();
+        Object a = ((ResultTuple)object).pop();
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)a, (Object)b);
         return ResultTuple.EMPTY_TUPLE;
     }
 }
 
+
+@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
-public class deco_test_3457
+public class deco_test_3860
 implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_3860() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
     @CodeType(value="TopLevel")
     public Object execute() {
-        MagikObjectUtils.createMethod("deco_test", "test_param_if()", deco_test_3468.class, "deco_test__test_param_if", 1, 1);
+        MagikObjectUtils.createMethod("deco_test", "test_simple_catch_throw_with_gather_result()", deco_test_3861.class, "deco_test__test_simple_catch_throw_with_gather_result", 1, 1);
     }
 }
 ###########
-_method deco_test.test_param_if() 
-    _local callSite
-    _if _self.test?
-    _then
-        callSite << _self.doa()
-    _else
-        _self.test1?
-        callSite << _self.dob()
-    _endif
-    _self.run(callSite)
-    _return  _unset
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.test_simple_catch_throw_with_gather_result()
+	## 
+	(a,b) << _catch @ball
+			 _self.run1()
+			 _if _self.test? _then _throw @ball _with "fail1", "fail2" _endif 
+			 _self.run2()
+			 >> "ok1", "ok2"
+		 _endcatch
+	show(a,b)
 _endmethod
 $
 ###########

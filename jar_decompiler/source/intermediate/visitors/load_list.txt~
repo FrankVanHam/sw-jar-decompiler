@@ -6,3 +6,6 @@ jpn_loop_while_visitor
 jpn_ignore_assignment_visitor
 jpn_pop_visitor
 jpn_try_visitor
+jpn_clean_unfinished_try_visitor
+jpn_iter_leave_continue_visitor
+jpn_iter_result_hider_visitor

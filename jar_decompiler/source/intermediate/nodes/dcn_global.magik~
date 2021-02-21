@@ -22,3 +22,10 @@ _private _method dcn_global.init(p_name, p_package)
 	>> _self 
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_global.decode_on(p_stream)
+	##
+	p_stream.write(.package, ":", .name)
+_endmethod
+$

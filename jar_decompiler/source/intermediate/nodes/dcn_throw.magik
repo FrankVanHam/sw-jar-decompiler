@@ -62,7 +62,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_throw.decode_on( a_stream, _optional parent, statements)
+_method dcn_throw.decode_on( a_stream)
 	a_stream.write("_throw ")
 	.value.decode_on(a_stream)
 	#scatter? << .token.scatter?
@@ -75,7 +75,12 @@ _method dcn_throw.decode_on( a_stream, _optional parent, statements)
 	_then
 		a_stream.write( " _with ")
 		
-		_self.decode_args_on(a_stream, .results, scatter?, numres)
+		_local c? << _false
+		_for i_arg _over .results.fast_elements()
+		_loop
+			_if (c?^<<_true) _then a_stream.write(", ") _endif
+			i_arg.decode_on(a_stream)
+		_endloop 
 	_endif 
 _endmethod
 $

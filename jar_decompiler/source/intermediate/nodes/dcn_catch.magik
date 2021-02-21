@@ -18,132 +18,179 @@
 _package deco
 $
 
-remex(:dcn_catch)
+#remex(:dcn_catch)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
 ## Node for a catch structure.
 def_slotted_exemplar( :dcn_catch,
-		       {{:token, _unset},
-			{:value,_unset},
-			{:return_values,_unset},
-			{:statements, _unset}}, :dcn_base)
+	{
+		{:body,_unset, :readable},
+		{:tag, _unset, :readable}
+	}, :dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_catch.new(token, value, statements, return_values)
-	_return _clone.init(token, value, statements, return_values)
+_method dcn_catch.new(p_body, _optional p_tag)
+	##
+	>> _clone.init(p_body, p_tag)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_catch.init(token, value, statements, return_values)
-	.token << token
-	.value << value
-	.statements << rope.deco_check_type(statements)
-	.return_values << rope.deco_check_type(return_values)
-	_return _self 
+_private _method dcn_catch.init(p_body, _optional p_tag)
+	##
+	.body << p_body
+	.tag << p_tag
+	>> _self 
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_catch.accept_node_visitor(visitor)
-	.value << .value.accept_node_visitor(visitor)
-	_self.accept_node_visitor_in_vector(visitor, .statements)
-	_self.accept_node_visitor_in_vector(visitor, .return_values)
-	_return _super.accept_node_visitor(visitor)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_catch.accept_body_visitor(visitor)
-	.value.accept_body_visitor(visitor)
-	_self.accept_body_visitor_in_vector(visitor, .statements)
-	_self.accept_body_visitor_in_vector(visitor, .return_values)
-	
-	visitor.visit(_self, .statements)
-	_super.accept_body_visitor(visitor)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_catch.is_catch?
-	_return _true
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_catch.try_handlers_and_statements
-	assert(_self.is_try?)
-	_return .statements[1].try_handlers_and_statements
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_catch.is_try?
-	_return .value.is_constant? _andif
-		.value.value = "try_tag"
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_catch.decode_on( a_stream, _optional parent, statements )
+_method dcn_catch.decode_on(a_stream)
 	a_stream.write("_catch ")
-	.value.decode_on(a_stream)
-	a_stream.newline()
-	a_stream.indent()
-	_self.decode_statements_on(a_stream, .statements)
-	_if .return_values.empty?.not
+	_if .tag _isnt _unset
 	_then
-		_if .return_values.size = 1 _andif
-		    .return_values[1].is_constant? _andif
-		    .return_values[1].value _is _unset
-		_then
-			# skip
-		_else 
-			a_stream.write( ">> ")
-			_self.decode_node_list_on(a_stream, .return_values)
-			a_stream.newline()
-		_endif 
-	_endif
-	a_stream.unindent()
+		.tag.decode_on(a_stream)
+	_endif 
+	a_stream.newline()
+	a_stream.indent(4)
+	.body.decode_on(a_stream)
+	a_stream.newline()
+	a_stream.unindent(4)
 	a_stream.write("_endcatch ")
 _endmethod
 $
 
-
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_catch.add_node(stat)
-	.statements.add(stat)
+_method dcn_catch.accept_body_visitor(p_visitor)
+	.body.accept_body_visitor(p_visitor)
 _endmethod
 $
 
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_catch.has_results?
-	numres << .token.numres
-	_if numres = -1
-	_then
-		_return _true 
-	_else
-		_return numres > 0
-	_endif
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_catch.result_count
-	_if _self.is_try?
-	_then
-		_return 0
-	_else
-		numres << .token.numres
-		_if numres = -1
-		_then
-			_return 1
-		_else
-			_return numres
-		_endif
-	_endif 
-_endmethod
-$
+#_pragma(classify_level=restricted, topic={decompiler})
+### Node for a catch structure.
+#def_slotted_exemplar( :dcn_catch,
+#		       {{:token, _unset},
+#			{:value,_unset},
+#			{:return_values,_unset},
+#			{:statements, _unset}}, :dcn_base)
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_catch.new(token, value, statements, return_values)
+#	_return _clone.init(token, value, statements, return_values)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_private _method dcn_catch.init(token, value, statements, return_values)
+#	.token << token
+#	.value << value
+#	.statements << rope.deco_check_type(statements)
+#	.return_values << rope.deco_check_type(return_values)
+#	_return _self 
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_catch.accept_node_visitor(visitor)
+#	.value << .value.accept_node_visitor(visitor)
+#	_self.accept_node_visitor_in_vector(visitor, .statements)
+#	_self.accept_node_visitor_in_vector(visitor, .return_values)
+#	_return _super.accept_node_visitor(visitor)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_catch.accept_body_visitor(visitor)
+#	.value.accept_body_visitor(visitor)
+#	_self.accept_body_visitor_in_vector(visitor, .statements)
+#	_self.accept_body_visitor_in_vector(visitor, .return_values)
+#	
+#	visitor.visit(_self, .statements)
+#	_super.accept_body_visitor(visitor)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_catch.is_catch?
+#	_return _true
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_catch.try_handlers_and_statements
+#	assert(_self.is_try?)
+#	_return .statements[1].try_handlers_and_statements
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_private _method dcn_catch.is_try?
+#	_return .value.is_constant? _andif
+#		.value.value = "try_tag"
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_catch.decode_on( a_stream, _optional parent, statements )
+#	a_stream.write("_catch ")
+#	.value.decode_on(a_stream)
+#	a_stream.newline()
+#	a_stream.indent()
+#	_self.decode_statements_on(a_stream, .statements)
+#	_if .return_values.empty?.not
+#	_then
+#		_if .return_values.size = 1 _andif
+#		    .return_values[1].is_constant? _andif
+#		    .return_values[1].value _is _unset
+#		_then
+#			# skip
+#		_else 
+#			a_stream.write( ">> ")
+#			_self.decode_node_list_on(a_stream, .return_values)
+#			a_stream.newline()
+#		_endif 
+#	_endif
+#	a_stream.unindent()
+#	a_stream.write("_endcatch ")
+#_endmethod
+#$
+#
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_catch.add_node(stat)
+#	.statements.add(stat)
+#_endmethod
+#$
+#
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_catch.has_results?
+#	numres << .token.numres
+#	_if numres = -1
+#	_then
+#		_return _true 
+#	_else
+#		_return numres > 0
+#	_endif
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_catch.result_count
+#	_if _self.is_try?
+#	_then
+#		_return 0
+#	_else
+#		numres << .token.numres
+#		_if numres = -1
+#		_then
+#			_return 1
+#		_else
+#			_return numres
+#		_endif
+#	_endif 
+#_endmethod
+#$

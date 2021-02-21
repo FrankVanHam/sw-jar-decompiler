@@ -1,0 +1,39 @@
+_package deco
+$
+
+#remex(:dcn_unfinished_throw)
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Node a _leave statement.
+def_slotted_exemplar( :dcn_unfinished_throw,
+		       {
+			       {:expression, _unset, :readable},
+			       {:arg, _unset, :readable}
+		       }, :dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_unfinished_throw.new(p_expression, p_arg)
+	>> _clone.init(p_expression, p_arg)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_unfinished_throw.init(p_expression, p_arg)
+	.expression << p_expression
+	.arg << p_arg
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_unfinished_throw.decode_on(p_stream)
+	p_stream.write("_unfinished_break ")
+	.expression.decode_on(p_stream)
+	_if .arg _isnt _unset
+	_then
+		p_stream.write(" _with ")
+		.arg.decode_on(p_stream)
+	_endif 
+_endmethod
+$
