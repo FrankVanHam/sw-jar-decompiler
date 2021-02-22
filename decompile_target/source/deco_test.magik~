@@ -3,91 +3,59 @@ $
 remex(:deco_test)
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:deco_test,{})
 $
 
-
-#_method deco_test.test_access_local_iter()
-#	_local a << "hoi"
-#	_for i_index _over _self.fast_elements()
-#	_loop
-#		_self.run(a, i_index)
-#	_endloop
-#	_return 
-#_endmethod
-#$
-
-#_method deco_test.test_access_local_iter(arg)
-#	_local thing << _self.get_thing()
-#	thing.do()
-#	_for i_index _over _self.fast_elements()
-#	_loop
-#		_self.run(thing, arg, i_index)
-#	_endloop
-#	_return 
-#_endmethod
-#$
-
-#_method deco_test.test_send_iter()
-#	_local thing << _self.get_thing()
-#	_for i_index _over thing.fast_elements()
-#	_loop
-#		_self.run(i_index)
-#	_endloop
-#	_return 
-#_endmethod
-#$
-
-
-
-
-#_method deco_test.test_gather_iter()
-#	_for i_index, _gather i_var _over _self.fast_elements()
-#	_loop
-#		_self.run(i_index, _scatter i_var)
-#	_endloop
-#	_return 
-#_endmethod
-#$
-
-#_method deco_test.test_nested_iter()
-#	_for i_var1 _over _self.fast_elements()
-#	_loop
-#		_for i_var2 _over _self.fast_elements()
-#		_loop 
-#			_self.run(i_var1, i_var2)
-#		_endloop 
-#	_endloop
-#	_return 
-#_endmethod
-#$
-
-_method deco_test.test_nested_break_iter()
-	_for i_var1 _over _self.fast_elements()
-	_loop @outer
-		_self.run1(i_var1)
-		_if _self.exit? _then _leave @outer _endif
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.test_simple_catch_throw()
+	## 
+	_catch @ball
+		_self.run1()
+		_if _self.test? _then _throw @ball _endif 
 		_self.run2()
-		_if _self.exit? _then _continue @outer _endif
-		_self.run3()
-	_endloop
-	_self.run4()
+		show("ball")
+	_endcatch
 _endmethod
 $
 
-_method deco_test.test_nested_break_iter()
-	_for i_var1 _over _self.fast_elements()
-	_loop @outer
-		_for i_var2 _over _self.fast_elements()
-		_loop 
-			_self.run1(i_var1)
-			_if _self.exit? _then _leave @outer _endif
-			_self.run2(i_var2)
-			_if _self.self.exit? _then _continue @outer _endif
-			_self.run3(i_var2)
-		_endloop 
-	_endloop
-	_return 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.test_simple_catch_throw_with_result()
+	## 
+	_local res << _catch @ball
+			      _self.run1()
+			      _if _self.test? _then _throw @ball _with "waarde" _endif 
+			      _self.run2()
+		      _endcatch
+	show(res)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.test_simple_catch_throw_with_gather_result()
+	## 
+	(a,b) << _catch @ball
+			 _self.run1()
+			 _if _self.test? _then _throw @ball _with "fail1", "fail2" _endif 
+			 _self.run2()
+			 >> "ok1", "ok2"
+		 _endcatch
+	show(a,b)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.test?
+	>> _false
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.run1()
+_endmethod
+$
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.run2()
 _endmethod
 $
 
