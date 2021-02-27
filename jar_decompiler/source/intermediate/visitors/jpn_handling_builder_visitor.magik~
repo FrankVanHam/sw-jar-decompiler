@@ -1,0 +1,128 @@
+_package deco
+$
+
+#remex(:jpn_catch_builder_visitor)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## If an unfinished_try has a catch with a checkTag, then the
+## try actually is a _catch _endcatch block.
+##        DynamicAccessor.bootstrapBinder("__catch_tags_dynamic__", "sw", 1);
+##        CallSite callSite = ConstantBuilder.globalAccessorBootstrap("findCell", "user", "ball");
+##        DynamicAccessor.bootstrapStorer("__catch_tags_dynamic__", "sw", (Object)callSite);
+##        try {
+##            try {
+##                **** the actual code ***
+##            }
+##            catch (Thrower.Throw throw_) {
+##                Thrower.checkTag(throw_, callSite);
+##            }
+##
+def_slotted_exemplar(:jpn_catch_builder_visitor,
+	{})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_catch_builder_visitor.new()
+	>> _clone.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_catch_builder_visitor.init()
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_catch_builder_visitor.accept(p_body)
+	##
+	_local sts << p_body.statements
+	_for i_index, i_node _over sts.fast_keys_and_elements()
+	_loop
+		_local (catch?, var) << _self.should_convert?(i_node)
+		_if catch?
+		_then
+#			_global x
+#			x << sts
+#			888.stop
+			_local tag << sts[i_index-2].expression
+			sts[i_index-1] << dcn_no_op.new()
+			sts[i_index-2] << dcn_no_op.new()
+			sts[i_index-3] << dcn_no_op.new()
+
+			_local catch_struct << _self.convert(i_node, tag)
+			_if var _isnt _unset
+			_then
+				_self.convert_return_local(catch_struct, var)
+				sts[i_index-4] << dcn_local_assignment.new(sts[i_index-4],
+									   catch_struct)
+				sts[i_index] << dcn_no_op.new()
+			_else 
+				sts[i_index] << catch_struct
+			_endif 
+		_endif
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_catch_builder_visitor.convert_return_local(catch_struct, var)
+	##
+	_local sts << catch_struct.body.statements
+	_local idx << sts.size
+	_local last << sts[idx]
+	_if last.is_class_of?(dcn_local_assignment)
+	_then
+		_if last.expression.is_class_of?(dcn_constant) _andif
+		    last.expression.is_null?
+		_then
+			sts[idx] << dcn_no_op.new()
+		_else 
+			sts[idx] << dcn_soft_return.new(last.expression)
+		_endif 
+	_endif 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_catch_builder_visitor.should_convert?(p_node)
+	##
+	_if p_node.is_class_of?(dcn_unfinished_try).not _then _return _false, :dcn_unfinished_try _endif
+	_if p_node.try_body.statements.size <> 1 _then _return _false, :size_gt_1 _endif
+
+	_local sub_node << p_node.try_body.statements[1]
+	_if sub_node.is_class_of?(dcn_unfinished_try).not _then _return _false, :dcn2_unfinished_try _endif
+	_if sub_node.catch_body _is _unset _then _return _false, :no_catch _endif
+
+	_local catch? << _false 
+	_for i_arg _over sub_node.args.fast_elements()
+	_loop
+		_if i_arg = "throw_"
+		_then
+			catch? << _true
+			_leave 
+		_endif
+	_endloop
+
+	_local catch_var << _unset 
+	_for i_stat _over sub_node.catch_body.statements.fast_elements()
+	_loop
+		_if i_stat.is_class_of?(dcn_local_assignment) _andif
+		    i_stat.only_local() _isnt _unset
+		_then
+			catch_var << i_stat.only_local().name
+			_leave
+		_endif
+	_endloop
+	>> catch?, catch_var
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_catch_builder_visitor.convert(p_node, p_tag)
+	##
+	>> dcn_catch.new(p_node.try_body.statements[1].try_body, p_tag)
+_endmethod
+$

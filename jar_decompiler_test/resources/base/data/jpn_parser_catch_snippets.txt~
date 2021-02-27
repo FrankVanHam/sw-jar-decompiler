@@ -50,19 +50,21 @@ implements ExecutableMagik {
     }
 }
 ###########
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_test.test_simple_catch_throw()
-	## 
-	_catch @ball
-		_self.run1()
-		_if _self.test? _then _throw @ball _endif 
-		_self.run2()
-		show("ball")
-	_endcatch
+_method deco_test.test_simple_catch_throw() 
+    _catch @user:ball
+        _self.run1()
+        _if _self.test?
+        _then
+            _throw @user:ball
+        _endif
+        _self.run2()
+        sw:show("ball")
+    _endcatch 
+    _return _unset
 _endmethod
 $
 ###########
-## jpn_method_test_simple_catch_throw_with_gather_result
+## jpn_method_test_simple_catch_throw_with_result
 @Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
 public class deco_test_3861 {
@@ -118,19 +120,22 @@ implements ExecutableMagik {
     }
 }
 ###########
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_test.test_simple_catch_throw_with_result()
-	## 
-	_local res << _catch @ball
-			      _self.run1()
-			      _if _self.test? _then _throw @ball _with "waarde" _endif 
-			      _self.run2()
-		      _endcatch
-	show(res)
+_method deco_test.test_simple_catch_throw_with_result() 
+     _local object << _catch @user:ball
+        _self.run1()
+        _if _self.test?
+        _then
+            _throw @user:ball _with "waarde"
+        _endif
+        _self.run2()
+    _endcatch 
+     _local res << object
+    sw:show(res)
+    _return _unset
 _endmethod
 $
 ###########
-## jpn_method_test_simple_catch_throw_with_result
+## jpn_method_test_simple_catch_throw_with_gather_result
 @Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
 public class deco_test_3861 {

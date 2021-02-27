@@ -20,10 +20,11 @@ _method jpn_execution_post_processor.process(p_file)
 	p_file.accept_body_visitor(jpn_iter_visitor.new(p_file))
 	
 	p_file.accept_body_visitor(jpn_iter_leave_continue_visitor.new())
+	p_file.accept_body_visitor(jpn_catch_builder_visitor.new())
 #	_global x
 #	x << p_file
 #	99.stop
-	p_file.accept_body_visitor(jpn_catch_builder_visitor.new())
+	p_file.accept_body_visitor(jpn_handling_builder_visitor.new())
 	
 	# any unfinised tries are removed now. So All unfinised_try
 	# handling should precede.

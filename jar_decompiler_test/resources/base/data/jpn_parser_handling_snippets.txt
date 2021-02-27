@@ -1,0 +1,290 @@
+## jpn_method_test_handling
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_3901 {
+    @SourceHash(value=-1428335144)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_handling(Object _self) {
+        ResultTuple resultTuple;
+        DynamicAccessor.bootstrapBinder("!sys!condition_handler_cluster!", "sw", 1);
+        try {
+            ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), Invoker.bootstrapPrivate("proc()", (Object)_self));
+            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.destroyFrame();
+            throw throwable;
+        }
+        DynamicScope.destroyFrame();
+        return resultTuple;
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_3900
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_3900() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_handling()", deco_test_3901.class, "deco_test__test_handling", 1, 1);
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+###############
+_method deco_test.test_handling() 
+    _local resultTuple
+    _block
+        _handling error _with _self.proc()
+        _self.do()
+        resultTuple << _unset
+    _endblock
+    _return resultTuple
+_endmethod
+$
+##############
+## jpn_method_test_handling2
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_3901 {
+    
+    @SourceHash(value=360718629)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_handling2(Object _self) {
+        ResultTuple resultTuple;
+        DynamicAccessor.bootstrapBinder("!sys!condition_handler_cluster!", "sw", 1);
+        try {
+            ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), Invoker.bootstrapPrivate("proc()", (Object)_self), ConstantBuilder.symbolBootstrap("symbol", "warning"), Invoker.bootstrapPrivate("proc()", (Object)_self));
+            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.destroyFrame();
+            throw throwable;
+        }
+        DynamicScope.destroyFrame();
+        return resultTuple;
+    }
+
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_3900
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_3900() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_handling2()", deco_test_3901.class, "deco_test__test_handling2", 1, 1);
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+###############
+_method deco_test.test_handling2() 
+    _local resultTuple
+    _block
+        _handling error _with _self.proc()
+        _handling warning _with _self.proc()
+        _self.do()
+        resultTuple << _unset
+    _endblock
+    _return resultTuple
+_endmethod
+$
+##############
+## jpn_method_test_handling_in_block
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_3901 {
+    @SourceHash(value=-1460947345)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_handling_in_block_(Object _self) {
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do_before()", (Object)_self));
+        DynamicAccessor.bootstrapBinder("!sys!condition_handler_cluster!", "sw", 1);
+        try {
+            ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), Invoker.bootstrapPrivate("proc()", (Object)_self));
+            ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
+        }
+        catch (Throwable throwable) {
+            DynamicScope.destroyFrame();
+            throw throwable;
+        }
+        DynamicScope.destroyFrame();
+        ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do_after()", (Object)_self));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_3900
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_3900() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_handling_in_block", deco_test_3901.class, "deco_test__test_handling_in_block_", 1, 1);
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+###############
+_method deco_test.test_handling_in_block
+    _self.do_before()
+    _block
+        _handling error _with _self.proc()
+        _self.do()
+    _endblock
+    _self.do_after()
+    _return _unset
+_endmethod
+$
+##############
+## jpn_method_test_multi_handling
+public class deco_test_3914 {
+    @SourceHash(value=-1357316726)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_multi_handling(Object _self) {
+        ResultTuple resultTuple;
+        DynamicAccessor.bootstrapBinder("!sys!condition_handler_cluster!", "sw", 1);
+        try {
+            CallSite callSite = Invoker.bootstrapPrivate("proc()", (Object)_self);
+            ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), callSite, ConstantBuilder.symbolBootstrap("symbol", "user_error"), callSite);
+            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.destroyFrame();
+            throw throwable;
+        }
+        DynamicScope.destroyFrame();
+        return resultTuple;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_3913
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_3913() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_multi_handling()", deco_test_3914.class, "deco_test__test_multi_handling", 1, 1);
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+
+##############
+_method deco_test.test_multi_handling() 
+    _local resultTuple
+    _block
+        _handling error, user_error _with _self.proc()
+        _self.do()
+        resultTuple << _unset
+    _endblock
+    _return resultTuple
+_endmethod
+$
+##############
+## jpn_method_test_multi_handling2
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_3994 {
+    @SourceHash(value=1022514496)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_multi_handling2(Object _self) {
+        ResultTuple resultTuple;
+        DynamicAccessor.bootstrapBinder("!sys!condition_handler_cluster!", "sw", 1);
+        try {
+            CallSite callSite = Invoker.bootstrapPrivate("error_proc()", (Object)_self);
+            CallSite callSite2 = Invoker.bootstrapPrivate("info_proc()", (Object)_self);
+            ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), callSite, ConstantBuilder.symbolBootstrap("symbol", "user_error"), callSite, ConstantBuilder.symbolBootstrap("symbol", "warning"), Invoker.bootstrapPrivate("warning_proc()", (Object)_self), ConstantBuilder.symbolBootstrap("symbol", "information"), callSite2, ConstantBuilder.symbolBootstrap("symbol", "bla"), callSite2);
+            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.destroyFrame();
+            throw throwable;
+        }
+        DynamicScope.destroyFrame();
+        return resultTuple;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_3993
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_3993() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_multi_handling2()", deco_test_3994.class, "deco_test__test_multi_handling2", 1, 1);
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+##############
+_method deco_test.test_multi_handling2() 
+    _local resultTuple
+    _block
+        _handling error, user_error _with _self.error_proc()
+        _handling warning _with _self.warning_proc()
+        _handling information, bla _with _self.info_proc()
+        _self.do()
+        resultTuple << _unset
+    _endblock
+    _return resultTuple
+_endmethod
+$
+##############

@@ -15,47 +15,42 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_pop_visitor.accept(p_body)
 	##
 	_local sts << p_body.statements
-
-	_global x
-	x << sts
-	888.stop
 	_local result << _unset
 	_local result_reset? << _false 
 	_for i_index, i_node _over sts.fast_keys_and_elements()
 	_loop
-		_if _self.is_result_tuple?(i_node)
+		_if _self.is_remainder?(i_node) _andif (result _isnt _unset)
 		_then
-			result << i_node
-			result_reset? << _false
-		_elif result _isnt _unset
-		_then 
-			_if _self.is_remainder?(i_node)
+			_if result_reset?.not
 			_then
-				_if result_reset?.not
-				_then
-					result.reset()
-					result_reset? << _true
-				_endif 
-				sts[i_index] << dcn_no_op.new()
-			_elif _self.is_remainder_assignment?(i_node)
+				result.reset()
+				result_reset? << _true
+			_endif 
+			sts[i_index] << dcn_no_op.new()
+		_elif _self.is_remainder_assignment?(i_node) _andif (result _isnt _unset)
+		_then
+			_if result_reset?.not
 			_then
-				_if result_reset?.not
-				_then
-					result.reset()
-					result_reset? << _true
-				_endif
-				result.set_gather(i_node.only_local())
-				sts[i_index] << dcn_no_op.new()
-			_elif _self.is_pop_assignment?(i_node)
-			_then
-				_if result_reset?.not
-				_then
-					result.reset()
-					result_reset? << _true
-				_endif
-				result.append_local(i_node.only_local())
-				sts[i_index] << dcn_no_op.new()
+				result.reset()
+				result_reset? << _true
 			_endif
+			result.set_gather(i_node.only_local())
+			sts[i_index] << dcn_no_op.new()
+		_elif _self.is_pop_assignment?(i_node) _andif (result _isnt _unset)
+		_then
+			_if result_reset?.not
+			_then
+				result.reset()
+				result_reset? << _true
+			_endif
+			result.append_local(i_node.only_local())
+			sts[i_index] << dcn_no_op.new()
+			
+		_elif _self.is_result_tuple?(i_node)
+		_then
+			# this should come last
+			result << i_node
+			result_reset? << _false	
 		_endif 
 	_endloop 
 _endmethod

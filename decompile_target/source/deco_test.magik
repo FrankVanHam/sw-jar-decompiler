@@ -8,54 +8,10 @@ def_slotted_exemplar(:deco_test,{})
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_test.test_simple_catch_throw()
-	## 
-	_catch @ball
-		_self.run1()
-		_if _self.test? _then _throw @ball _endif 
-		_self.run2()
-		show("ball")
-	_endcatch
+_method deco_test.test_multi_handling2()
+	_handling error, user_error _with _self.error_proc()
+	_handling warning _with _self.warning_proc()
+	_handling information, bla  _with _self.info_proc()
+	_self.do()
 _endmethod
 $
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_test.test_simple_catch_throw_with_result()
-	## 
-	_local res << _catch @ball
-			      _self.run1()
-			      _if _self.test? _then _throw @ball _with "waarde" _endif 
-			      _self.run2()
-		      _endcatch
-	show(res)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_test.test_simple_catch_throw_with_gather_result()
-	## 
-	(a,b) << _catch @ball
-			 _self.run1()
-			 _if _self.test? _then _throw @ball _with "fail1", "fail2" _endif 
-			 _self.run2()
-			 >> "ok1", "ok2"
-		 _endcatch
-	show(a,b)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_test.test?
-	>> _false
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_test.run1()
-_endmethod
-$
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_test.run2()
-_endmethod
-$
-

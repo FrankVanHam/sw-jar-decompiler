@@ -19,7 +19,7 @@ _package deco
 $
 
 
-#remex(:dcn_handling)
+remex(:dcn_handling)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
@@ -37,7 +37,7 @@ $
 
 _pragma(classify_level=restricted, topic={decompiler})
 _private _method dcn_handling.init(conditions,proc_node)
-	.conditions << conditions
+	.conditions << rope.deco_check_type(conditions)
 	.proc_node << proc_node
 	_return _self 
 _endmethod
@@ -52,9 +52,10 @@ $
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_handling.accept_body_visitor(visitor)
-	.proc_node.accept_body_visitor(visitor)
+	_super.accept_body_visitor(visitor)
 _endmethod
 $
+
 
 _pragma(classify_level=restricted, topic={decompiler})
 _private _method dcn_handling.try_index
