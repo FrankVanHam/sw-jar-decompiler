@@ -378,7 +378,17 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_throw(p_jnode)
 	##
 	_local exp << _self.parse_expression(p_jnode.expression)
-	>> dcn_throw.new(exp, {})
+	>> _if exp.is_class_of?(dcn_unfinished_throw)
+	   _then
+		   >> _if exp.arg _isnt _unset
+		      _then 
+			      >> dcn_throw.new(exp.expression, {exp.arg})
+		      _else
+			      >> dcn_throw.new(exp.expression, {})
+		      _endif 
+	   _else
+		   >> dcn_throw.new(exp, {})
+	   _endif 
 _endmethod
 $
 
@@ -401,8 +411,10 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_try(p_jnode)
 	##
-	>> dcn_unfinished_try.new(_self.parse_body(p_jnode.try_body), _self.parse_body(p_jnode.catch_body))
-	#
+	_local args << p_jnode.exceptions.map(_proc(x) >> x.name _endproc)
+	>> dcn_unfinished_try.new(_self.parse_body(p_jnode.try_body),
+				  _self.parse_body(p_jnode.catch_body),
+				  args)
 _endmethod
 $
 

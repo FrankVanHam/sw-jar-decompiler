@@ -8,28 +8,10 @@ def_slotted_exemplar(:deco_test,{})
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_test.test_handling()
-	_handling error _with _self.proc()
+_method deco_test.test_multi_handling2()
+	_handling error, user_error _with _self.error_proc()
+	_handling warning _with _self.warning_proc()
+	_handling information, bla  _with _self.info_proc()
 	_self.do()
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_test.test_handling2()
-	_handling error _with _self.proc()
-	_handling warning _with _self.proc()
-	_self.do()
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_test.test_handling_in_block
-
-	_self.do_before()
-	_block 
-		_handling error _with _self.proc()
-		_self.do()
-	_endblock
-	_self.do_after()
 _endmethod
 $

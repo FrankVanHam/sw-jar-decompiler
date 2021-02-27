@@ -54,8 +54,12 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_proc.bind(p_nr_args, p_mandatory_args )
+_method dcn_proc.bind(p_name, p_nr_args, p_mandatory_args )
 	##
+	_if p_name.default("") <> ""
+	_then
+		.name << p_name
+	_endif 
 	.nr_mandatory_args << p_mandatory_args
 _endmethod
 $
@@ -85,6 +89,10 @@ _method dcn_proc.decode_on(a_stream)
 	##
 	#_self.decode_pragma_on(a_stream)
 	a_stream.write( "_proc" )
+	_if .name _isnt _unset
+	_then
+		a_stream.write(" @", .name)
+	_endif 
 	
 	a_stream.write( "(" )
 	_self.int!decode_args_on(a_stream, 1)

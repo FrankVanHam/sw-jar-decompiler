@@ -1,0 +1,85 @@
+## jpn_method_test_proc_def
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_3910 {
+    @SourceHash(value=-168393871)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Proc")
+    public static Object proc___(Object _self, Object a, Object b, Object ... c) {
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)a, (Object)b, (Object)c);
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_3909
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_3909() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        GlobalAccessor.bootstrapStorer2("storeGlobal2", "user", "a_proc", (Object)ConstantBuilder.procWithEmptyEnvBootstrap("proc", (Class<?>)deco_test_3910.class, "proc___", "", 4, 2, 0, 0));
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+
+##########
+_global _constant a_proc << _proc(a, _optional b, _gather c)
+    sw:show(a, b, c)
+    _return _unset
+_endproc
+$
+#########
+## jpn_method_test_named_proc
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4590 {
+    @SourceHash(value=-976294605)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Proc")
+    public static Object proc__nameoftheproc_(Object _self, Object a) {
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)a);
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4589
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_4589() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        CallSite callSite = ConstantBuilder.procWithEmptyEnvBootstrap("proc", (Class<?>)deco_test_4590.class, "proc__nameoftheproc_", "nameoftheproc", 2, 2, 0, 0);
+        GlobalAccessor.bootstrapStorer2("storeGlobal2", "user", "a_named_proc", (Object)callSite);
+        return TupleBuilder.bootstrap("tb", callSite);
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+#############
+a_named_proc << _proc @NameOfTheProc(a )
+
+				    show(a)
+
+			    _endproc
+$
+#############

@@ -54,6 +54,6 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_constantbuilder.globalaccessorbootstrap(p_parser, p_type, p_package, p_name)
 	## 
-	>> dcn_global.new(p_name.string_value, p_package.string_value)
+	>> dcn_global.new(p_name.string_value, p_package.string_value, _true)
 _endmethod
 $

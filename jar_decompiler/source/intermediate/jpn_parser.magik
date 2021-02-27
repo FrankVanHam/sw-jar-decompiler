@@ -259,9 +259,16 @@ _method jpn_parser.parse_implementation_class(p_class_node)
 	# First parse the methods, then then loopbodies, etc.
 	_for i_meth _over p_class_node.methods.fast_elements()
 	_loop
-		_if i_meth.type <> "Method" _then _continue _endif 
-		_local m_node << _self.parse_method(class_name, i_meth)
-		.top.add_method(m_node)
+		_if i_meth.type = "Method" 
+		_then 
+			_local m_node << _self.parse_method(class_name, i_meth)
+			.top.add_method(m_node)
+		_endif
+		_if i_meth.type = "Proc" 
+		_then 
+			_local m_node << _self.parse_proc(class_name, i_meth)
+			.top.add_proc(m_node)
+		_endif 
 	_endloop
 #	_for i_meth _over p_class_node.methods.fast_elements()
 #	_loop
@@ -324,6 +331,25 @@ _method jpn_parser.parse_method(p_class_name, p_meth_node)
 	_local body << _self.parse_body(p_meth_node.body)
 	_local type << p_meth_node.type
 	_local m_node << dcn_method.new(p_class_name, p_meth_node.name, args, scatter?, body, type )
+	>> m_node
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_proc(p_class_name, p_meth_node)
+	##
+	_local java_args << p_meth_node.args.copy()
+	_if java_args.empty?.not _then java_args.remove_first() _endif
+
+	_local scatter? << _if java_args.empty?.not
+			   _then >> java_args.last.varargs?
+			   _else >> _false
+			   _endif
+	_local args << java_args.map(_proc(x) >> x.name _endproc)
+	_self.apply_annotations(p_meth_node)
+	_local body << _self.parse_body(p_meth_node.body)
+	_local type << p_meth_node.type
+	_local m_node << dcn_proc.new(p_class_name, p_meth_node.name, args, scatter?, body, type )
 	>> m_node
 _endmethod
 $
@@ -485,11 +511,19 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_parser.assign_magik_method_names(p_class_name, p_java_method_name, p_exemplar_name, p_method_name, p_nr_args, p_nmandatory_args, p_abstract?, p_private?)
+_method jpn_parser.publish_method(p_class_name, p_java_method_name, p_exemplar_name, p_method_name, p_nr_args, p_nmandatory_args, p_abstract?, p_private?)
 	##
-	>> .top.assign_magik_method_names(p_class_name, p_java_method_name, p_exemplar_name, p_method_name, p_nr_args, p_nmandatory_args, p_abstract?, p_private?)
+	>> .top.publish_method(p_class_name, p_java_method_name, p_exemplar_name, p_method_name, p_nr_args, p_nmandatory_args, p_abstract?, p_private?)
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.publish_proc(p_class_name, p_java_method_name, p_proc_name, p_nr_args, p_nmandatory_args )
+	##
+	>> .top.publish_proc(p_class_name, p_java_method_name, p_proc_name, p_nr_args, p_nmandatory_args )
+_endmethod
+$
+
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.executer_and_method_from_string(p_string)
 

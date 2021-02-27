@@ -1,0 +1,35 @@
+_package deco
+$
+#remex(:dcn_global)
+
+_pragma(classify_level=restricted, topic={decompiler})
+def_slotted_exemplar(:dcn_global,
+		     {
+			     {:package, _unset, :readable},
+			     {:name, _unset, :readable},
+			     {:at?, _unset, :readable}
+		     }, :dcn_base )
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_global.new(p_name, p_package, _optional p_at?)
+	>> _clone.init(p_name, p_package, p_at?)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_global.init(p_name, p_package, p_at?)
+	.name << p_name
+	.package << p_package
+	.at? << p_at?.default(_false)
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_global.decode_on(p_stream)
+	##
+	_if .at? _then p_stream.write("@") _endif 
+	p_stream.write(.package, ":", .name)
+_endmethod
+$

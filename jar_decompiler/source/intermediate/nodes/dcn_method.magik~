@@ -12,7 +12,9 @@ def_slotted_exemplar( :dcn_method,
 			      {:java_method_name, _unset},
 			      {:type, _unset, :readable},
 			      {:exemplar_name, _unset, :readable},
-			      {:name, _unset, :readable}
+			      {:name, _unset, :readable},
+			      {:private?, _unset ,:readable},
+			      {:abstract?, _unset, :readable}
 		      }, :dcn_callable )
 $
 
@@ -27,7 +29,9 @@ _pragma(classify_level=restricted, topic={decompiler})
 _private _method dcn_method.init(p_class_name, p_method_name, p_args, p_scatter?, p_body, p_type )
 
 	assert(p_body.is_kind_of?(dcn_body))
-	
+
+	.private? << _false 
+	.abstract? << _false
 	.java_class_name << p_class_name
 	.java_method_name << p_method_name
 	.type << p_type
@@ -50,24 +54,26 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_method.bind_names(p_exemplar_name, p_method_name, p_nr_args, p_mandatory_args)
+_method dcn_method.bind_names(p_exemplar_name, p_method_name, p_nr_args, p_mandatory_args, p_private?, p_abstract? )
 	##
 	.exemplar_name << p_exemplar_name
 	.name << p_method_name
 	.nr_args << p_nr_args
 	.nr_mandatory_args << p_mandatory_args
+	.private? << p_private?
+	.abstract? << p_abstract?
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_method.abstract?
-	>> _false 
+	>> .abstract? 
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_method.private?
-	>> _false 
+	>> .private?
 _endmethod
 $
 _pragma(classify_level=restricted, topic={decompiler})
@@ -119,18 +125,7 @@ $
 #_endmethod
 #$
 #
-#_pragma(classify_level=restricted, topic={decompiler})
-#_private _method dcn_method.private?
-#	_return .method.private?
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_private _method dcn_method.abstract?
-#	_return .method.abstract?
-#_endmethod
-#$
-#
+
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_method.magik_exemplar

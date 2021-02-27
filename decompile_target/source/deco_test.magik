@@ -7,11 +7,10 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:deco_test,{})
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_test.test_multi_handling2()
-	_handling error, user_error _with _self.error_proc()
-	_handling warning _with _self.warning_proc()
-	_handling information, bla  _with _self.info_proc()
-	_self.do()
-_endmethod
+a_named_proc << _proc @NameOfTheProc(a )
+
+				    show(a)
+
+			    _endproc
 $
+
