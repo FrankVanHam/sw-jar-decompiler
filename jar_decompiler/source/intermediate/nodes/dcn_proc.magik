@@ -10,23 +10,24 @@ def_slotted_exemplar( :dcn_proc,
 		      {
 			      {:java_class_name, _unset},
 			      {:java_method_name, _unset},
-			      {:type, _unset, :readable},
+			      {:imports, _unset, :readable},
 			      {:exemplar_name, _unset, :readable},
 			      {:name, _unset, :readable},
 			      {:private?, _unset ,:readable},
 			      {:abstract?, _unset, :readable}
+			      
 		      }, :dcn_callable )
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_proc.new(p_class_name, p_method_name, p_args, p_scatter?, p_body, p_type)
+_method dcn_proc.new(p_class_name, p_method_name, p_args, p_scatter?, p_body, p_imports)
 	##
-	>> _clone.init(p_class_name, p_method_name, p_args, p_scatter?, p_body, p_type )
+	>> _clone.init(p_class_name, p_method_name, p_args, p_scatter?, p_body, p_imports )
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_proc.init(p_class_name, p_method_name, p_args, p_scatter?, p_body, p_type )
+_private _method dcn_proc.init(p_class_name, p_method_name, p_args, p_scatter?, p_body, p_imports )
 
 	assert(p_body.is_kind_of?(dcn_body))
 
@@ -34,7 +35,7 @@ _private _method dcn_proc.init(p_class_name, p_method_name, p_args, p_scatter?, 
 	.abstract? << _false
 	.java_class_name << p_class_name
 	.java_method_name << p_method_name
-	.type << p_type
+	.imports << p_imports
 	>> _super.init(p_args, p_scatter?, p_body)
 _endmethod
 $
@@ -96,11 +97,19 @@ _method dcn_proc.decode_on(a_stream)
 	
 	a_stream.write( "(" )
 	_self.int!decode_args_on(a_stream, 1)
-	a_stream.write( ")")	
-	
+	a_stream.write( ")")
 	a_stream.newline()
+	a_stream.indent(4)
+	_if .imports.empty?.not
+	_then
+		a_stream.write( "_import ")
+		_self.decode_list_on(a_stream, .imports)
+		a_stream.newline()
+	_endif 
+	
 	#_self.decode_comment_on(a_stream)
 	_self.decode_body_on(a_stream)
+	a_stream.unindent(4)
 	a_stream.newline()
 	a_stream.write( "_endproc" )
 _endmethod

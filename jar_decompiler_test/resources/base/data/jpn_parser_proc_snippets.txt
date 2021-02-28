@@ -76,10 +76,119 @@ implements ExecutableMagik {
     }
 }
 #############
-a_named_proc << _proc @NameOfTheProc(a )
-
-				    show(a)
-
-			    _endproc
+ _local callSite << _proc @nameoftheproc(a)
+    sw:show(a)
+    _return _unset
+_endproc
 $
+
+_global _constant a_named_proc << callSite
+$
+#############
+## jpn_method_test_inline_proc
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_3965 {
+    @SourceHash(value=-1832222732)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_inline_proc(Object _self) {
+        CallSite a_proc = ConstantBuilder.procWithEmptyEnvBootstrap("proc", (Class<?>)deco_test_3965.class, "proc___", "", 2, 2, 0, 0);
+        ProcInvoker.naturalBootstrap("()", (Object)a_proc, (Object)ConstantBuilder.stringBootstrap("string", "qw"));
+        ProcInvoker.naturalBootstrap("()", (Object)a_proc, (Object)ConstantBuilder.stringBootstrap("string", "rt"));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @Parent(method="deco_test__test_inline_proc")
+    @SourceHash(value=-1953399963)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Proc")
+    public static Object proc___(Object _self, Object a) {
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("use()", (Object)_self, (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "user", "e")));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_3964
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_3964() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_inline_proc()", deco_test_3965.class, "deco_test__test_inline_proc", 1, 1);
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+#############
+_method deco_test.test_inline_proc() 
+     _local a_proc << _proc(a)
+        _self.use(user:e)
+        _return _unset
+    _endproc
+    a_proc("qw")
+    a_proc("rt")
+    _return _unset
+_endmethod
+$
+#############
+## jpn_method_test_inline_import_proc
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4001 {
+    @SourceHash(value=-1481646258)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    @EnvVars(value={@EnvVar(name="arg", type=Object.class, start=13, end=62, index=1)})
+    public static Object deco_test__test_inline_proc(Object _self, Object arg) {
+        Object[] __env__ = new Object[2];
+        EnvAccessor.bootstrapReseter("resetEnv", (Object)arg, (Object[])__env__, (int)1);
+        Object[] objectArray = new Object[]{__env__[1]};
+        CallSite a_proc = ConstantBuilder.procBootstrap("proc", (Class<?>)deco_test_4001.class, "proc___", "", 3, 3, 0, 0, (Object[])objectArray);
+        ProcInvoker.naturalBootstrap("()", (Object)a_proc, (Object)ConstantBuilder.stringBootstrap("string", "qw"));
+        ProcInvoker.naturalBootstrap("()", (Object)a_proc, (Object)ConstantBuilder.stringBootstrap("string", "rt"));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @Parent(method="deco_test__test_inline_proc")
+    @SourceHash(value=1453829367)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Proc")
+    @EnvVars(value={@EnvVar(name="arg", type=Object.class, start=0, end=22, index=0)})
+    public static Object proc___(Object[] __env__, Object _self, Object a) {
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("use()", (Object)_self, (Object)a, (Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0)));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4000
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_4000() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "test_inline_proc()", deco_test_4001.class, "deco_test__test_inline_proc", 2, 2));
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+#############
 #############

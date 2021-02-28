@@ -100,7 +100,16 @@ _method deco_envaccessor.bootstrapfetcher(p_parser, p_action, p_env, p_index)
 	_if p_action.string_value = "fetchEnv"
 	_then 
 		_local index << p_parser.parse_expression(p_index)
-		_return _self.from_cache(index.string_value)
+
+		_local name << _self.var_names[index.string_value]
+		_local loc << _self.from_cache(index.string_value)
+
+		_if loc _isnt _unset
+		_then
+			_return loc
+		_else
+			_return dcn_local.new(0, name)
+		_endif 
 	_else 
 		_return dcn_no_op.new()
 	_endif 

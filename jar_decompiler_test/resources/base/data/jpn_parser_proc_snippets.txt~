@@ -1,229 +1,85 @@
-## jpn_method_test_if
+## jpn_method_test_proc_def
+@Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
-public class deco_test_3468 {
-    @CodeType(value="Method")
-    public static Object deco_test__test_if(Object _self) {
-        block0: {
-            if (!MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("test?", (Object)_self))) break block0;
-            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("doa()", (Object)_self));
-        }
+public class deco_test_3910 {
+    @SourceHash(value=-168393871)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Proc")
+    public static Object proc___(Object _self, Object a, Object b, Object ... c) {
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)a, (Object)b, (Object)c);
         return ResultTuple.EMPTY_TUPLE;
     }
 }
 
+@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
-public class deco_test_3457
+public class deco_test_3909
 implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_3909() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
     @CodeType(value="TopLevel")
     public Object execute() {
-        MagikObjectUtils.createMethod("deco_test", "test_if()", deco_test_3468.class, "deco_test__test_if", 1, 1);
+        GlobalAccessor.bootstrapStorer2("storeGlobal2", "user", "a_proc", (Object)ConstantBuilder.procWithEmptyEnvBootstrap("proc", (Class<?>)deco_test_3910.class, "proc___", "", 4, 2, 0, 0));
+    }
+
+    @Override
+    public void preload() {
     }
 }
-###########
-_method deco_test.test_if() 
-    _if _self.test?
-    _then
-        _self.doa()
-    _endif
+
+##########
+_global _constant a_proc << _proc(a, _optional b, _gather c)
+    sw:show(a, b, c)
     _return _unset
-_endmethod
+_endproc
 $
-###########
-## jpn_method_test_if_else
+#########
+## jpn_method_test_named_proc
+@Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
-public class deco_test_3468 {
-    @CodeType(value="Method")
-    public static Object deco_test__test_if_else(Object _self) {
-        if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("test?", (Object)_self))) {
-            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("doa()", (Object)_self));
-        } else {
-            ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("dob()", (Object)_self));
-        }
+public class deco_test_4590 {
+    @SourceHash(value=-976294605)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Proc")
+    public static Object proc__nameoftheproc_(Object _self, Object a) {
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)a);
         return ResultTuple.EMPTY_TUPLE;
     }
 }
 
+
+@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
-public class deco_test_3457
+public class deco_test_4589
 implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_4589() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
     @CodeType(value="TopLevel")
     public Object execute() {
-        MagikObjectUtils.createMethod("deco_test", "test_if_else()", deco_test_3468.class, "deco_test__test_if_else", 1, 1);
+        CallSite callSite = ConstantBuilder.procWithEmptyEnvBootstrap("proc", (Class<?>)deco_test_4590.class, "proc__nameoftheproc_", "nameoftheproc", 2, 2, 0, 0);
+        GlobalAccessor.bootstrapStorer2("storeGlobal2", "user", "a_named_proc", (Object)callSite);
+        return TupleBuilder.bootstrap("tb", callSite);
+    }
+
+    @Override
+    public void preload() {
     }
 }
-###########
-_method deco_test.test_if_else() 
-    _if _self.test?
-    _then
-        _self.doa()
-    _else 
-        _self.dob()
-    _endif
-    _return _unset
-_endmethod
+#############
+a_named_proc << _proc @NameOfTheProc(a )
+
+				    show(a)
+
+			    _endproc
 $
-###########
-## jpn_method_test_nested
-@CodeType(value="Subsidiary")
-public class deco_test_3468 {
-    @CodeType(value="Method")
-    public static Object deco_test__test_nested(Object _self) {
-        if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("test?", (Object)_self))) {
-            if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("test2?", (Object)_self))) {
-                ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("doa1()", (Object)_self));
-            } else {
-                ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("doa2()", (Object)_self));
-            }
-        } else {
-            ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("dob()", (Object)_self));
-        }
-        return ResultTuple.EMPTY_TUPLE;
-    }
-}
-
-@CodeType(value="Primary")
-public class deco_test_3457
-implements ExecutableMagik {
-    @CodeType(value="TopLevel")
-    public Object execute() {
-        MagikObjectUtils.createMethod("deco_test", "test_nested()", deco_test_3468.class, "deco_test__test_nested", 1, 1);
-    }
-}
-###########
-_method deco_test.test_nested() 
-    _if _self.test?
-    _then
-        _if _self.test2?
-        _then
-            _self.doa1()
-        
-        _else
-            _self.doa2()
-        _endif
-    _else
-        _self.dob()
-    _endif
-    _return  _unset
-_endmethod
-$
-
-###########
-## jpn_method_test_if_elif
-@CodeType(value="Subsidiary")
-public class deco_test_3468 {
-    @CodeType(value="Method")
-    public static Object deco_test__test_if_elif(Object _self) {
-        if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("test?", (Object)_self))) {
-            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("doa()", (Object)_self));
-        } else if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("test1?", (Object)_self))) {
-            ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("dob()", (Object)_self));
-        } else {
-            ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("doc()", (Object)_self));
-        }
-        return ResultTuple.EMPTY_TUPLE;
-    }
-}
-
-@CodeType(value="Primary")
-public class deco_test_3457
-implements ExecutableMagik {
-    @CodeType(value="TopLevel")
-    public Object execute() {
-        MagikObjectUtils.createMethod("deco_test", "test_if_elif()", deco_test_3468.class, "deco_test__test_if_elif", 1, 1);
-    }
-}
-###########
-_method deco_test.test_if_elif() 
-    _if _self.test?
-    _then
-        _self.doa()
-    _elif _self.test1?
-    _then
-        _self.dob()
-    _else
-        _self.doc()
-    _endif
-    _return  _unset
-_endmethod
-$
-
-###########
-## jpn_method_test_return_if
-@CodeType(value="Subsidiary")
-public class deco_test_3468 {
-    @CodeType(value="Method")
-    public static Object deco_test__test_return_if(Object _self) {
-        ResultTuple resultTuple;
-        if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("test?", (Object)_self))) {
-            resultTuple = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("doa()", (Object)_self));
-        } else {
-            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("test1?", (Object)_self));
-            resultTuple = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("dob()", (Object)_self));
-        }
-        return resultTuple;
-    }
-}
-
-@CodeType(value="Primary")
-public class deco_test_3457
-implements ExecutableMagik {
-    @CodeType(value="TopLevel")
-    public Object execute() {
-        MagikObjectUtils.createMethod("deco_test", "test_return_if()", deco_test_3468.class, "deco_test__test_return_if", 1, 1);
-    }
-}
-###########
-_method deco_test.test_return_if() 
-    _local resultTuple
-    _if _self.test?
-    _then
-        resultTuple << _self.doa()
-    _else
-        _self.test1?
-        resultTuple << _self.dob()
-    _endif
-    _return resultTuple
-_endmethod
-$
-
-###########
-## jpn_method_test_param_if
-@CodeType(value="Subsidiary")
-public class deco_test_3468 {
-    @CodeType(value="Method")
-    public static Object deco_test__test_param_if(Object _self) {
-        CallSite callSite;
-        if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("test?", (Object)_self))) {
-            callSite = Invoker.bootstrapPrivate("doa()", (Object)_self);
-        } else {
-            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("test1?", (Object)_self));
-            callSite = Invoker.bootstrapPrivate("dob()", (Object)_self);
-        }
-        ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("run()", (Object)_self, (Object)callSite));
-        return ResultTuple.EMPTY_TUPLE;
-    }
-}
-
-@CodeType(value="Primary")
-public class deco_test_3457
-implements ExecutableMagik {
-    @CodeType(value="TopLevel")
-    public Object execute() {
-        MagikObjectUtils.createMethod("deco_test", "test_param_if()", deco_test_3468.class, "deco_test__test_param_if", 1, 1);
-    }
-}
-###########
-_method deco_test.test_param_if() 
-    _local callSite
-    _if _self.test?
-    _then
-        callSite << _self.doa()
-    _else
-        _self.test1?
-        callSite << _self.dob()
-    _endif
-    _self.run(callSite)
-    _return  _unset
-_endmethod
-$
-###########
+#############

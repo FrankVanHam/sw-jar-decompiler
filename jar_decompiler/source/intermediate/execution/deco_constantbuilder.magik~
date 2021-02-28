@@ -57,3 +57,11 @@ _method deco_constantbuilder.globalaccessorbootstrap(p_parser, p_type, p_package
 	>> dcn_global.new(p_name.string_value, p_package.string_value, _true)
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_constantbuilder.procwithemptyenvbootstrap(_gather p_args)
+	## delegate to magikobjectutils who is better fit to create
+	## methods and procs.
+	>> deco_magikobjectutils.createproc(_scatter p_args)
+_endmethod
+$
