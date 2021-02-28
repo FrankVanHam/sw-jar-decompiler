@@ -30,6 +30,12 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_class.matches?(p_name)
+	_return _self.name = p_name	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_class.is_class?
 	>> _true
 _endmethod

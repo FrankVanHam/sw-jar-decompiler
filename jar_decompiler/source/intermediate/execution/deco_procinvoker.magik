@@ -8,12 +8,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_procinvoker.bootstrap(p_parser, p_brackets, p_value_node _gather p_arg_nodes)
 
 	_local value << p_parser.parse_expression(p_value_node)
-	_local args << rope.new_for(p_arg_nodes.size)
-	_for i_node _over p_arg_nodes.fast_elements()
-	_loop
-		_local arg_node << p_parser.parse_expression(i_node)
-		args.add(arg_node)
-	_endloop 
+	_local args << p_parser.parse_args(p_arg_nodes)
 	>> dcn_call.new(value, args)
 _endmethod
 $
@@ -22,11 +17,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_procinvoker.naturalbootstrap(p_parser, p_brackets, p_value_node, _gather p_arg_nodes)
 	##
 	_local value << p_parser.parse_expression(p_value_node)
-	_local args << rope.new_for(p_arg_nodes.size)
-	_for i_arg_node _over p_arg_nodes.fast_elements()
-	_loop
-		args.add(p_parser.parse_expression(i_arg_node))
-	_endloop 	
+	_local args << p_parser.parse_args(p_arg_nodes)	
 	>> dcn_call.new(value, args)
 _endmethod
 $

@@ -8,9 +8,10 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 ## Node for whatever was declared in the file.
 def_slotted_exemplar(:dcn_file,
 		      {
-			      {:statements, _unset, :readable},
-			      {:methods,    _unset, :readable},
-			      {:procs,      _unset, :readable}
+			      {:java_classes, _unset, :readable},
+			      {:statements, _unset,  :readable},
+			      {:methods,    _unset,  :readable},
+			      {:procs,      _unset,  :readable}
 		      },
 		      :dcn_base)
 $
@@ -26,6 +27,7 @@ _private _method dcn_file.init()
 	.statements << rope.new()
 	.methods << rope.new()
 	.procs << rope.new()
+	.java_classes << rope.new()
 	_return _self 
 _endmethod
 $
@@ -33,6 +35,12 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method dcn_file.add_statement(p_node)
 	.statements.add(p_node)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_file.add_java_class(p_class)
+	.java_classes.add(p_class)
 _endmethod
 $
 
@@ -49,6 +57,20 @@ _method dcn_file.add_proc(p_proc_node)
 	.procs.add(p_proc_node)
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_file.find_class(p_class_name)
+	##
+	_for i_class _over .java_classes.fast_elements()
+	_loop
+		_if i_class.matches?(p_class_name)
+		_then
+			_return i_class
+		_endif
+	_endloop 
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method dcn_file.publish_method(p_class_name, p_java_method_name, p_exemplar_name, p_method_name, p_nr_args, p_nr_mandatory_args, p_abstract?, p_private?)

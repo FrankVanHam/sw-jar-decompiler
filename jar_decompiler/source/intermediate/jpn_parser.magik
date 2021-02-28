@@ -133,6 +133,9 @@ _method jpn_parser.parse_expression(p_node)
 	_elif p_node.is_class_of?(jpn_throw)
 	_then
 		_return _self.parse_throw(p_node)
+	_elif p_node.is_class_of?(jpn_array_access)
+	_then
+		_return _self.parse_array_access(p_node)
 	_else
 		_global x
 		x << p_node
@@ -172,11 +175,25 @@ _method jpn_parser.parse_new(p_jnode)
 	_if p_jnode.type = "Boolean"
 	_then
 		_return _self.parse_expression(p_jnode.args[1])
-	_else 
-		_return dcn_new.new(p_jnode)
+	_else
+		_local args << _self.parse_args(p_jnode.args)
+		_return dcn_new.new(p_jnode.type, args, p_jnode.array?)
 	_endif 
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_args(p_args)
+	##
+	_local args << rope.new_for(p_args.size)
+	_for i_node _over p_args.fast_elements()
+	_loop
+		args.add(_self.parse_expression(i_node))
+	_endloop
+	>> args
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_constant(p_jnode)
@@ -239,6 +256,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_class(p_class_node)
+	.top.add_java_class(p_class_node)
 	_if p_class_node.implementation = "ExecutableMagik"
 	_then
 		_self.parse_execution_class(p_class_node)
@@ -390,6 +408,7 @@ _method jpn_parser.apply_annotations(p_meth_node)
 					 )).an_element()
 	_if anno _isnt _unset
 	_then
+		deco_envaccessor.reset()
 		_for i_anno _over anno.value.fast_elements()
 		_loop
 			_local name << i_anno.property(:name).string_value
@@ -445,6 +464,15 @@ _method jpn_parser.parse_throw(p_jnode)
 	   _endif 
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_array_access(p_jnode)
+	##
+	_local args << _self.parse_args(p_jnode.args)
+	>> dcn_array_access.new(p_jnode.name, args)
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_not(p_jnode)
@@ -548,9 +576,10 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.publish_proc(p_class_name, p_java_method_name, p_proc_name, p_nr_args, p_nr_mandatory_args , p_env?)
 	##
-	_local java_proc_method << .java_class.find_method(p_java_method_name)
+	_local java_class << .top.find_class(p_class_name)
+	_local java_proc_method << java_class.find_method(p_java_method_name)
 	show(:java_proc_method, java_proc_method)
-	_local proc_method << _self.parse_proc(.java_class.name, java_proc_method, p_env?)
+	_local proc_method << _self.parse_proc(java_class.name, java_proc_method, p_env?)
 	show(proc_method)
 	proc_method.bind(p_proc_name, p_nr_args, p_nr_mandatory_args)
 	>> proc_method

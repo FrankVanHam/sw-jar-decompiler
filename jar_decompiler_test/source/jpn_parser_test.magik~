@@ -118,11 +118,11 @@ _method jpn_parser_test.test_return_empty_tuple()
 	_local jp << deco:jpn_parser.new()
 	_local dcn_node << jp.parse_expression(jpn_exp)
 	_self.assert_true(dcn_node.is_class_of?(deco:dcn_return), "should be return")
-	_self.assert_true(dcn_node.expression.is_class_of?(deco:dcn_no_op), "return value should be unset")
+	_self.assert_true(dcn_node.expression.is_class_of?(deco:dcn_constant), "return value should be unset")
 
 	_local out << internal_text_output_stream.new()
 	dcn_node.decode_on(out)
-	_self.assert_equals("_return", out.string.trim_spaces())
+	_self.assert_equals("_return _unset", out.string.trim_spaces())
 _endmethod
 $
 
@@ -200,3 +200,23 @@ _method jpn_parser_test.test_declare_local_array_assign()
 	_self.assert_equals("_local a << 10", out.string.trim_spaces())
 _endmethod
 $
+
+#_pragma(classify_level=restricted, topic={jar_decompiler, test})
+#_method jpn_parser_test.test_env_accessor()
+#	##
+#	_local inp << write_string(
+#		"block8: {", newline_char,
+#		"EnvAccessor.bootstrapReseter('resetEnv', (Object)i_var1, (Object[])__env__, (int)1);", newline_char,
+#		"x = (Object)EnvAccessor.bootstrapFetcher('fetchEnv', (Object[])__env__, (int)1);", newline_char,
+#		"}")
+#	inp << inp.substitute_character(%', %")
+#	
+#	_local s << deco:lexical_scanner.new(inp.read_stream())
+#	_local p << deco:java_parser.new(s)
+#	p.define_locals("i_var1", "__env__")
+#	_local jpn_exp << p.parse_statement()
+#
+#	_local jp << deco:jpn_parser.new()
+#	_local dcn_node << jp.parse_expression(jpn_exp)
+#_endmethod
+#$

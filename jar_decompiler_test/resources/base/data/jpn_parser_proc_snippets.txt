@@ -191,4 +191,15 @@ implements ExecutableMagik {
     }
 }
 #############
+_method deco_test.test_inline_proc(arg) 
+     _local a_proc << _proc(a)
+        _import arg
+            _self.use(a, arg)
+            _return _unset
+    _endproc
+    a_proc("qw")
+    a_proc("rt")
+    _return _unset
+_endmethod
+$
 #############

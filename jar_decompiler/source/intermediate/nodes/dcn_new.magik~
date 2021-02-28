@@ -21,3 +21,10 @@ _private _method dcn_new.init(p_jnode)
 	>> _self 
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_new.decode_on(p_stream)
+	##
+	p_stream.write("dcn_new")
+_endmethod
+$

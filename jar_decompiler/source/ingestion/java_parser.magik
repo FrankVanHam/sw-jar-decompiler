@@ -456,6 +456,10 @@ _method java_parser.parse_sub_expression(_optional p_identifier?)
 				# note: using lex, not identifier
 				_return _self.parse_assignment(lex)
 
+			_elif next.is_operator?("!=")
+			_then
+				_return _self.parse_test(lex)
+
 			_elif next.is_operator?(":")
 			_then
 				_return _self.parse_block(lex)
@@ -733,6 +737,17 @@ _method java_parser.parse_assignment(p_ident)
 	>> jpn_assignment.new(left, right)
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_test(p_ident)
+	##
+	_local left << jpn_variable.new(p_ident)
+	_local op << .scanner.get()
+	_local right << _self.parse_expression(_true)
+	>> jpn_operation.new(left, right, op)
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method java_parser.parse_block(p_ident)

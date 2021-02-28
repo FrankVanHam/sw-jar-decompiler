@@ -257,6 +257,14 @@ _method jpn_parser.parse_implementation_class(p_class_node)
 	.java_class << p_class_node
 	
 	# First parse the methods, then then loopbodies, etc.
+#	_for i_meth _over p_class_node.methods.fast_elements()
+#	_loop
+#		_if i_meth.type = "Proc" 
+#		_then 
+#			_local m_node << _self.parse_proc(class_name, i_meth)
+#			.top.add_proc(m_node)
+#		_endif 
+#	_endloop
 	_for i_meth _over p_class_node.methods.fast_elements()
 	_loop
 		_if i_meth.type = "Method" 
@@ -264,11 +272,6 @@ _method jpn_parser.parse_implementation_class(p_class_node)
 			_local m_node << _self.parse_method(class_name, i_meth)
 			.top.add_method(m_node)
 		_endif
-		_if i_meth.type = "Proc" 
-		_then 
-			_local m_node << _self.parse_proc(class_name, i_meth)
-			.top.add_proc(m_node)
-		_endif 
 	_endloop
 #	_for i_meth _over p_class_node.methods.fast_elements()
 #	_loop
@@ -290,14 +293,20 @@ _method jpn_parser.parse_execution_class(p_class_node)
 		_if i_meth.type = "TopLevel"
 		_then
 			_local m_node << _self.parse_method(class_name, i_meth)
+			
 			_for i_statement _over m_node.body.statements.fast_elements()
 			_loop
-				_if i_statement.is_class_of?(dcn_return)
-				_then
-					.top.add_statement(i_statement.expression)
-				_else 
-					.top.add_statement(i_statement)
-				_endif 
+				_local stat << _if i_statement.is_class_of?(dcn_return)
+					       _then
+						       >> _if i_statement.expression.is_class_of?(dcn_local)
+							  _then >> dcn_no_op.new()
+							  _else >> i_statement.expression
+							  _endif 
+					       _else >> i_statement
+					       _endif
+
+				.top.add_statement(stat)
+				
 			_endloop
 		_endif
 	_endloop
@@ -336,10 +345,11 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_parser.parse_proc(p_class_name, p_meth_node)
+_method jpn_parser.parse_proc(p_class_name, p_meth_node, p_env?)
 	##
 	_local java_args << p_meth_node.args.copy()
 	_if java_args.empty?.not _then java_args.remove_first() _endif
+	_if p_env? _andif java_args.empty?.not _then java_args.remove_first() _endif
 
 	_local scatter? << _if java_args.empty?.not
 			   _then >> java_args.last.varargs?
@@ -347,10 +357,27 @@ _method jpn_parser.parse_proc(p_class_name, p_meth_node)
 			   _endif
 	_local args << java_args.map(_proc(x) >> x.name _endproc)
 	_self.apply_annotations(p_meth_node)
+	_local imports << _self.extract_import(p_meth_node)
 	_local body << _self.parse_body(p_meth_node.body)
 	_local type << p_meth_node.type
-	_local m_node << dcn_proc.new(p_class_name, p_meth_node.name, args, scatter?, body, type )
+	_local m_node << dcn_proc.new(p_class_name, p_meth_node.name, args, scatter?, body, imports )
 	>> m_node
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.extract_import(p_meth_node)
+	##
+	_local anno << p_meth_node.annotations.select(
+			       predicate.using(
+				       _proc(x) >> x.name="EnvVars" _endproc
+					 )).an_element()
+	>> _if anno _isnt _unset
+	   _then
+		   >> anno.value.map(_proc(x) >> x.property(:name).string_value _endproc)
+	   _else
+		   >> {}
+	   _endif
 _endmethod
 $
 
@@ -367,6 +394,7 @@ _method jpn_parser.apply_annotations(p_meth_node)
 		_loop
 			_local name << i_anno.property(:name).string_value
 			_local index << i_anno.property(:index).string_value
+			
 			deco_envaccessor.set_var_name(index, name)
 		_endloop 
 	_endif 
@@ -518,9 +546,15 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_parser.publish_proc(p_class_name, p_java_method_name, p_proc_name, p_nr_args, p_nmandatory_args )
+_method jpn_parser.publish_proc(p_class_name, p_java_method_name, p_proc_name, p_nr_args, p_nr_mandatory_args , p_env?)
 	##
-	>> .top.publish_proc(p_class_name, p_java_method_name, p_proc_name, p_nr_args, p_nmandatory_args )
+	_local java_proc_method << .java_class.find_method(p_java_method_name)
+	show(:java_proc_method, java_proc_method)
+	_local proc_method << _self.parse_proc(.java_class.name, java_proc_method, p_env?)
+	show(proc_method)
+	proc_method.bind(p_proc_name, p_nr_args, p_nr_mandatory_args)
+	>> proc_method
+	#>> .top.publish_proc(p_class_name, p_java_method_name, p_proc_name, p_nr_args, p_nmandatory_args )
 _endmethod
 $
 

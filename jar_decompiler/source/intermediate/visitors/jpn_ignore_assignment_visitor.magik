@@ -51,6 +51,22 @@ _method jpn_ignore_assignment_visitor.ignore?(p_node)
 	_if loc.is_kind_of?(dcn_local_declaration) _andif (loc.name = "__iterator_frame__") _then _return _true  _endif
 	_if loc.is_kind_of?(dcn_local_declaration) _andif (loc.name.matches?("__leave_catcher__*")) _then _return _true  _endif
 	_if loc.is_kind_of?(dcn_local_declaration) _andif (loc.name.matches?("__continue_catcher__*")) _then _return _true  _endif
+
+	_if _self.is_env_slicer?(p_node) _then _return _true _endif 
+
 	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_ignore_assignment_visitor.is_env_slicer?(p_node)
+	##
+	# Ignore Object[] objectArray = new Object[]{__env__[1]};
+	_if p_node.is_class_of?(dcn_local_assignment).not _then _return _false, :no_assignment _endif
+	_if p_node.expression.is_class_of?(dcn_new).not _then _return _false, :no_new _endif
+	_if p_node.expression.array?.not _then _return _false, :no_arr _endif
+	_if p_node.expression.args.empty? _then _return _false, :need_args _endif
+
+	>> p_node.expression.args[1].name = "__env__" 
 _endmethod
 $

@@ -79,3 +79,4 @@ dcn_throw_checktag
 dcn_multiple
 dcn_soft_return
 dcn_unfinished_throw
+dcn_global_declaration

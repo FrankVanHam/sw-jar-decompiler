@@ -19,13 +19,14 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_procinvoker.naturalbootstrap(p_parser, p_brackets, p_value_node, p_name_node, p_slot_nodes)
+_method deco_procinvoker.naturalbootstrap(p_parser, p_brackets, p_value_node, _gather p_arg_nodes)
 	##
 	_local value << p_parser.parse_expression(p_value_node)
-	_local name << p_parser.parse_expression(p_name_node)
-
-	_local slots << p_parser.parse_expression(p_slot_nodes)
-	
-	>> dcn_call.new(value, {name, slots})
+	_local args << rope.new_for(p_arg_nodes.size)
+	_for i_arg_node _over p_arg_nodes.fast_elements()
+	_loop
+		args.add(p_parser.parse_expression(i_arg_node))
+	_endloop 	
+	>> dcn_call.new(value, args)
 _endmethod
 $

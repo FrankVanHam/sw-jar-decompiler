@@ -80,3 +80,4 @@ dcn_multiple
 dcn_soft_return
 dcn_unfinished_throw
 dcn_global_declaration
+dcn_array_access

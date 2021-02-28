@@ -1,0 +1,300 @@
+## jpn_method_test_if
+/*
+ * Decompiled with CFR 0.151-SNAPSHOT (${git.commit.id.abbrev}).
+ */
+package magik.sw_core.progress_bar;
+
+import com.gesmallworld.magik.commons.runtime.annotations.CodeType;
+import com.gesmallworld.magik.commons.runtime.annotations.Debugger;
+import com.gesmallworld.magik.commons.runtime.annotations.EnvVar;
+import com.gesmallworld.magik.commons.runtime.annotations.EnvVars;
+import com.gesmallworld.magik.commons.runtime.annotations.Parent;
+import com.gesmallworld.magik.language.Cloner;
+import com.gesmallworld.magik.language.DynamicScope;
+import com.gesmallworld.magik.language.ResultTuple;
+import com.gesmallworld.magik.language.ReturnCatcher;
+import com.gesmallworld.magik.language.SourceHash;
+import com.gesmallworld.magik.language.invokers.BinaryDispatcher;
+import com.gesmallworld.magik.language.invokers.ConstantBuilder;
+import com.gesmallworld.magik.language.invokers.EnvAccessor;
+import com.gesmallworld.magik.language.invokers.GlobalAccessor;
+import com.gesmallworld.magik.language.invokers.Invoker;
+import com.gesmallworld.magik.language.utils.MagikObjectUtils;
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+
+/*
+ * Illegal identifiers - consider using --renameillegalidents true
+ */
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class progress_bar_5820 {
+    @SourceHash(value=-1214378025)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object progress_bar__new(Object _self, Object ... options) {
+        return (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("init()", (Object)Cloner.makeClone(Cloner.makeClone(_self)), (Object)options));
+    }
+
+    @SourceHash(value=-938880411)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object progress_bar__init(Object _self, Object options) {
+        block2: {
+            block1: {
+                ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("$slot_set_width()", (Object)_self, (Object)Invoker.bootstrap("default()", Invoker.bootstrapPrivate("get_option()", (Object)_self, (Object)ConstantBuilder.symbolBootstrap("symbol", "width"), (Object)options), Integer.valueOf(100))));
+                ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("$slot_set_height()", (Object)_self, (Object)Invoker.bootstrap("default()", Invoker.bootstrapPrivate("get_option()", (Object)_self, (Object)ConstantBuilder.symbolBootstrap("symbol", "height"), (Object)options), Integer.valueOf(15))));
+                ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("$slot_set_min_value()", (Object)_self, (Object)Invoker.bootstrap("default()", Invoker.bootstrapPrivate("get_option()", (Object)_self, (Object)ConstantBuilder.symbolBootstrap("symbol", "min_value"), (Object)options), Double.valueOf(0.0))));
+                ResultTuple cfr_ignored_3 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("$slot_set_max_value()", (Object)_self, (Object)Invoker.bootstrap("default()", Invoker.bootstrapPrivate("get_option()", (Object)_self, (Object)ConstantBuilder.symbolBootstrap("symbol", "max_value"), (Object)options), Double.valueOf(100.0))));
+                ResultTuple cfr_ignored_4 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("$slot_set_value()", (Object)_self, (Object)Invoker.bootstrap("default()", Invoker.bootstrapPrivate("get_option()", (Object)_self, (Object)ConstantBuilder.symbolBootstrap("symbol", "initial_value"), (Object)options), Double.valueOf(0.0))));
+                if (!MagikObjectUtils.should_be_boolean(BinaryDispatcher.bootstrap("\\l=", Invoker.bootstrapPrivate("$slot_get_max_value()", (Object)_self), Invoker.bootstrapPrivate("$slot_get_min_value()", (Object)_self)))) break block1;
+                ResultTuple cfr_ignored_5 = (ResultTuple)((Object)Invoker.tupleBootstrap("raise()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "condition"), (Object)ConstantBuilder.symbolBootstrap("symbol", "user_error"), (Object)ConstantBuilder.symbolBootstrap("symbol", "string"), (Object)Invoker.bootstrapPrivate("mess()", (Object)_self, (Object)ConstantBuilder.symbolBootstrap("symbol", "range_error"), (Object)ConstantBuilder.stringBootstrap("string", "Invalid value range"))));
+                break block2;
+            }
+            CallSite callSite = BinaryDispatcher.bootstrap("\\l", Invoker.bootstrapPrivate("$slot_get_value()", (Object)_self), Invoker.bootstrapPrivate("$slot_get_min_value()", (Object)_self));
+            if (!MagikObjectUtils.should_be_boolean(callSite)) {
+                callSite = BinaryDispatcher.bootstrap("\\g", Invoker.bootstrapPrivate("$slot_get_value()", (Object)_self), Invoker.bootstrapPrivate("$slot_get_max_value()", (Object)_self));
+            }
+            if (!MagikObjectUtils.should_be_boolean(callSite)) break block2;
+            ResultTuple cfr_ignored_6 = (ResultTuple)((Object)Invoker.tupleBootstrap("raise()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "condition"), (Object)ConstantBuilder.symbolBootstrap("symbol", "user_error"), (Object)ConstantBuilder.symbolBootstrap("symbol", "string"), (Object)Invoker.bootstrapPrivate("mess()", (Object)_self, (Object)ConstantBuilder.symbolBootstrap("symbol", "out_of_range_error"), (Object)ConstantBuilder.stringBootstrap("string", "Initial value out of range"))));
+        }
+        return _self;
+    }
+
+    @SourceHash(value=-121864543)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    @EnvVars(value={@EnvVar(name="__dynamic_frame__", type=Object.class, start=53, end=83, index=0), @EnvVar(name="option_list", type=Object.class, start=21, end=103, index=1), @EnvVar(name="option", type=Object.class, start=13, end=103, index=3), @EnvVar(name="__return_catcher__", type=Object[].class, start=35, end=103, index=2)})
+    public static Object progress_bar__get_option(Object _self, Object option, Object option_list) {
+        Object[] __env__ = new Object[4];
+        EnvAccessor.bootstrapReseter("resetEnv", (Object)option, (Object[])__env__, (int)3);
+        EnvAccessor.bootstrapReseter("resetEnv", (Object)option_list, (Object[])__env__, (int)1);
+        EnvAccessor.bootstrapStorer("storeEnv", (Object)new ReturnCatcher(), (Object[])__env__, (int)2);
+        try {
+            if (EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1) != null) {
+                EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)0);
+                EnvAccessor.bootstrapStorer("storeEnv", (Object)DynamicScope.getFrame(), (Object[])__env__, (int)0);
+                ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("fast_keys_and_elements()", (MethodHandle)cfr_ldc_0(), (Object[])__env__, (Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1)));
+            }
+            return null;
+        }
+        catch (ReturnCatcher.Return return_) {
+            return ((ReturnCatcher)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)2))).getReturnResult(return_);
+        }
+    }
+
+    @Parent(method="progress_bar__get_option")
+    @Debugger(value="MagikDebug")
+    @CodeType(value="LoopBody")
+    public static Object __loopbody_(Object[] __env__, Object i, Object opt) {
+        ResultTuple resultTuple;
+        DynamicScope __iterator_frame__ = DynamicScope.interjectFrame((DynamicScope)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0)));
+        try {
+            boolean bl = MagikObjectUtils.is(opt, EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)3));
+            Object object = new Boolean(bl);
+            if (bl) {
+                object = BinaryDispatcher.bootstrap("\\l", i, Invoker.bootstrap("size", EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1)));
+            }
+            if (MagikObjectUtils.should_be_boolean(object)) {
+                throw ((ReturnCatcher)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)2))).makeReturn((ResultTuple)((Object)Invoker.tupleBootstrap("\\b]", (Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1), (Object)BinaryDispatcher.bootstrap("+", i, Integer.valueOf(1)))));
+            }
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.interjectFrame(__iterator_frame__);
+            throw throwable;
+        }
+        DynamicScope.interjectFrame(__iterator_frame__);
+        return resultTuple;
+    }
+
+    @SourceHash(value=-1705916011)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object progress_bar__percent_complete_(Object _self) {
+        return BinaryDispatcher.bootstrap("\\s", BinaryDispatcher.bootstrap("*", Double.valueOf(100.0), Invoker.bootstrapPrivate("$slot_get_value()", (Object)_self)), BinaryDispatcher.bootstrap("-", Invoker.bootstrapPrivate("$slot_get_max_value()", (Object)_self), Invoker.bootstrapPrivate("$slot_get_min_value()", (Object)_self)));
+    }
+
+    @SourceHash(value=1594982778)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object progress_bar__draw_on(Object _self, Object c) {
+        boolean bl = MagikObjectUtils.is(c, null);
+        Object object = new Boolean(bl);
+        if (!bl) {
+            object = Invoker.bootstrap("not", Invoker.bootstrap("realised?", c));
+        }
+        if (MagikObjectUtils.should_be_boolean(object)) {
+            return ResultTuple.EMPTY_TUPLE;
+        }
+        CallSite callSite = Invoker.bootstrap("world_transform()", c, Integer.valueOf(0), Integer.valueOf(0), Invoker.bootstrapPrivate("$slot_get_width()", (Object)_self), Invoker.bootstrapPrivate("$slot_get_height()", (Object)_self));
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("transform\\l\\l", (Object)c, (Object)callSite));
+        CallSite x_max = BinaryDispatcher.bootstrap("\\s", BinaryDispatcher.bootstrap("*", Invoker.bootstrapPrivate("percent_complete", (Object)_self), Invoker.bootstrapPrivate("$slot_get_width()", (Object)_self)), Double.valueOf(100.0));
+        ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("draw()", (Object)_self, (Object)c, (Object)0, (Object)0, (Object)x_max, (Object)Invoker.bootstrapPrivate("$slot_get_height()", (Object)_self)));
+        ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrap("draw_line_transform()", (Object)c, (Object)Invoker.bootstrapPrivate("bar_outline_style", (Object)_self), (Object)Invoker.bootstrapPrivate("rect()", (Object)_self, (Object)0, (Object)1, (Object)BinaryDispatcher.bootstrap("-", Invoker.bootstrapPrivate("$slot_get_width()", (Object)_self), Integer.valueOf(3)), (Object)Invoker.bootstrapPrivate("$slot_get_height()", (Object)_self))));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @SourceHash(value=1912772203)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object progress_bar__draw(Object _self, Object c, Object x, Object y, Object w, Object h) {
+        CallSite extent = Invoker.bootstrapPrivate("rect()", (Object)_self, (Object)x, (Object)y, (Object)BinaryDispatcher.bootstrap("+", x, w), (Object)BinaryDispatcher.bootstrap("+", y, h));
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("fill_line_transform()", (Object)c, (Object)Invoker.bootstrapPrivate("bar_fill_style", (Object)_self), (Object)extent));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @SourceHash(value=2108043105)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object progress_bar__rect(Object _self, Object x1, Object y1, Object x2, Object y2) {
+        return (ResultTuple)((Object)Invoker.tupleBootstrap("new_with_xy()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "coords_vector"), (Object)x1, (Object)y1, (Object)x2, (Object)y1, (Object)x2, (Object)y2, (Object)x1, (Object)y2, (Object)x1, (Object)y1));
+    }
+
+    @SourceHash(value=1549473790)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object progress_bar_item__new(Object _self, Object a_frame, Object width, Object height, Object ... args) {
+        return (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("init()", (Object)Cloner.makeClone(Cloner.makeClone(_self)), (Object)a_frame, (Object)width, (Object)height, (Object)args));
+    }
+
+    @SourceHash(value=-1991730609)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object progress_bar_item__init(Object _self, Object a_frame, Object width, Object height, Object args) {
+        CallSite params = Invoker.bootstrap("new_with()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "property_list"), (Object[])Invoker.bootstrapPrivate("for_scatter()", (Object)args));
+        CallSite bar = Invoker.bootstrap("new()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "progress_bar"), ConstantBuilder.symbolBootstrap("symbol", "width"), width, ConstantBuilder.symbolBootstrap("symbol", "height"), height);
+        Invoker.superNaturalBootstrap("init()", "canvas_agent", "sw", (Object)_self, (Object)bar, (Object)ConstantBuilder.symbolBootstrap("symbol", "size"));
+        CallSite top_margin = Invoker.bootstrap("new()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "panel"), a_frame);
+        if (MagikObjectUtils.isnt(Invoker.bootstrap("\\b]", params, ConstantBuilder.symbolBootstrap("symbol", "progress_label?")), Boolean.FALSE)) {
+            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("$slot_set_progress_label()", (Object)_self, (Object)Invoker.bootstrap("new()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "label_item"), top_margin, ConstantBuilder.stringBootstrap("string", " 0%"), ConstantBuilder.symbolBootstrap("symbol", "display_length"), Integer.valueOf(5))));
+        }
+        CallSite left_margin = Invoker.bootstrap("new()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "panel"), a_frame);
+        ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrap("set_right_of()", (Object)left_margin, null, (Object)100));
+        ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("$slot_set_window()", (Object)_self, (Object)Invoker.bootstrap("new()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "canvas"), a_frame, width, height, _self, ConstantBuilder.symbolBootstrap("symbol", "min_width"), Integer.valueOf(100), ConstantBuilder.symbolBootstrap("symbol", "min_height"), Integer.valueOf(20))));
+        ResultTuple cfr_ignored_3 = (ResultTuple)((Object)Invoker.tupleBootstrap("set_right_of()", (Object)Invoker.bootstrapPrivate("$slot_get_window()", (Object)_self), (Object)left_margin));
+        ResultTuple cfr_ignored_4 = (ResultTuple)((Object)Invoker.tupleBootstrap("set_below()", (Object)Invoker.bootstrapPrivate("$slot_get_window()", (Object)_self), (Object)top_margin));
+        ResultTuple cfr_ignored_5 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("define_redraw()", (Object)_self, (Object)ConstantBuilder.symbolBootstrap("symbol", "redraw()"), (Object)_self));
+        Boolean bl = Boolean.TRUE;
+        ResultTuple cfr_ignored_6 = (ResultTuple)((Object)Invoker.tupleBootstrap("retained?\\l\\l", (Object)Invoker.bootstrapPrivate("$slot_get_window()", (Object)_self), (Object)bl));
+        return _self;
+    }
+
+    @SourceHash(value=344858616)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object progress_bar_item__value\l\l_(Object _self, Object a_val) {
+        CallSite n_percent_str;
+        if (MagikObjectUtils.should_be_boolean(BinaryDispatcher.bootstrap("\\l", a_val, Invoker.bootstrap("value", Invoker.bootstrapPrivate("$slot_get_model()", (Object)_self))))) {
+            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("clear()", (Object)Invoker.bootstrapPrivate("$slot_get_window()", (Object)_self)));
+        }
+        Object object = a_val;
+        ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrap("value\\l\\l", (Object)Invoker.bootstrapPrivate("$slot_get_model()", (Object)_self), (Object)object));
+        CallSite n_percent = Invoker.bootstrap("truncated", Invoker.bootstrap("percent_complete", Invoker.bootstrapPrivate("$slot_get_model()", (Object)_self)));
+        CallSite callSite = MagikObjectUtils.should_be_boolean(BinaryDispatcher.bootstrap("\\l", n_percent, Integer.valueOf(10))) ? BinaryDispatcher.bootstrap("+", ConstantBuilder.stringBootstrap("string", "  "), Invoker.bootstrap("write_string", n_percent)) : (n_percent_str = MagikObjectUtils.should_be_boolean(BinaryDispatcher.bootstrap("\\l", n_percent, Integer.valueOf(100))) ? BinaryDispatcher.bootstrap("+", ConstantBuilder.stringBootstrap("string", " "), Invoker.bootstrap("write_string", n_percent)) : Invoker.bootstrap("write_string", n_percent));
+        if (Invoker.bootstrapPrivate("$slot_get_progress_label()", (Object)_self) != null) {
+            CallSite callSite2 = BinaryDispatcher.bootstrap("+", n_percent_str, ConstantBuilder.stringBootstrap("string", "%"));
+            ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrap("label\\l\\l", (Object)Invoker.bootstrapPrivate("$slot_get_progress_label()", (Object)_self), (Object)callSite2));
+        }
+        ResultTuple cfr_ignored_3 = (ResultTuple)((Object)Invoker.tupleBootstrap("draw_on()", (Object)Invoker.bootstrapPrivate("$slot_get_model()", (Object)_self), (Object)Invoker.bootstrapPrivate("$slot_get_window()", (Object)_self)));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @SourceHash(value=-119121844)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object progress_bar_item__redraw(Object _self) {
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("draw_on()", (Object)Invoker.bootstrapPrivate("$slot_get_model()", (Object)_self), (Object)Invoker.bootstrapPrivate("$slot_get_window()", (Object)_self)));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @SourceHash(value=1041848583)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object progress_bar_item__reset(Object _self) {
+        if (MagikObjectUtils.should_be_boolean(Invoker.bootstrap("realised?", Invoker.bootstrapPrivate("$slot_get_window()", (Object)_self)))) {
+            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("clear()", (Object)Invoker.bootstrapPrivate("$slot_get_window()", (Object)_self)));
+        }
+        Double d = 0.0;
+        ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("value\\l\\l", (Object)_self, (Object)d));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    /*
+     * Works around MethodHandle LDC.
+     */
+    static MethodHandle cfr_ldc_0() {
+        try {
+            return MethodHandles.lookup().findStatic(progress_bar_5820.class, "__loopbody_", MethodType.fromMethodDescriptorString("([Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null));
+        }
+        catch (NoSuchMethodException | IllegalAccessException except) {
+            throw new IllegalArgumentException(except);
+        }
+    }
+}
+
+/*
+ * Decompiled with CFR 0.151-SNAPSHOT (${git.commit.id.abbrev}).
+ */
+package magik.sw_core.progress_bar;
+
+import com.gesmallworld.magik.commons.runtime.annotations.CodeType;
+import com.gesmallworld.magik.commons.runtime.annotations.Debugger;
+import com.gesmallworld.magik.language.ResultTuple;
+import com.gesmallworld.magik.language.invokers.ConstantBuilder;
+import com.gesmallworld.magik.language.invokers.DynamicAccessor;
+import com.gesmallworld.magik.language.invokers.GlobalAccessor;
+import com.gesmallworld.magik.language.invokers.Invoker;
+import com.gesmallworld.magik.language.invokers.ProcInvoker;
+import com.gesmallworld.magik.language.invokers.TupleBuilder;
+import com.gesmallworld.magik.language.invokers.VectorBuilder;
+import com.gesmallworld.magik.language.utils.ExecutableMagik;
+import com.gesmallworld.magik.language.utils.MagikObjectUtils;
+import magik.sw_core.progress_bar.progress_bar_5820;
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class progress_bar_5819
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public progress_bar_5819() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        DynamicAccessor.bootstrapStorer("!source_file!", "sw", (Object)ConstantBuilder.stringBootstrap("string", "/projects/hg/corerepo/sw_core/modules/sw_core/progress_bar/source/progress_bar.magik"));
+        DynamicAccessor.bootstrapStorer("!current_package!", "sw", (Object)ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "package"), ConstantBuilder.stringBootstrap("string", "sw")));
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "def_slotted_exemplar"), (Object)ConstantBuilder.symbolBootstrap("symbol", "progress_bar"), (Object)VectorBuilder.bootstrap("vb", VectorBuilder.bootstrap("vb", ConstantBuilder.symbolBootstrap("symbol", "width"), null), VectorBuilder.bootstrap("vb", ConstantBuilder.symbolBootstrap("symbol", "height"), null), VectorBuilder.bootstrap("vb", ConstantBuilder.symbolBootstrap("symbol", "min_value"), null), VectorBuilder.bootstrap("vb", ConstantBuilder.symbolBootstrap("symbol", "max_value"), null), VectorBuilder.bootstrap("vb", ConstantBuilder.symbolBootstrap("symbol", "value"), null)), (Object)VectorBuilder.bootstrap("vb", ConstantBuilder.symbolBootstrap("symbol", "model")));
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("define_slot_access()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "progress_bar"), (Object)ConstantBuilder.symbolBootstrap("symbol", "width"), (Object)ConstantBuilder.symbolBootstrap("symbol", "readable")));
+        ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrap("define_slot_access()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "progress_bar"), (Object)ConstantBuilder.symbolBootstrap("symbol", "height"), (Object)ConstantBuilder.symbolBootstrap("symbol", "readable")));
+        ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrap("define_slot_access()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "progress_bar"), (Object)ConstantBuilder.symbolBootstrap("symbol", "min_value"), (Object)ConstantBuilder.symbolBootstrap("symbol", "readable")));
+        ResultTuple cfr_ignored_3 = (ResultTuple)((Object)Invoker.tupleBootstrap("define_slot_access()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "progress_bar"), (Object)ConstantBuilder.symbolBootstrap("symbol", "max_value"), (Object)ConstantBuilder.symbolBootstrap("symbol", "readable")));
+        ResultTuple cfr_ignored_4 = (ResultTuple)((Object)Invoker.tupleBootstrap("define_slot_access()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "progress_bar"), (Object)ConstantBuilder.symbolBootstrap("symbol", "value"), (Object)ConstantBuilder.symbolBootstrap("symbol", "writable")));
+        ResultTuple cfr_ignored_5 = (ResultTuple)((Object)Invoker.tupleBootstrap("define_shared_constant()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "progress_bar"), (Object)ConstantBuilder.symbolBootstrap("symbol", "bar_outline_style"), (Object)Invoker.bootstrap("new()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "line_style"), Invoker.bootstrap("new_rgb()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "colour"), Integer.valueOf(0), Integer.valueOf(0), Integer.valueOf(0)), Integer.valueOf(1)), (Object)Boolean.FALSE));
+        ResultTuple cfr_ignored_6 = (ResultTuple)((Object)Invoker.tupleBootstrap("define_shared_constant()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "progress_bar"), (Object)ConstantBuilder.symbolBootstrap("symbol", "bar_fill_style"), (Object)Invoker.bootstrap("new()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "fill_style"), Invoker.bootstrap("new_rgb()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "colour"), Integer.valueOf(0), Integer.valueOf(0), Double.valueOf(1.0))), (Object)Boolean.FALSE));
+        MagikObjectUtils.createMethod("progress_bar", "new()", progress_bar_5820.class, "progress_bar__new", 2, 1);
+        MagikObjectUtils.createMethod("progress_bar", "init()", progress_bar_5820.class, "progress_bar__init", 2, 2, false, false, true, 0);
+        MagikObjectUtils.createMethod("progress_bar", "get_option()", progress_bar_5820.class, "progress_bar__get_option", 3, 3);
+        MagikObjectUtils.createMethod("progress_bar", "percent_complete", progress_bar_5820.class, "progress_bar__percent_complete_", 1, 1);
+        MagikObjectUtils.createMethod("progress_bar", "draw_on()", progress_bar_5820.class, "progress_bar__draw_on", 2, 2);
+        MagikObjectUtils.createMethod("progress_bar", "draw()", progress_bar_5820.class, "progress_bar__draw", 6, 6, false, false, true, 0);
+        MagikObjectUtils.createMethod("progress_bar", "rect()", progress_bar_5820.class, "progress_bar__rect", 5, 5);
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "def_slotted_exemplar"), (Object)ConstantBuilder.symbolBootstrap("symbol", "progress_bar_item"), (Object)VectorBuilder.bootstrap("vb", VectorBuilder.bootstrap("vb", ConstantBuilder.symbolBootstrap("symbol", "progress_label"), null)), (Object)VectorBuilder.bootstrap("vb", ConstantBuilder.symbolBootstrap("symbol", "canvas_agent")));
+        MagikObjectUtils.createMethod("progress_bar_item", "new()", progress_bar_5820.class, "progress_bar_item__new", 5, 2);
+        MagikObjectUtils.createMethod("progress_bar_item", "init()", progress_bar_5820.class, "progress_bar_item__init", 5, 5, false, false, true, 0);
+        MagikObjectUtils.createMethod("progress_bar_item", "value<<", progress_bar_5820.class, "progress_bar_item__value\\l\\l_", 2, 2);
+        MagikObjectUtils.createMethod("progress_bar_item", "redraw()", progress_bar_5820.class, "progress_bar_item__redraw", 1, 1);
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("progress_bar_item", "reset()", progress_bar_5820.class, "progress_bar_item__reset", 1, 1));
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+#############
+#############

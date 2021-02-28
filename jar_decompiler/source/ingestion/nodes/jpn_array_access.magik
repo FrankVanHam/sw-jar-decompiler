@@ -20,3 +20,10 @@ _method jpn_array_access.init(p_lex_name, p_args)
 	>> _super.init()
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_array_access.name
+	>> .lex_name.value
+_endmethod
+$
+

@@ -63,40 +63,6 @@ _method deco_test.test_if_else()
 _endmethod
 $
 ###########
-## jpn_method_test_if_unset_else
-@CodeType(value="Subsidiary")
-public class deco_test_3468 {
-    @CodeType(value="Method")
-    public static Object deco_test__test_if_else(Object _self) {
-        if (Invoker.bootstrapPrivate("test?", (Object)_self) != null) {
-            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("doa()", (Object)_self));
-        } else {
-            ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("dob()", (Object)_self));
-        }
-        return ResultTuple.EMPTY_TUPLE;
-    }
-}
-
-@CodeType(value="Primary")
-public class deco_test_3457
-implements ExecutableMagik {
-    @CodeType(value="TopLevel")
-    public Object execute() {
-        MagikObjectUtils.createMethod("deco_test", "test_if_else()", deco_test_3468.class, "deco_test__test_if_else", 1, 1);
-    }
-}
-###########
-_method deco_test.test_if_else() 
-    _if _self.test?
-    _then
-        _self.doa()
-    _else 
-        _self.dob()
-    _endif
-    _return _unset
-_endmethod
-$
-###########
 ## jpn_method_test_nested
 @CodeType(value="Subsidiary")
 public class deco_test_3468 {
