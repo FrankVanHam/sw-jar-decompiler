@@ -87,7 +87,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_if_else() 
-    _if _self.test?
+    _if (_self.test? _isnt _unset)
     _then
         _self.doa()
     _else 

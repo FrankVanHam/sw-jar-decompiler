@@ -385,6 +385,10 @@ _method java_parser.parse_expression(_optional p_identifier?)
 			_local ident << .scanner.get()
 			exp << exp.become_dotted(ident)
 		
+		_elif lex.is_operator?("!=")
+		_then
+			_return _self.parse_test(exp)
+			
 		_elif lex.is_separator?("(")
 		_then
 			_if exp.is_class_of?(jpn_parenthesis)
@@ -455,10 +459,6 @@ _method java_parser.parse_sub_expression(_optional p_identifier?)
 			_then
 				# note: using lex, not identifier
 				_return _self.parse_assignment(lex)
-
-			_elif next.is_operator?("!=")
-			_then
-				_return _self.parse_test(lex)
 
 			_elif next.is_operator?(":")
 			_then
@@ -739,12 +739,11 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_test(p_ident)
+_method java_parser.parse_test(p_exp)
 	##
-	_local left << jpn_variable.new(p_ident)
 	_local op << .scanner.get()
 	_local right << _self.parse_expression(_true)
-	>> jpn_operation.new(left, right, op)
+	>> jpn_operation.new(p_exp, right, op)
 _endmethod
 $
 

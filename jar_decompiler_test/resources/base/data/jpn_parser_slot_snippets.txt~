@@ -1,0 +1,466 @@
+## jpn_method_test_try
+@CodeType(value="Subsidiary")
+public class deco_test_3468 {
+    @CodeType(value="Method")
+    public static Object deco_test__try(Object _self) {
+        block8: {
+            Object object;
+            Object[] __env__ = new Object[1];
+            EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)0);
+            EnvAccessor.bootstrapStorer("storeEnv", (Object)new Object(), (Object[])__env__, (int)0);
+            DynamicAccessor.bootstrapBinder("__catch_tags_dynamic__", "sw", 1);
+            CallSite callSite = EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0);
+            DynamicAccessor.bootstrapStorer("__catch_tags_dynamic__", "sw", (Object)callSite);
+            try {
+                try {
+                    DynamicAccessor.bootstrapBinder("!sys!condition_handler_cluster!", "sw", 1);
+                    try {
+                        Object[] objectArray = new Object[]{__env__[0]};
+                        ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), ConstantBuilder.procBootstrap("proc", (Class<?>)deco_test_3468.class, "proc___", "", 3, 3, 0, 0, (Object[])objectArray));
+                        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
+                        DynamicScope.destroyFrame();
+                        DynamicScope.destroyFrame();
+                        break block8;
+                    }
+                    catch (Throwable throwable) {
+                        DynamicScope.destroyFrame();
+                        throw throwable;
+                    }
+                }
+                catch (Thrower.Throw throw_) {
+                    Object object2;
+                    object = object2 = Thrower.checkTag(throw_, callSite).peek();
+                    DynamicScope.destroyFrame();
+                }
+            }
+            catch (Throwable throwable) {
+                DynamicScope.destroyFrame();
+                throw throwable;
+            }
+            if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("taxonomy_includes?()", (Object)object, (Object)ConstantBuilder.symbolBootstrap("symbol", "error")))) {
+                ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("error()", (Object)_self));
+            } else {
+                throw new Error("Try block caught unexpected error.");
+            }
+        }
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @Parent(method="deco_test__try")
+    @SourceHash(value=91382809)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Proc")
+    @EnvVars(value={@EnvVar(name="187668d1-3730-4aaf-9b4c-bdf2fee86c4e", type=Object.class, start=0, end=20, index=0)})
+    public static Object proc___(Object[] __env__, Object _self, Object cond) {
+        InterruptInfrastructure.checkAndProcessInterrupts();
+        throw Thrower.make(EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0), (ResultTuple)((Object)TupleBuilder.bootstrap("tb", cond)));
+    }
+}
+
+@CodeType(value="Primary")
+public class deco_test_3457
+implements ExecutableMagik {
+    @CodeType(value="TopLevel")
+    public Object execute() {
+    MagikObjectUtils.createMethod("deco_test", "try()", deco_test_3468.class, "deco_test__try", 1, 1);
+    }
+}
+###########
+_method deco_test.try()
+	_try _with object
+		_self.do()
+	_when error
+		_self.error()
+	_endtry 
+	_return _unset
+_endmethod
+$
+###########
+## jpn_method_test_try_when_when
+@CodeType(value="Subsidiary")
+public class deco_test_3468 {
+    @CodeType(value="Method")
+    public static Object deco_test__try_when_when(Object _self) {
+        block10: {
+            Object object;
+            Object[] __env__ = new Object[1];
+            EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)0);
+            EnvAccessor.bootstrapStorer("storeEnv", (Object)new Object(), (Object[])__env__, (int)0);
+            DynamicAccessor.bootstrapBinder("__catch_tags_dynamic__", "sw", 1);
+            CallSite callSite = EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0);
+            DynamicAccessor.bootstrapStorer("__catch_tags_dynamic__", "sw", (Object)callSite);
+            try {
+                try {
+                    DynamicAccessor.bootstrapBinder("!sys!condition_handler_cluster!", "sw", 1);
+                    try {
+                        Object[] objectArray = new Object[]{__env__[0]};
+                        CallSite callSite2 = ConstantBuilder.procBootstrap("proc", (Class<?>)deco_test_3468.class, "proc___2", "", 3, 3, 0, 0, (Object[])objectArray);
+                        ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "warning"), callSite2, ConstantBuilder.symbolBootstrap("symbol", "error"), callSite2);
+                        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
+                        DynamicScope.destroyFrame();
+                        DynamicScope.destroyFrame();
+                        break block10;
+                    }
+                    catch (Throwable throwable) {
+                        DynamicScope.destroyFrame();
+                        throw throwable;
+                    }
+                }
+                catch (Thrower.Throw throw_) {
+                    Object object2;
+                    object = object2 = Thrower.checkTag(throw_, callSite).peek();
+                    DynamicScope.destroyFrame();
+                }
+            }
+            catch (Throwable throwable) {
+                DynamicScope.destroyFrame();
+                throw throwable;
+            }
+            if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("taxonomy_includes?()", (Object)object, (Object)ConstantBuilder.symbolBootstrap("symbol", "warning")))) {
+                ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("warning()", (Object)_self));
+            } else if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("taxonomy_includes?()", (Object)object, (Object)ConstantBuilder.symbolBootstrap("symbol", "error")))) {
+                ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("error()", (Object)_self));
+            } else {
+                throw new Error("Try block caught unexpected error.");
+            }
+        }
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @Parent(method="deco_test__try_when_when")
+    @SourceHash(value=91382809)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Proc")
+    @EnvVars(value={@EnvVar(name="059e8467-dc47-45da-aff2-5fcf8a3e10c1", type=Object.class, start=0, end=20, index=0)})
+    public static Object proc___2(Object[] __env__, Object _self, Object cond) {
+        InterruptInfrastructure.checkAndProcessInterrupts();
+        throw Thrower.make(EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0), (ResultTuple)((Object)TupleBuilder.bootstrap("tb", cond)));
+    }
+}
+
+@CodeType(value="Primary")
+public class deco_test_3457
+implements ExecutableMagik {
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "try_when_when()", deco_test_3468.class, "deco_test__try_when_when", 1, 1);
+    }
+}
+###########
+_method deco_test.try_when_when()
+	_try _with object
+		_self.do()
+	_when warning
+		_self.warning()
+	_when error
+		_self.error()
+	_endtry 
+	_return _unset
+_endmethod
+$
+###########
+## jpn_method_test_try_with_condition
+@CodeType(value="Subsidiary")
+public class deco_test_3468 {
+    @CodeType(value="Method")
+    public static Object deco_test__try_with_condition(Object _self) {
+        block8: {
+            Object object;
+            Object[] __env__ = new Object[1];
+            EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)0);
+            EnvAccessor.bootstrapStorer("storeEnv", (Object)new Object(), (Object[])__env__, (int)0);
+            DynamicAccessor.bootstrapBinder("__catch_tags_dynamic__", "sw", 1);
+            CallSite callSite = EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0);
+            DynamicAccessor.bootstrapStorer("__catch_tags_dynamic__", "sw", (Object)callSite);
+            try {
+                try {
+                    DynamicAccessor.bootstrapBinder("!sys!condition_handler_cluster!", "sw", 1);
+                    try {
+                        Object[] objectArray = new Object[]{__env__[0]};
+                        ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), ConstantBuilder.procBootstrap("proc", (Class<?>)deco_test_3468.class, "proc___3", "", 3, 3, 0, 0, (Object[])objectArray));
+                        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
+                        DynamicScope.destroyFrame();
+                        DynamicScope.destroyFrame();
+                        break block8;
+                    }
+                    catch (Throwable throwable) {
+                        DynamicScope.destroyFrame();
+                        throw throwable;
+                    }
+                }
+                catch (Thrower.Throw throw_) {
+                    Object object2;
+                    object = object2 = Thrower.checkTag(throw_, callSite).peek();
+                    DynamicScope.destroyFrame();
+                }
+            }
+            catch (Throwable throwable) {
+                DynamicScope.destroyFrame();
+                throw throwable;
+            }
+            if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("taxonomy_includes?()", (Object)object, (Object)ConstantBuilder.symbolBootstrap("symbol", "error")))) {
+                ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrap("report_error()", (Object)object));
+                ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("error()", (Object)_self));
+            } else {
+                throw new Error("Try block caught unexpected error.");
+            }
+        }
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @Parent(method="deco_test__try_with_condition")
+    @SourceHash(value=91382809)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Proc")
+    @EnvVars(value={@EnvVar(name="c40020a6-09fc-4351-972c-8bc0b36c5c2d", type=Object.class, start=0, end=20, index=0)})
+    public static Object proc___3(Object[] __env__, Object _self, Object cond) {
+        InterruptInfrastructure.checkAndProcessInterrupts();
+        throw Thrower.make(EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0), (ResultTuple)((Object)TupleBuilder.bootstrap("tb", cond)));
+    }
+}
+
+@CodeType(value="Primary")
+public class deco_test_3457
+implements ExecutableMagik {
+    @CodeType(value="TopLevel")
+    public Object execute() {
+    	   MagikObjectUtils.createMethod("deco_test", "try_with_condition()", deco_test_3468.class, "deco_test__try_with_condition", 1, 1);
+    }
+}
+###########
+_method deco_test.try_with_condition()
+	_try _with object
+		_self.do()
+	_when error
+		object.report_error()
+		_self.error()
+	_endtry 
+	_return _unset
+_endmethod
+$
+###########
+## jpn_method_test_try_assign
+@CodeType(value="Subsidiary")
+public class deco_test_3468 {
+    @CodeType(value="Method")
+    public static Object deco_test__try_assign(Object _self) {
+        Integer n;
+        block8: {
+            Object object;
+            Object[] __env__ = new Object[1];
+            EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)0);
+            EnvAccessor.bootstrapStorer("storeEnv", (Object)new Object(), (Object[])__env__, (int)0);
+            DynamicAccessor.bootstrapBinder("__catch_tags_dynamic__", "sw", 1);
+            CallSite callSite = EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0);
+            DynamicAccessor.bootstrapStorer("__catch_tags_dynamic__", "sw", (Object)callSite);
+            try {
+                try {
+                    DynamicAccessor.bootstrapBinder("!sys!condition_handler_cluster!", "sw", 1);
+                    try {
+                        Object[] objectArray = new Object[]{__env__[0]};
+                        ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), ConstantBuilder.procBootstrap("proc", (Class<?>)deco_test_3468.class, "proc___4", "", 3, 3, 0, 0, (Object[])objectArray));
+                        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
+                        Integer n2 = 1;
+                        DynamicScope.destroyFrame();
+                        DynamicScope.destroyFrame();
+                        n = n2;
+                        break block8;
+                    }
+                    catch (Throwable throwable) {
+                        DynamicScope.destroyFrame();
+                        throw throwable;
+                    }
+                }
+                catch (Thrower.Throw throw_) {
+                    Object object2;
+                    object = object2 = Thrower.checkTag(throw_, callSite).peek();
+                    DynamicScope.destroyFrame();
+                }
+            }
+            catch (Throwable throwable) {
+                DynamicScope.destroyFrame();
+                throw throwable;
+            }
+            if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("taxonomy_includes?()", (Object)object, (Object)ConstantBuilder.symbolBootstrap("symbol", "error")))) {
+                ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("error()", (Object)_self));
+                n = 2;
+            } else {
+                throw new Error("Try block caught unexpected error.");
+            }
+        }
+        Integer a = n;
+        ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("use()", (Object)_self, (Object)a));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @Parent(method="deco_test__try_assign")
+    @SourceHash(value=91382809)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Proc")
+    @EnvVars(value={@EnvVar(name="14ed8aa0-7314-4ab4-83a4-6beccfc3c3af", type=Object.class, start=0, end=20, index=0)})
+    public static Object proc___4(Object[] __env__, Object _self, Object cond) {
+        InterruptInfrastructure.checkAndProcessInterrupts();
+        throw Thrower.make(EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0), (ResultTuple)((Object)TupleBuilder.bootstrap("tb", cond)));
+    }
+}
+
+@CodeType(value="Primary")
+public class deco_test_3457
+implements ExecutableMagik {
+    @CodeType(value="TopLevel")
+    public Object execute() {
+    	   MagikObjectUtils.createMethod("deco_test", "try_assign()", deco_test_3468.class, "deco_test__try_assign", 1, 1);
+    }
+}
+###########
+_method deco_test.try_assign() 
+    _local n
+    _try  _with object
+        _self.do()
+         _local n2 << 1
+        n << n2
+    _when error
+        _self.error()
+        n << 2
+    _endtry
+     _local a << n
+    _self.use(a)
+    _return _unset
+_endmethod
+$
+###########
+## jpn_method_test_nested_try
+@CodeType(value="Subsidiary")
+public class deco_test_3468 {
+    @CodeType(value="Method")
+    public static Object deco_test__test_nested_try(Object _self) {
+        block17: {
+            Object object;
+            Object[] __env__ = new Object[2];
+            EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)1);
+            EnvAccessor.bootstrapStorer("storeEnv", (Object)new Object(), (Object[])__env__, (int)1);
+            DynamicAccessor.bootstrapBinder("__catch_tags_dynamic__", "sw", 1);
+            CallSite callSite = EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1);
+            DynamicAccessor.bootstrapStorer("__catch_tags_dynamic__", "sw", (Object)callSite);
+            try {
+                try {
+                    DynamicAccessor.bootstrapBinder("!sys!condition_handler_cluster!", "sw", 1);
+                    try {
+                        block16: {
+                            Object object2;
+                            Object[] objectArray = new Object[]{__env__[1]};
+                            ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), ConstantBuilder.procBootstrap("proc", (Class<?>)deco_test_3468.class, "proc___", "", 3, 3, 0, 0, (Object[])objectArray));
+                            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("try1()", (Object)_self));
+                            EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)0);
+                            EnvAccessor.bootstrapStorer("storeEnv", (Object)new Object(), (Object[])__env__, (int)0);
+                            DynamicAccessor.bootstrapBinder("__catch_tags_dynamic__", "sw", 1);
+                            CallSite callSite2 = EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0);
+                            DynamicAccessor.bootstrapStorer("__catch_tags_dynamic__", "sw", (Object)callSite2);
+                            try {
+                                try {
+                                    DynamicAccessor.bootstrapBinder("!sys!condition_handler_cluster!", "sw", 1);
+                                    try {
+                                        Object[] objectArray2 = new Object[]{__env__[0]};
+                                        ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), ConstantBuilder.procBootstrap("proc", (Class<?>)deco_test_3468.class, "proc___2", "", 3, 3, 0, 0, (Object[])objectArray2));
+                                        ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("try2()", (Object)_self));
+                                        DynamicScope.destroyFrame();
+                                        DynamicScope.destroyFrame();
+                                        break block16;
+                                    }
+                                    catch (Throwable throwable) {
+                                        DynamicScope.destroyFrame();
+                                        throw throwable;
+                                    }
+                                }
+                                catch (Thrower.Throw throw_) {
+                                    Object object3;
+                                    object2 = object3 = Thrower.checkTag(throw_, callSite2).peek();
+                                    DynamicScope.destroyFrame();
+                                }
+                            }
+                            catch (Throwable throwable) {
+                                DynamicScope.destroyFrame();
+                                throw throwable;
+                            }
+                            if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("taxonomy_includes?()", (Object)object2, (Object)ConstantBuilder.symbolBootstrap("symbol", "error")))) {
+                                ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrap("report_error()", (Object)object2));
+                                ResultTuple cfr_ignored_3 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("error2()", (Object)_self));
+                            } else {
+                                throw new Error("Try block caught unexpected error.");
+                            }
+                        }
+                        DynamicScope.destroyFrame();
+                        DynamicScope.destroyFrame();
+                        break block17;
+                    }
+                    catch (Throwable throwable) {
+                        DynamicScope.destroyFrame();
+                        throw throwable;
+                    }
+                }
+                catch (Thrower.Throw throw_) {
+                    Object object4;
+                    object = object4 = Thrower.checkTag(throw_, callSite).peek();
+                    DynamicScope.destroyFrame();
+                }
+            }
+            catch (Throwable throwable) {
+                DynamicScope.destroyFrame();
+                throw throwable;
+            }
+            if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("taxonomy_includes?()", (Object)object, (Object)ConstantBuilder.symbolBootstrap("symbol", "error")))) {
+                ResultTuple cfr_ignored_4 = (ResultTuple)((Object)Invoker.tupleBootstrap("report_error()", (Object)object));
+                ResultTuple cfr_ignored_5 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("error1()", (Object)_self));
+            } else {
+                throw new Error("Try block caught unexpected error.");
+            }
+        }
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+@Parent(method="deco_test__try_assign")
+    @SourceHash(value=91382809)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Proc")
+    @EnvVars(value={@EnvVar(name="14ed8aa0-7314-4ab4-83a4-6beccfc3c3af", type=Object.class, start=0, end=20, index=0)})
+    public static Object proc___(Object[] __env__, Object _self, Object cond) {
+        InterruptInfrastructure.checkAndProcessInterrupts();
+        throw Thrower.make(EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0), (ResultTuple)((Object)TupleBuilder.bootstrap("tb", cond)));
+    }
+
+@Parent(method="deco_test__try_assign")
+    @SourceHash(value=91382809)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Proc")
+    @EnvVars(value={@EnvVar(name="14ed8aa0-7314-4ab4-83a4-6beccfc3c3af", type=Object.class, start=0, end=20, index=0)})
+    public static Object proc___2(Object[] __env__, Object _self, Object cond) {
+        InterruptInfrastructure.checkAndProcessInterrupts();
+        throw Thrower.make(EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0), (ResultTuple)((Object)TupleBuilder.bootstrap("tb", cond)));
+    }
+}
+
+@CodeType(value="Primary")
+public class deco_test_3457
+implements ExecutableMagik {
+    @CodeType(value="TopLevel")
+    public Object execute() {
+    	   MagikObjectUtils.createMethod("deco_test", "test_nested_try()", deco_test_3468.class, "deco_test__test_nested_try", 1, 1);
+    }
+}
+###########
+_method deco_test.test_nested_try() 
+    _try _with object
+        _try _with object2
+            _self.try2()
+        _when error
+            object2.report_error()
+            _self.error2()
+        _endtry
+    _when error
+        object.report_error()
+        _self.error1()
+    _endtry
+    _return _unset
+_endmethod
+$
+###########

@@ -136,6 +136,9 @@ _method jpn_parser.parse_expression(p_node)
 	_elif p_node.is_class_of?(jpn_array_access)
 	_then
 		_return _self.parse_array_access(p_node)
+	_elif p_node.is_class_of?(jpn_operation)
+	_then
+		_return _self.parse_operation(p_node)
 	_else
 		_global x
 		x << p_node
@@ -470,6 +473,29 @@ _method jpn_parser.parse_array_access(p_jnode)
 	##
 	_local args << _self.parse_args(p_jnode.args)
 	>> dcn_array_access.new(p_jnode.name, args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_operation(p_jnode)
+	##
+	_local left << _self.parse_expression(p_jnode.left)
+	_local right << _self.parse_expression(p_jnode.right)
+
+	_local op_map << equality_hash_table.new_with(
+				 "==", "=",
+				 "!=", "~=")
+	_local op << op_map[p_jnode.operation].default("crash!")
+
+	_if right.is_class_of?(dcn_constant) _andif (right.string_value = "null")
+	_then
+		right << dcn_constant.new_literal("_unset")
+		_local op_map << equality_hash_table.new_with(
+					 "==", "_is",
+					 "!=", "_isnt")
+		op << op_map[p_jnode.operation].default("crash!")
+	_endif 
+	>> dcn_op.new(op, left, right)
 _endmethod
 $
 

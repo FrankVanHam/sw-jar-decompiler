@@ -99,6 +99,13 @@ _method dcn_constant.decode_on(p_stream)
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_constant.is_null?
+	>> .type _is :literal _andif .string_value="null"
+_endmethod
+$
+
+
 
 		     
 #

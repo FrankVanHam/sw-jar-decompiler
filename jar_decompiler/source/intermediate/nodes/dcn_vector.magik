@@ -1,0 +1,61 @@
+##
+## File            : $File: (dcn_vector.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-04-06
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package deco
+$
+
+#remex(:dcn_vector)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Node for a vector statement
+def_slotted_exemplar( :dcn_vector,
+	{
+		{:values,_unset, :readable}
+	}, :dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_vector.new(values)
+	
+	_return _clone.init(values)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_vector.init(values)
+	.values << values
+	_return _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_vector.accept_body_visitor(visitor)
+	_for i_value _over .values.fast_elements()
+	_loop
+		i_value.accept_body_visitor(visitor)
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_vector.decode_on(a_stream)
+	a_stream.write("{")
+	_self.decode_node_list_on(a_stream, .values)
+	a_stream.write("}")
+_endmethod
+$

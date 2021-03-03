@@ -30,7 +30,7 @@ _method deco_invoker.bootstrap(p_parser, p_method, p_sender, _gather p_args)
 	##
 	_if _self.iter?(p_method, p_sender, _scatter p_args)
 	_then
-		_return _self.unfinished_iter(p_parser, p_method, p_sender, _scatter p_args)
+		_return p_parser.parse_iter(p_method, p_sender, _scatter p_args)
 	_else
 		_return _self.boot_method(p_parser, p_method.string_value, p_sender, _scatter p_args)
 	_endif
@@ -63,22 +63,11 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method deco_invoker.iter?(p_method, p_sender, _gather p_args)
 	##
-	
 	>> _if p_sender.is_kind_of?(jpn_cast)
 	   _then
 		   >> p_sender.type.name = "MethodHandle"
 	   _else
 		   >> _false
 	   _endif
-_endmethod
-$
-
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method deco_invoker.unfinished_iter(p_parser, p_method, p_sender, _gather p_args)
-	##
-	_local sender << p_parser.parse_sender(p_sender)
-	sender << dcn_self.new()
-	>> dcn_unfinished_iter.new(sender, p_method.string_value, p_sender.expression.name)
 _endmethod
 $

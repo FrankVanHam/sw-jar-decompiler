@@ -1,0 +1,38 @@
+## jpn_method_test_basic_slot
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4002 {
+    @SourceHash(value=1064722174)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_basic_slot_access(Object _self) {
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("$slot_set_slot_a()", (Object)_self, (Object)1));
+        ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("run()", (Object)_self, (Object)Invoker.bootstrapPrivate("$slot_get_slot_b()", (Object)_self)));
+        ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("$slot_set_slot_a()", (Object)_self, (Object)BinaryDispatcher.bootstrap("+", Invoker.bootstrapPrivate("$slot_get_slot_a()", (Object)_self), Integer.valueOf(1))));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4001
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_4001() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "def_slotted_exemplar"), (Object)ConstantBuilder.symbolBootstrap("symbol", "deco_test"), (Object)VectorBuilder.bootstrap("vb", VectorBuilder.bootstrap("vb", ConstantBuilder.symbolBootstrap("symbol", "slot_a"), null), VectorBuilder.bootstrap("vb", ConstantBuilder.symbolBootstrap("symbol", "slot_b"), Integer.valueOf(1)), VectorBuilder.bootstrap("vb", ConstantBuilder.symbolBootstrap("symbol", "slot_c"), null, ConstantBuilder.symbolBootstrap("symbol", "readable")), VectorBuilder.bootstrap("vb", ConstantBuilder.symbolBootstrap("symbol", "slot_d"), ConstantBuilder.stringBootstrap("string", "stop"), ConstantBuilder.symbolBootstrap("symbol", "writable"))));
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "test_basic_slot_access()", deco_test_4002.class, "deco_test__test_basic_slot_access", 1, 1));
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+#############
+#############

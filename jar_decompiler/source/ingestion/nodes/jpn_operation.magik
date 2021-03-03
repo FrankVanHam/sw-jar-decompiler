@@ -25,3 +25,9 @@ _method jpn_operation.init(p_left, p_right, p_operation_lex)
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_operation.operation
+	## 
+	>> .operation_lex.value
+_endmethod
+$

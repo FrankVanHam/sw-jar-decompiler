@@ -4,18 +4,24 @@ remex(:deco_test)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-def_slotted_exemplar(:deco_test,{})
+def_slotted_exemplar(:deco_test,
+	{
+		{:slot_a, _unset },
+		{:slot_b, 1 },
+		{:slot_c, _unset, :readable},
+		{:slot_d, "stop", :writable}
+	}
+)
+#,
+#	{:model, :sw_action},
+#	{_class |com.gesmallworld.magik.language.MagikFinalisable|}
+#)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_test.test_inline_proc(arg)
-	##
-	_local a_proc << _proc(a)
-				 _import arg
-				 _self.use(a, arg)
-			 _endproc 
-
-	a_proc("qw")
-	a_proc("rt")
+_method deco_test.test_basic_slot_access()
+	.slot_a << 1
+	_self.run(.slot_b)
+	.slot_a +<< 1
 _endmethod
 $

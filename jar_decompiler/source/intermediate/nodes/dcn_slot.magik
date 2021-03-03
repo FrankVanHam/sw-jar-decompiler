@@ -18,260 +18,288 @@
 _package deco
 $
 
-remex(:dcn_slot)
+#remex(:dcn_slot)
 $
 
-_pragma(classify_level=restricted, topic={decompiler})
-## Node for slot access. Either a getter, setter or boot.
+_pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:dcn_slot,
-		     {
-			     {:token,_unset},
-			     {:slot_accessor, _unset},
-			     {:arg, _unset},
-			     {:operator, _unset},
-			     {:top_of_stack, _unset}
-		     }, {:dcn_base, :dcn_assign_mixin})
+	{
+		{:name, _unset}
+	},
+	:dcn_base)
 $
 
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.new(token, slot_accessor, arg, top_of_stack)
-	_return _clone.init(token, slot_accessor, arg, _unset, top_of_stack)
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_slot.new(p_name)
+	>> _clone.init(p_name)
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.new_operator_assign(token, slot_accessor, arg, operator, top_of_stack)
-	_return _clone.init(token, slot_accessor, arg, operator, top_of_stack)
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_slot.init(p_name)
+	.name << p_name
+	>> _self 
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_slot.init(token, slot_accessor, arg, operator, top_of_stack)
-	.token << token
-	.arg << arg
-	.slot_accessor << slot_accessor
-	.operator << operator
-	.top_of_stack << top_of_stack
-	_return _self
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_slot.decode_on(p_stream)
+	p_stream.write(".", .name)
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.accept_node_visitor(visitor)
-	_if .arg _isnt _unset
-	_then 
-		.arg << .arg.accept_node_visitor(visitor)
-	_endif 
-	_return _super.accept_node_visitor(visitor)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.accept_body_visitor(visitor)
-	_if .arg _isnt _unset
-	_then 
-		.arg.accept_body_visitor(visitor)
-	_endif 
-	_return _super.accept_body_visitor(visitor)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.is_slot?
-	_return _true
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.chain_assign?(value)
-	_if value _is _unset _then _return _false _endif
-	
-	_if _self.assigned_arg _is value
-	_then
-		_return _true
-	_else
-		_return value.is_chain_assign_for?(_self)
-	_endif
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.chain_assign_operator?(op_node, operator, arg, operand_send)
-	_return .operator _is operator _andif
-		arg _is .arg
-_endmethod
-$
-
-
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.top_of_stack_during_decompile
-	_return .top_of_stack
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.has_hidden_operator_assign?	
-	_if .arg _is _unset _then _return _false _endif
-	_if _not _self.is_assign? _then _return _false _endif
-	
-	op << .arg
-	_if _not op.is_op? _then _return _false _endif
-	_return op.is_hidden_operator_assign_for_slot?(_self)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.as_operator_assign()
-	_return .arg.as_operator_assign_slot(.token, .slot_accessor, .top_of_stack)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.has_results?
-	_return _self.result_count <> 0
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.result_count
-	res << .token.numres
-	_if .token.tail_recursive?
-	_then
-		res << 1
-	_endif 
-	_return res
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.is_getter?
-	_return .slot_accessor.sort _is :get
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.is_setter?
-	_return .slot_accessor.sort _is :set
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.is_boot?
-	_return .slot_accessor.sort _is :boot
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.is_assign?
-	_return _self.is_setter? _orif _self.is_boot?
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.single_argument
-	_return _self.expression
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.is_single_assign?
-	_return _self.is_assign?
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.expression
-	assert(.arg _isnt _unset)
-	_return .arg
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.assigned_arg
-	_return .arg
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.decode_receiver_on( a_stream )
-	_self.decode_lhs_on( a_stream )
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.decode_lhs_on( a_stream )
-	a_stream.write( ".", .slot_accessor.slotd.slot_name )
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.slot_name
-	_return .slot_accessor.slotd.slot_name
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.has_rhs?
-	_return .arg _isnt _unset 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.decode_rhs_on( a_stream )
-	assert( .arg _isnt _unset )
-	.arg.decode_on( a_stream )
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.decode_as_receiver_on(a_stream)
-	_if .slot_accessor.sort _is :get
-	_then
-		_self.decode_on( a_stream )
-	_else
-		a_stream.write("(")
-		_self.decode_on( a_stream )
-		a_stream.write(")")
-	_endif 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.decode_operator_on( a_stream )
-	_if .operator _isnt _unset
-	_then
-		op << dcn_op.translate_op(.operator)
-		a_stream.write( op )
-	_endif
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_slot.decode_on( a_stream, _optional parent, statements )
-	_if .slot_accessor.sort _is :get
-	_then
-		a_stream.write( ".", .slot_accessor.slotd.slot_name )
-	_elif .slot_accessor.sort _is :set
-	_then
-		_if .arg _is _unset 
-		_then
-			a_stream.write( ".", _self.slot_name )
-		_else 
-			a_stream.write( ".", _self.slot_name )
-			a_stream.write( " ")
-			_self.decode_operator_on( a_stream )
-			a_stream.write( "<< " )
-			.arg.decode_on( a_stream )
-		_endif 
-	_elif .slot_accessor.sort _is :boot
-	_then
-		a_stream.write( ".", _self.slot_name )
-		a_stream.write( " ")
-		_self.decode_operator_on( a_stream )
-		a_stream.write( "^<< " )
-		.arg.decode_on( a_stream )
-	_else
-	_endif 
-_endmethod
-$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+### Node for slot access. Either a getter, setter or boot.
+#def_slotted_exemplar(:dcn_slot,
+#		     {
+#			     {:token,_unset},
+#			     {:slot_accessor, _unset},
+#			     {:arg, _unset},
+#			     {:operator, _unset},
+#			     {:top_of_stack, _unset}
+#		     }, {:dcn_base, :dcn_assign_mixin})
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.new(token, slot_accessor, arg, top_of_stack)
+#	_return _clone.init(token, slot_accessor, arg, _unset, top_of_stack)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.new_operator_assign(token, slot_accessor, arg, operator, top_of_stack)
+#	_return _clone.init(token, slot_accessor, arg, operator, top_of_stack)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_private _method dcn_slot.init(token, slot_accessor, arg, operator, top_of_stack)
+#	.token << token
+#	.arg << arg
+#	.slot_accessor << slot_accessor
+#	.operator << operator
+#	.top_of_stack << top_of_stack
+#	_return _self
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.accept_node_visitor(visitor)
+#	_if .arg _isnt _unset
+#	_then 
+#		.arg << .arg.accept_node_visitor(visitor)
+#	_endif 
+#	_return _super.accept_node_visitor(visitor)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.accept_body_visitor(visitor)
+#	_if .arg _isnt _unset
+#	_then 
+#		.arg.accept_body_visitor(visitor)
+#	_endif 
+#	_return _super.accept_body_visitor(visitor)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.is_slot?
+#	_return _true
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.chain_assign?(value)
+#	_if value _is _unset _then _return _false _endif
+#	
+#	_if _self.assigned_arg _is value
+#	_then
+#		_return _true
+#	_else
+#		_return value.is_chain_assign_for?(_self)
+#	_endif
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.chain_assign_operator?(op_node, operator, arg, operand_send)
+#	_return .operator _is operator _andif
+#		arg _is .arg
+#_endmethod
+#$
+#
+#
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.top_of_stack_during_decompile
+#	_return .top_of_stack
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.has_hidden_operator_assign?	
+#	_if .arg _is _unset _then _return _false _endif
+#	_if _not _self.is_assign? _then _return _false _endif
+#	
+#	op << .arg
+#	_if _not op.is_op? _then _return _false _endif
+#	_return op.is_hidden_operator_assign_for_slot?(_self)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.as_operator_assign()
+#	_return .arg.as_operator_assign_slot(.token, .slot_accessor, .top_of_stack)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.has_results?
+#	_return _self.result_count <> 0
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.result_count
+#	res << .token.numres
+#	_if .token.tail_recursive?
+#	_then
+#		res << 1
+#	_endif 
+#	_return res
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.is_getter?
+#	_return .slot_accessor.sort _is :get
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.is_setter?
+#	_return .slot_accessor.sort _is :set
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.is_boot?
+#	_return .slot_accessor.sort _is :boot
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.is_assign?
+#	_return _self.is_setter? _orif _self.is_boot?
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.single_argument
+#	_return _self.expression
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.is_single_assign?
+#	_return _self.is_assign?
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.expression
+#	assert(.arg _isnt _unset)
+#	_return .arg
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.assigned_arg
+#	_return .arg
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.decode_receiver_on( a_stream )
+#	_self.decode_lhs_on( a_stream )
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.decode_lhs_on( a_stream )
+#	a_stream.write( ".", .slot_accessor.slotd.slot_name )
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.slot_name
+#	_return .slot_accessor.slotd.slot_name
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.has_rhs?
+#	_return .arg _isnt _unset 
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.decode_rhs_on( a_stream )
+#	assert( .arg _isnt _unset )
+#	.arg.decode_on( a_stream )
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.decode_as_receiver_on(a_stream)
+#	_if .slot_accessor.sort _is :get
+#	_then
+#		_self.decode_on( a_stream )
+#	_else
+#		a_stream.write("(")
+#		_self.decode_on( a_stream )
+#		a_stream.write(")")
+#	_endif 
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.decode_operator_on( a_stream )
+#	_if .operator _isnt _unset
+#	_then
+#		op << dcn_op.translate_op(.operator)
+#		a_stream.write( op )
+#	_endif
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_slot.decode_on( a_stream, _optional parent, statements )
+#	_if .slot_accessor.sort _is :get
+#	_then
+#		a_stream.write( ".", .slot_accessor.slotd.slot_name )
+#	_elif .slot_accessor.sort _is :set
+#	_then
+#		_if .arg _is _unset 
+#		_then
+#			a_stream.write( ".", _self.slot_name )
+#		_else 
+#			a_stream.write( ".", _self.slot_name )
+#			a_stream.write( " ")
+#			_self.decode_operator_on( a_stream )
+#			a_stream.write( "<< " )
+#			.arg.decode_on( a_stream )
+#		_endif 
+#	_elif .slot_accessor.sort _is :boot
+#	_then
+#		a_stream.write( ".", _self.slot_name )
+#		a_stream.write( " ")
+#		_self.decode_operator_on( a_stream )
+#		a_stream.write( "^<< " )
+#		.arg.decode_on( a_stream )
+#	_else
+#	_endif 
+#_endmethod
+#$

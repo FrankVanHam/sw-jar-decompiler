@@ -28,14 +28,51 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_invoker.bootstrap(p_parser, p_method, p_sender, _gather p_args)
 	##
-	_if _self.iter?(p_method, p_sender, _scatter p_args)
-	_then
-		_return p_parser.parse_iter(p_method, p_sender, _scatter p_args)
-	_else
-		_return _self.boot_method(p_parser, p_method.string_value, p_sender, _scatter p_args)
-	_endif
+	>> _if p_method.string_value.matches?("$slot*")
+	   _then
+		   >> _self.slot_method(p_parser, p_method, p_sender, _scatter p_args)
+	   _elif _self.iter?(p_method, p_sender, _scatter p_args)
+	   _then
+		   >> p_parser.parse_iter(p_method, p_sender, _scatter p_args)
+	   _else
+		   >> _self.boot_method(p_parser, p_method.string_value, p_sender, _scatter p_args)
+	   _endif
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_invoker.slot_method(p_parser, p_method, p_sender, _gather p_args)
+	## 
+	_local meth << p_method.string_value
+	>> _if meth.matches?("$slot_get_*")
+	   _then
+		   >> _self.slot_get_method(p_parser, p_method, p_sender, _scatter p_args)
+	   _else
+		   >> _self.slot_set_method(p_parser, p_method, p_sender, _scatter p_args)
+	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_invoker.slot_get_method(p_parser, p_method, p_sender, _gather p_args)
+	## 
+	_local meth << p_method.string_value
+	_local slot_name << meth.slice(11, meth.size-2)
+	>> dcn_slot.new(slot_name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_invoker.slot_set_method(p_parser, p_method, p_sender, _gather p_args)
+	## 
+	_local meth << p_method.string_value
+	_local slot_name << meth.slice(11, meth.size-2)
+
+	_local exp << p_parser.parse_expression(p_args[1])
+	>> dcn_local_assignment.new(dcn_slot.new(slot_name), exp)
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_invoker.boot_method(p_parser, p_method_name, p_sender, _gather p_args)

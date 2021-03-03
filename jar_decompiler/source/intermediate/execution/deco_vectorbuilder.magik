@@ -6,7 +6,18 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_vectorbuilder.empty_vector()
-	>> dcn_constant.new_literal("{}")
+	>> dcn_vector.new({})
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_vectorbuilder.bootstrap(p_parser, p_name, _gather p_args)
+	##
+	_local args << rope.new_for(p_args.size)
+	_for i_arg _over p_args.fast_elements()
+	_loop
+		args.add( p_parser.parse_expression(i_arg))
+	_endloop
+	>> dcn_vector.new(args)
+_endmethod
+$

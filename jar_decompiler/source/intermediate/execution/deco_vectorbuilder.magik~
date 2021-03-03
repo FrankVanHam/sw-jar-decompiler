@@ -6,7 +6,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_vectorbuilder.empty_vector()
-	>> dcn_constant.new({})
+	>> dcn_constant.new_literal("{}")
 _endmethod
 $
 
