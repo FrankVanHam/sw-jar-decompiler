@@ -139,6 +139,12 @@ _method jpn_parser.parse_expression(p_node)
 	_elif p_node.is_class_of?(jpn_operation)
 	_then
 		_return _self.parse_operation(p_node)
+	_elif p_node.is_class_of?(jpn_package)
+	_then
+		_return _self.parse_package(p_node)
+	_elif p_node.is_class_of?(jpn_import)
+	_then
+		_return _self.parse_import(p_node)
 	_else
 		_global x
 		x << p_node
@@ -146,6 +152,18 @@ _method jpn_parser.parse_expression(p_node)
 
 		1.stop
 	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_package(p_jnode)
+	>> dcn_no_op.new()	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_import(p_jnode)
+	>> dcn_no_op.new()
 _endmethod
 $
 

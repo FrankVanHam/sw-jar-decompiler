@@ -201,6 +201,24 @@ _method jpn_parser_test.test_declare_local_array_assign()
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method jpn_parser_test.test_declare_local_boolean_assign()
+	##
+	_local inp << write_string("boolean bl = MagikObjectUtils.is(1,2)")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	_local jpn_exp << p.parse_statement()
+	_self.assert_true(jpn_exp.is_class_of?(deco:jpn_assignment), "should be assignment")
+	_self.assert_true(jpn_exp.left.is_class_of?(deco:jpn_declaration), "should be an declaration")
+			
+	_local jp << deco:jpn_parser.new()
+	_local dcn_node << jp.parse_expression(jpn_exp)
+	_self.assert_true(dcn_node.is_class_of?(deco:dcn_local_assignment), "should be assignment")
+	_self.assert_true(dcn_node.only_local().is_class_of?(deco:dcn_local_declaration), "should be local declaration")
+_endmethod
+$
+
+
 
 #_pragma(classify_level=restricted, topic={jar_decompiler, test})
 #_method jpn_parser_test.test_env_accessor()

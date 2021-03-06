@@ -5,12 +5,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:deco_test,
-	{
-		{:slot_a, _unset },
-		{:slot_b, 1 },
-		{:slot_c, _unset, :readable},
-		{:slot_d, "stop", :writable}
-	}
+	{}
 )
 #,
 #	{:model, :sw_action},
@@ -18,10 +13,13 @@ def_slotted_exemplar(:deco_test,
 #)
 $
 
+deco_test.define_pseudo_slot(:slot_a)
+$
+
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_test.test_basic_slot_access()
 	.slot_a << 1
-	_self.run(.slot_b)
+	_self.run(.slot_a)
 	.slot_a +<< 1
 _endmethod
 $

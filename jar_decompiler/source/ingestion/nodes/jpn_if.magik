@@ -19,6 +19,24 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_if.condition
+	##
+	>> _if .input.empty?.not
+	   _then >> .input[1][1]
+	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_if.then
+	##
+	>> _if .input.empty?.not
+	   _then >> .input[1][2]
+	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_if.else
 	##
 	>> _if .input.empty?.not

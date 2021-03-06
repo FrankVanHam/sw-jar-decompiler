@@ -17,3 +17,15 @@ _method jpn_if.init(p_input)
 	>> _super.init()
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_if.else
+	##
+	>> _if .input.empty?.not
+	   _then
+		   >> _if .input.last[1] _is _unset
+		      _then >> .input.last[2]
+		      _endif
+	   _endif 
+_endmethod
+$

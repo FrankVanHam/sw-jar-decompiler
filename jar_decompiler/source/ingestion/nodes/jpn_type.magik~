@@ -30,6 +30,12 @@ $
 
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_type.as_variable()
+	>> jpn_variable.new(.lex_name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_type.become_dotted(p_ident)
 	##
 	_return jpn_dotted.new(_self , p_ident)

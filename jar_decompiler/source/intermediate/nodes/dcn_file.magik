@@ -9,9 +9,9 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:dcn_file,
 		      {
 			      {:java_classes, _unset, :readable},
-			      {:statements, _unset,  :readable},
-			      {:methods,    _unset,  :readable},
-			      {:procs,      _unset,  :readable}
+			      {:body,         _unset, :readable},
+			      {:methods,      _unset, :readable},
+			      {:procs,        _unset, :readable}
 		      },
 		      :dcn_base)
 $
@@ -24,7 +24,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method dcn_file.init()
-	.statements << rope.new()
+	.body << dcn_body.new()
 	.methods << rope.new()
 	.procs << rope.new()
 	.java_classes << rope.new()
@@ -34,7 +34,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method dcn_file.add_statement(p_node)
-	.statements.add(p_node)
+	.body.statements.add(p_node)
 _endmethod
 $
 
@@ -125,7 +125,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method dcn_file.decode_on(p_stream)
 	##
-	_for i_statement _over .statements.fast_elements()
+	_for i_statement _over .body.statements.fast_elements()
 	_loop
 		_if i_statement.is_no_op? _then _continue _endif 
 		i_statement.decode_on(p_stream)
@@ -139,10 +139,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method dcn_file.accept_body_visitor(p_visitor)
-	_for i_statement _over .statements.fast_elements()
-	_loop
-		i_statement.accept_body_visitor(p_visitor)
-	_endloop 
+	.body.accept_body_visitor(p_visitor) 
 _endmethod
 $
 

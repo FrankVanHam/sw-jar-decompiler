@@ -41,7 +41,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_execution_post_processor.process_file(p_file)
 	## 
-	sts << p_file.statements
+	sts << p_file.body.statements
 	_for i_index, i_node _over sts.fast_keys_and_elements()
 	_loop
 		_if i_node.is_kind_of?(dcn_dynamic_store) _andif
