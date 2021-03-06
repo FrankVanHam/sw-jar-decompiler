@@ -1,0 +1,45 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_throw_return_visitor,{})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_throw_return_visitor.new()
+	>> _clone 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_throw_return_visitor.accept(p_body)
+	##
+	_local sts << p_body.statements
+	_for i_index, i_node _over sts.fast_keys_and_elements()
+	_loop
+		_if _self.to_convert?(i_node)
+		_then
+			sts[i_index] << _self.convert(i_node)
+		_endif 			
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_throw_return_visitor.to_convert?(p_node)
+	##
+	_if p_node.is_class_of?(dcn_throw) _andif
+	    p_node.value.is_class_of?(dcn_return) _andif
+	    p_node.results.empty?
+	_then
+		_return _true
+	_endif
+	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_throw_return_visitor.convert(p_node)
+	 >> p_node.value
+_endmethod
+$

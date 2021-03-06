@@ -48,6 +48,7 @@ _method jpn_ignore_assignment_visitor.ignore?(p_node)
 	_if (loc.is_kind_of?(dcn_local_declaration) _andif loc.is_type?("ResultTuple")) _then _return _true _endif
 	_if loc.is_kind_of?(dcn_local_declaration) _andif (loc.name = "__env__") _then _return _true  _endif
 	_if loc.is_kind_of?(dcn_local_declaration) _andif (loc.name = "__dynamic_frame__") _then _return _true  _endif
+	_if loc.is_kind_of?(dcn_local_declaration) _andif (loc.name = "__return_catcher__") _then _return _true  _endif
 	_if loc.is_kind_of?(dcn_local_declaration) _andif (loc.name = "__iterator_frame__") _then _return _true  _endif
 	_if loc.is_kind_of?(dcn_local_declaration) _andif (loc.name.matches?("__leave_catcher__*")) _then _return _true  _endif
 	_if loc.is_kind_of?(dcn_local_declaration) _andif (loc.name.matches?("__continue_catcher__*")) _then _return _true  _endif

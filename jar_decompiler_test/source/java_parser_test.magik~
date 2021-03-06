@@ -740,7 +740,37 @@ _method java_parser_test.test_if_break()
 	
 	_local m << p.parse_expression()
 	_self.assert_true(m.is_kind_of?(deco:jpn_if), "should be a branch")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_conditional_operator()
+	_local inp << write_string("CallSite n_percent_str = a ? b : c;")
+#	_local inp << write_string("CallSite n_percent_str = MagikObjectUtils.should_be_boolean(BinaryDispatcher.bootstrap('\\l', n_percent, Integer.valueOf(100))) ? BinaryDispatcher.bootstrap('+', ConstantBuilder.stringBootstrap('string', ' '), Invoker.bootstrap('write_string', n_percent)) : Invoker.bootstrap('write_string', n_percent);")
+	inp << inp.substitute_character(%', %")
 	
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	p.define_locals("a", "b", "c")
+	
+	_local m << p.parse_expression()
+	_self.assert_true(m.is_kind_of?(deco:jpn_assignment), "should be an assignment")
+	_self.assert_equals("a", m.right.condition.name)
+	_self.assert_equals("b", m.right.then.name)
+	_self.assert_equals("c", m.right.else.name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_conditional_operator1()
+	_local inp << write_string("CallSite n_percent_str = MagikObjectUtils.should_be_boolean(BinaryDispatcher.bootstrap('\\l', n_percent, Integer.valueOf(100))) ? BinaryDispatcher.bootstrap('+', ConstantBuilder.stringBootstrap('string', ' '), Invoker.bootstrap('write_string', n_percent)) : Invoker.bootstrap('write_string', n_percent);")
+	inp << inp.substitute_character(%', %")
+	
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	
+	_local m << p.parse_expression()
+	_self.assert_true(m.is_kind_of?(deco:jpn_assignment), "should be an assignment")
 _endmethod
 $
 

@@ -55,21 +55,25 @@ _method dcn_send.decode_on(p_stream)
 		p_stream.write(" _allresults ")
 	_endif 
 	.sender.decode_on(p_stream)
-	p_stream.write( "." )
-	_if .args.empty?.not
+	_local (meth, first, second, set?, boot?) << _self.name_split()
+	
+	_local args << rope.new_from(.args)
+	_local set << _if set?
+		      _then >> args.remove_first()
+		      _endif 
+	
+	p_stream.write(meth, first)
+	_self.decode_node_list_on(p_stream, args)
+	p_stream.write(second)
+	_if set?
 	_then
-		_local meth << .name.slice(1, .name.size-2 )
-		p_stream.write(meth, "(")
-		_local comma? << _false
-		_for i_arg _over .args.fast_elements()
-		_loop
-			_if (comma?^<<_true) _then p_stream.write(", ") _endif
-
-			i_arg.decode_on(p_stream)
-		_endloop 
-		p_stream.write(")")
-	_else 
-		p_stream.write( .name )
+		_if boot?
+		_then 
+			p_stream.write(" ^<< ")
+		_else
+			p_stream.write(" << ")
+		_endif 
+		set.decode_on(p_stream)
 	_endif 
 _endmethod
 $
@@ -81,6 +85,67 @@ _method dcn_send.asallresults()
 	>> _self 
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_send.name_split()
+	##
+	>> _if .name.matches?("\\\\b*]")
+	   _then
+		   >> "", "[", "]", _false, _false 
+	   _elif .name.matches?("\\\\b*]\\\\l\\\\l")
+	   _then
+		   >> "", "[", "]", _true, _false 
+	   _elif .name.matches?("\\\\b*]^\\\\l\\\\l")
+	   _then
+		   >> "", "[", "]", _true, _true  
+#	   _elif .name.index_of_seq("()\\l\\l") _isnt _unset 
+#	   _then
+#		   >> write_string(".", .name.slice(1,.name.size-8)), "(", ")", _true , _false 
+#	   _elif .name.index_of_seq("()^\\l\\l") _isnt _unset 
+#	   _then
+#		   >> write_string(".", .name.slice(1,.name.size-9)), "(", ")", _true, _true 
+#	   _elif .name.index_of_seq("\\l\\l") _isnt _unset 
+#	   _then
+#		   >> write_string(".", .name.slice(1,.name.size-6)), "", "", _true, _false 
+#	   _elif .name.index_of_seq("^\\l\\l") _isnt _unset 
+#	   _then
+#		   >> write_string(".", .name.slice(1,.name.size-7)), "", "", _true, _true 
+
+
+	   _elif .name.matches?("*()^\\\\l\\\\l")
+	   _then
+		   >> write_string(".", .name.slice(1, .name.size-9)), "(", ")", _true, _true 
+	   _elif .name.matches?("*()\\\\l\\\\l")
+	   _then
+		   >> write_string(".", .name.slice(1, .name.size-8)), "(", ")", _true, _false
+
+
+		   
+	   _elif .name.matches?("*^\\\\l\\\\l")
+	   _then
+		   >> write_string(".", .name.slice(1, .name.size-7)), "", "", _true, _true 
+	   _elif .name.matches?("*\\\\l\\\\l")
+	   _then
+		   >> write_string(".", .name.slice(1, .name.size-6)), "", "", _true, _false
+
+
+	   _elif .name.matches?("*()")
+	   _then
+		   >> write_string(".", .name.slice(1, .name.size-2)), "(", ")", _false, _false 
+	   _else
+		   >> write_string(".", .name), "", "", _false , _false 
+	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_send.matches?(p_name, p_test)
+	##
+	>> p_name.substitute_character(%\, %_).matches?(p_test.substitute_character(%\, %_))
+_endmethod
+$
+
+
 
 
 

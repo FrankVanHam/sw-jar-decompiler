@@ -1,0 +1,361 @@
+## jpn_method_invocation_test_invocation(
+@CodeType(value="Subsidiary")
+public class deco_test_3458 {
+    @CodeType(value="Method")
+    public static Object deco_test__test_invocation(Object _self) {
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@CodeType(value="Primary")
+public class deco_test_3457
+implements ExecutableMagik {
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_invocation()", deco_test_3458.class, "deco_test__test_invocation", 1, 1);
+    }
+}
+###########
+_method deco_test.test_invocation()
+	_self.do()
+    _return _unset
+_endmethod
+$
+
+###########
+## jpn_method_invocation_test_invocation_with_args(
+@CodeType(value="Subsidiary")
+public class deco_test_3458 {
+    @CodeType(value="Method")
+    public static Object deco_test__test_invocation_with_args(Object _self) {
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self, (Object)1, (Object)ConstantBuilder.stringBootstrap("string", "str")));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@CodeType(value="Primary")
+public class deco_test_3457
+implements ExecutableMagik {
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_invocation_with_args()", deco_test_3458.class, "deco_test__test_invocation_with_args", 1, 1);
+    }
+}
+###########
+_method deco_test.test_invocation_with_args()
+	_self.do(1, "str")
+    _return _unset
+_endmethod
+$
+
+###########
+## jpn_method_invocation_test_invocation_with_invocation
+@CodeType(value="Subsidiary")
+public class deco_test_3458 {
+    @CodeType(value="Method")
+    public static Object deco_test__test_invocation_with_invocation(Object _self) {
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self, (Object)Invoker.bootstrapPrivate("get()", (Object)_self)));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@CodeType(value="Primary")
+public class deco_test_3457
+implements ExecutableMagik {
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_invocation_with_invocation()", deco_test_3458.class, "deco_test__test_invocation_with_invocation", 1, 1);
+    }
+}
+###########
+_method deco_test.test_invocation_with_invocation()
+	_self.do(_self.get())
+    _return _unset
+_endmethod
+$
+
+###########
+## jpn_method_invocation_test_invocation_all_results
+@CodeType(value="Subsidiary")
+public class deco_test_3458 {
+    @CodeType(value="Method")
+    public static Object deco_test__test_invocation_all_results(Object _self) {
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self, (Object[])((Object[])Invoker.bootstrapPrivate("for_scatter()", (Object)Invoker.bootstrapPrivate("result()", (Object)_self)))));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@CodeType(value="Primary")
+public class deco_test_3457
+implements ExecutableMagik {
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_invocation_all_results()", deco_test_3458.class, "deco_test__test_invocation_all_results", 1, 1);
+    }
+}
+###########
+_method deco_test.test_invocation_all_results()
+	_self.do((_scatter _self.result()))
+    _return _unset
+_endmethod
+$
+
+###########
+## jpn_method_invocation_test_invocation_concatenation
+@CodeType(value="Subsidiary")
+public class deco_test_3458 {
+    @CodeType(value="Method")
+    public static Object deco_test__test_invocation_concatenation(Object _self) {
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("do2()", (Object)Invoker.bootstrap("do1()", Invoker.bootstrapPrivate("do()", (Object)_self))));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@CodeType(value="Primary")
+public class deco_test_3457
+implements ExecutableMagik {
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_invocation_concatenation()", deco_test_3458.class, "deco_test__test_invocation_concatenation", 1, 1);
+    }
+}
+###########
+_method deco_test.test_invocation_concatenation()
+	_self.do().do1().do2()
+    _return _unset
+_endmethod
+$
+
+###########
+## jpn_method_invocation_test_invocation_result
+@CodeType(value="Subsidiary")
+public class deco_test_3458 {
+    @CodeType(value="Method")
+    public static Object deco_test__test_invocation_result(Object _self) {
+        CallSite a = Invoker.bootstrapPrivate("do()", (Object)_self);
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("use()", (Object)_self, (Object)a));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@CodeType(value="Primary")
+public class deco_test_3457
+implements ExecutableMagik {
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_invocation_result()", deco_test_3458.class, "deco_test__test_invocation_result", 1, 1);
+    }
+}
+###########
+_method deco_test.test_invocation_result()
+	_local a << _self.do()
+    	_self.use(a)
+    _return _unset
+_endmethod
+$
+
+###########
+## jpn_method_invocation_test_multiple_invocation_results
+@CodeType(value="Subsidiary")
+public class deco_test_3458 {
+    @CodeType(value="Method")
+    public static Object deco_test__test_multiple_invocation_results(Object _self) {
+        ResultTuple resultTuple = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
+        Object b = resultTuple.pop();
+        Object a = resultTuple.pop();
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("use()", (Object)_self, (Object)a, (Object)b));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@CodeType(value="Primary")
+public class deco_test_3457
+implements ExecutableMagik {
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_multiple_invocation_results()", deco_test_3458.class, "deco_test__test_multiple_invocation_results", 1, 1);
+    }
+}
+###########
+_method deco_test.test_multiple_invocation_results()
+	 _local (a,b) << _self.do()
+	_self.use(a, b)
+	_return _unset
+_endmethod
+$
+
+###########
+## jpn_method_invocation_test_allresults_results
+@CodeType(value="Subsidiary")
+public class deco_test_3458 {
+    @CodeType(value="Method")
+    public static Object deco_test__test_allresults_results(Object _self) {
+        Object[] a = ((ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self))).asAllResults();
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("use()", (Object)_self, (Object)a));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@CodeType(value="Primary")
+public class deco_test_3457
+implements ExecutableMagik {
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_allresults_results()", deco_test_3458.class, "deco_test__test_allresults_results", 1, 1);
+    }
+}
+###########
+_method deco_test.test_allresults_results()
+	 _local a << _allresults _self.do()
+	 _self.use(a)
+    _return _unset
+_endmethod
+$
+###########
+## jpn_method_invocation_test_gather_scatter_results
+@CodeType(value="Subsidiary")
+public class deco_test_3458 {
+    @CodeType(value="Method")
+    public static Object deco_test__test_gather_scatter_results(Object _self) {
+        Object[] a = ((ResultTuple)((Object)TupleBuilder.bootstrap("tb", (Object[])Invoker.bootstrapPrivate("for_scatter()", (Object)Invoker.bootstrapPrivate("do()", (Object)_self))))).remainder(0);
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("use()", (Object)_self, (Object)a));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@CodeType(value="Primary")
+public class deco_test_3457
+implements ExecutableMagik {
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_gather_scatter_results()", deco_test_3458.class, "deco_test__test_gather_scatter_results", 1, 1);
+    }
+}
+###########
+_method deco_test.test_gather_scatter_results()
+	_local (_gather a) << (_scatter _self.do())
+	_self.use(a)
+    _return _unset
+_endmethod
+$
+
+###########
+## jpn_method_invocation_test_gather_leftover_invocation
+@CodeType(value="Subsidiary")
+public class deco_test_3458 {
+    @CodeType(value="Method")
+     public static Object deco_test__test_gather_leftover_invocation(Object _self) {
+        ResultTuple resultTuple = (ResultTuple)((Object)TupleBuilder.bootstrap("tb", (Object[])Invoker.bootstrapPrivate("for_scatter()", (Object)Invoker.bootstrapPrivate("do()", (Object)_self))));
+        Object[] c = resultTuple.remainder(2);
+        Object b = resultTuple.pop();
+        Object a = resultTuple.pop();
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("use()", (Object)_self, (Object)a, (Object)b, (Object)c));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@CodeType(value="Primary")
+public class deco_test_3457
+implements ExecutableMagik {
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_gather_leftover_invocation()", deco_test_3458.class, "deco_test__test_gather_leftover_invocation", 1, 1);
+    }
+}
+###########
+_method deco_test.test_gather_leftover_invocation()
+	_local (a, b, _gather c) << (_scatter _self.do())
+	_self.use(a,b,c)
+	_return _unset
+_endmethod
+$
+###########
+## jpn_method_invocation_test_send_leftover_invocation
+@CodeType(value="Subsidiary")
+public class deco_test_3458 {
+    @CodeType(value="Method")
+    public static Object deco_test__test_send_leftover_invocation(Object _self) {
+        ResultTuple resultTuple = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
+        Object[] c = resultTuple.remainder(2);
+        Object b = resultTuple.pop();
+        Object a = resultTuple.pop();
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("use()", (Object)_self, (Object)a, (Object)b, (Object)c));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@CodeType(value="Primary")
+public class deco_test_3457
+implements ExecutableMagik {
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_send_leftover_invocation()", deco_test_3458.class, "deco_test__test_send_leftover_invocation", 1, 1);
+    }
+}
+###########
+_method deco_test.test_send_leftover_invocation()
+	_local (a, b, _gather c) << _self.do()
+	_self.use(a,b,c)
+	_return _unset
+_endmethod
+$
+###########
+## jpn_method_invocation_test_gather_leftover_invocation2
+@CodeType(value="Subsidiary")
+public class deco_test_3458 {
+    @CodeType(value="Method")
+    public static Object deco_test__test_gather_leftover_invocation2(Object _self) {
+        ResultTuple resultTuple = (ResultTuple)((Object)TupleBuilder.bootstrap("tb", (Object[])Invoker.bootstrapPrivate("for_scatter()", (Object)Invoker.bootstrapPrivate("do()", (Object)_self))));
+        resultTuple.remainder(2);
+        Object b = resultTuple.pop();
+        Object a = resultTuple.pop();
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("use()", (Object)_self, (Object)a, (Object)b));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@CodeType(value="Primary")
+public class deco_test_3457
+implements ExecutableMagik {
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_gather_leftover_invocation2()", deco_test_3458.class, "deco_test__test_gather_leftover_invocation2", 1, 1);
+    }
+}
+########### (_gather c) got lost because c is not used
+_method deco_test.test_gather_leftover_invocation2()
+	_local (a, b) << (_scatter _self.do())
+	_self.use(a,b)
+	_return _unset
+_endmethod
+$
+###########
+## jpn_method_invocation_test_gather_leftover_invocation3
+@CodeType(value="Subsidiary")
+public class deco_test_3458 {
+    @CodeType(value="Method")
+    public static Object deco_test__test_gather_leftover_invocation3(Object _self) {
+        ResultTuple resultTuple = (ResultTuple)((Object)TupleBuilder.bootstrap("tb", (Object[])Invoker.bootstrapPrivate("for_scatter()", (Object)Invoker.bootstrapPrivate("do()", (Object)_self))));
+        resultTuple.remainder(2);
+        resultTuple.pop();
+        resultTuple.pop();
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@CodeType(value="Primary")
+public class deco_test_3457
+implements ExecutableMagik {
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_gather_leftover_invocation3()", deco_test_3458.class, "deco_test__test_gather_leftover_invocation3", 1, 1);
+    }
+}
+###########  (a, b, _gather c) got lost because that are not used
+_method deco_test.test_gather_leftover_invocation3()
+	(_scatter _self.do())
+	_return _unset
+_endmethod
+$
+###########

@@ -286,6 +286,20 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.decode_list_on(a_stream, list)
+	comma? << _false
+	_for elem _over list.fast_elements()
+	_loop
+		_if comma? ^<< _true
+		_then
+			a_stream.write( ", ")
+		_endif
+		a_stream.write(elem)
+	_endloop
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
 _method dcn_base.create_op()
 	_return _self 
 _endmethod

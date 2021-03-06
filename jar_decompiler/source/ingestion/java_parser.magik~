@@ -15,6 +15,12 @@ def_slotted_exemplar(:java_parser,
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+java_parser.define_shared_constant(:internal_types,
+	equality_set.new_with("boolean","double","byte","int","short","var","long","float"),
+	:private)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method java_parser.new(p_scanner)
 	>> _clone.init(p_scanner)
 _endmethod
@@ -206,7 +212,7 @@ _method java_parser.parse_method(p_class_name, _optional p_annotations )
 		type << type_or_name
 		name << .scanner.get()
 	_endif 
-	
+	#show("#############################", type.value, name.value)
 	_local lex << .scanner.peek()
 	_self.ensure_separator("(")
 	_local args << _self.parse_args()
@@ -373,11 +379,16 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_expression(_optional p_identifier?)
+_method java_parser.parse_expression(_optional p_identifier?, p_end_value)
 
 	_local exp << _self.parse_sub_expression(p_identifier?)
 	_loop
 		_local lex << .scanner.peek()
+
+		_if (p_end_value _isnt _unset) _andif (lex.value = p_end_value)
+		_then
+			_return exp
+		_endif 
 		
 		_if lex.is_separator?(".")
 		_then
@@ -385,6 +396,23 @@ _method java_parser.parse_expression(_optional p_identifier?)
 			_local ident << .scanner.get()
 			exp << exp.become_dotted(ident)
 		
+		_elif lex.is_operator?("?")
+		_then
+			.scanner.get()
+			_local if_true << _self.parse_expression(_unset, ":")
+			_self.ensure_operator(":")
+			_local if_false << _self.parse_expression()
+
+			exp << jpn_if.new({{exp,if_true}, {_unset, if_false}})
+
+		_elif lex.is_operator?(":")
+		_then
+			_return _self.parse_block(exp)
+
+		_elif lex.is_operator?("!=")
+		_then
+			_return _self.parse_test(exp)
+			
 		_elif lex.is_separator?("(")
 		_then
 			_if exp.is_class_of?(jpn_parenthesis)
@@ -412,6 +440,7 @@ _method java_parser.parse_expression(_optional p_identifier?)
 		_then
 			exp << _self.parse_cast(exp)
 		_else
+			_leave 
 			show(:exp, exp)
 			exp.dp
 			exp << _self.parse_cast(exp)
@@ -446,7 +475,18 @@ _method java_parser.parse_sub_expression(_optional p_identifier?)
 	_then
 		_return _unset
 	_else
-		_if lex.is_identifier?
+		_if _self.internal_types.includes?(lex.value)
+		_then 
+			_local ident << _self.parse_identifier(p_identifier?)
+			next << .scanner.peek()
+			_if next.is_identifier? _or next.is_keyword?
+			_then
+				_return _self.parse_typed_assignment(ident)
+			_else
+				_return ident
+			_endif 
+			
+		_elif lex.is_identifier?
 		_then
 			_local ident << _self.parse_identifier(p_identifier?)
 			next << .scanner.peek()
@@ -455,15 +495,7 @@ _method java_parser.parse_sub_expression(_optional p_identifier?)
 			_then
 				# note: using lex, not identifier
 				_return _self.parse_assignment(lex)
-
-			_elif next.is_operator?("!=")
-			_then
-				_return _self.parse_test(lex)
-
-			_elif next.is_operator?(":")
-			_then
-				_return _self.parse_block(lex)
-			
+				
 			_elif next.is_identifier? _or next.is_keyword?
 			_then
 				_return _self.parse_typed_assignment(ident)
@@ -739,12 +771,11 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_test(p_ident)
+_method java_parser.parse_test(p_exp)
 	##
-	_local left << jpn_variable.new(p_ident)
 	_local op << .scanner.get()
 	_local right << _self.parse_expression(_true)
-	>> jpn_operation.new(left, right, op)
+	>> jpn_operation.new(p_exp, right, op)
 _endmethod
 $
 

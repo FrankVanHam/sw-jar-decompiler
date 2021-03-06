@@ -20,3 +20,9 @@ _method jpn_block.init(p_lex_name, p_body)
 	>> _super.init()
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_block.name
+	>> .lex_name.value
+_endmethod
+$

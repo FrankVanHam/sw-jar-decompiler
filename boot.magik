@@ -3,6 +3,8 @@ $
 
 
 _block
+	sw:method_finder.auto_start? << _true
+	
 	_dynamic !source_file!
 	write(!source_file!)
 

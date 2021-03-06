@@ -14,3 +14,6 @@ deco_dynamicscope
 deco_envaccessor
 deco_methodhandles
 deco_interruptinfrastructure
+deco_thrower
+deco_cloner
+deco_double

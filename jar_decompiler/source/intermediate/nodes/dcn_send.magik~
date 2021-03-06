@@ -38,6 +38,8 @@ _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_send.init(p_sender, p_method, p_args)
 	##
 	assert(p_sender.is_kind_of?(dcn_base))
+	assert(p_method _isnt _unset)
+	assert(p_args.includes?(_unset).not)
 	.name << p_method
 	.sender << p_sender
 	.allresults? << _false 

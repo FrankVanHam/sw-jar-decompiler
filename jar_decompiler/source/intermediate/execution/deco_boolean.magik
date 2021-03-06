@@ -1,0 +1,17 @@
+_package deco
+$
+
+def_slotted_exemplar(:deco_boolean, {}, :deco_execution_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_boolean.false(p_parser)
+	>> dcn_constant.new_literal("_false")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_boolean.true(p_parser)
+	>> dcn_constant.new_literal("_true")
+_endmethod
+$

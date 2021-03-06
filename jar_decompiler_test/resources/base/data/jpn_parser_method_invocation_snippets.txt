@@ -359,3 +359,445 @@ _method deco_test.test_gather_leftover_invocation3()
 _endmethod
 $
 ###########
+## jpn_deco_test__test_variable_block
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4066 {
+    @SourceHash(value=-1651812977)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_variable_block(Object _self, Object p_value) {
+        CallSite a = Invoker.bootstrap("\\b]", p_value, Integer.valueOf(1));
+        CallSite b = Invoker.bootstrap("\\b,]", p_value, Integer.valueOf(1), Integer.valueOf(2));
+        CallSite c = Invoker.bootstrap("\\b,,]", p_value, Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3));
+        CallSite d = Invoker.bootstrap("\\b,,,]", p_value, Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3), Integer.valueOf(4));
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)a, (Object)b, (Object)c, (Object)d);
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4065
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_variable_block()", deco_test_4066.class, "deco_test__test_variable_block", 2, 2);
+    }
+}
+##########
+_method deco_test.test_variable_block(p_value) 
+     _local a << p_value[1]
+     _local b << p_value[1, 2]
+     _local c << p_value[1, 2, 3]
+     _local d << p_value[1, 2, 3, 4]
+    sw:show(a, b, c, d)
+    _return _unset
+_endmethod
+$
+##########
+## jpn_deco_deco_test__test_variable_block_assign
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4066 {
+
+    @SourceHash(value=686233949)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_variable_block_assign(Object _self, Object p_value) {
+        Integer n = 1;
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("\\b]\\l\\l", (Object)p_value, (Object)n, (Object)1));
+        Integer a = n;
+        n = 1;
+        ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrap("\\b,]\\l\\l", (Object)p_value, (Object)n, (Object)1, (Object)2));
+        Integer b = n;
+        n = 1;
+        ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrap("\\b,,]\\l\\l", (Object)p_value, (Object)n, (Object)1, (Object)2, (Object)3));
+        Integer c = n;
+        n = 1;
+        ResultTuple cfr_ignored_3 = (ResultTuple)((Object)Invoker.tupleBootstrap("\\b,,,]\\l\\l", (Object)p_value, (Object)n, (Object)1, (Object)2, (Object)3, (Object)4));
+        Integer d = n;
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)a, (Object)b, (Object)c, (Object)d);
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4065
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_variable_block_assign()", deco_test_4066.class, "deco_test__test_variable_block_assign", 2, 2);
+    }
+}
+#########
+_method deco_test.test_variable_block_assign(p_value) 
+     _local n << 1
+    p_value[1] << n
+     _local a << n
+    n << 1
+    p_value[1, 2] << n
+     _local b << n
+    n << 1
+    p_value[1, 2, 3] << n
+     _local c << n
+    n << 1
+    p_value[1, 2, 3, 4] << n
+     _local d << n
+    sw:show(a, b, c, d)
+    _return _unset
+_endmethod
+$
+#########
+## jpn_test_variable_block_boot_assign
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4066 {
+    @SourceHash(value=-901201198)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_variable_block_boot_assign(Object _self, Object p_value) {
+        CallSite a = Invoker.bootstrap("\\b]^\\l\\l", p_value, Integer.valueOf(1), Integer.valueOf(1));
+        CallSite b = Invoker.bootstrap("\\b,]^\\l\\l", p_value, Integer.valueOf(1), Integer.valueOf(1), Integer.valueOf(2));
+        CallSite c = Invoker.bootstrap("\\b,,]^\\l\\l", p_value, Integer.valueOf(1), Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3));
+        CallSite d = Invoker.bootstrap("\\b,,,]^\\l\\l", p_value, Integer.valueOf(1), Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3), Integer.valueOf(4));
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)a, (Object)b, (Object)c, (Object)d);
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4065
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_variable_block_boot_assign()", deco_test_4066.class, "deco_test__test_variable_block_boot_assign", 2, 2);
+    }
+}
+#################
+_method deco_test.test_variable_block_boot_assign(p_value) 
+     _local a << p_value[1] ^<< 1
+     _local b << p_value[1, 2] ^<< 1
+     _local c << p_value[1, 2, 3] ^<< 1
+     _local d << p_value[1, 2, 3, 4] ^<< 1
+    sw:show(a, b, c, d)
+    _return _unset
+_endmethod
+$
+#################
+## jpn_test_method_block
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4066 {
+
+    @SourceHash(value=-1224275318)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_method_block(Object _self, Object p_value) {
+        CallSite a = Invoker.bootstrap("\\b]", Invoker.bootstrapPrivate("value", (Object)_self), Integer.valueOf(1));
+        CallSite b = Invoker.bootstrap("\\b,]", Invoker.bootstrapPrivate("value", (Object)_self), Integer.valueOf(1), Integer.valueOf(2));
+        CallSite c = Invoker.bootstrap("\\b,,]", Invoker.bootstrapPrivate("value", (Object)_self), Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3));
+        CallSite d = Invoker.bootstrap("\\b,,,]", Invoker.bootstrapPrivate("value", (Object)_self), Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3), Integer.valueOf(4));
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)a, (Object)b, (Object)c, (Object)d);
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4065
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_method_block()", deco_test_4066.class, "deco_test__test_method_block", 2, 2);
+    }
+}
+###########
+_method deco_test.test_method_block(p_value) 
+     _local a << _self.value[1]
+     _local b << _self.value[1, 2]
+     _local c << _self.value[1, 2, 3]
+     _local d << _self.value[1, 2, 3, 4]
+    sw:show(a, b, c, d)
+    _return _unset
+_endmethod
+$
+###########
+## jpn_test_method_block_assign
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4066 {
+    @SourceHash(value=-1123928398)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_method_block_assign(Object _self, Object p_value) {
+        Integer n = 1;
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("\\b]\\l\\l", (Object)Invoker.bootstrapPrivate("value", (Object)_self), (Object)n, (Object)1));
+        Integer a = n;
+        n = 1;
+        ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrap("\\b,]\\l\\l", (Object)Invoker.bootstrapPrivate("value", (Object)_self), (Object)n, (Object)1, (Object)2));
+        Integer b = n;
+        n = 1;
+        ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrap("\\b,,]\\l\\l", (Object)Invoker.bootstrapPrivate("value", (Object)_self), (Object)n, (Object)1, (Object)2, (Object)3));
+        Integer c = n;
+        n = 1;
+        ResultTuple cfr_ignored_3 = (ResultTuple)((Object)Invoker.tupleBootstrap("\\b,,,]\\l\\l", (Object)Invoker.bootstrapPrivate("value", (Object)_self), (Object)n, (Object)1, (Object)2, (Object)3, (Object)4));
+        Integer d = n;
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)a, (Object)b, (Object)c, (Object)d);
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4065
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_method_block_assign()", deco_test_4066.class, "deco_test__test_method_block_assign", 2, 2);
+    }
+}
+#############
+_method deco_test.test_method_block_assign(p_value) 
+     _local n << 1
+    _self.value[1] << n
+     _local a << n
+    n << 1
+    _self.value[1, 2] << n
+     _local b << n
+    n << 1
+    _self.value[1, 2, 3] << n
+     _local c << n
+    n << 1
+    _self.value[1, 2, 3, 4] << n
+     _local d << n
+    sw:show(a, b, c, d)
+    _return _unset
+_endmethod
+$
+#############
+## jpn_test_method_block_boot_assign
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4066 {
+    @SourceHash(value=-1686979251)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_method_block_boot_assign(Object _self, Object p_value) {
+        CallSite a = Invoker.bootstrap("\\b]^\\l\\l", Invoker.bootstrapPrivate("value", (Object)_self), Integer.valueOf(1), Integer.valueOf(1));
+        CallSite b = Invoker.bootstrap("\\b,]^\\l\\l", Invoker.bootstrapPrivate("value", (Object)_self), Integer.valueOf(1), Integer.valueOf(1), Integer.valueOf(2));
+        CallSite c = Invoker.bootstrap("\\b,,]^\\l\\l", Invoker.bootstrapPrivate("value", (Object)_self), Integer.valueOf(1), Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3));
+        CallSite d = Invoker.bootstrap("\\b,,,]^\\l\\l", Invoker.bootstrapPrivate("value", (Object)_self), Integer.valueOf(1), Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3), Integer.valueOf(4));
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)a, (Object)b, (Object)c, (Object)d);
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4065
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_method_block_boot_assign()", deco_test_4066.class, "deco_test__test_method_block_boot_assign", 2, 2);
+    }
+}
+############
+_method deco_test.test_method_block_boot_assign(p_value) 
+     _local a << _self.value[1] ^<< 1
+     _local b << _self.value[1, 2] ^<< 1
+     _local c << _self.value[1, 2, 3] ^<< 1
+     _local d << _self.value[1, 2, 3, 4] ^<< 1
+    sw:show(a, b, c, d)
+    _return _unset
+_endmethod
+$
+############
+## jpn_test_parenthesis
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4066 {
+    @SourceHash(value=-560742231)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_parenthesis(Object _self, Object p_value) {
+        CallSite a = Invoker.bootstrapPrivate("value()", (Object)_self, (Object)1);
+        CallSite b = Invoker.bootstrapPrivate("value()", (Object)_self, (Object)1, (Object)2);
+        CallSite c = Invoker.bootstrapPrivate("value()", (Object)_self, (Object)1, (Object)2, (Object)3);
+        CallSite d = Invoker.bootstrapPrivate("value()", (Object)_self, (Object)1, (Object)2, (Object)3, (Object)4);
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)a, (Object)b, (Object)c, (Object)d);
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4065
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_parenthesis()", deco_test_4066.class, "deco_test__test_parenthesis", 2, 2);
+    }
+}
+#############
+_method deco_test.test_parenthesis(p_value) 
+     _local a << _self.value(1)
+     _local b << _self.value(1, 2)
+     _local c << _self.value(1, 2, 3)
+     _local d << _self.value(1, 2, 3, 4)
+    sw:show(a, b, c, d)
+    _return _unset
+_endmethod
+$
+#############
+## jpn_test_parenthesis_assign
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4066 {
+    @SourceHash(value=-1643684465)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_parenthesis_assign(Object _self, Object p_value) {
+        Integer n = 1;
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("value()\\l\\l", (Object)_self, (Object)n, (Object)1));
+        Integer a = n;
+        n = 1;
+        ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("value()\\l\\l", (Object)_self, (Object)n, (Object)1, (Object)2));
+        Integer b = n;
+        n = 1;
+        ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("value()\\l\\l", (Object)_self, (Object)n, (Object)1, (Object)2, (Object)3));
+        Integer c = n;
+        n = 1;
+        ResultTuple cfr_ignored_3 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("value()\\l\\l", (Object)_self, (Object)n, (Object)1, (Object)2, (Object)3, (Object)4));
+        Integer d = n;
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)a, (Object)b, (Object)c, (Object)d);
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4065
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_parenthesis_assign()", deco_test_4066.class, "deco_test__test_parenthesis_assign", 2, 2);
+    }
+}
+#############
+_method deco_test.test_parenthesis_assign(p_value) 
+     _local n << 1
+    _self.value(1) << n
+     _local a << n
+    n << 1
+    _self.value(1, 2) << n
+     _local b << n
+    n << 1
+    _self.value(1, 2, 3) << n
+     _local c << n
+    n << 1
+    _self.value(1, 2, 3, 4) << n
+     _local d << n
+    sw:show(a, b, c, d)
+    _return _unset
+_endmethod
+$
+#############
+## jpn_test_parenthesis_boot_assign
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4066 {
+    @SourceHash(value=-1176523412)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_parenthesis_boot_assign(Object _self, Object p_value) {
+        CallSite a = Invoker.bootstrapPrivate("value()^\\l\\l", (Object)_self, (Object)1, (Object)1);
+        CallSite b = Invoker.bootstrapPrivate("value()^\\l\\l", (Object)_self, (Object)1, (Object)1, (Object)2);
+        CallSite c = Invoker.bootstrapPrivate("value()^\\l\\l", (Object)_self, (Object)1, (Object)1, (Object)2, (Object)3);
+        CallSite d = Invoker.bootstrapPrivate("value()^\\l\\l", (Object)_self, (Object)1, (Object)1, (Object)2, (Object)3, (Object)4);
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)a, (Object)b, (Object)c, (Object)d);
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4065
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_parenthesis_boot_assign()", deco_test_4066.class, "deco_test__test_parenthesis_boot_assign", 2, 2);
+    }
+}
+############
+_method deco_test.test_parenthesis_boot_assign(p_value) 
+     _local a << _self.value(1) ^<< 1
+     _local b << _self.value(1, 2) ^<< 1
+     _local c << _self.value(1, 2, 3) ^<< 1
+     _local d << _self.value(1, 2, 3, 4) ^<< 1
+    sw:show(a, b, c, d)
+    _return _unset
+_endmethod
+$
+############
+## jpn_test_method
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4066 {
+    @SourceHash(value=-1160003010)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_method(Object _self, Object p_value) {
+        CallSite a = Invoker.bootstrapPrivate("value", (Object)_self);
+        Integer n = 1;
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("value\\l\\l", (Object)_self, (Object)n));
+        Integer b = n;
+        CallSite c = Invoker.bootstrapPrivate("value^\\l\\l", (Object)_self, (Object)1);
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)a, (Object)b, (Object)c);
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4065
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_method()", deco_test_4066.class, "deco_test__test_method", 2, 2);
+    }
+}
+#################
+_method deco_test.test_method(p_value) 
+     _local a << _self.value
+     _local n << 1
+    _self.value << n
+     _local b << n
+     _local c << _self.value ^<< 1
+    sw:show(a, b, c)
+    _return _unset
+_endmethod
+$
+#################

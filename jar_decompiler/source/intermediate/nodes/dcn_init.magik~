@@ -1,0 +1,41 @@
+_package deco
+$
+
+#remex(:dcn_super)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## 
+def_slotted_exemplar(:dcn_super,
+		     {
+			     {:super, _unset}
+		     }, :dcn_invocation)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_super.new(p_super, _gather p_args)
+	>> _clone.init(p_super, _scatter p_args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_super.init(p_super, _gather p_args)
+	## 
+	.super << p_super
+	>> _super.init(_scatter p_args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_super.decode_on(p_stream)
+	##
+	p_stream.write("_super")
+	_if .super _isnt _unset
+	_then
+		p_stream.write("(", .super, ")")
+	_endif 
+	p_stream.write(".(")
+	_self.decode_node_list_on(p_stream, .args)
+	p_stream.write(")")
+_endmethod
+$
