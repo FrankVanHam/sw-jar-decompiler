@@ -379,13 +379,14 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_expression(_optional p_identifier?, p_end_value)
+_method java_parser.parse_expression(_optional p_identifier?, p_end_value, p_operator)
 
+	_dynamic !dcn_end_value!
 	_local exp << _self.parse_sub_expression(p_identifier?)
 	_loop
 		_local lex << .scanner.peek()
 
-		_if (p_end_value _isnt _unset) _andif (lex.value = p_end_value)
+		_if (!dcn_end_value! _isnt _unset) _andif (lex.value = !dcn_end_value!)
 		_then
 			_return exp
 		_endif 
@@ -398,22 +399,29 @@ _method java_parser.parse_expression(_optional p_identifier?, p_end_value)
 		
 		_elif lex.is_operator?("?")
 		_then
+			_if _self.operator_cf?(p_operator, "?")
+			_then
+				_return exp
+			_endif 
 			.scanner.get()
+			_dynamic !dcn_end_value! << ":"
 			_local then << _self.parse_expression(_unset, ":")
 			_local then_body << dcn_body.new({then})
 			_self.ensure_operator(":")
 			_local else << _self.parse_expression()
 			_local else_body << dcn_body.new({else})
-
+			
 			exp << jpn_if.new({{exp,then_body}, {_unset, else_body}})
-
-		_elif lex.is_operator?(":")
+				
+		_elif lex.is_operator?(":") _andif (p_operator <> "?")
 		_then
+			show(:p_operator, p_operator)
 			_return _self.parse_block(exp)
 
-		_elif lex.is_operator?("!=")
+		_elif lex.is_operator?("!=") _orif
+		      lex.is_operator?("==")
 		_then
-			_return _self.parse_test(exp)
+			exp << _self.parse_test(exp)
 			
 		_elif lex.is_separator?("(")
 		_then
@@ -451,6 +459,17 @@ _method java_parser.parse_expression(_optional p_identifier?, p_end_value)
 	>> exp
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.operator_cf?(p_op1, p_op2)
+	##
+	_if p_op1 _is _unset _then _return _false _endif
+	
+	_local _constant order << {"!=", "==", "?"}
+	>> order.index_equal_of(p_op1) < order.index_equal_of(p_op2)
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method java_parser.parse_sub_expression(_optional p_identifier?)
@@ -776,11 +795,10 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method java_parser.parse_test(p_exp)
 	##
 	_local op << .scanner.get()
-	_local right << _self.parse_expression(_true)
+	_local right << _self.parse_expression(_true, _unset, op.value)
 	>> jpn_operation.new(p_exp, right, op)
 _endmethod
 $
-
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method java_parser.parse_block(p_ident)

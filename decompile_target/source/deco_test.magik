@@ -3,105 +3,41 @@ $
 remex(:deco_test)
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:deco_test,
 	{},
 	:model)
 $
 
-_method deco_test.test_variable_block(p_value)
-	_local a << p_value[1]
-	_local b << p_value[1,2]
-	_local c << p_value[1,2,3]
-	_local d << p_value[1,2,3,4]
-
-	show(a,b,c,d)
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_iter _method deco_test.simple_elements()
+	##
+	_loopbody(1)
 _endmethod
 $
 
-_method deco_test.test_variable_block_assign(p_value)
-	_local a << p_value[1] << 1
-	_local b << p_value[1,2] << 1
-	_local c << p_value[1,2,3] << 1
-	_local d << p_value[1,2,3,4] << 1
-
-	show(a,b,c,d)
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_iter _method deco_test.scatter_elements()
+	##
+	_local a << _self.vars()
+	_loopbody(1, _scatter a)
 _endmethod
 $
 
-_method deco_test.test_variable_block_boot_assign(p_value)
-	_local a << p_value[1] ^<< 1
-	_local b << p_value[1,2] ^<< 1
-	_local c << p_value[1,2,3] ^<< 1
-	_local d << p_value[1,2,3,4] ^<< 1
-
-	show(a,b,c,d)
-_endmethod
-$
-_method deco_test.test_method_block(p_value)
-	_local a << _self.value[1]
-	_local b << _self.value[1,2]
-	_local c << _self.value[1,2,3]
-	_local d << _self.value[1,2,3,4]
-
-	show(a,b,c,d)
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_iter _method deco_test.return_elements()
+	##
+	_loopbody("var")
+	_return _self.result()
 _endmethod
 $
 
-_method deco_test.test_method_block_assign(p_value)
-	_local a << _self.value[1] << 1
-	_local b << _self.value[1,2] << 1
-	_local c << _self.value[1,2,3] << 1
-	_local d << _self.value[1,2,3,4] << 1
-
-	show(a,b,c,d)
-_endmethod
-$
-
-_method deco_test.test_method_block_boot_assign(p_value)
-	_local a << _self.value[1] ^<< 1
-	_local b << _self.value[1,2] ^<< 1
-	_local c << _self.value[1,2,3] ^<< 1
-	_local d << _self.value[1,2,3,4] ^<< 1
-
-	show(a,b,c,d)
-_endmethod
-$
-
-_method deco_test.test_parenthesis(p_value)
-	_local a << _self.value(1)
-	_local b << _self.value(1,2)
-	_local c << _self.value(1,2,3)
-	_local d << _self.value(1,2,3,4)
-
-	show(a,b,c,d)
-_endmethod
-$
-
-_method deco_test.test_parenthesis_assign(p_value)
-	_local a << _self.value(1) << 1
-	_local b << _self.value(1,2) << 1
-	_local c << _self.value(1,2,3) << 1
-	_local d << _self.value(1,2,3,4) << 1
-
-	show(a,b,c,d)
-_endmethod
-$
-
-_method deco_test.test_parenthesis_boot_assign(p_value)
-	_local a << _self.value(1) ^<< 1
-	_local b << _self.value(1,2) ^<< 1
-	_local c << _self.value(1,2,3) ^<< 1
-	_local d << _self.value(1,2,3,4) ^<< 1
-
-	show(a,b,c,d)
-_endmethod
-$
-
-_method deco_test.test_method(p_value)
-	_local a << _self.value
-	_local b << _self.value << 1
-	_local c << _self.value ^<< 1
-
-	show(a,b,c)
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_iter _method deco_test.fast_elements()
+	##
+	_for el _over _self.elements()
+	_loop
+		_loopbody(el)
+	_endloop 
 _endmethod
 $

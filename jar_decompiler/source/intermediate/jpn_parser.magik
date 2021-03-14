@@ -367,18 +367,48 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_method(p_class_name, p_meth_node)
 	##
-	_local java_args << p_meth_node.args.copy()
-	_if java_args.empty?.not _then java_args.remove_first() _endif
+	# strip all upto the self "Object _self" argument
+	_local idx << _unset
+	_local iter? << _false
+	_if .in_loopbody?
+	_then
+		#public static Object __loopbody_(Object[] __env__, Object i_var) {}
+		idx << 1
+	_elif p_meth_node.args.empty?.not
+	_then
+		_local first << p_meth_node.args.first
+		_if first.type.name = "MethodHandle" _andif
+		    first.name = "__loopbody__"
+		_then
+			# public static Object deco_test__fast_elements(MethodHandle __loopbody__, Object[] __loopenv__, Object _self) {}
+			idx << 3
+			iter? << _true 
+		_else
+			#public static Object deco_test__fast_elements(Object _self, Object p_var) {}
+			idx << 1
+		_endif
+	_endif
+	
+	_local 	java_args << _if idx _isnt _unset
+			     _then >> p_meth_node.args.slice_to_end(idx+1)
+			     _else >> p_meth_node.args.copy()
+			     _endif 
 
 	_local scatter? << _if java_args.empty?.not
 			   _then >> java_args.last.varargs?
 			   _else >> _false
 			   _endif
 	_local args << java_args.map(_proc(x) >> x.name _endproc)
+	
+	_local env << deco_envaccessor.save()
+	
 	_self.apply_annotations(p_meth_node)
 	_local body << _self.parse_body(p_meth_node.body)
+	
+	deco_envaccessor.restore(env)
+	
 	_local type << p_meth_node.type
-	_local m_node << dcn_method.new(p_class_name, p_meth_node.name, args, scatter?, body, type )
+	_local m_node << dcn_method.new(p_class_name, p_meth_node.name, args, scatter?, body, type, iter? )
 	>> m_node
 _endmethod
 $
@@ -395,9 +425,15 @@ _method jpn_parser.parse_proc(p_class_name, p_meth_node, p_env?)
 			   _else >> _false
 			   _endif
 	_local args << java_args.map(_proc(x) >> x.name _endproc)
+	
+	_local env << deco_envaccessor.save()
+	show("proc")
 	_self.apply_annotations(p_meth_node)
 	_local imports << _self.extract_import(p_meth_node)
 	_local body << _self.parse_body(p_meth_node.body)
+	show("end proc")
+	deco_envaccessor.restore(env)
+	
 	_local type << p_meth_node.type
 	_local m_node << dcn_proc.new(p_class_name, p_meth_node.name, args, scatter?, body, imports )
 	>> m_node
@@ -429,12 +465,12 @@ _method jpn_parser.apply_annotations(p_meth_node)
 					 )).an_element()
 	_if anno _isnt _unset
 	_then
-		deco_envaccessor.reset()
+		#deco_envaccessor.reset()
 		_for i_anno _over anno.value.fast_elements()
 		_loop
 			_local name << i_anno.property(:name).string_value
 			_local index << i_anno.property(:index).string_value
-			
+
 			deco_envaccessor.set_var_name(index, name)
 		_endloop 
 	_endif 

@@ -444,6 +444,36 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_method_definition_with_question()
+	##
+	_local inp << write_string(
+			      "public static Object deco_test__writable?_() {", newline_char,
+			      "}")
+	inp << inp.substitute_character(%', %")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local m << p.parse_method("deco_test")
+	_self.assert_true(m.is_kind_of?(deco:jpn_method), "Should be an body")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_method_definition_with_exclamation()
+	##
+	_local inp << write_string(
+			      "public static Object deco_test__int!writable() {", newline_char,
+			      "}")
+	inp << inp.substitute_character(%', %")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local m << p.parse_method("deco_test")
+	_self.assert_true(m.is_kind_of?(deco:jpn_method), "Should be an body")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_casting()
 	_local inp << write_string(
 			      "(Object)a_var;")
@@ -774,3 +804,35 @@ _method java_parser_test.test_conditional_operator1()
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_conditional()
+	##
+	_local inp << write_string("return the_soc != null ? (ResultTuple)(x) : null;")
+	#inp << write_string("return the_soc != null ? x : null;")
+	inp << inp.substitute_character(%', %")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	p.define_locals("x")
+	_local jpn_exp << p.parse_statement()
+	_self.assert_true(jpn_exp.is_kind_of?(deco:jpn_return), "should be a return")
+	show(jpn_exp.expression)
+	jpn_exp.expression.dp
+	_self.assert_true(jpn_exp.expression.is_kind_of?(deco:jpn_if), "should be an if")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_conditional2()
+	##
+	_local inp << write_string("return the_soc != null ? x : null;")
+	inp << inp.substitute_character(%', %")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	p.define_locals("x")
+	_local jpn_exp << p.parse_statement()
+	_self.assert_true(jpn_exp.is_kind_of?(deco:jpn_return), "should be a return")
+	show(jpn_exp.expression)
+	jpn_exp.expression.dp
+	_self.assert_true(jpn_exp.expression.is_kind_of?(deco:jpn_if), "should be an if")
+_endmethod
+$

@@ -136,6 +136,15 @@ _method jpn_parser.parse_expression(p_node)
 	_elif p_node.is_class_of?(jpn_array_access)
 	_then
 		_return _self.parse_array_access(p_node)
+	_elif p_node.is_class_of?(jpn_operation)
+	_then
+		_return _self.parse_operation(p_node)
+	_elif p_node.is_class_of?(jpn_package)
+	_then
+		_return _self.parse_package(p_node)
+	_elif p_node.is_class_of?(jpn_import)
+	_then
+		_return _self.parse_import(p_node)
 	_else
 		_global x
 		x << p_node
@@ -143,6 +152,18 @@ _method jpn_parser.parse_expression(p_node)
 
 		1.stop
 	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_package(p_jnode)
+	>> dcn_no_op.new()	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_import(p_jnode)
+	>> dcn_no_op.new()
 _endmethod
 $
 
@@ -354,8 +375,14 @@ _method jpn_parser.parse_method(p_class_name, p_meth_node)
 			   _else >> _false
 			   _endif
 	_local args << java_args.map(_proc(x) >> x.name _endproc)
+	
+	_local env << deco_envaccessor.save()
+	
 	_self.apply_annotations(p_meth_node)
 	_local body << _self.parse_body(p_meth_node.body)
+	
+	deco_envaccessor.restore(env)
+	
 	_local type << p_meth_node.type
 	_local m_node << dcn_method.new(p_class_name, p_meth_node.name, args, scatter?, body, type )
 	>> m_node
@@ -374,9 +401,15 @@ _method jpn_parser.parse_proc(p_class_name, p_meth_node, p_env?)
 			   _else >> _false
 			   _endif
 	_local args << java_args.map(_proc(x) >> x.name _endproc)
+	
+	_local env << deco_envaccessor.save()
+	show("proc")
 	_self.apply_annotations(p_meth_node)
 	_local imports << _self.extract_import(p_meth_node)
 	_local body << _self.parse_body(p_meth_node.body)
+	show("end proc")
+	deco_envaccessor.restore(env)
+	
 	_local type << p_meth_node.type
 	_local m_node << dcn_proc.new(p_class_name, p_meth_node.name, args, scatter?, body, imports )
 	>> m_node
@@ -408,12 +441,12 @@ _method jpn_parser.apply_annotations(p_meth_node)
 					 )).an_element()
 	_if anno _isnt _unset
 	_then
-		deco_envaccessor.reset()
+		#deco_envaccessor.reset()
 		_for i_anno _over anno.value.fast_elements()
 		_loop
 			_local name << i_anno.property(:name).string_value
 			_local index << i_anno.property(:index).string_value
-			
+
 			deco_envaccessor.set_var_name(index, name)
 		_endloop 
 	_endif 
@@ -470,6 +503,29 @@ _method jpn_parser.parse_array_access(p_jnode)
 	##
 	_local args << _self.parse_args(p_jnode.args)
 	>> dcn_array_access.new(p_jnode.name, args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_operation(p_jnode)
+	##
+	_local left << _self.parse_expression(p_jnode.left)
+	_local right << _self.parse_expression(p_jnode.right)
+
+	_local op_map << equality_hash_table.new_with(
+				 "==", "=",
+				 "!=", "~=")
+	_local op << op_map[p_jnode.operation].default("crash!")
+
+	_if right.is_class_of?(dcn_constant) _andif (right.string_value = "null")
+	_then
+		right << dcn_constant.new_literal("_unset")
+		_local op_map << equality_hash_table.new_with(
+					 "==", "_is",
+					 "!=", "_isnt")
+		op << op_map[p_jnode.operation].default("crash!")
+	_endif 
+	>> dcn_op.new(op, left, right)
 _endmethod
 $
 

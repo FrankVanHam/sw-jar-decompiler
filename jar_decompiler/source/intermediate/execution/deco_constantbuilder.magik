@@ -23,6 +23,14 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_constantbuilder.maybebootstrap(p_parser, p_name_node)
+	##
+	>> dcn_constant.new_literal("_maybe")
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_constantbuilder.symbolbootstrap(p_parser, p_type_node, p_value_node)
 	##
 	_local type << p_type_node.string_value

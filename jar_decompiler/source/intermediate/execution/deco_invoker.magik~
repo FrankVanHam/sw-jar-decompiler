@@ -8,6 +8,20 @@ def_slotted_exemplar(:deco_invoker,
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_invoker.supernaturalbootstrap(p_parser, p_name_node, p_super_node, p_super_exemplar_node,
+					   p_self_node, _gather p_args)
+	_local args << rope.new()
+	_for i_arg _over p_args.fast_elements()
+	_loop
+		args.add(p_parser.parse_expression(i_arg))
+	_endloop
+	>> dcn_super.new(p_name_node.string_value, p_super_node.string_value, p_super_exemplar_node.string_value,
+			args)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_invoker.tuplebootstrapprivate(p_parser, p_method, p_sender, _gather p_args)
 	>> _self.bootstrap(p_parser, p_method, p_sender, _scatter p_args)
 _endmethod
@@ -108,3 +122,4 @@ _private _method deco_invoker.iter?(p_method, p_sender, _gather p_args)
 	   _endif
 _endmethod
 $
+

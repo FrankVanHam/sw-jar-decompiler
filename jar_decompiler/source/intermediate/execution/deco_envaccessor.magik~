@@ -12,54 +12,32 @@ def_slotted_exemplar(:deco_envaccessor,
 	}, :deco_execution_base)
 $
 
+
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method deco_envaccessor.var_names
-	>> _if .var_names _is _unset
-	   _then >> .var_names << equality_property_list.new()
-	   _else >> .var_names
-	   _endif
+_method deco_envaccessor.init()
+	.var_names << equality_property_list.new()
+	.cache << equality_property_list.new()
+	 >> _self 
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method deco_envaccessor.cache
-	>> _if .cache _is _unset
-	   _then >> .cache << equality_property_list.new()
-	   _else >> .cache
-	   _endif
-_endmethod
-$
-
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method deco_envaccessor.cache(p_index, p_value)
-	##
-	assert(p_index.is_class_of?(""))
-	assert(p_value.is_kind_of?(dcn_base))
-	_self.cache[p_index] << p_value
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method deco_envaccessor.from_cache(p_index)
-	##
-	assert(p_index.is_class_of?(""))
-	>> _self.cache[p_index]
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_envaccessor.set_var_name(p_index, p_name)
-	##
-	assert(p_index.is_class_of?(""))
-	assert(p_name.is_class_of?(""))
-	_self.var_names[p_index] << p_name
-_endmethod
+_block
+	deco_envaccessor.init()
+_endblock
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_envaccessor.reset()
 	.cache.empty()
+	.var_names.empty()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_envaccessor.set_var_name(p_index, p_value)
+	## 
+	.var_names[p_index] << p_value
+	.cache.remove_key(p_index)
 _endmethod
 $
 
@@ -70,7 +48,7 @@ _method deco_envaccessor.bootstrapreseter(p_parser, p_action, p_var, p_env, p_in
 		_local var << p_parser.parse_expression(p_var)
 		_local index << p_parser.parse_expression(p_index)
 
-		_self.cache(index.string_value, var)
+		.cache[index.string_value] << var
 	_endif 
 	>> dcn_no_op.new()
 _endmethod
@@ -82,12 +60,12 @@ _method deco_envaccessor.bootstrapstorer(p_parser, p_action, p_exp, p_env, p_ind
 	_then
 		_local index << p_parser.parse_expression(p_index)
 		
-		_local name << _self.var_names[index.string_value]
+		_local name << .var_names[index.string_value]
 		_local left  << dcn_local_declaration.new(name, "Object")
 		_local left_local  << dcn_local.new("Object", name)
 		_local right << p_parser.parse_expression(p_exp)
 		
-		_self.cache(index.string_value, left_local)
+		.cache[index.string_value] << left_local
 		
 		_return dcn_local_assignment.new(left, right)
 	_endif 
@@ -101,8 +79,8 @@ _method deco_envaccessor.bootstrapfetcher(p_parser, p_action, p_env, p_index)
 	_then 
 		_local index << p_parser.parse_expression(p_index)
 
-		_local name << _self.var_names[index.string_value]
-		_local loc << _self.from_cache(index.string_value)
+		_local name << .var_names[index.string_value]
+		_local loc << .cache[index.string_value]
 
 		_if loc _isnt _unset
 		_then
@@ -113,5 +91,23 @@ _method deco_envaccessor.bootstrapfetcher(p_parser, p_action, p_env, p_index)
 	_else 
 		_return dcn_no_op.new()
 	_endif 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_envaccessor.save()
+	##
+	>> property_list.new_with(
+		   :var_names, .var_names.copy(),
+		   :cache, .cache.copy() )
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_envaccessor.restore(p_props)
+	##
+	.var_names << p_props[:var_names]
+	.cache << p_props[:cache]
 _endmethod
 $

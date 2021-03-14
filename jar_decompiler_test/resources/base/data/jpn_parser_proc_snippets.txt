@@ -149,7 +149,7 @@ public class deco_test_4001 {
     @Debugger(value="MagikDebug")
     @CodeType(value="Method")
     @EnvVars(value={@EnvVar(name="arg", type=Object.class, start=13, end=62, index=1)})
-    public static Object deco_test__test_inline_proc(Object _self, Object arg) {
+    public static Object deco_test__test_inline_import_proc(Object _self, Object arg) {
         Object[] __env__ = new Object[2];
         EnvAccessor.bootstrapReseter("resetEnv", (Object)arg, (Object[])__env__, (int)1);
         Object[] objectArray = new Object[]{__env__[1]};
@@ -159,7 +159,7 @@ public class deco_test_4001 {
         return ResultTuple.EMPTY_TUPLE;
     }
 
-    @Parent(method="deco_test__test_inline_proc")
+    @Parent(method="deco_test__test_inline_import_proc")
     @SourceHash(value=1453829367)
     @Debugger(value="MagikDebug")
     @CodeType(value="Proc")
@@ -183,7 +183,7 @@ implements ExecutableMagik {
     @Debugger(value="MagikDebug")
     @CodeType(value="TopLevel")
     public Object execute() {
-        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "test_inline_proc()", deco_test_4001.class, "deco_test__test_inline_proc", 2, 2));
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "test_inline_import_proc()", deco_test_4001.class, "deco_test__test_inline_import_proc", 2, 2));
     }
 
     @Override
@@ -191,7 +191,7 @@ implements ExecutableMagik {
     }
 }
 #############
-_method deco_test.test_inline_proc(arg) 
+_method deco_test.test_inline_import_proc(arg) 
      _local a_proc << _proc(a)
         _import arg
             _self.use(a, arg)

@@ -18,3 +18,4 @@ deco_thrower
 deco_cloner
 deco_double
 deco_boolean
+deco_loopbodyinvoker

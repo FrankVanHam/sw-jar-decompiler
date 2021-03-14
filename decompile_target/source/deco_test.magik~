@@ -3,23 +3,105 @@ $
 remex(:deco_test)
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:deco_test,
-	{}
-)
-#,
-#	{:model, :sw_action},
-#	{_class |com.gesmallworld.magik.language.MagikFinalisable|}
-#)
+	{},
+	:model)
 $
 
-deco_test.define_pseudo_slot(:slot_a)
+_method deco_test.test_variable_block(p_value)
+	_local a << p_value[1]
+	_local b << p_value[1,2]
+	_local c << p_value[1,2,3]
+	_local d << p_value[1,2,3,4]
+
+	show(a,b,c,d)
+_endmethod
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_test.test_basic_slot_access()
-	.slot_a << 1
-	_self.run(.slot_a)
-	.slot_a +<< 1
+_method deco_test.test_variable_block_assign(p_value)
+	_local a << p_value[1] << 1
+	_local b << p_value[1,2] << 1
+	_local c << p_value[1,2,3] << 1
+	_local d << p_value[1,2,3,4] << 1
+
+	show(a,b,c,d)
+_endmethod
+$
+
+_method deco_test.test_variable_block_boot_assign(p_value)
+	_local a << p_value[1] ^<< 1
+	_local b << p_value[1,2] ^<< 1
+	_local c << p_value[1,2,3] ^<< 1
+	_local d << p_value[1,2,3,4] ^<< 1
+
+	show(a,b,c,d)
+_endmethod
+$
+_method deco_test.test_method_block(p_value)
+	_local a << _self.value[1]
+	_local b << _self.value[1,2]
+	_local c << _self.value[1,2,3]
+	_local d << _self.value[1,2,3,4]
+
+	show(a,b,c,d)
+_endmethod
+$
+
+_method deco_test.test_method_block_assign(p_value)
+	_local a << _self.value[1] << 1
+	_local b << _self.value[1,2] << 1
+	_local c << _self.value[1,2,3] << 1
+	_local d << _self.value[1,2,3,4] << 1
+
+	show(a,b,c,d)
+_endmethod
+$
+
+_method deco_test.test_method_block_boot_assign(p_value)
+	_local a << _self.value[1] ^<< 1
+	_local b << _self.value[1,2] ^<< 1
+	_local c << _self.value[1,2,3] ^<< 1
+	_local d << _self.value[1,2,3,4] ^<< 1
+
+	show(a,b,c,d)
+_endmethod
+$
+
+_method deco_test.test_parenthesis(p_value)
+	_local a << _self.value(1)
+	_local b << _self.value(1,2)
+	_local c << _self.value(1,2,3)
+	_local d << _self.value(1,2,3,4)
+
+	show(a,b,c,d)
+_endmethod
+$
+
+_method deco_test.test_parenthesis_assign(p_value)
+	_local a << _self.value(1) << 1
+	_local b << _self.value(1,2) << 1
+	_local c << _self.value(1,2,3) << 1
+	_local d << _self.value(1,2,3,4) << 1
+
+	show(a,b,c,d)
+_endmethod
+$
+
+_method deco_test.test_parenthesis_boot_assign(p_value)
+	_local a << _self.value(1) ^<< 1
+	_local b << _self.value(1,2) ^<< 1
+	_local c << _self.value(1,2,3) ^<< 1
+	_local d << _self.value(1,2,3,4) ^<< 1
+
+	show(a,b,c,d)
+_endmethod
+$
+
+_method deco_test.test_method(p_value)
+	_local a << _self.value
+	_local b << _self.value << 1
+	_local c << _self.value ^<< 1
+
+	show(a,b,c)
 _endmethod
 $

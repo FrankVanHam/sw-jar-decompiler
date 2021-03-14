@@ -34,6 +34,19 @@ _method dcn_base.new(_gather p_args)
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.makereturn(p_parser, p_exp_node)
+	_local exp << p_parser.parse_expression(p_exp_node)
+	>> dcn_return.new(exp)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.getreturnresult()
+	##
+	>> dcn_no_op.new()
+_endmethod
+$
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_base.decode_on(a_stream, _optional parent, statements)

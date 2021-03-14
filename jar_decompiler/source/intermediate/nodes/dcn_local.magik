@@ -56,36 +56,6 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local.makeleave(p_parser, _gather p_args)
-	##
-	>> dcn_unfinished_break.new(_self)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local.getleaveresult(p_parser, p_leave)
-	##
-	#_local exp << p_parser.parse_expression(p_leave)
-	>> dcn_leave_result.new(_self)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local.getcontinueresult(p_parser, p_leave)
-	##
-	#_local exp << p_parser.parse_expression(p_leave)
-	>> dcn_continue_result.new(_self)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local.makecontinue(p_parser, _gather p_args)
-	##
-	>> dcn_unfinished_continue.new(_self)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
 _method dcn_local.is_type?(p_type)
 	>> _false 
 _endmethod

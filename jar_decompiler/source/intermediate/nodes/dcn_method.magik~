@@ -54,7 +54,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_method.bind_names(p_exemplar_name, p_method_name, p_nr_args, p_mandatory_args, p_private?, p_abstract? )
+_method dcn_method.bind(p_exemplar_name, p_method_name, p_nr_args, p_mandatory_args, p_private?, p_abstract? )
 	##
 	.exemplar_name << p_exemplar_name
 	.name << p_method_name

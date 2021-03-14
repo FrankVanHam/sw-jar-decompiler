@@ -399,11 +399,13 @@ _method java_parser.parse_expression(_optional p_identifier?, p_end_value)
 		_elif lex.is_operator?("?")
 		_then
 			.scanner.get()
-			_local if_true << _self.parse_expression(_unset, ":")
+			_local then << _self.parse_expression(_unset, ":")
+			_local then_body << dcn_body.new({then})
 			_self.ensure_operator(":")
-			_local if_false << _self.parse_expression()
+			_local else << _self.parse_expression()
+			_local else_body << dcn_body.new({else})
 
-			exp << jpn_if.new({{exp,if_true}, {_unset, if_false}})
+			exp << jpn_if.new({{exp,then_body}, {_unset, else_body}})
 
 		_elif lex.is_operator?(":")
 		_then

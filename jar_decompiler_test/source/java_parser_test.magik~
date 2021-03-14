@@ -756,8 +756,8 @@ _method java_parser_test.test_conditional_operator()
 	_local m << p.parse_expression()
 	_self.assert_true(m.is_kind_of?(deco:jpn_assignment), "should be an assignment")
 	_self.assert_equals("a", m.right.condition.name)
-	_self.assert_equals("b", m.right.then.name)
-	_self.assert_equals("c", m.right.else.name)
+	_self.assert_equals("b", m.right.then.statements[1].name)
+	_self.assert_equals("c", m.right.else.statements[1].name)
 _endmethod
 $
 
@@ -774,3 +774,35 @@ _method java_parser_test.test_conditional_operator1()
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_conditional()
+	##
+	_local inp << write_string("return the_soc != null ? (ResultTuple)(x) : null;")
+	#inp << write_string("return the_soc != null ? x : null;")
+	inp << inp.substitute_character(%', %")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	p.define_locals("x")
+	_local jpn_exp << p.parse_statement()
+	_self.assert_true(jpn_exp.is_kind_of?(deco:jpn_return), "should be a return")
+	show(jpn_exp.expression)
+	jpn_exp.expression.dp
+	_self.assert_true(jpn_exp.expression.is_kind_of?(deco:jpn_if), "should be an if")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_conditional2()
+	##
+	_local inp << write_string("return the_soc != null ? x : null;")
+	inp << inp.substitute_character(%', %")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	p.define_locals("x")
+	_local jpn_exp << p.parse_statement()
+	_self.assert_true(jpn_exp.is_kind_of?(deco:jpn_return), "should be a return")
+	show(jpn_exp.expression)
+	jpn_exp.expression.dp
+	_self.assert_true(jpn_exp.expression.is_kind_of?(deco:jpn_if), "should be an if")
+_endmethod
+$

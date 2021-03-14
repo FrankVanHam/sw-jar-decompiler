@@ -1,0 +1,197 @@
+## jpn_test_simple_elements
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4050 {
+@SourceHash(value=1728415482)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__simple_elements(MethodHandle __loopbody__, Object[] __loopenv__, Object _self) {
+        LoopBodyInvoker.naturalBootstrap("_loopbody", (MethodHandle)__loopbody__, (Object[])__loopenv__, (Object)1);
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4049
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_4049() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "simple_elements()", deco_test_4050.class, "deco_test__simple_elements", 3, 3, true, false, false, 0);
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+#########
+_iter _method deco_test.simple_elements() 
+    _loopbody (1)
+    _return _unset
+_endmethod
+$
+#########
+## jpn_test_scatter_elements
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4050 {
+    @SourceHash(value=662400511)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__scatter_elements(MethodHandle __loopbody__, Object[] __loopenv__, Object _self) {
+        CallSite a = Invoker.bootstrapPrivate("vars()", (Object)_self);
+        LoopBodyInvoker.naturalBootstrap("_loopbody", (MethodHandle)__loopbody__, (Object[])__loopenv__, (Object)1, (Object[])((Object[])Invoker.bootstrapPrivate("for_scatter()", (Object)a)));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4049
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_4049() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "scatter_elements()", deco_test_4050.class, "deco_test__scatter_elements", 3, 3, true, false, false, 0);
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+#########
+_iter _method deco_test.scatter_elements() 
+     _local a << _self.vars()
+    _loopbody (1, ( _scatter a))
+    _return _unset
+_endmethod
+$
+#########
+## jpn_test_return_elements
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4050 {
+    @SourceHash(value=-154958866)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__return_elements(MethodHandle __loopbody__, Object[] __loopenv__, Object _self) {
+        LoopBodyInvoker.naturalBootstrap("_loopbody", (MethodHandle)__loopbody__, (Object[])__loopenv__, (Object)ConstantBuilder.stringBootstrap("string", "var"));
+        return (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("result()", (Object)_self));
+    }
+}
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4049
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_4049() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "return_elements()", deco_test_4050.class, "deco_test__return_elements", 3, 3, true, false, false, 0);
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+#########
+_iter _method deco_test.return_elements() 
+    _loopbody ("var")
+    _return _self.result()
+_endmethod
+$
+#########
+## jpn_test_fast_elements
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4050 {
+    @SourceHash(value=-687848677)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    @EnvVars(value={@EnvVar(name="__dynamic_frame__", type=Object.class, start=13, end=39, index=0)})
+    public static Object deco_test__fast_elements(MethodHandle __loopbody__, Object[] __loopenv__, Object _self) {
+        Object[] __env__ = new Object[1];
+        EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)0);
+        EnvAccessor.bootstrapStorer("storeEnv", (Object)DynamicScope.getFrame(), (Object[])__env__, (int)0);
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("elements()", (MethodHandle)cfr_ldc_0(), (Object[])__env__, (Object)_self));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @Parent(method="deco_test__fast_elements")
+    @Debugger(value="MagikDebug")
+    @CodeType(value="LoopBody")
+    public static Object __loopbody_(Object[] __env__, Object el) {
+        ResultTuple resultTuple;
+        DynamicScope __iterator_frame__ = DynamicScope.interjectFrame((DynamicScope)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0)));
+        try {
+            LoopBodyInvoker.naturalBootstrap("_loopbody", (MethodHandle)((MethodHandle)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)2))), (Object[])((Object[])EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1)), (Object)el);
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.interjectFrame(__iterator_frame__);
+            throw throwable;
+        }
+        DynamicScope.interjectFrame(__iterator_frame__);
+        return resultTuple;
+    }
+
+    /*
+     * Works around MethodHandle LDC.
+     */
+    static MethodHandle cfr_ldc_0() {
+        try {
+            return MethodHandles.lookup().findStatic(deco_test_4050.class, "__loopbody_", MethodType.fromMethodDescriptorString("([Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null));
+        }
+        catch (NoSuchMethodException | IllegalAccessException except) {
+            throw new IllegalArgumentException(except);
+        }
+    }
+
+}
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4049
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_4049() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "fast_elements()", deco_test_4050.class, "deco_test__fast_elements", 3, 3, true, false, false, 0));
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+#########
+_iter _method deco_test.fast_elements() 
+    _for el _over _self.elements()
+    _loop
+        _loopbody (el)
+    _endloop
+    _return _unset
+_endmethod
+$
+#########
