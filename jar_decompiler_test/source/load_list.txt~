@@ -21,3 +21,4 @@ jpn_parser_proc_snippet_test
 jpn_parser_trial_snippet_test
 jpn_parser_slot_snippet_test
 jpn_parser_hierarchy_snippet_test
+jpn_parser_iter_definition_snippet_test

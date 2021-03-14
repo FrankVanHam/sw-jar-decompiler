@@ -83,3 +83,4 @@ dcn_global_declaration
 dcn_array_access
 dcn_vector
 dcn_init
+dcn_dynamic_declaration

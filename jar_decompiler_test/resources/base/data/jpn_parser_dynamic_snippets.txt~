@@ -1,0 +1,179 @@
+## jpn_method_test_dynamic_declare()
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4018 {
+    @SourceHash(value=1807484454)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__dynamic_declare(Object _self) {
+        ResultTuple resultTuple;
+        DynamicAccessor.bootstrapBinder("!current_new!", "user", 1);
+        try {
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.destroyFrame();
+            throw throwable;
+        }
+        DynamicScope.destroyFrame();
+        return resultTuple;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4017
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_4017() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "dynamic_declare()", deco_test_4018.class, "deco_test__dynamic_declare", 1, 1);
+    }
+
+    @Override
+    public void preload() {
+    }
+#########
+#########
+## jpn_method_test_dynamic_assign()
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4018 {
+    @SourceHash(value=-1231838915)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__dynamic_assign(Object _self, Object p_arg) {
+        ResultTuple resultTuple;
+        DynamicAccessor.bootstrapBinder("!current_sts!", "sw", 1);
+        DynamicAccessor.bootstrapBinder("!curent_world!", "user", 0);
+        DynamicAccessor.bootstrapBinder("!current_dsview!", "sw", 0);
+        try {
+            DynamicAccessor.bootstrapStorer("!current_dsview!", "sw", (Object)_self);
+            DynamicAccessor.bootstrapStorer("!current_sts!", "sw", (Object)p_arg);
+            DynamicAccessor.bootstrapStorer("!curent_world!", "user", (Object)Invoker.bootstrapPrivate("world", (Object)_self));
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.destroyFrame();
+            throw throwable;
+        }
+        DynamicScope.destroyFrame();
+        return resultTuple;
+    }
+}
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4017
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_4017() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "dynamic_assign()", deco_test_4018.class, "deco_test__dynamic_assign", 2, 2);
+    }
+
+    @Override
+    public void preload() {
+    }
+#########
+#########
+## jpn_method_test_dynamic_use()
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4018 {
+    @SourceHash(value=-288566702)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__dynamic_use(Object _self) {
+        ResultTuple resultTuple;
+        DynamicAccessor.bootstrapBinder("!current_new!", "user", 1);
+        try {
+            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("do()", (Object)DynamicAccessor.bootstrapFetcher("!current_new!", "user")));
+            ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("run()", (Object)_self, (Object)DynamicAccessor.bootstrapFetcher("!current_new!", "user")));
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.destroyFrame();
+            throw throwable;
+        }
+        DynamicScope.destroyFrame();
+        return resultTuple;
+    }
+}
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4017
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_4017() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "dynamic_use()", deco_test_4018.class, "deco_test__dynamic_use", 1, 1);
+    }
+
+    @Override
+    public void preload() {
+    }
+#########
+#########
+## jpn_method_test_dynanmic_local_use()
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4018 {
+    @SourceHash(value=116181868)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__dyanmic_local_use(Object _self) {
+        if (MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("test?", (Object)_self))) {
+            DynamicAccessor.bootstrapBinder("!current_new!", "user", 1);
+            try {
+                DynamicAccessor.bootstrapStorer("!current_new!", "user", (Object)2);
+                ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("run()", (Object)_self));
+            }
+            catch (Throwable throwable) {
+                DynamicScope.destroyFrame();
+                throw throwable;
+            }
+            DynamicScope.destroyFrame();
+        }
+        ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("run()", (Object)_self));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4017
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_4017() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "dyanmic_local_use()", deco_test_4018.class, "deco_test__dyanmic_local_use", 1, 1));
+    }
+
+    @Override
+    public void preload() {
+    }
+#########
+#########

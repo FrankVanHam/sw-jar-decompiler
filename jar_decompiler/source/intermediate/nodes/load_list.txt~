@@ -82,3 +82,4 @@ dcn_unfinished_throw
 dcn_global_declaration
 dcn_array_access
 dcn_vector
+dcn_init

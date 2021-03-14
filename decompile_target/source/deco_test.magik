@@ -10,34 +10,41 @@ def_slotted_exemplar(:deco_test,
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_iter _method deco_test.simple_elements()
-	##
-	_loopbody(1)
+_method deco_test.dynamic_declare()
+	## 
+	_dynamic !current_new!
+	
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_iter _method deco_test.scatter_elements()
-	##
-	_local a << _self.vars()
-	_loopbody(1, _scatter a)
+_method deco_test.dynamic_assign(p_arg)
+	## 
+	_dynamic !current_dsview! << _self
+	_dynamic !current_sts! << p_arg
+	
+	_dynamic !curent_world! << _self.world
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_iter _method deco_test.return_elements()
+_method deco_test.dynamic_use()
 	##
-	_loopbody("var")
-	_return _self.result()
+	_dynamic !current_new!
+	!current_new!.do()
+	_self.run(!current_new!)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_iter _method deco_test.fast_elements()
+_method deco_test.dyanmic_local_use()
 	##
-	_for el _over _self.elements()
-	_loop
-		_loopbody(el)
-	_endloop 
+	_if _self.test?
+	_then
+		_dynamic !current_new! << 2
+		_self.run()
+	_endif
+	_self.run()
 _endmethod
 $
+

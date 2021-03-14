@@ -26,8 +26,8 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_scatter.decode_on(p_stream, _optional p_par?)
-	_local par? << p_par?.default(_false)
+_method dcn_scatter.decode_on(p_stream)
+	_local par? << _true 
 	_if par? _then p_stream.write("(") _endif 
 	p_stream.write(" _scatter ")
 	.expression.decode_on(p_stream)
@@ -38,6 +38,6 @@ $
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_scatter.remainder()
 	##
-	>> dcn_gather.new(_self)
+	>> dcn_gathered.new(_self)
 _endmethod
 $

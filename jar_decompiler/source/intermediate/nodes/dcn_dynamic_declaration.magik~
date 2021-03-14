@@ -49,6 +49,7 @@ $
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_dynamic.decode_on( a_stream )
+	a_stream.write( "_dynamic " )
 	a_stream.write( .package, ":", .name)
 _endmethod
 $
