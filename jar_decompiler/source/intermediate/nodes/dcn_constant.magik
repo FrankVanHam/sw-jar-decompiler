@@ -83,7 +83,13 @@ _method dcn_constant.decode_on(p_stream)
 		p_stream.write(%", .string_value, %")
 	_elif .type _is :symbol
 	_then
-		p_stream.write(%:, .string_value)
+		_if .string_value.includes?(%() _orif
+		    .string_value.includes?(%[)
+		_then
+			p_stream.write(%:, %|, .string_value, %|)
+		_else 
+			p_stream.write(%:, .string_value)
+		_endif 
 	_elif .type _is :number
 	_then
 		p_stream.write(.string_value)

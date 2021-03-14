@@ -19,12 +19,12 @@ _package deco
 $
 
 
-#remex(:dcn_dynamic)
+#remex(:dcn_dynamic_declaration)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
 ## a node for storing a dynamic value.
-def_slotted_exemplar(:dcn_dynamic,
+def_slotted_exemplar(:dcn_dynamic_declaration,
 		     {
 			     {:package,    _unset},
 			     {:name,       _unset}
@@ -32,14 +32,14 @@ def_slotted_exemplar(:dcn_dynamic,
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_dynamic.new(p_name, p_package)
+_method dcn_dynamic_declaration.new(p_name, p_package)
 	##
 	>> _clone.init(p_name, p_package)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_dynamic.init(p_name, p_package)
+_private _method dcn_dynamic_declaration.init(p_name, p_package)
 	##
 	.name << p_name
 	.package << p_package
@@ -48,7 +48,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_dynamic.decode_on( a_stream )
+_method dcn_dynamic_declaration.decode_on( a_stream )
 	a_stream.write( "_dynamic " )
 	a_stream.write( .package, ":", .name)
 _endmethod

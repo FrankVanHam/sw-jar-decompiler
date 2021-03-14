@@ -196,6 +196,11 @@ _method jpn_parser.parse_new(p_jnode)
 	_if p_jnode.type = "Boolean"
 	_then
 		_return _self.parse_expression(p_jnode.args[1])
+	_elif p_jnode.type = "Object" _andif
+	      p_jnode.array?
+	_then
+		_local args << _self.parse_args(p_jnode.args)
+		_return dcn_vector.new(args)
 	_else
 		_local args << _self.parse_args(p_jnode.args)
 		_return dcn_new.new(p_jnode.type, args, p_jnode.array?)
@@ -277,6 +282,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_class(p_class_node)
+	deco_envaccessor.reset()
 	.top.add_java_class(p_class_node)
 	_if p_class_node.implementation = "ExecutableMagik"
 	_then
@@ -367,6 +373,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_method(p_class_name, p_meth_node)
 	##
+	show("###", :parse_method, p_class_name, p_meth_node.name)
 	# strip all upto the self "Object _self" argument
 	_local idx << _unset
 	_local iter? << _false

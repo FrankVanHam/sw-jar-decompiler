@@ -41,16 +41,18 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_handling_builder_visitor.accept(p_body)
 	##
 	_local sts << p_body.statements
-	_local prev << _unset 
+	_local prev << _unset
+#	_if sts.size>3
+#	_then 
+#		_global x
+#		x << sts
+#		2.stop
+#	_endif 
 	_for i_index, i_node _over sts.fast_keys_and_elements()
 	_loop
 		_local handling? << _self.should_convert?(i_node, prev)
 		_if handling?
-		_then
-#			_global x
-#			x << sts
-#			888.stop
-			
+		_then			
 			sts[i_index] << _self.convert(i_node)
 			sts[i_index-1] << dcn_no_op.new()
 		_endif
@@ -127,7 +129,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_handling_builder_visitor.should_convert?(p_node, p_prev)
 	##
 	_if p_prev _is _unset _then _return _false, :no_prev _endif
-	_if p_prev.is_class_of?(dcn_dynamic_store).not _then _return _false, :no_store_before _endif
+	_if p_prev.is_class_of?(dcn_dynamic_declaration).not _then _return _false, :no_store_before _endif
 	_if p_prev.name <> "!sys!condition_handler_cluster!"  _then _return _false, :no_handler _endif
 	
 	_if p_node.is_class_of?(dcn_unfinished_try).not _then _return _false, :dcn_unfinished_try _endif

@@ -367,8 +367,32 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_method(p_class_name, p_meth_node)
 	##
-	_local java_args << p_meth_node.args.copy()
-	_if java_args.empty?.not _then java_args.remove_first() _endif
+	# strip all upto the self "Object _self" argument
+	_local idx << _unset
+	_local iter? << _false
+	_if .in_loopbody?
+	_then
+		#public static Object __loopbody_(Object[] __env__, Object i_var) {}
+		idx << 1
+	_elif p_meth_node.args.empty?.not
+	_then
+		_local first << p_meth_node.args.first
+		_if first.type.name = "MethodHandle" _andif
+		    first.name = "__loopbody__"
+		_then
+			# public static Object deco_test__fast_elements(MethodHandle __loopbody__, Object[] __loopenv__, Object _self) {}
+			idx << 3
+			iter? << _true 
+		_else
+			#public static Object deco_test__fast_elements(Object _self, Object p_var) {}
+			idx << 1
+		_endif
+	_endif
+	
+	_local 	java_args << _if idx _isnt _unset
+			     _then >> p_meth_node.args.slice_to_end(idx+1)
+			     _else >> p_meth_node.args.copy()
+			     _endif 
 
 	_local scatter? << _if java_args.empty?.not
 			   _then >> java_args.last.varargs?
@@ -384,7 +408,7 @@ _method jpn_parser.parse_method(p_class_name, p_meth_node)
 	deco_envaccessor.restore(env)
 	
 	_local type << p_meth_node.type
-	_local m_node << dcn_method.new(p_class_name, p_meth_node.name, args, scatter?, body, type )
+	_local m_node << dcn_method.new(p_class_name, p_meth_node.name, args, scatter?, body, type, iter? )
 	>> m_node
 _endmethod
 $

@@ -64,10 +64,16 @@ _method jpn_ignore_assignment_visitor.is_env_slicer?(p_node)
 	##
 	# Ignore Object[] objectArray = new Object[]{__env__[1]};
 	_if p_node.is_class_of?(dcn_local_assignment).not _then _return _false, :no_assignment _endif
-	_if p_node.expression.is_class_of?(dcn_new).not _then _return _false, :no_new _endif
-	_if p_node.expression.array?.not _then _return _false, :no_arr _endif
-	_if p_node.expression.args.empty? _then _return _false, :need_args _endif
-
-	>> p_node.expression.args[1].name = "__env__" 
+	
+	_if p_node.expression.is_class_of?(dcn_vector).not _then _return _false, :no_new _endif
+	_if p_node.expression.values.empty? _then _return _false, :need_args _endif
+	>> p_node.expression.values[1].name = "__env__" 
+	
+#	
+#	_if p_node.expression.is_class_of?(dcn_new).not _then _return _false, :no_new _endif
+#	_if p_node.expression.array?.not _then _return _false, :no_arr _endif
+#	_if p_node.expression.args.empty? _then _return _false, :need_args _endif
+#
+#	>> p_node.expression.args[1].name = "__env__" 
 _endmethod
 $

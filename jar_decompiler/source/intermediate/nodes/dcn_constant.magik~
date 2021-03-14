@@ -89,7 +89,12 @@ _method dcn_constant.decode_on(p_stream)
 		p_stream.write(.string_value)
 	_elif .type _is :literal
 	_then
-		p_stream.write(.string_value)
+		_if .string_value = "null"
+		_then
+			p_stream.write("_unset")
+		_else 
+			p_stream.write(.string_value)
+		_endif 
 	_elif .type _is :proc
 	_then
 		p_stream.write(.string_value)

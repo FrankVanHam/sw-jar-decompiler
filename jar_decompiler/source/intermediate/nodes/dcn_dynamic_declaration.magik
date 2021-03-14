@@ -26,8 +26,8 @@ _pragma(classify_level=restricted, topic={decompiler})
 ## a node for storing a dynamic value.
 def_slotted_exemplar(:dcn_dynamic_declaration,
 		     {
-			     {:package,    _unset},
-			     {:name,       _unset}
+			     {:package,    _unset, :readable},
+			     {:name,       _unset, :readable}
 		     }, :dcn_base)
 $
 
