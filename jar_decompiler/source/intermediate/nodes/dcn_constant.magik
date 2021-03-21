@@ -54,6 +54,13 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
+_method dcn_constant.new_character(p_value)
+	##
+	>> _clone.init(:character, p_value)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
 _method dcn_constant.new_literal(p_value)
 	##
 	>> _clone.init(:literal, p_value)
@@ -93,6 +100,9 @@ _method dcn_constant.decode_on(p_stream)
 	_elif .type _is :number
 	_then
 		p_stream.write(.string_value)
+	_elif .type _is :character
+	_then
+		p_stream.write(%%,.string_value)
 	_elif .type _is :literal
 	_then
 		_if .string_value = "null"

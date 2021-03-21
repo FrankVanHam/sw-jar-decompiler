@@ -671,6 +671,19 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_void_type()
+	##
+	_local inp << write_string("void obj;")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	_local m << p.parse_expression()
+	
+	_self.assert_true(m.is_kind_of?(deco:jpn_declaration), "should be a local declaration")
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_assign_typed_local_with_local()
 	_local inp << write_string("Object obj = a;")
 	inp << inp.substitute_character(%', %")

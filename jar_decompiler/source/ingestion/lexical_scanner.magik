@@ -79,6 +79,10 @@ _method lexical_scanner.get()
 			_then
 				_self.get_char()
 				_return _self.get_string()
+			_elif char = %'
+			_then
+				_self.get_char()
+				_return _self.get_character()
 			_elif char = %@
 			_then
 				_return _self.get_annotation()
@@ -150,6 +154,25 @@ _method lexical_scanner.get_string()
 	>> lexeme.new_string(_self.get_upto(%"), .line, .column)
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.get_character()
+	##
+	_local str << _unset 
+	_local char << _self.peek_char()
+	_if char = %\
+	_then
+		_self.get_char() #\
+		str << _self.get_char().write_string
+		_self.get_char() #'
+	_else
+		str << _self.get_char().write_string
+		_self.get_char() #'
+	_endif 
+	>> lexeme.new_string(str, .line, .column)
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexical_scanner.get_annotation()

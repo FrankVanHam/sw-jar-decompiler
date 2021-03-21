@@ -1,0 +1,26 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:java_context,
+	{
+		{:parent, _unset},
+		{:locals, _unset}
+	})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_context.new(_optional p_parent)
+	##
+	>> _clone.init(p_parent)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_context.init(p_parent)
+	## 
+	.parent << p_parent
+	.locals << equality_hash_table.new()
+	>> _self 
+_endmethod
+$

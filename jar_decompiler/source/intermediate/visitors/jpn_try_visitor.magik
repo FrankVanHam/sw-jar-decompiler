@@ -70,7 +70,12 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_try_visitor.extract_condition(p_cond) 
 	##
-	>> p_cond.args[1].string_value
+	_if p_cond.is_class_of?(dcn_not)
+	_then
+		>> p_cond.expression.args[1].string_value
+	_else
+		>> p_cond.args[1].string_value
+	_endif 
 _endmethod
 $
 

@@ -78,6 +78,22 @@ _method dcn_base.makecontinue(p_parser, _gather p_args)
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.pop()
+	##
+	>> dcn_pop.new(_self)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.clone()
+	## 
+	## 
+	>> _self 
+_endmethod
+$
+
+
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_base.decode_on(a_stream, _optional parent, statements)
@@ -200,7 +216,6 @@ _method dcn_base.callable?
 	_return _false 
 _endmethod
 $
-
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_base.is_local?
 	_return _false 

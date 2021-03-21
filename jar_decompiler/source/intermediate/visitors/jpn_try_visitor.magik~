@@ -40,8 +40,9 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_try_visitor.convert_to_try(p_node) 
 	##
-	_local cond << p_node.body.statements[1].name 
-	_local sts << p_node.body.statements[8].try_body.statements[1].try_body.statements[2].try_body.statements
+	_local body_sts << p_node.body.statements
+	_local cond << body_sts[1].name 
+	_local sts << body_sts[body_sts.size-1].try_body.statements[1].try_body.statements[2].try_body.statements
 	_local idx << 1
 	_for i_idx, i_stat _over sts.fast_keys_and_elements()
 	_loop
@@ -54,7 +55,7 @@ _method jpn_try_visitor.convert_to_try(p_node)
 	_local actual_sts << sts.slice(idx, sts.size-1)
 
 	_local inp << rope.new() 
-	_local br << p_node.body.statements[9]
+	_local br << p_node.body.statements.last
 	_for i_tag, i_cond, i_body _over br.condition_and_bodies()
 	_loop
 		_if i_tag = :if _orif i_tag = :elif 
@@ -81,13 +82,12 @@ _method jpn_try_visitor.is_try?(p_node)
 	# deco:x[1].body.statements[8].try_body.statements[1].try_body.statements[1].name
 
 	_if p_node.is_kind_of?(dcn_block).not _then _return _false, :first_block _endif
-	_if p_node.body.statements.size < 8 _then _return _false, :not_enough_statements _endif
-	_local sec << p_node.body.statements[2]
-	_if sec.is_kind_of?(dcn_local_assignment).not _then _return _false, :no_assignment_on_2 _endif
-	
-	_local loc << sec.only_local()
-	_if loc _is _unset _then _return _false, :no_local _endif
-	
-	_return loc.name =  "__env__"
+	_local sts << p_node.body.statements
+	_if sts.size < 8 _then _return _false, :not_enough_statements _endif
+
+	_if sts[sts.size-1].is_kind_of?(dcn_unfinished_try).not _then _return _false, :second_last_should_be_unfinished _endif
+	_if sts[sts.size-2].is_kind_of?(dcn_dynamic_store).not _then _return _false, :third_last_should_be_dynamic _endif
+
+	_return _true 
 _endmethod
 $

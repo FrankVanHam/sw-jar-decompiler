@@ -415,11 +415,12 @@ _method java_parser.parse_expression(_optional p_identifier?, p_end_value, p_ope
 				
 		_elif lex.is_operator?(":") _andif (p_operator <> "?")
 		_then
-			show(:p_operator, p_operator)
 			_return _self.parse_block(exp)
 
 		_elif lex.is_operator?("!=") _orif
-		      lex.is_operator?("==")
+		      lex.is_operator?("==") _orif
+		      lex.is_operator?("||")_orif
+		      lex.is_operator?("&&")
 		_then
 			exp << _self.parse_test(exp)
 			
@@ -761,6 +762,13 @@ _method java_parser.parse_try()
 	_else
 		catch_args << {}
 		catch_body << jpn_body.new()
+	_endif
+	lex << .scanner.peek()
+	_if lex.is_separator?("{")
+	_then
+		_self.ensure_separator("{")
+		_self.parse_body()
+		_self.ensure_separator("}")
 	_endif 
 	>> jpn_try.new(try_body, catch_args, catch_body, finally_body)
 _endmethod

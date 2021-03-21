@@ -1,0 +1,80 @@
+_package user
+$
+
+#remex(:java_parser_local_test)
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+def_slotted_exemplar(:java_parser_local_test,
+	{},
+	:deco_test_case)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_local_test.test_just_type()
+	##
+	_local s << _self.create_input(
+			      "public static Object a_method() {", 
+			      "this.show(type);", 
+			      "}")
+	_local p << deco:java_parser.new(s)
+	_local met_node << p.parse_method("a_class")
+	_self.assert_true(met_node.is_class_of?(deco:jpn_method), "should be an method")
+
+	_local stat_node << met_node.body.statements[1]
+	_self.assert_true(stat_node.is_class_of?(deco:jpn_method_invocation), "should be an invation")
+	_self.assert_true(stat_node.args[1].is_class_of?(deco:jpn_type), "should be type")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_local_test.test_var()
+	##
+	_local s << _self.create_input(
+			      "public static Object a_method() {",
+			      "Object type;",
+			      "this.show(type);", 
+			      "}")
+	_self.assert_local(s)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_local_test.test_parameters()
+	##
+	_local s << _self.create_input(
+			      "public static Object a_method(Object type) {",
+			      "this.show(type);", 
+			      "}")
+	_self.assert_local(s)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_private _method java_parser_local_test.assert_local(p_stream)
+	_local p << deco:java_parser.new(p_stream)
+	_local met_node << p.parse_method("a_class")
+	_self.assert_true(met_node.is_class_of?(deco:jpn_method), "should be an method")
+
+	_local stat_node << met_node.body.statements.last
+	_self.assert_true(stat_node.is_class_of?(deco:jpn_method_invocation), "should be an invation")
+	_self.assert_true(stat_node.args[1].is_class_of?(deco:jpn_variable), "should be local")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_local_test.test_catch_parameters()
+	##
+	_local s << _self.create_input(
+			      "public static Object a_method() {",
+			      "try {",
+			      "} catch (Exception type) {",
+			      "this.show(type);",
+			      "}",
+			      "}")
+	_local p << deco:java_parser.new(s)
+	_local met_node << p.parse_method("a_class")
+	_self.assert_true(met_node.is_class_of?(deco:jpn_method), "should be an method")
+	_local var << met_node.body.statements[1].catch_body.statements[1].args[1]
+	_self.assert_true(var.is_class_of?(deco:jpn_variable), "should be a local var")
+_endmethod
+$
