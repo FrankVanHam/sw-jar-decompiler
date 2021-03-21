@@ -583,7 +583,8 @@ _method jpn_parser.parse_try(p_jnode)
 	_local args << p_jnode.exceptions.map(_proc(x) >> x.name _endproc)
 	>> dcn_unfinished_try.new(_self.parse_body(p_jnode.try_body),
 				  _self.parse_body(p_jnode.catch_body),
-				  args)
+				  args,
+				  _self.parse_body(p_jnode.finally_body))
 _endmethod
 $
 

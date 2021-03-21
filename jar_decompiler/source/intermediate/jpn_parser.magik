@@ -109,6 +109,9 @@ _method jpn_parser.parse_expression(p_node)
 	_elif p_node.is_class_of?(jpn_try)
 	_then
 		_return _self.parse_try(p_node)
+	_elif p_node.is_class_of?(jpn_synchronized)
+	_then
+		_return _self.parse_synchronized(p_node)
 	_elif p_node.is_class_of?(jpn_this)
 	_then
 		_return dcn_self.new()
@@ -585,6 +588,14 @@ _method jpn_parser.parse_try(p_jnode)
 				  _self.parse_body(p_jnode.catch_body),
 				  args,
 				  _self.parse_body(p_jnode.finally_body))
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_synchronized(p_jnode)
+	_local exp << _self.parse_expression(p_jnode.expression)
+	_local body << _self.parse_body(p_jnode.body)
+	>> dcn_synchronized.new(exp, body)
 _endmethod
 $
 

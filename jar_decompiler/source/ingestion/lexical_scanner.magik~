@@ -230,6 +230,10 @@ _method lexical_scanner.proces_special_construct()
 	## decompile the method names property.
 	
 	_local char << _self.peek_char()
+	_if (char = %?) _orif (char = %!)
+	_then
+		_return _self.get_char().write_string
+	_endif 
 	_if char = %( _andif _self.peek_char(2) = %) _andif
 	    (_self.peek_char(3)=%\ _orif _self.peek_char(3)=%^)
 	_then

@@ -133,8 +133,14 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexical_scanner.get_comment()
-	## 
-	>> lexeme.new_comment(_self.get_upto(%/), .line, .column)
+	##
+	_local char << _self.peek_char()
+	>> _if char = %/
+	   _then
+		   >> lexeme.new_comment(_self.get_upto(newline_char), .line, .column)
+	   _else 
+		   >> lexeme.new_comment(_self.get_upto(%/), .line, .column)
+	   _endif 
 _endmethod
 $
 

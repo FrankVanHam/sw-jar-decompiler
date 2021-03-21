@@ -26,6 +26,8 @@ _method jpn_execution_post_processor.process(p_file)
 #	99.stop
 	p_file.accept_body_visitor(jpn_handling_builder_visitor.new())
 	p_file.accept_body_visitor(jpn_protection_builder_visitor.new())
+	# lock should come after _protection
+	p_file.accept_body_visitor(jpn_lock_builder_visitor.new())
 	
 	# any unfinised tries are removed now. So All unfinised_try
 	# handling should precede.

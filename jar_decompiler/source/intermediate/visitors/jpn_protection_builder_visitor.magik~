@@ -1,148 +1,82 @@
 _package deco
 $
 
-#remex(:jpn_handling_builder_visitor)
+#remex(:jpn_protection_builder_visitor)
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 ##
-## If an unfinished_try has a handling with a checkTag, then the
-## try actually is a _handling _endhandling block.
-##        ResultTuple resultTuple;
-##        DynamicAccessor.bootstrapBinder("!sys!condition_handler_cluster!", "sw", 1);
-##        try {
-##            ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), Invoker.bootstrapPrivate("proc()", (Object)_self));
-##            .........
-##            resultTuple = ResultTuple.EMPTY_TUPLE;
-##        }
-##        catch (Throwable throwable) {
-##            DynamicScope.destroyFrame();
-##            throw throwable;
-##        }
-##        DynamicScope.destroyFrame();
-##        return resultTuple;
+#        try {
+#            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
+#        }
+#        finally {
+#            InterruptInfrastructure.disableInterrupts();
+#            try {
+#                ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("safe()", (Object)_self));
+#            }
+#            finally {
+#                InterruptInfrastructure.enableInterrupts();
+#            }
+#        }
+#        return ResultTuple.EMPTY_TUPLE;
+#    }
 ##
-def_slotted_exemplar(:jpn_handling_builder_visitor,
+def_slotted_exemplar(:jpn_protection_builder_visitor,
 	{})
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_handling_builder_visitor.new()
+_method jpn_protection_builder_visitor.new()
 	>> _clone.init()
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method jpn_handling_builder_visitor.init()
+_private _method jpn_protection_builder_visitor.init()
 	>> _self 
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_handling_builder_visitor.accept(p_body)
+_method jpn_protection_builder_visitor.accept(p_body)
 	##
 	_local sts << p_body.statements
 	_local prev << _unset
-#	_if sts.size>3
+#	_if sts[1].is_class_of?(dcn_no_op).not
 #	_then 
 #		_global x
 #		x << sts
 #		2.stop
-#	_endif 
+#	_endif #
 	_for i_index, i_node _over sts.fast_keys_and_elements()
 	_loop
-		_local handling? << _self.should_convert?(i_node, prev)
-		_if handling?
-		_then			
+		_if _self.should_convert?(i_node)
+		_then
 			sts[i_index] << _self.convert(i_node)
-			sts[i_index-1] << dcn_no_op.new()
-		_endif
-		prev << i_node
+		_endif 
 	_endloop 
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_handling_builder_visitor.convert(p_try_node)
+_method jpn_protection_builder_visitor.should_convert?(p_node)
 	##
-	##try {
-	##            CallSite callSite = Invoker.bootstrapPrivate("proc()", (Object)_self);
-	##            ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), callSite, ConstantBuilder.symbolBootstrap("symbol", "user_error"), callSite);
-	##            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
-	##            resultTuple = ResultTuple.EMPTY_TUPLE;
-	##        }
-	
-	_local sts << p_try_node.try_body.statements.copy()
-
-	# first gather the local assignments, until the call
-	_local call_index << _unset 
-	_local procs << equality_hash_table.new()
-	_for i_index, i_node _over sts.fast_keys_and_elements()
-	_loop
-		_if i_node.is_class_of?(dcn_local_assignment)
-		_then
-			_local name << 	i_node.only_local().name
-			procs[name] << i_node.expression
-			
-			sts[i_index] << dcn_no_op.new()
-		_else
-			call_index << i_index
-			_leave
-		_endif
-	_endloop
-
-	_local call << sts[call_index]
-	sts[call_index] << dcn_no_op.new()
-
-	_local handles << rope.new()
-	_for i_err, i_proc _over call.args.fast_elements_in_pairs()
-	_loop
-		_local err << i_err.string_value
-		_local prc << _if i_proc.is_class_of?(dcn_local)
-			      _then >> procs[i_proc.name]
-			      _else >> i_proc
-			      _endif
-		
-		_if handles.empty?
-		_then
-			handles.add({rope.new_with(err), prc})
-		_elif handles.last[2] _is prc
-		_then
-			handles.last[1].add(err)
-		_else
-			handles.add({rope.new_with(err), prc})
-		_endif
-	_endloop
-	
-	_local index << 0
-	_for i_vec _over handles.fast_elements()
-	_loop
-		_local (errs, prc) << (_scatter i_vec)
-		index +<< 1
-		sts.add_nth(dcn_handling.new(errs, prc), index)
-	_endloop 
-	>> dcn_block.new(dcn_body.new(sts))
-_endmethod
-$
-
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_handling_builder_visitor.should_convert?(p_node, p_prev)
-	##
-	_if p_prev _is _unset _then _return _false, :no_prev _endif
-	_if p_prev.is_class_of?(dcn_dynamic_declaration).not _then _return _false, :no_store_before _endif
-	_if p_prev.name <> "!sys!condition_handler_cluster!"  _then _return _false, :no_handler _endif
-	
 	_if p_node.is_class_of?(dcn_unfinished_try).not _then _return _false, :dcn_unfinished_try _endif
+	_if p_node.finally_body _is _unset _then _return _false, :no_finally _endif
+	_if p_node.finally_body.statements.empty? _is _unset _then _return _false, :empty_finally _endif
+	_if p_node.finally_body.statements[1].is_class_of?(dcn_interrupts).not _then _return _false, :dcn_interrupts _endif
 	
-	_local handling? << _false 
-	_for i_arg _over p_node.args.fast_elements()
-	_loop
-		_if i_arg = "throwable"
-		_then
-			handling? << _true
-			_leave 
-		_endif
-	_endloop
-	>> handling?
+	>> _true 
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_protection_builder_visitor.convert(p_try_node)
+	##
+	
+	_local protect_body << p_try_node.try_body.copy()
+	_local protection_body << p_try_node.finally_body.statements[2].try_body.copy()
+	>> dcn_protect.new(protect_body, protection_body)
+_endmethod
+$
+
+

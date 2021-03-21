@@ -831,8 +831,47 @@ _method java_parser_test.test_conditional2()
 	p.define_locals("x")
 	_local jpn_exp << p.parse_statement()
 	_self.assert_true(jpn_exp.is_kind_of?(deco:jpn_return), "should be a return")
-	show(jpn_exp.expression)
-	jpn_exp.expression.dp
+	
 	_self.assert_true(jpn_exp.expression.is_kind_of?(deco:jpn_if), "should be an if")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_comment()
+	##
+	_local inp << write_string("/* The code below will print the words Hello World" + newline_char,
+				   "to the screen, and it is amazing */")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	
+	_local jpn_exp << p.parse_statement()
+	_self.assert_unset(jpn_exp, "Comment gives no result")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_comment2()
+	##
+	_local inp << write_string("// ** MonitorExit[v0] (shouldn't be in output)" + newline_char,
+				   "CallSite callSite2 = callSite;")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	
+	_local jpn_exp << p.parse_statement()
+	_self.assert_true(jpn_exp.is_class_of?(deco:jpn_assignment), "Comment should be skipped")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_or_if()
+	##
+	_local inp << write_string("if (a || b) { this.do_if(); };")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	p.define_locals("a", "b")
+
+	_local m << p.parse_expression()
+	_self.assert_true(m.is_kind_of?(deco:jpn_if), "should be an if statement")
+	_self.assert_true(m.condition.is_kind_of?(deco:jpn_operation), "should be an if operation")
 _endmethod
 $

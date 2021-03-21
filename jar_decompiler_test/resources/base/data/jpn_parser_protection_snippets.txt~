@@ -44,6 +44,15 @@ implements ExecutableMagik {
 }
 
 ###########
+_method deco_test.test_protect() 
+    _protect
+        _self.do()
+    _protection
+        _self.safe()
+    _endprotect
+    _return _unset
+_endmethod
+$
 ###########
 ## jpn_method_test_protect_lock
 @Debugger(value="MagikDebug")

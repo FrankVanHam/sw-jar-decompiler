@@ -18,50 +18,52 @@
 _package deco
 $
 
-#remex(:dcn_lock)
+remex(:dcn_lock)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
 ## node for a lock statement. This will typically be part of a
 ## dcn_protect node.
 def_slotted_exemplar(:dcn_lock,
-		     {
-			     {:expression,_unset, :readable},
-			     {:body,      _unset, :readable}
-		     },
+		     {{:expression,_unset, :readable}},
 		     :dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_lock.new(p_exp, p_body)
-	_return _clone.init(p_exp, p_body)
+_method dcn_lock.new(expression)
+	_return _clone.init(expression)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_lock.init(p_exp, p_body)
-	.expression << p_exp
-	.body << p_body
+_private _method dcn_lock.init(expression)
+	.expression << expression
 	_return _self
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_lock.is_lock?
+	_return _true
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_lock.accept_node_visitor(visitor)
+	.expression << .expression.accept_node_visitor(visitor)
+	_return _super.accept_node_visitor(visitor)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_lock.accept_body_visitor(visitor)
 	.expression.accept_body_visitor(visitor)
-	.body.accept_body_visitor(visitor)
+	_return _super.accept_body_visitor(visitor)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_lock.decode_on(p_stream)
-	p_stream.write("_lock ")
-	.expression.decode_on(p_stream)
-	p_stream.newline()
-	p_stream.indent(4)
-	.body.decode_on(p_stream)
-	p_stream.newline()
-	p_stream.unindent(4)
-	p_stream.write("_endlock")
+_method dcn_lock.decode_on(a_stream, _optional parent, statements)
+	
 _endmethod
 $

@@ -28,20 +28,22 @@ _pragma(classify_level=restricted, topic={decompiler})
 def_slotted_exemplar(:dcn_protect,
 		     {
 			     {:protect_body,    _unset, :readable},
-			     {:protection_body, _unset, :readable}
+			     {:protection_body, _unset, :readable},
+			     {:lock_expression, _unset, :readable}
 		     }, :dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_protect.new(p_protect_body, p_protection_body)
-	_return _clone.init(p_protect_body, p_protection_body)
+_method dcn_protect.new(p_protect_body, p_protection_body, p_lock_exp)
+	_return _clone.init(p_protect_body, p_protection_body, p_lock_exp)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_protect.init(p_protect_body, p_protection_body)
+_private _method dcn_protect.init(p_protect_body, p_protection_body, p_lock_exp)
 	.protect_body << p_protect_body
 	.protection_body << p_protection_body
+	.lock_expression << p_lock_exp
 	_return _self
 _endmethod
 $
@@ -50,6 +52,10 @@ _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_protect.accept_body_visitor(visitor)
 	.protect_body.accept_body_visitor(visitor)
 	.protection_body.accept_body_visitor(visitor)
+	_if .lock_expression _isnt _unset
+	_then
+		.lock_expression.accept_body_visitor(visitor)
+	_endif 
 _endmethod
 $
 
@@ -57,6 +63,11 @@ _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_protect.decode_on(p_stream)
 	##
 	p_stream.write("_protect")
+	_if .lock_expression _isnt _unset
+	_then
+		p_stream.write(" _lock ")
+		.lock_expression.decode_on(p_stream)
+	_endif  
 	p_stream.newline()
 	p_stream.indent(4)
 	.protect_body.decode_on(p_stream)

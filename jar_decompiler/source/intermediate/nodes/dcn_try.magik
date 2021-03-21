@@ -27,24 +27,22 @@ def_slotted_exemplar( :dcn_try,
 	{
 		{:condition, _unset, :readable},
 		{:body,_unset, :readable},
-		{:finally_body, _unset, :readable},
 		{:whens, _unset, :readable},
 		{:results, _unset, :readable}
 	}, :dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_try.new(condition, body, whens, finally)
-	_return _clone.init(condition, body, whens, finally)
+_method dcn_try.new(condition, body, whens)
+	_return _clone.init(condition, body, whens)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_try.init(condition, body, whens, finally)
+_private _method dcn_try.init(condition, body, whens)
 	.condition << condition
 	.body << body
 	.whens << whens
-	.finally_body << finally
 	_return _self
 _endmethod
 $

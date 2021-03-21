@@ -145,7 +145,12 @@ _method dcn_method.magik_method
 	_local exem << _self.magik_exemplar
 	>> _if exem _isnt _unset
 	   _then
-		   >> exem.method(.name.as_symbol())
+		   _local met << exem.method(.name.as_symbol())
+		   >> _if met _isnt _unset _andif
+			  met.owner _is exem.define_method_target
+		      _then
+			      >> met
+		      _endif 
 	   _endif 
 _endmethod
 $

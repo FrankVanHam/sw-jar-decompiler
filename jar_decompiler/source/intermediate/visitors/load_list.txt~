@@ -12,3 +12,4 @@ jpn_iter_result_hider_visitor
 jpn_catch_builder_visitor
 jpn_handling_builder_visitor
 jpn_throw_return_visitor
+jpn_protection_builder_visitor

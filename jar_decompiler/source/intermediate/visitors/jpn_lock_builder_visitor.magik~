@@ -83,6 +83,7 @@ _method jpn_protection_builder_visitor.convert(p_try_node)
 			_leave
 		_endif
 	_endloop
+
 	
 	_if sync_index _isnt _unset
 	_then
@@ -98,5 +99,3 @@ _method jpn_protection_builder_visitor.convert(p_try_node)
 	>> dcn_protect.new(protect_body, protection_body, lock_exp)
 _endmethod
 $
-
-
