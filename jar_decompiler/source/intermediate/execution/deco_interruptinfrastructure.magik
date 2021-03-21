@@ -9,3 +9,14 @@ _method deco_interruptinfrastructure.checkandprocessinterrupts(p_parser)
 	>> dcn_no_op.new()
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_interruptinfrastructure.disableinterrupts(p_parser)
+	>> dcn_interrupts.new_disable()
+_endmethod
+$
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_interruptinfrastructure.enableinterrupts(p_parser)
+	>> dcn_interrupts.new_enable()
+_endmethod
+$

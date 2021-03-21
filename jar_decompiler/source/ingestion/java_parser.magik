@@ -546,6 +546,9 @@ _method java_parser.parse_sub_expression(_optional p_identifier?)
 			_elif lex.value = "new"
 			_then
 				_return _self.parse_new()
+			_elif lex.value = "synchronized"
+			_then
+				_return _self.parse_synchronized()
 			_elif lex.value = "throw"
 			_then
 				_return _self.parse_throw()
@@ -648,6 +651,20 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_synchronized()
+	## 
+	_self.ensure_keyword("synchronized")
+	_self.ensure_separator("(")	
+	_local exp << _self.parse_expression()
+	_self.ensure_separator(")")
+	_self.ensure_separator("{")
+	_local body << _self.parse_body()
+	_self.ensure_separator("}")	
+	>> jpn_synchronized.init(exp, body)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method java_parser.parse_throw()
 	## 
 	_self.ensure_keyword("throw")
@@ -720,16 +737,32 @@ _method java_parser.parse_try()
 	_self.ensure_separator("{")
 	_local try_body << _self.parse_body()
 	_self.ensure_separator("}")
-	
-	_self.ensure_keyword("catch")
-	_self.ensure_separator("(")
-	_local catch_args << _self.parse_args()
-	_self.ensure_separator(")")
 
-	_self.ensure_separator("{")
-	_local catch_body << _self.parse_body()
-	_self.ensure_separator("}")
-	>> jpn_try.new(try_body, catch_args, catch_body)
+	_local lex << .scanner.peek()
+	_if lex.is_keyword?("finally")
+	_then
+		_self.ensure_keyword("finally")
+		_self.ensure_separator("{")
+		finally_body << _self.parse_body()
+		_self.ensure_separator("}")
+	_else
+		finally_body << jpn_body.new()
+	_endif 
+	_local lex << .scanner.peek()
+	_if lex.is_keyword?("catch")
+	_then
+		_self.ensure_keyword("catch")
+		_self.ensure_separator("(")
+		catch_args << _self.parse_args()
+		_self.ensure_separator(")")
+		_self.ensure_separator("{")
+		catch_body << _self.parse_body()
+		_self.ensure_separator("}")
+	_else
+		catch_args << {}
+		catch_body << jpn_body.new()
+	_endif 
+	>> jpn_try.new(try_body, catch_args, catch_body, finally_body)
 _endmethod
 $
 

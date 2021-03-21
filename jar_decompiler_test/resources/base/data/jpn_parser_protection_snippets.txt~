@@ -1,0 +1,104 @@
+## jpn_method_test_protect
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4031 {
+    @SourceHash(value=-1023967763)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_protect(Object _self) {
+        try {
+            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
+        }
+        finally {
+            InterruptInfrastructure.disableInterrupts();
+            try {
+                ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("safe()", (Object)_self));
+            }
+            finally {
+                InterruptInfrastructure.enableInterrupts();
+            }
+        }
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4030
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_4030() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_protect()", deco_test_4031.class, "deco_test__test_protect", 1, 1);
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+
+###########
+###########
+## jpn_method_test_protect_lock
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4031 {
+    @SourceHash(value=-32089328)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_protect_lock(Object _self) {
+        CallSite l = Invoker.bootstrapPrivate("lock()", (Object)_self);
+        CallSite callSite = null;
+        try {
+            callSite = l;
+            synchronized (callSite) {
+                ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
+            }
+        }
+        finally {
+            InterruptInfrastructure.disableInterrupts();
+            try {
+                ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("safe()", (Object)_self));
+            }
+            finally {
+                CallSite callSite2 = callSite;
+                if (callSite2 != null) {
+                    // ** MonitorExit[v0] (shouldn't be in output)
+                }
+                InterruptInfrastructure.enableInterrupts();
+            }
+        }
+        {
+            return ResultTuple.EMPTY_TUPLE;
+        }
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4030
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_4030() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "test_protect_lock()", deco_test_4031.class, "deco_test__test_protect_lock", 1, 1));
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+###########
+###########

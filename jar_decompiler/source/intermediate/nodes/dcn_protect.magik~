@@ -1,0 +1,189 @@
+##
+## File            : $File: (dcn_protect.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-04-06
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package deco
+$
+
+
+remex(:dcn_protect)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Node for a protect structure. Could end up to be a lock
+## statement. 
+def_slotted_exemplar(:dcn_protect,
+		     {
+			     {:token,_unset},
+			     {:lock_obj, _unset},
+			     {:body_nodes, _unset},
+			     {:body_results, _unset},
+			     {:protect_nodes, _unset},
+			     {:protect_results, _unset}
+		     }, :dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_protect.new(token, lock_obj, body_nodes, body_results, protect_nodes, protect_results)
+	_return _clone.init(token, lock_obj, body_nodes, body_results, protect_nodes, protect_results)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_protect.init(token, lock_obj, body_nodes, body_results, protect_nodes, protect_results)
+	.lock_obj << lock_obj
+	.token << token
+	.body_nodes << rope.deco_check_type(body_nodes)
+	.body_results << rope.deco_check_type(body_results)
+	.protect_nodes << rope.deco_check_type(protect_nodes)
+	.protect_results << rope.deco_check_type(protect_results)
+	_return _self
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_protect.accept_node_visitor(visitor)
+	_if .lock_obj _isnt _unset
+	_then 
+		.lock_obj << .lock_obj.accept_node_visitor(visitor)
+	_endif 
+	_self.accept_node_visitor_in_vector(visitor, .body_nodes)
+	_self.accept_node_visitor_in_vector(visitor, .body_results)
+	_self.accept_node_visitor_in_vector(visitor, .protect_nodes)
+	_self.accept_node_visitor_in_vector(visitor, .protect_results)
+	_return _super.accept_node_visitor(visitor)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_protect.accept_body_visitor(visitor)
+	_if .lock_obj _isnt _unset
+	_then 
+		.lock_obj.accept_body_visitor(visitor)
+	_endif 
+	_self.accept_body_visitor_in_vector(visitor, .body_nodes)
+	_self.accept_body_visitor_in_vector(visitor, .body_results)
+	_self.accept_body_visitor_in_vector(visitor, .protect_nodes)
+	_self.accept_body_visitor_in_vector(visitor, .protect_results)
+	
+	visitor.visit(_self, .body_nodes)
+	visitor.visit(_self, .protect_nodes)
+	_super.accept_body_visitor(visitor)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_protect.result_count
+	_return .body_results.size
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_protect.has_results?
+	_return _self.result_count > 0
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_protect.decode_on( a_stream, _optional parent, statements )
+	_if .lock_obj _is _unset
+	_then
+		_self.decode_as_protect_on(a_stream)
+	_elif .protect_nodes.empty?
+	_then
+		_self.decode_as_lock_on(a_stream)
+	_else
+		_self.decode_as_protect_lock_on(a_stream)
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_protect.decode_as_protect_on( a_stream )
+	a_stream.write( "_protect" )
+	a_stream.newline()
+	a_stream.indent()
+	_self.decode_statements_on(a_stream, .body_nodes)
+	_if .body_results.empty?.not
+	_then
+		a_stream.write(">> ")
+		_self.decode_node_list_on(a_stream, .body_results)
+		a_stream.newline()
+	_endif
+	a_stream.unindent()
+	a_stream.write("_protection")
+	a_stream.newline()
+	a_stream.indent()
+	_self.decode_statements_on(a_stream, .protect_nodes)
+	_if .protect_results.empty?.not
+	_then
+		a_stream.write(">> ")
+		_self.decode_node_list_on(a_stream, .protect_results)
+		a_stream.newline()
+	_endif
+	a_stream.unindent()
+	a_stream.write("_endprotect")
+	a_stream.newline()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_protect.decode_as_protect_lock_on( a_stream )
+	a_stream.write( "_protect _locking " )
+	.lock_obj.expression.decode_on( a_stream )
+	a_stream.newline()
+	a_stream.indent()
+	_self.decode_statements_on(a_stream, .body_nodes)
+	_if .body_results.empty?.not
+	_then
+		a_stream.write(">> ")
+		_self.decode_node_list_on(a_stream, .body_results)
+		a_stream.newline()
+	_endif
+	a_stream.unindent()
+	a_stream.write("_protection")
+	a_stream.newline()
+	a_stream.indent()
+	_self.decode_statements_on(a_stream, .protect_nodes)
+	_if .protect_results.empty?.not
+	_then
+		a_stream.write(">> ")
+		_self.decode_node_list_on(a_stream, .protect_results)
+		a_stream.newline()
+	_endif 
+	a_stream.unindent()
+	a_stream.write("_endprotect")
+	a_stream.newline()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_protect.decode_as_lock_on(a_stream)
+	a_stream.write( "_lock ")
+	.lock_obj.expression.decode_on( a_stream )
+	a_stream.newline()
+	a_stream.indent()
+	_self.decode_statements_on(a_stream, .body_nodes)
+	_if .body_results.empty?.not
+	_then
+		a_stream.write(">> ")
+		_self.decode_node_list_on(a_stream, .body_results)
+		a_stream.newline()
+	_endif 
+	a_stream.unindent()
+	a_stream.write( "_endlock")
+_endmethod
+$

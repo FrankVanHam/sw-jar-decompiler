@@ -26,21 +26,23 @@ _pragma(classify_level=restricted, topic={decompiler})
 def_slotted_exemplar(:dcn_unfinished_try,
 		      {
 			      {:try_body,   _unset, :readable},
+			      {:args,       _unset, :readable},
 			      {:catch_body, _unset, :readable}
 			      },
 		      :dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_unfinished_try.new(p_try_body, p_catch_body)
-	_return _clone.init(p_try_body, p_catch_body)
+_method dcn_unfinished_try.new(p_try_body, p_catch_body, p_args)
+	_return _clone.init(p_try_body, p_catch_body, p_args)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_unfinished_try.init(p_try_body, p_catch_body)
+_private _method dcn_unfinished_try.init(p_try_body, p_catch_body, p_args)
 	.try_body << p_try_body
 	.catch_body << p_catch_body
+	.args << p_args
 	_return _self 
 _endmethod
 $

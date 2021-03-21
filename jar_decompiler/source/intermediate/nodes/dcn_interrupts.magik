@@ -1,0 +1,42 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+## No operation
+def_slotted_exemplar(:dcn_interrupts,
+		     {
+			     {:type, _unset}
+		     }, :dcn_base )
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_interrupts.new_disable()
+	>> _self.new(:disable)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_interrupts.new_enable()
+	>> _self.new(:enable)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_interrupts.new(p_type)
+	>> _clone.init(p_type)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method dcn_interrupts.init(p_type)
+	.type << p_type
+	>> _self 	 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_interrupts.decode_on(p_stream)
+	##
+	p_stream.write(_self.class_name, "(", .type, ")")
+_endmethod
+$

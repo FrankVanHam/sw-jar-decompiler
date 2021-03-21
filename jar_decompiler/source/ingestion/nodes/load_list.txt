@@ -30,3 +30,4 @@ jpn_continue
 jpn_array_access
 jpn_negated
 jpn_operation
+jpn_synchronized

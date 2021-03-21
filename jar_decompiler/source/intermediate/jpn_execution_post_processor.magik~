@@ -32,7 +32,8 @@ _method jpn_execution_post_processor.process(p_file)
 	p_file.accept_body_visitor(jpn_iter_result_hider_visitor.new())
 	
 	p_file.accept_body_visitor(jpn_pop_visitor.new())
-	
+
+	p_file.accept_body_visitor(jpn_throw_return_visitor.new())
 	p_file.accept_body_visitor(jpn_ignore_assignment_visitor.new())
 	p_file.accept_body_visitor(jpn_cleanup_visitor.new())
 _endmethod

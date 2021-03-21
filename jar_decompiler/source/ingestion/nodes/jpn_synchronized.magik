@@ -1,0 +1,23 @@
+_package deco
+$
+
+#remex(:jpn_)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_synchronized,
+	{
+		{:expression, _unset, :readable},
+		{:body,       _unset, :readable}
+	},
+	:jpn_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_synchronized.init(p_expression, p_body)
+	.expression << p_expression
+	.body << p_body
+	
+	>> _super.init()
+_endmethod
+$
+
