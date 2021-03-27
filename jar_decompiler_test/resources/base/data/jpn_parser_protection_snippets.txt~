@@ -110,4 +110,70 @@ implements ExecutableMagik {
     }
 }
 ###########
+_method deco_test.test_protect_lock() 
+     _local l << _self.lock()
+     _local callSite << _unset
+    _protect _lock l
+        _self.do()
+    _protection
+        _self.safe()
+    _endprotect
+_endmethod
+$
 ###########
+## jpn_test_lock_obj
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4071 {
+    @SourceHash(value=1495753316)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_lock_obj(Object _self) {
+        CallSite callSite = Invoker.bootstrapPrivate("lock", (Object)_self);
+        InterruptInfrastructure.checkAndProcessInterrupts();
+        synchronized (callSite) {
+            try {
+                ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
+            }
+            catch (Throwable throwable) {
+                // MONITOREXIT @DISABLED, blocks:[1, 2] lbl10 : MonitorExitStatement: MONITOREXIT : var1_1
+                InterruptInfrastructure.checkAndProcessInterrupts();
+                throw throwable;
+            }
+        }
+        InterruptInfrastructure.checkAndProcessInterrupts();
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4070
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_4070() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "test_lock_obj()", deco_test_4071.class, "deco_test__test_lock_obj", 1, 1));
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+###############
+_method deco_test.test_lock_obj() 
+     _local callSite << _self.lock
+    _lock callSite
+        _self.do()
+    _endlock
+    _return _unset
+_endmethod
+$
+###############

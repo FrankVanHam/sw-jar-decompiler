@@ -118,6 +118,7 @@ _method dcn_callable.decode_on(a_stream, _optional parent, statements)
 	a_stream.newline()
 	_self.decode_comment_on(a_stream)
 	_self.decode_body_on(a_stream)
+	a_stream.newline()
 	a_stream.write( "_endmethod" )
 _endmethod
 $

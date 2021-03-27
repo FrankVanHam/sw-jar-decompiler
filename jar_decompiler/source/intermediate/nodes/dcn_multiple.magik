@@ -20,6 +20,7 @@ $
 _pragma(classify_level=restricted, topic={decompiler})
 _private _method dcn_multiple.init(p_expressions)
 	.expressions << p_expressions
+	_if .expressions.includes?(_unset) _then 1.stop _endif 
 	>> _self 
 _endmethod
 $

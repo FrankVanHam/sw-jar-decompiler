@@ -330,10 +330,9 @@ _method dcn_callable.int!decode_args_on(p_stream, p_start_index)
 _endmethod
 $
 
-
-
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_callable.accept_body_visitor(p_visitor)
+	
 	.body.accept_body_visitor(p_visitor)
 _endmethod
 $

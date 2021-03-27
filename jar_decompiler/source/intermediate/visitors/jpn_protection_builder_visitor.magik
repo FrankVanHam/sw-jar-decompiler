@@ -92,11 +92,14 @@ _method jpn_protection_builder_visitor.convert(p_try_node)
 		lock_exp << _unset 
 		protect_body << try_body
 	_endif 
-
-	_local protection_body << p_try_node.finally_body.statements[2].try_body.copy()
+	
+	_if p_try_node.finally_body.statements.size > 1
+	_then 
+		protection_body << p_try_node.finally_body.statements[2].try_body.copy()
+	_else
+		protection_body << dcn_body.new()
+	_endif 
 	
 	>> dcn_protect.new(protect_body, protection_body, lock_exp)
 _endmethod
 $
-
-

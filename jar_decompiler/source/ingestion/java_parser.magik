@@ -406,10 +406,12 @@ _method java_parser.parse_expression(_optional p_identifier?, p_end_value, p_ope
 			.scanner.get()
 			_dynamic !dcn_end_value! << ":"
 			_local then << _self.parse_expression(_unset, ":")
-			_local then_body << dcn_body.new({then})
+			_local return_then << jpn_soft_return.new(then)
+			_local then_body << jpn_body.new({return_then})
 			_self.ensure_operator(":")
 			_local else << _self.parse_expression()
-			_local else_body << dcn_body.new({else})
+			_local return_else << jpn_soft_return.new(else)
+			_local else_body << jpn_body.new({return_else})
 			
 			exp << jpn_if.new({{exp,then_body}, {_unset, else_body}})
 				
@@ -419,9 +421,13 @@ _method java_parser.parse_expression(_optional p_identifier?, p_end_value, p_ope
 
 		_elif lex.is_operator?("!=") _orif
 		      lex.is_operator?("==") _orif
-		      lex.is_operator?("||")_orif
+		      lex.is_operator?("||") _orif
 		      lex.is_operator?("&&")
 		_then
+			_if _self.operator_cf?(p_operator, lex.value)
+			_then
+				_return exp
+			_endif
 			exp << _self.parse_test(exp)
 			
 		_elif lex.is_separator?("(")
@@ -464,9 +470,11 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method java_parser.operator_cf?(p_op1, p_op2)
 	##
+	## Does operator P_OP1 comes for P_OP2
+	##
 	_if p_op1 _is _unset _then _return _false _endif
 	
-	_local _constant order << {"!=", "==", "?"}
+	_local _constant order << {"!=", "==", "&&", "||", "?"}
 	>> order.index_equal_of(p_op1) < order.index_equal_of(p_op2)
 _endmethod
 $

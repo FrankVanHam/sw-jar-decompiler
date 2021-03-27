@@ -30,31 +30,41 @@ def_slotted_exemplar(:dcn_iter,
 		{:name, _unset, :readable},
 		{:body, _unset, :readable},
 		{:scatter?, _unset, :readable},
-		{:args, _unset, :readable}
+		{:finally_body, _unset, :readable},
+		{:args, _unset, :readable},
+		{:sender_args, _unset, :readable}
 	},
 	:dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_iter.new(p_sender, p_name, p_scatter?, p_args, p_body)
-	>> _clone.init(p_sender, p_name, p_scatter?, p_args, p_body)
+_method dcn_iter.new(p_sender, p_name, p_scatter?, p_args, p_body, p_sender_args)
+	>> _clone.init(p_sender, p_name, p_scatter?, p_args, p_body, p_sender_args)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_iter.init(p_sender, p_name, p_scatter?, p_args, p_body)
+_private _method dcn_iter.init(p_sender, p_name, p_scatter?, p_args, p_body, p_sender_args)
 	##
 	assert(p_sender _isnt _unset)
 	assert(p_body _isnt _unset)
 	.sender << p_sender
 	.name << p_name
 	.body << p_body
+	.sender_args << p_sender_args
 	.scatter?  << p_scatter?
 	.args << p_args
+	.finally_body << _unset 
 	>> _self 
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_iter.finally_body << p_body
+	## 
+	.finally_body << p_body
+_endmethod
+$
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_iter.assign_tag(p_string)
@@ -66,6 +76,10 @@ $
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_iter.accept_body_visitor(visitor)
 	.body.accept_body_visitor(visitor)
+	_if .finally_body _isnt _unset
+	_then
+		.finally_body.accept_body_visitor(visitor)
+	_endif 
 _endmethod
 $
 
@@ -85,7 +99,16 @@ _method dcn_iter.decode_on(p_stream)
 	_endloop 
 	p_stream.write(" _over ")
 	.sender.decode_on(p_stream)
-	p_stream.write(".", .name)
+
+	_if .name.matches?("*()")
+	_then
+		p_stream.write(".", .name.slice(1,.name.size-2))
+		p_stream.write("(")
+		_self.decode_node_list_on(p_stream, .sender_args)
+		p_stream.write(")")
+	_else 
+		p_stream.write(".", .name)
+	_endif 
 	p_stream.newline()
 	p_stream.write("_loop")
 	_if .tag _isnt _unset
@@ -97,6 +120,17 @@ _method dcn_iter.decode_on(p_stream)
 	.body.decode_on(p_stream)
 	p_stream.newline()
 	p_stream.unindent(4)
+
+	_if .finally_body _isnt _unset
+	_then
+		p_stream.newline()
+		p_stream.write("_finally")
+		p_stream.newline()
+		p_stream.indent(4)
+		.finally_body.decode_on(p_stream)
+		p_stream.newline()
+		p_stream.unindent(4)
+	_endif 
 	p_stream.write("_endloop")
 _endmethod
 $

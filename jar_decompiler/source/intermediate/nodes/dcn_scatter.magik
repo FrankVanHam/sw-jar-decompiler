@@ -28,7 +28,8 @@ $
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_scatter.pop()
 	##
-	>> dcn_pop.new(_self)
+	>> _self 
+#	>> dcn_pop.new(_self)
 _endmethod
 $
 

@@ -26,6 +26,14 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_not.not
+	## 
+	>> .expression
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method dcn_not.decode_on(p_stream)
 	## 
 	p_stream.write(" _not(")

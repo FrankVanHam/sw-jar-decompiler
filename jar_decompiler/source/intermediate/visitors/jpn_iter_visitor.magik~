@@ -29,56 +29,54 @@ _method jpn_iter_visitor.accept(p_body)
 	_local sts << p_body.statements
 	_for i_index, i_node _over sts.fast_keys_and_elements()
 	_loop
-		_if i_node.is_kind_of?(dcn_local_assignment) _andif
-		    i_node.expression.is_kind_of?(dcn_unfinished_iter)
+		(ok?, idx) << _self.finally_iter?(i_node)
+		_if ok?
 		_then
-			# remove the local assignment before the no_op
-			_for i _over range(i_index-1, 1, -1)
-			_loop
-				_if sts[i].is_kind_of?(dcn_local_assignment)
-				_then
-					sts[i] << dcn_no_op.new()
-					_leave 
-				_endif 
-			_endloop 
-			sts[i_index] << _self.convert_to_iter(i_node)
+			sts[i_index] << _self.convert_to_finally_iter(i_node, idx)
 		_endif
 	_endloop 
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_iter_visitor.convert_to_iter(p_node)
-	##
-	_local ref << p_node.expression.ref
-	_local ref_method << _self.find_method(ref)
-	_local loopbody_method << _self.find_loopbody_method(ref_method)
-
-	_local sts << loopbody_method.body.statements
-	_local iter_node << sts.select(predicate.using(_proc(x) >> x.is_kind_of?(dcn_unfinished_try) _endproc)).an_element()	       
-	_local iter_body << iter_node.try_body.copy()
-	iter_body.statements.remove_last()
-		
-	_return dcn_iter.new(p_node.expression.sender, p_node.expression.name,
-			     loopbody_method.scatter?, loopbody_method.args,
-			     iter_body)
+_private _method jpn_iter_visitor.iter?(p_node)
+	>> p_node.is_kind_of?(dcn_local_assignment) _andif
+		p_node.expression.is_kind_of?(dcn_iter)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_iter_visitor.find_loopbody_method(p_method)
-	## 
-	_local egg << p_method.body.statements[1].try_body.statements[1].expression
-	_return _self.find_method(egg.name)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_iter_visitor.find_method(p_ref)
+_method jpn_iter_visitor.finally_iter?(p_node)
 	##
-	_for i_meth _over .file.methods.fast_elements()
+	_if p_node.is_class_of?(dcn_unfinished_try).not _then _return _false, :not_unfinised_try _endif
+	_if p_node.args _is _unset _then _return _false, :no_args _endif
+	_if p_node.args.size<1 _then _return _false, :no_args_size _endif
+	_if p_node.args[1] <> "leave" _then _return _false, :no_leave _endif
+
+	_for i_index, i_stat _over p_node.try_body.statements.fast_keys_and_elements()
 	_loop
-		_if i_meth.sys!slot(:java_method_name) = p_ref _then _return i_meth _endif
+		_if _self.iter?(i_stat)
+		_then
+			_return _true, i_index
+		_endif
 	_endloop 
+	>> _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_iter_visitor.convert_to_finally_iter(p_node, p_index)
+	##
+	_local assignment_node << p_node.try_body.statements[p_index]
+	_local try_node << assignment_node.expression
+	
+	_local finally_statements << p_node.try_body.statements.slice_to_end(p_index+1)
+		
+	_if finally_statements.empty?.not
+	_then
+		_local finally_body << dcn_body.new(finally_statements)
+		try_node.finally_body << finally_body
+	_endif
+	>> assignment_node
 _endmethod
 $

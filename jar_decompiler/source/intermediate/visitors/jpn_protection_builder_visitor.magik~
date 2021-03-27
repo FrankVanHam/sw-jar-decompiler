@@ -62,7 +62,7 @@ _method jpn_protection_builder_visitor.should_convert?(p_node)
 	##
 	_if p_node.is_class_of?(dcn_unfinished_try).not _then _return _false, :dcn_unfinished_try _endif
 	_if p_node.finally_body _is _unset _then _return _false, :no_finally _endif
-	_if p_node.finally_body.statements.empty? _is _unset _then _return _false, :empty_finally _endif
+	_if p_node.finally_body.statements.empty? _then _return _false, :empty_finally _endif
 	_if p_node.finally_body.statements[1].is_class_of?(dcn_interrupts).not _then _return _false, :dcn_interrupts _endif
 	
 	>> _true 
@@ -72,10 +72,30 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_protection_builder_visitor.convert(p_try_node)
 	##
+	_local try_body << p_try_node.try_body.copy()
+
+	_local sync_index << _unset 
+	_for i_index, i_node _over try_body.statements.fast_keys_and_elements()
+	_loop
+		_if i_node.is_class_of?(deco:dcn_synchronized)
+		_then
+			sync_index << i_index
+			_leave
+		_endif
+	_endloop
 	
-	_local protect_body << p_try_node.try_body.copy()
+	_if sync_index _isnt _unset
+	_then
+		lock_exp << try_body.statements[sync_index-1].expression
+		protect_body << try_body.statements[sync_index].body.copy()
+	_else
+		lock_exp << _unset 
+		protect_body << try_body
+	_endif 
+
 	_local protection_body << p_try_node.finally_body.statements[2].try_body.copy()
-	>> dcn_protect.new(protect_body, protection_body)
+	
+	>> dcn_protect.new(protect_body, protection_body, lock_exp)
 _endmethod
 $
 

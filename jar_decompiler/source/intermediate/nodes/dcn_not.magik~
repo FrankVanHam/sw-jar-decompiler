@@ -1,71 +1,43 @@
 _package deco
 $
 
-#remex(:dcn_body)
+#remex(:dcn_not)
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-def_slotted_exemplar(:dcn_body,
+def_slotted_exemplar(:dcn_not,
 	{
-		{:statements, _unset, :readable}
+		{:expression, _unset, :readable}
 	}, :dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method dcn_body.new()
-	>> _clone.init()
+_method dcn_not.new(p_expression)
+	>> _clone.init(p_expression)
 _endmethod
 $
 
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method dcn_body.init()
+_private _method dcn_not.init(p_expression)
 	##
-	.statements << rope.new()
+	.expression << p_expression
 	>> _self 
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method dcn_body.add(p_node)
-	assert(p_node _isnt _unset)
-	.statements.add(p_node)
+_method dcn_not.not
+	## 
+	>> .expression
 _endmethod
 $
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method dcn_body.empty?
-	>> .statements.empty?
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method dcn_body.size
-	>> .statements.size
-_endmethod
-$
-
-#_pragma(classify_level=restricted, topic={jar_decompiler})
-#_method dcn_body[x]
-#	>> .statements[x]
-#_endmethod
-#$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method dcn_body.decode_on(p_stream)
-	##
-	_for i_stat _over .statements.fast_elements()
-	_loop
-		_if i_stat.is_no_op? _then _continue _endif 
-		i_stat.decode_on(p_stream)
-		p_stream.newline()
-	_endloop 
-_endmethod
-$
-
-
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_body.accept_body_visitor(p_visitor)
-	p_visitor.accept(_self)
+_method dcn_not.decode_on(p_stream)
+	## 
+	p_stream.write(" _not(")
+	.expression.decode_on(p_stream)
+	p_stream.write(")")
 _endmethod
 $

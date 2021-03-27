@@ -801,3 +801,81 @@ _method deco_test.test_method(p_value)
 _endmethod
 $
 #################
+## jpn_test_action
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4148 {
+    @SourceHash(value=1987263502)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_action(Object _self) {
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("add_action()", (Object)_self, (Object)Invoker.bootstrap("new()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sw_action"), ConstantBuilder.symbolBootstrap("symbol", "start_explorer"), ConstantBuilder.symbolBootstrap("symbol", "caption"), Invoker.bootstrapPrivate("message()", (Object)_self, (Object)ConstantBuilder.symbolBootstrap("symbol", "explorer")), ConstantBuilder.symbolBootstrap("symbol", "tooltip"), Invoker.bootstrapPrivate("message()", (Object)_self, (Object)ConstantBuilder.symbolBootstrap("symbol", "explorer_tt")), ConstantBuilder.symbolBootstrap("symbol", "short_help_text"), Invoker.bootstrapPrivate("message()", (Object)_self, (Object)ConstantBuilder.symbolBootstrap("symbol", "explorer_sh")), ConstantBuilder.symbolBootstrap("symbol", "engine"), _self, ConstantBuilder.symbolBootstrap("symbol", "image"), VectorBuilder.bootstrap("vb", ConstantBuilder.symbolBootstrap("symbol", "explorer_dialog"), Invoker.bootstrapPrivate("module_name", (Object)_self)), ConstantBuilder.symbolBootstrap("symbol", "action_message"), VectorBuilder.bootstrap("vb", ConstantBuilder.symbolBootstrap("symbol", "start_explorer_view()"), Boolean.TRUE))));
+	//ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("add_action()", (Object)_self, (Object)Invoker.bootstrap("new()",GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sw_action"))));
+        Object object = VectorBuilder.bootstrap("vb", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "user", "no_categories"));
+        ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrap("items\\l\\l", (Object)Invoker.bootstrapPrivate("action()", (Object)_self, (Object)ConstantBuilder.symbolBootstrap("symbol", "find_target")), (Object)object));
+        object = GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "user", "no_categories");
+        ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrap("value\\l\\l", (Object)Invoker.bootstrapPrivate("action()", (Object)_self, (Object)ConstantBuilder.symbolBootstrap("symbol", "find_target")), (Object)object));
+        object = Boolean.FALSE;
+        ResultTuple cfr_ignored_3 = (ResultTuple)((Object)Invoker.tupleBootstrap("enabled?\\l\\l", (Object)Invoker.bootstrapPrivate("action()", (Object)_self, (Object)ConstantBuilder.symbolBootstrap("symbol", "find_target")), (Object)object));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4147
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "test_action()", deco_test_4148.class, "deco_test__test_action", 1, 1));
+    }
+}
+#############
+_method deco_test.test_action() 
+    _self.add_action(sw:sw_action.new(:start_explorer, :caption, _self.message(:explorer), :tooltip, _self.message(:explorer_tt), :short_help_text, _self.message(:explorer_sh), :engine, _self, :image, {:explorer_dialog, _self.module_name}, :action_message, {:|start_explorer_view()|, _true}))
+     _local object << {user:no_categories}
+    _self.action(:find_target).items << object
+    object << user:no_categories
+    _self.action(:find_target).value << object
+    object << _false
+    _self.action(:find_target).enabled? << object
+    _return _unset
+_endmethod
+$
+#############
+## jpn_test_scatter_local
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4148 {
+    @SourceHash(value=-1997737542)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_scatter_local(Object _self, Object p_args) {
+        Object type = ((ResultTuple)((Object)TupleBuilder.bootstrap("tb", (Object[])Invoker.bootstrapPrivate("for_scatter()", (Object)p_args)))).pop();
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)type);
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4147
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "test_scatter_local()", deco_test_4148.class, "deco_test__test_scatter_local", 2, 2));
+    }
+}
+##############
+_method deco_test.test_scatter_local(p_args) 
+     _local type << ( _scatter p_args)
+    sw:show(type)
+    _return _unset
+_endmethod
+$
+##############

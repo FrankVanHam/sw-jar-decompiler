@@ -26,6 +26,13 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
+_method dcn_scatter.pop()
+	##
+	>> dcn_pop.new(_self)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
 _method dcn_scatter.decode_on(p_stream)
 	_local par? << _true 
 	_if par? _then p_stream.write("(") _endif 

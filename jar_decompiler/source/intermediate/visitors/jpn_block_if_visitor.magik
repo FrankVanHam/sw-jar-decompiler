@@ -23,6 +23,11 @@ _method jpn_block_if_visitor.accept(p_body)
 			_then
 				sts[i_index] << _self.convert(i_node)
 			_endif
+			(ok?, idx) << _self.is_hidden_if2?(i_node)
+			_if ok?
+			_then
+				sts[i_index] << _self.convert2(i_node, idx)
+			_endif 
 		_endif 			
 	_endloop 
 _endmethod
@@ -34,11 +39,10 @@ _method jpn_block_if_visitor.convert(p_block_node)
 	_local branch << p_block_node.body.statements[1]
 	_local stats << p_block_node.body.statements.slice_to_end(2)
 	_return dcn_branch.new(rope.new_with(
-				       {branch.if_condition.expression,
+				       {branch.if_condition.not,
 					dcn_body.new(stats)}))
 _endmethod
 $
-
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_block_if_visitor.is_hidden_if?(p_block_node)
@@ -48,11 +52,10 @@ _method jpn_block_if_visitor.is_hidden_if?(p_block_node)
 
 	_local block_body << p_block_node.body
 	_if block_body.statements.size < 1 _then _return _false, :empty_block _endif
-
+	
 	_local br << block_body.statements[1]
 	_if br.is_class_of?(dcn_branch).not _then _return _false, :first_is_not_branch _endif
 	_if br.just_if?.not _then _return _false, :first_is_not_just_if _endif
-	_if br.if_condition.is_class_of?(dcn_not).not _then _return _false, :first_is_not_not _endif
 
 	_local if_body << br.if_body
 	_if if_body.statements.size < 1 _then _return _false, :branch_body_empty? _endif
@@ -62,5 +65,107 @@ _method jpn_block_if_visitor.is_hidden_if?(p_block_node)
 	_if break.name <> tag _then _return _false, :branch_body_break_not_matching_tag _endif
 
 	_return _true 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_block_if_visitor.is_hidden_if2?(p_block_node)
+	##
+	_local tag << p_block_node.name
+	_if tag _is _unset _then _return _false, :missing_tag _endif
+
+	_local block_body << p_block_node.body
+	_if block_body.statements.size < 1 _then _return _false, :empty_block _endif
+
+	# Skip null assignments and find the first branch
+	branch_index << _unset 
+	_for i_index, i_node _over block_body.statements.fast_keys_and_elements()
+	_loop
+		_if i_node.is_class_of?(dcn_local_assignment)
+		_then
+			# ok, continue
+		_else
+			# this should be the branch
+			_if i_node.is_class_of?(dcn_branch)
+			_then
+				branch_index << i_index
+				_leave
+			_endif
+		_endif
+	_endloop 
+
+	_if branch_index _is _unset _then _return _false, :no_branch _endif
+	_if branch_index=block_body.statements.size _then _return _false, :no_body_left _endif
+
+	_local br << block_body.statements[branch_index]
+	_if br.just_if?.not _then _return _false, :first_is_not_just_if _endif
+	
+	_local if_body << br.if_body
+	_if if_body.statements.size < 1 _then _return _false, :branch_body_empty? _endif
+	
+	_local break << if_body.statements[1]
+	_if break.is_class_of?(dcn_break).not _then _return _false, :branch_body_is_break _endif
+	_if break.name <> tag _then _return _false, :branch_body_break_not_matching_tag _endif
+
+	_return _true, branch_index
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_block_if_visitor.convert2(p_block_node, p_index)
+	##
+	_local cds << rope.new()
+	
+	_local branch << p_block_node.body.statements[p_index]
+	_local before_stats << p_block_node.body.statements.slice(1, p_index-1)
+	
+	cds << _self.extract_elif(p_block_node, before_stats, cds)	
+	
+	_local after_stats  << p_block_node.body.statements.slice_to_end(p_index+1)
+	_local condition << branch.if_condition.not
+
+	cds.add({condition, dcn_body.new(after_stats)})
+	
+	before_stats.add(dcn_branch.new(cds))
+	
+	>> dcn_body.new(before_stats)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_block_if_visitor.extract_elif(p_block_node, before_stats, cds)
+	##
+	_if before_stats.empty?.not _andif before_stats.last.is_class_of?(dcn_block)
+	_then
+		_local prev_block << before_stats.last
+		_if prev_block.body.statements.empty?.not
+		_then 
+			_local last_in_block << prev_block.body.statements.last
+			_if last_in_block.is_class_of?(dcn_break) _andif
+			    last_in_block.name = p_block_node.name
+			_then
+				(elif?, elif_index) << _self.is_hidden_if2?(prev_block)
+				_if elif?
+				_then
+					before_stats.remove_last() # that was the block
+					prev_block.body.statements.remove_last() # that was the break
+					
+					_local elif_before_stats << prev_block.body.statements.slice(1,elif_index-1)
+					
+					cds << _self.extract_elif(p_block_node, elif_before_stats, cds)
+					
+					before_stats.add_all_last(elif_before_stats)
+					_local elif_branch << prev_block.body.statements[elif_index]
+					_local elif_condition << elif_branch.if_condition.not
+					_local elif_after_stats << prev_block.body.statements.slice_to_end(elif_index+1)
+					
+					cds.add({elif_condition, dcn_body.new(elif_after_stats)})
+				_endif
+			_endif 
+		_endif 
+	_endif
+	>> cds
 _endmethod
 $

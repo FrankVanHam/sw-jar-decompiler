@@ -52,6 +52,13 @@ _method jpn_pop_visitor.accept(p_body)
 			result << i_node
 			result_reset? << _false	
 		_endif 
+	_endloop
+	_for i_index, i_node _over sts.fast_keys_and_elements()
+	_loop
+		_if _self.is_pop_assignment?(i_node)
+		_then
+			i_node.unpop()
+		_endif 
 	_endloop 
 _endmethod
 $

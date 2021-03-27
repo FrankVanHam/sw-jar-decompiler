@@ -85,3 +85,4 @@ dcn_vector
 dcn_init
 dcn_dynamic_declaration
 dcn_interrupts
+dcn_synchronized

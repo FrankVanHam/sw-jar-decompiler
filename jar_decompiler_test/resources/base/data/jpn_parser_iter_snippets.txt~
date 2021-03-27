@@ -703,3 +703,99 @@ _method deco_test.test_break_iter()
 _endmethod
 $
 ###########
+## jnp_parser_return_iter
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4015 {
+    @SourceHash(value=-1220830357)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    @EnvVars(value={@EnvVar(name="__dynamic_frame__", type=Object.class, start=53, end=82, index=0), @EnvVar(name="__return_catcher__", type=Object[].class, start=35, end=102, index=2), @EnvVar(name="option_list", type=Object.class, start=21, end=102, index=3), @EnvVar(name="option", type=Object.class, start=13, end=102, index=1)})
+    public static Object deco_test__get_option(Object _self, Object option, Object option_list) {
+        Object[] __env__ = new Object[4];
+        EnvAccessor.bootstrapReseter("resetEnv", (Object)option, (Object[])__env__, (int)1);
+        EnvAccessor.bootstrapReseter("resetEnv", (Object)option_list, (Object[])__env__, (int)3);
+        EnvAccessor.bootstrapStorer("storeEnv", (Object)new ReturnCatcher(), (Object[])__env__, (int)2);
+        try {
+            if (EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)3) != null) {
+                EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)0);
+                EnvAccessor.bootstrapStorer("storeEnv", (Object)DynamicScope.getFrame(), (Object[])__env__, (int)0);
+                ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("fast_keys_and_elements()", (MethodHandle)cfr_ldc_0(), (Object[])__env__, (Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)3)));
+            }
+            return null;
+        }
+        catch (ReturnCatcher.Return return_) {
+            return ((ReturnCatcher)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)2))).getReturnResult(return_);
+        }
+    }
+
+    @Parent(method="deco_test__get_option")
+    @Debugger(value="MagikDebug")
+    @CodeType(value="LoopBody")
+    public static Object __loopbody_(Object[] __env__, Object i, Object opt) {
+        ResultTuple resultTuple;
+        DynamicScope __iterator_frame__ = DynamicScope.interjectFrame((DynamicScope)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0)));
+        try {
+            if (MagikObjectUtils.is(opt, EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1))) {
+                throw ((ReturnCatcher)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)2))).makeReturn((ResultTuple)((Object)Invoker.tupleBootstrap("\\b]", (Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)3), (Object)BinaryDispatcher.bootstrap("+", i, Integer.valueOf(1)))));
+            }
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.interjectFrame(__iterator_frame__);
+            throw throwable;
+        }
+        DynamicScope.interjectFrame(__iterator_frame__);
+        return resultTuple;
+    }
+
+    /*
+     * Works around MethodHandle LDC.
+     */
+    static MethodHandle cfr_ldc_0() {
+        try {
+            return MethodHandles.lookup().findStatic(deco_test_4015.class, "__loopbody_", MethodType.fromMethodDescriptorString("([Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null));
+        }
+        catch (NoSuchMethodException | IllegalAccessException except) {
+            throw new IllegalArgumentException(except);
+        }
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4014
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_4014() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "get_option()", deco_test_4015.class, "deco_test__get_option", 3, 3));
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+################
+_method deco_test.get_option(option, option_list) 
+    _if (option_list _isnt _unset)
+    _then
+        _for i, opt _over option_list.fast_keys_and_elements()
+        _loop
+            _if (opt _is option)
+            _then
+                _return option_list[(i + 1)]
+            _endif
+        _endloop
+    _endif
+    _return _unset
+_endmethod
+$
+################

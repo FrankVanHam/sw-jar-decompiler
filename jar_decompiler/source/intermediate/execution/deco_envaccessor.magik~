@@ -60,14 +60,22 @@ _method deco_envaccessor.bootstrapstorer(p_parser, p_action, p_exp, p_env, p_ind
 	_then
 		_local index << p_parser.parse_expression(p_index)
 		
+		_local exp << p_parser.parse_expression(p_exp)
+		.cache[index.string_value] << exp
+
 		_local name << .var_names[index.string_value]
-		_local left  << dcn_local_declaration.new(name, "Object")
-		_local left_local  << dcn_local.new("Object", name)
-		_local right << p_parser.parse_expression(p_exp)
+		_if name _isnt _unset
+		_then 
+			_local left  << dcn_local_declaration.new(name, "Object")
+			#_local left_local  << dcn_local.new("Object", name)
+			_local right << p_parser.parse_expression(p_exp)
+			
+			#.cache[index.string_value] << left_local
 		
-		.cache[index.string_value] << left_local
-		
-		_return dcn_local_assignment.new(left, right)
+			_return dcn_local_assignment.new(left, right)
+		_else
+			_return dcn_no_op.new()
+		_endif 
 	_endif 
 	_return dcn_no_op.new()
 _endmethod
@@ -82,12 +90,19 @@ _method deco_envaccessor.bootstrapfetcher(p_parser, p_action, p_env, p_index)
 		_local name << .var_names[index.string_value]
 		_local loc << .cache[index.string_value]
 
-		_if loc _isnt _unset
+		_if name _isnt _unset
 		_then
-			_return loc
-		_else
 			_return dcn_local.new(0, name)
+		_else
+			_return loc
 		_endif 
+
+#		_if loc _isnt _unset
+#		_then
+#			_return loc
+#		_else
+#			_return dcn_local.new(0, name)
+#		_endif 
 	_else 
 		_return dcn_no_op.new()
 	_endif 

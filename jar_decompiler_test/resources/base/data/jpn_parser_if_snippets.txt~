@@ -87,7 +87,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_if_else() 
-    _if _self.test?
+    _if (_self.test? _isnt _unset)
     _then
         _self.doa()
     _else 
@@ -260,4 +260,551 @@ _method deco_test.test_param_if()
     _return  _unset
 _endmethod
 $
+###########
+## jpn_test_if_assign
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4142 {
+    @SourceHash(value=-972845106)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_if_assign(Object _self) {
+        CallSite id = Invoker.bootstrapPrivate("$slot_get_find_default_text_id()", (Object)_self);
+        CallSite find_value = id != null ? Invoker.bootstrap("message()", Invoker.bootstrapPrivate("application", (Object)_self), id) : Invoker.bootstrapPrivate("message()", (Object)_self, (Object)ConstantBuilder.symbolBootstrap("symbol", "find_default_text_id"));
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)find_value);
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4141
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "test_if_assign()", deco_test_4142.class, "deco_test__test_if_assign", 1, 1));
+    }
+}
+##############
+_method deco_test.test_if_assign() 
+     _local id << .find_default_text_id
+     _local find_value << _if (id _isnt _unset)
+    _then
+        >> _self.application.message(id)
+    _else
+        >> _self.message(:find_default_text_id)
+    _endif
+    sw:show(find_value)
+    _return _unset
+_endmethod
+$
+##############
+## jpn_test_if_if
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4150 {
+    @SourceHash(value=-369482368)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_if_if(Object _self, Object data_type_name, Object ... args) {
+        Object result;
+        block1: {
+            result = null;
+            if (data_type_name != ConstantBuilder.symbolBootstrap("symbol", "service_provider")) break block1;
+            if (((ResultTuple)((Object)TupleBuilder.bootstrap("tb", (Object[])Invoker.bootstrapPrivate("for_scatter()", (Object)args)))).pop() == ConstantBuilder.symbolBootstrap("symbol", "explorer")) {
+                result = _self;
+            }
+        }
+        return result;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4149
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "test_if_if()", deco_test_4150.class, "deco_test__test_if_if", 2, 2));
+    }
+}
+##########
+_method deco_test.test_if_if(data_type_name, _optional _gather args) 
+    _local result
+    result << _unset
+    _if (data_type_name = :service_provider)
+    _then
+        _if (( _scatter args) = :explorer)
+        _then
+            result << _self
+        _endif
+    _endif
+    _return result
+_endmethod
+$
+##########
+## jpn_test_if_is
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4154 {
+    @SourceHash(value=-576906746)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_if_is(Object _self, Object xml_element) {
+        block0: {
+            if (Invoker.bootstrap("type", xml_element) != ConstantBuilder.symbolBootstrap("symbol", "find_engine")) break block0;
+            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("show()", (Object)_self));
+        }
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4153
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "test_if_is()", deco_test_4154.class, "deco_test__test_if_is", 2, 2));
+    }
+}
+###########
+_method deco_test.test_if_is(xml_element) 
+    _if (xml_element.type = :find_engine)
+    _then
+        _self.show()
+    _endif
+    _return _unset
+_endmethod
+$
+###########
+## jpn_test_if_is2
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4158 {
+    @SourceHash(value=327680820)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    @EnvVars(value={@EnvVar(name="__dynamic_frame__", type=Object.class, start=27, end=50, index=0)})
+    public static Object deco_test__test_if_is(Object _self, Object xml_element) {
+        block0: {
+            Object[] __env__ = new Object[1];
+            if (Invoker.bootstrap("type", xml_element) != ConstantBuilder.symbolBootstrap("symbol", "find_engine")) break block0;
+            EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)0);
+            EnvAccessor.bootstrapStorer("storeEnv", (Object)DynamicScope.getFrame(), (Object[])__env__, (int)0);
+            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("elements_of_type()", (MethodHandle)cfr_ldc_0(), (Object[])__env__, (Object)xml_element));
+        }
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @Parent(method="deco_test__test_if_is")
+    @Debugger(value="MagikDebug")
+    @CodeType(value="LoopBody")
+    public static Object __loopbody_(Object[] __env__, Object sub) {
+        ResultTuple resultTuple;
+        DynamicScope __iterator_frame__ = DynamicScope.interjectFrame((DynamicScope)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0)));
+        try {
+            ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)sub);
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.interjectFrame(__iterator_frame__);
+            throw throwable;
+        }
+        DynamicScope.interjectFrame(__iterator_frame__);
+        return resultTuple;
+    }
+
+    /*
+     * Works around MethodHandle LDC.
+     */
+    static MethodHandle cfr_ldc_0() {
+        try {
+            return MethodHandles.lookup().findStatic(deco_test_4158.class, "__loopbody_", MethodType.fromMethodDescriptorString("([Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null));
+        }
+        catch (NoSuchMethodException | IllegalAccessException except) {
+            throw new IllegalArgumentException(except);
+        }
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4157
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "test_if_is()", deco_test_4158.class, "deco_test__test_if_is", 2, 2));
+    }
+}
+###############
+_method deco_test.test_if_is(xml_element) 
+    _if (xml_element.type = :find_engine)
+    _then
+        _for sub _over xml_element.elements_of_type()
+        _loop
+            sw:show(sub)
+        _endloop
+    _endif
+    _return _unset
+_endmethod
+$
+###############
+## jpn_test_if__loop_etc
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4159 {
+    @SourceHash(value=-1067699364)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    @EnvVars(value={@EnvVar(name="__dynamic_frame__", type=Object.class, start=35, end=58, index=1), @EnvVar(name="_self", type=Object.class, start=13, end=65, index=2)})
+    public static Object deco_test__process_initialisation_data_element(Object _self, Object xml_element) {
+        block0: {
+            Object[] __env__ = new Object[3];
+            EnvAccessor.bootstrapReseter("resetEnv", (Object)_self, (Object[])__env__, (int)2);
+            if (Invoker.bootstrap("type", xml_element) != ConstantBuilder.symbolBootstrap("symbol", "find_engine")) break block0;
+            EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)1);
+            EnvAccessor.bootstrapStorer("storeEnv", (Object)DynamicScope.getFrame(), (Object[])__env__, (int)1);
+            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("elements_of_type()", (MethodHandle)cfr_ldc_0(), (Object[])__env__, (Object)xml_element));
+        }
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @Parent(method="deco_test__process_initialisation_data_element")
+    @Debugger(value="MagikDebug")
+    @CodeType(value="LoopBody")
+    @EnvVars(value={@EnvVar(name="__dynamic_frame__", type=Object.class, start=36, end=59, index=0)})
+    public static Object __loopbody_(Object[] __env__, Object sub) {
+        ResultTuple resultTuple;
+        DynamicScope __iterator_frame__ = DynamicScope.interjectFrame((DynamicScope)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1)));
+        try {
+            if (Invoker.bootstrap("type", sub) == ConstantBuilder.symbolBootstrap("symbol", "categories")) {
+                EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)0);
+                EnvAccessor.bootstrapStorer("storeEnv", (Object)DynamicScope.getFrame(), (Object[])__env__, (int)0);
+                ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("elements_of_type()", (MethodHandle)cfr_ldc_1(), (Object[])__env__, (Object)sub));
+            } else if (Invoker.bootstrap("type", sub) == ConstantBuilder.symbolBootstrap("symbol", "engine")) {
+                ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("$slot_set_find_plugin_name()", (Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)2), (Object)Invoker.bootstrap("as_symbol()", Invoker.bootstrap("attribute()", sub, ConstantBuilder.symbolBootstrap("symbol", "plugin_name")))));
+            } else if (Invoker.bootstrap("type", sub) == ConstantBuilder.symbolBootstrap("symbol", "default_text")) {
+                ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("$slot_set_find_default_text_id()", (Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)2), (Object)Invoker.bootstrap("as_symbol()", Invoker.bootstrap("attribute()", sub, ConstantBuilder.symbolBootstrap("symbol", "id")))));
+            }
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.interjectFrame(__iterator_frame__);
+            throw throwable;
+        }
+        DynamicScope.interjectFrame(__iterator_frame__);
+        return resultTuple;
+    }
+
+    @Parent(method="__loopbody_")
+    @Debugger(value="MagikDebug")
+    @CodeType(value="LoopBody")
+    public static Object __loopbody_2(Object[] __env__, Object category) {
+        ResultTuple resultTuple;
+        DynamicScope __iterator_frame__ = DynamicScope.interjectFrame((DynamicScope)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0)));
+        try {
+            if (Invoker.bootstrap("type", category) == ConstantBuilder.symbolBootstrap("symbol", "category")) {
+                CallSite id = Invoker.bootstrap("as_symbol()", Invoker.bootstrap("attribute()", category, ConstantBuilder.symbolBootstrap("symbol", "name")));
+                ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("add_last()", (Object)Invoker.bootstrapPrivate("$slot_get_find_categories()", (Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)2)), (Object)VectorBuilder.bootstrap("vb", id, Invoker.bootstrap("message()", Invoker.bootstrapPrivate("application", (Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)2)), id))));
+                Object object = BinaryDispatcher.bootstrap("=", Invoker.bootstrap("attribute()", category, ConstantBuilder.symbolBootstrap("symbol", "default")), ConstantBuilder.stringBootstrap("string", "yes"));
+                if (!MagikObjectUtils.should_be_boolean(object)) {
+                    object = new Boolean(MagikObjectUtils.is(Invoker.bootstrapPrivate("$slot_get_find_default_category()", (Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)2)), null));
+                }
+                if (MagikObjectUtils.should_be_boolean(object)) {
+                    ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("$slot_set_find_default_category()", (Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)2), (Object)id));
+                }
+            }
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.interjectFrame(__iterator_frame__);
+            throw throwable;
+        }
+        DynamicScope.interjectFrame(__iterator_frame__);
+        return resultTuple;
+    }
+
+    /*
+     * Works around MethodHandle LDC.
+     */
+    static MethodHandle cfr_ldc_0() {
+        try {
+            return MethodHandles.lookup().findStatic(deco_test_4159.class, "__loopbody_", MethodType.fromMethodDescriptorString("([Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null));
+        }
+        catch (NoSuchMethodException | IllegalAccessException except) {
+            throw new IllegalArgumentException(except);
+        }
+    }
+
+    /*
+     * Works around MethodHandle LDC.
+     */
+    static MethodHandle cfr_ldc_1() {
+        try {
+            return MethodHandles.lookup().findStatic(deco_test_4159.class, "__loopbody_2", MethodType.fromMethodDescriptorString("([Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null));
+        }
+        catch (NoSuchMethodException | IllegalAccessException except) {
+            throw new IllegalArgumentException(except);
+        }
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4158
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "process_initialisation_data_element()", deco_test_4159.class, "deco_test__process_initialisation_data_element", 2, 2));
+    }
+}
+
+###############
+_method deco_test.process_initialisation_data_element(xml_element) 
+    _if (xml_element.type = :find_engine)
+    _then
+        _for sub _over xml_element.elements_of_type()
+        _loop
+            _if (sub.type = :categories)
+            _then
+                _for category _over sub.elements_of_type()
+                _loop
+                    _if (category.type = :category)
+                    _then
+                         _local id << category.attribute(:name).as_symbol()
+                        .find_categories.add_last({id, _self.application.message(id)})
+                         _local object << (category.attribute(:default) = "yes")
+                        _if  _not(object)
+                        _then
+                            object << (.find_default_category _is _unset)
+                        _endif
+                        _if object
+                        _then
+                            .find_default_category << id
+                        _endif
+                    _endif
+                _endloop
+            _elif (sub.type = :engine)
+            _then
+                .find_plugin_name << sub.attribute(:plugin_name).as_symbol()
+            _elif (sub.type = :default_text)
+            _then
+                .find_default_text_id << sub.attribute(:id).as_symbol()
+            _endif
+        _endloop
+    _endif
+    _return _unset
+_endmethod
+$
+
+###############
+## jpn_test_if_loop_finally
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4175 {
+    @SourceHash(value=-489137755)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    @EnvVars(value={@EnvVar(name="__dynamic_frame__", type=Object.class, start=39, end=121, index=0), @EnvVar(name="__leave_catcher__", type=Object[].class, start=53, end=124, index=1)})
+    public static Object deco_test__post_build_gui(Object _self) {
+        block2: {
+            Object[] __env__ = new Object[2];
+            if (!MagikObjectUtils.should_be_boolean(BinaryDispatcher.bootstrap("\\g", Invoker.bootstrap("size", Invoker.bootstrapPrivate("$slot_get_embedded_explorer_views()", (Object)_self)), Integer.valueOf(0)))) break block2;
+            EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)0);
+            EnvAccessor.bootstrapStorer("storeEnv", (Object)new LeaveCatcher(), (Object[])__env__, (int)1);
+            try {
+                EnvAccessor.bootstrapStorer("storeEnv", (Object)DynamicScope.getFrame(), (Object[])__env__, (int)0);
+                ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("fast_elements()", (MethodHandle)cfr_ldc_0(), (Object[])__env__, (Object)Invoker.bootstrapPrivate("$slot_get_embedded_explorer_views()", (Object)_self)));
+                Boolean bl = Boolean.TRUE;
+                ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrap("main?\\l\\l", (Object)Invoker.bootstrapPrivate("$slot_get_embedded_explorer_views()", (Object)_self), (Object)bl));
+            }
+            catch (LeaveCatcher.Leave leave) {
+                ((LeaveCatcher)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1))).getLeaveResult(leave);
+            }
+        }
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @Parent(method="deco_test__post_build_gui")
+    @Debugger(value="MagikDebug")
+    @CodeType(value="LoopBody")
+    public static Object __loopbody_(Object[] __env__, Object view) {
+        ResultTuple resultTuple;
+        DynamicScope __iterator_frame__ = DynamicScope.interjectFrame((DynamicScope)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0)));
+        try {
+            if (MagikObjectUtils.should_be_boolean(Invoker.bootstrap("main?", view))) {
+                throw ((LeaveCatcher)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1))).makeLeave(ResultTuple.EMPTY_TUPLE);
+            }
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.interjectFrame(__iterator_frame__);
+            throw throwable;
+        }
+        DynamicScope.interjectFrame(__iterator_frame__);
+        return resultTuple;
+    }
+
+    /*
+     * Works around MethodHandle LDC.
+     */
+    static MethodHandle cfr_ldc_0() {
+        try {
+            return MethodHandles.lookup().findStatic(deco_test_4175.class, "__loopbody_", MethodType.fromMethodDescriptorString("([Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null));
+        }
+        catch (NoSuchMethodException | IllegalAccessException except) {
+            throw new IllegalArgumentException(except);
+        }
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4174
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "post_build_gui()", deco_test_4175.class, "deco_test__post_build_gui", 1, 1));
+    }
+}
+###########
+_method deco_test.post_build_gui() 
+    _if (.embedded_explorer_views.size > 0)
+    _then
+        _for view _over .embedded_explorer_views.fast_elements()
+        _loop
+            _if view.main?
+            _then
+                 _leave
+            _endif
+        
+        _finally
+             _local bl << _true
+            .embedded_explorer_views.main? << bl
+        _endloop
+    _endif
+    _return _unset
+_endmethod
+$
+###########
+## jpn_test_if_elif_loop
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4187 {
+    @SourceHash(value=1128387775)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    @EnvVars(value={@EnvVar(name="__dynamic_frame__", type=Object.class, start=88, end=118, index=0), @EnvVar(name="__dynamic_frame__", type=Object.class, start=33, end=174, index=1), @EnvVar(name="__loopenv__", type=Object.class, start=24, end=175, index=3), @EnvVar(name="__loopbody__", type=Object.class, start=15, end=175, index=2)})
+    public static Object deco_test__explorers(MethodHandle __loopbody__, Object[] __loopenv__, Object _self, Object object) {
+        block1: {
+            Object[] __env__;
+            block0: {
+                __env__ = new Object[4];
+                EnvAccessor.bootstrapReseter("resetEnv", (Object)__loopbody__, (Object[])__env__, (int)2);
+                EnvAccessor.bootstrapReseter("resetEnv", (Object)__loopenv__, (Object[])__env__, (int)3);
+                EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)1);
+                EnvAccessor.bootstrapStorer("storeEnv", (Object)DynamicScope.getFrame(), (Object[])__env__, (int)1);
+                ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("fast_elements()", (MethodHandle)cfr_ldc_0(), (Object[])__env__, (Object)Invoker.bootstrapPrivate("$slot_get_embedded_explorer_views()", (Object)_self)));
+                if (Invoker.bootstrapPrivate("get_dialog()", (Object)_self, (Object)ConstantBuilder.symbolBootstrap("symbol", "explorer")) == null) break block0;
+                EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)0);
+                EnvAccessor.bootstrapStorer("storeEnv", (Object)DynamicScope.getFrame(), (Object[])__env__, (int)0);
+                ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrap("fast_elements()", (MethodHandle)cfr_ldc_1(), (Object[])__env__, (Object)Invoker.bootstrapPrivate("$slot_get_dialogs()", (Object)_self)));
+                break block1;
+            }
+            if (!MagikObjectUtils.is(object, Boolean.TRUE)) break block1;
+            LoopBodyInvoker.naturalBootstrap("_loopbody", (MethodHandle)((MethodHandle)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)2))), (Object[])((Object[])EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)3)), (Object)Invoker.bootstrapPrivate("start_explorer_view()", (Object)_self, (Object)Boolean.TRUE));
+        }
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @Parent(method="deco_test__explorers")
+    @Debugger(value="MagikDebug")
+    @CodeType(value="LoopBody")
+    public static Object __loopbody_(Object[] __env__, Object el) {
+        ResultTuple resultTuple;
+        DynamicScope __iterator_frame__ = DynamicScope.interjectFrame((DynamicScope)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1)));
+        try {
+            LoopBodyInvoker.naturalBootstrap("_loopbody", (MethodHandle)((MethodHandle)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)2))), (Object[])((Object[])EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)3)), (Object)el);
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.interjectFrame(__iterator_frame__);
+            throw throwable;
+        }
+        DynamicScope.interjectFrame(__iterator_frame__);
+        return resultTuple;
+    }
+
+    @Parent(method="deco_test__explorers")
+    @Debugger(value="MagikDebug")
+    @CodeType(value="LoopBody")
+    public static Object __loopbody_2(Object[] __env__, Object element) {
+        ResultTuple resultTuple;
+        DynamicScope __iterator_frame__ = DynamicScope.interjectFrame((DynamicScope)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0)));
+        try {
+            LoopBodyInvoker.naturalBootstrap("_loopbody", (MethodHandle)((MethodHandle)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)2))), (Object[])((Object[])EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)3)), (Object)element);
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.interjectFrame(__iterator_frame__);
+            throw throwable;
+        }
+        DynamicScope.interjectFrame(__iterator_frame__);
+        return resultTuple;
+    }
+
+    /*
+     * Works around MethodHandle LDC.
+     */
+    static MethodHandle cfr_ldc_0() {
+        try {
+            return MethodHandles.lookup().findStatic(deco_test_4187.class, "__loopbody_", MethodType.fromMethodDescriptorString("([Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null));
+        }
+        catch (NoSuchMethodException | IllegalAccessException except) {
+            throw new IllegalArgumentException(except);
+        }
+    }
+
+    /*
+     * Works around MethodHandle LDC.
+     */
+    static MethodHandle cfr_ldc_1() {
+        try {
+            return MethodHandles.lookup().findStatic(deco_test_4187.class, "__loopbody_2", MethodType.fromMethodDescriptorString("([Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null));
+        }
+        catch (NoSuchMethodException | IllegalAccessException except) {
+            throw new IllegalArgumentException(except);
+        }
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4186
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "explorers()", deco_test_4187.class, "deco_test__explorers", 4, 3, true, false, true, 0));
+    }
+}
+###########
 ###########

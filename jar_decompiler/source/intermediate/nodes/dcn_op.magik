@@ -30,34 +30,23 @@ def_slotted_exemplar(:dcn_op,
 			     {:operand2,_unset}
 		     }, :dcn_base)
 $
+_pragma(classify_level=restricted, topic={decompiler})
+dcn_op.define_shared_constant(
+	:allowed_operators, equality_set.new_with("_not","+","-","/","*","**","_div","_mod","_and","_andif","_orif","_or","=","~=", "_cf","<","<=",">",">=","_xor","_is","_isnt"),
+	:private )
+$
 
 _pragma(classify_level=restricted, topic={decompiler})
 dcn_op.define_shared_constant(
-	:translation,
-	hash_table.new_with(
-		:not, "_not",
-		:|+|, "+",
-		:|-|, "-",
-		:|/|, "/",
-		:|*|, "*",
-		:div, "_div",
-		:mod, "_mod",
-		:and, "_and",
-		:andif, "_andif",
-		:orif, "_orif",
-		:or , "_or",
-		:|=|, "=",
-		:|~=|, "~=",
-		:cf, "_cf",
-		:|<|, "<",
-		:|<=|, "<=",
-		:|>| , ">",
-		:|>=|, ">=",
-		:xor, "_xor",
-		:is, "_is",
-		:isnt, "_isnt"
-			     
-		   ),
+	:not_operators, equality_hash_table.new_with(
+				    "=","~=",
+				    "~=","=",
+				    "<", ">=",
+				    "<=",">",
+				    ">","<=",
+				    ">=","<",
+				    "_is","_isnt",
+				    "_isnt","_is"),
 	:private )
 $
 
@@ -70,6 +59,7 @@ $
 _pragma(classify_level=restricted, topic={decompiler})
 _private _method dcn_op.init(operator, oper1, oper2)
 	assert(oper1 _isnt _false)
+	assert(_self.allowed_operators.includes?(operator))
 	.operator << operator
 	.operand1 << oper1
 	.operand2 << oper2
@@ -82,6 +72,20 @@ _method dcn_op.new_orif(left)
 	_return _self.new(:orif, left, .operand1)
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.not
+	##
+	_local not_op << _self.not_operators[.operator]
+	>> _if not_op _isnt _unset
+	   _then
+		   >> dcn_op.new(not_op, .operand1, .operand2)
+	   _else
+		   >> dcn_not.new(_self)
+	   _endif 
+_endmethod
+$
+
 
 
 _pragma(classify_level=restricted, topic={decompiler})

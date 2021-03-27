@@ -86,6 +86,14 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.not
+	## 
+	>> dcn_not.new(_self)	
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
 _method dcn_base.clone()
 	## 
 	## 

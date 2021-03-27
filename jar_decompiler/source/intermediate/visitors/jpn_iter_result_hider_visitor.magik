@@ -24,6 +24,10 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_iter_result_hider_visitor.accept(p_body)
 	##
 	_local sts << p_body.statements
+
+#	_global x
+#	x << sts
+#	1212.stop
 	_for i_index, i_node _over sts.fast_keys_and_elements()
 	_loop
 		_if _self.should_clear_unset_results?(i_node)

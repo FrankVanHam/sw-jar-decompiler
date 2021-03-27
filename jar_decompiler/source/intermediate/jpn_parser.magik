@@ -88,6 +88,9 @@ _method jpn_parser.parse_expression(p_node)
 	_elif p_node.is_class_of?(jpn_return)
 	_then
 		_return _self.parse_return_statement(p_node)
+	_elif p_node.is_class_of?(jpn_soft_return)
+	_then
+		_return _self.parse_soft_return_statement(p_node)
 	_elif p_node.is_class_of?(jpn_class)
 	_then
 		_return _self.parse_class(p_node)
@@ -284,6 +287,14 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_soft_return_statement(p_jnode)
+	##
+	_local exp << _self.parse_expression(p_jnode.expression)
+	>> dcn_soft_return.new(exp)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_class(p_class_node)
 	deco_envaccessor.reset()
 	.top.add_java_class(p_class_node)
@@ -341,7 +352,6 @@ _method jpn_parser.parse_execution_class(p_class_node)
 		_if i_meth.type = "TopLevel"
 		_then
 			_local m_node << _self.parse_method(class_name, i_meth)
-			
 			_for i_statement _over m_node.body.statements.fast_elements()
 			_loop
 				_local stat << _if i_statement.is_class_of?(dcn_return)
@@ -376,7 +386,6 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_method(p_class_name, p_meth_node)
 	##
-	show("###", :parse_method, p_class_name, p_meth_node.name)
 	# strip all upto the self "Object _self" argument
 	_local idx << _unset
 	_local iter? << _false
@@ -437,11 +446,11 @@ _method jpn_parser.parse_proc(p_class_name, p_meth_node, p_env?)
 	_local args << java_args.map(_proc(x) >> x.name _endproc)
 	
 	_local env << deco_envaccessor.save()
-	show("proc")
+	
 	_self.apply_annotations(p_meth_node)
 	_local imports << _self.extract_import(p_meth_node)
 	_local body << _self.parse_body(p_meth_node.body)
-	show("end proc")
+	
 	deco_envaccessor.restore(env)
 	
 	_local type << p_meth_node.type
@@ -548,7 +557,9 @@ _method jpn_parser.parse_operation(p_jnode)
 
 	_local op_map << equality_hash_table.new_with(
 				 "==", "=",
-				 "!=", "~=")
+				 "!=", "~=",
+				 "||", "_or",
+				 "&&", "_and")
 	_local op << op_map[p_jnode.operation].default("crash!")
 
 	_if right.is_class_of?(dcn_constant) _andif (right.string_value = "null")
@@ -631,12 +642,13 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_parser.parse_iter(p_method, p_sender, _gather p_args)
+_method jpn_parser.parse_iter(p_method, p_handle, p_env, p_sender, _gather p_args)
 	##
-	_local sender << _self.parse_sender(p_args.last)
+	_local sender << _self.parse_sender(p_sender)
+	_local args << _self.parse_args(p_args)
 	
 	# (MethodHandle)cfr_ldc_0(), ref=cfr_ldc_0
-	_local ref << p_sender.expression.name
+	_local ref << p_handle.expression.name
 	_local ref_method << .java_class.find_method(ref)
 
 	_local java_loopbody_method << _self.find_loopbody_method(ref_method)
@@ -649,7 +661,7 @@ _method jpn_parser.parse_iter(p_method, p_sender, _gather p_args)
 	
 	>> dcn_iter.new(sender, p_method.string_value,
 			loopbody_method.scatter?, loopbody_method.args,
-			loopbody_method.body)
+			loopbody_method.body, args)
 _endmethod
 $
 
@@ -677,9 +689,7 @@ _method jpn_parser.publish_proc(p_class_name, p_java_method_name, p_proc_name, p
 	##
 	_local java_class << .top.find_class(p_class_name)
 	_local java_proc_method << java_class.find_method(p_java_method_name)
-	show(:java_proc_method, java_proc_method)
 	_local proc_method << _self.parse_proc(java_class.name, java_proc_method, p_env?)
-	show(proc_method)
 	proc_method.bind(p_proc_name, p_nr_args, p_nr_mandatory_args)
 	>> proc_method
 	#>> .top.publish_proc(p_class_name, p_java_method_name, p_proc_name, p_nr_args, p_nmandatory_args )

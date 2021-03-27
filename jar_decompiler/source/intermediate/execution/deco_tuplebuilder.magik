@@ -25,7 +25,11 @@ _method deco_tuplebuilder.expressions(p_parser, _gather p_expression_nodes)
 	_local exprs << rope.new_for(p_expression_nodes.size)
 	_for i_exp _over p_expression_nodes.fast_elements()
 	_loop
-		exprs.add(p_parser.parse_expression(i_exp))
+		_local exp << p_parser.parse_expression(i_exp)
+		_if exp _isnt _unset
+		_then 
+			exprs.add(exp)
+		_endif
 	_endloop
 	>> exprs
 _endmethod

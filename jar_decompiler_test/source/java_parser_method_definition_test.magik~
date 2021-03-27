@@ -6,16 +6,17 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 def_slotted_exemplar(:java_parser_method_definition_test,
 	{},
-	:deco_test_case)
+	:test_case)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_method_definition_test.test_method_no_args()
-	_local s << _self.create_input(
-			      "public class a_class {",
+	_local inp << write_string(
+			      "public class a_class {", newline_char,
 			      "    public static Object class__a_method() {",
 			      "    }",
 			      "}")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.get()
@@ -30,11 +31,12 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_method_definition_test.test_method_illegal_name()
-	_local s << _self.create_input(
-			      "public class a_class {",
+	_local inp << write_string(
+			      "public class a_class {", newline_char,
 			      "    public static Object deco_test__test_args_asign()\l\l_() {",
 			      "    }",
 			      "}")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.get()
@@ -45,11 +47,12 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_method_definition_test.test_method_illegal_name2()
-	_local s << _self.create_input(
-			      "public class a_class {", 
+	_local inp << write_string(
+			      "public class a_class {", newline_char,
 			      "    public static Object deco_test__\b]\l\l_() {",
 			      "    }",
 			      "}")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.get()
@@ -60,11 +63,12 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_method_definition_test.test_method_with_args()
-	_local s << _self.create_input(
-			      "public class a_class {",
+	_local inp << write_string(
+			      "public class a_class {", newline_char,
 			      "    public static Object class__a_method(Object _self, Object c, Object a) {",
 			      "    }",
 			      "}")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.get()
@@ -78,11 +82,12 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_method_definition_test.test_method_with_gather_args()
-	_local s << _self.create_input(
-			      "public class a_class {",
+	_local inp << write_string(
+			      "public class a_class {", newline_char,
 			      "    public static Object class__a_method(Object _self, Object ... c) {",
 			      "    }",
 			      "}")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.get()
@@ -97,15 +102,16 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_method_definition_test.test_class_method_with_annotation()
-	_local s << _self.create_input(
-			      "public class a_class {",
-			      "@Override",
-			      "@SourceHash(value=888600578)",
-			      "@Debugger(value='MagikDebug')",
-			      "@CodeType(value='Subsidiary')",
+	_local inp << write_string(
+			      "public class a_class {", newline_char,
+			      "@Override", newline_char,
+			      "@SourceHash(value=888600578)", newline_char,
+			      "@Debugger(value='MagikDebug')", newline_char,
+			      "@CodeType(value='Subsidiary')", newline_char,
 			      "    public static Object class__a_method() {",
 			      "    }",
 			      "}")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.get()

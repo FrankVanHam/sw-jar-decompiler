@@ -799,8 +799,8 @@ _method java_parser_test.test_conditional_operator()
 	_local m << p.parse_expression()
 	_self.assert_true(m.is_kind_of?(deco:jpn_assignment), "should be an assignment")
 	_self.assert_equals("a", m.right.condition.name)
-	_self.assert_equals("b", m.right.then.statements[1].name)
-	_self.assert_equals("c", m.right.else.statements[1].name)
+	_self.assert_equals("b", m.right.then.statements[1].expression.name)
+	_self.assert_equals("c", m.right.else.statements[1].expression.name)
 _endmethod
 $
 

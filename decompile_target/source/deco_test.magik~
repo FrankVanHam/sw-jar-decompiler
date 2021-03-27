@@ -9,26 +9,12 @@ def_slotted_exemplar(:deco_test,
 	:model)
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_test.test_protect()
-	## 
-	_protect
-		_self.do()
-	_protection
-		_self.safe()
-	_endprotect 
-_endmethod
-$
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_test.test_protect_lock()
-	##
-	_local l << _self.lock()
-	_protect _locking l
-		 
-		 _self.do()
-	_protection
-		_self.safe()
-	_endprotect 
+_method deco_test.test_lock_obj()
+	## 
+	_lock _self.lock 
+		_self.do()
+	_endlock
 _endmethod
 $

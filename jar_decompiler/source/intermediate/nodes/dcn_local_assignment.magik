@@ -96,6 +96,28 @@ _method dcn_local_assignment.accept_body_visitor(visitor)
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_local_assignment.name
+	>> .local_nodes[1].name
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_local_assignment.is_type?(p_type)
+	##
+	>> .local_nodes[1].is_type?(p_type)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_local_assignment.unpop()
+	##
+	.expression << .expression.expression
+_endmethod
+$
+
+
+
 
 #_pragma(classify_level=restricted, topic={decompiler})
 #_method dcn_local_assignment.accept_node_visitor(visitor)
