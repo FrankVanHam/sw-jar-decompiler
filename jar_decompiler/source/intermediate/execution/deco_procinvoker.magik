@@ -25,8 +25,8 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_procinvoker.naturalbootstrap(p_parser, p_brackets, p_value_node, _gather p_arg_nodes)
 	##
-	_local value << p_parser.parse_expression(p_value_node)
+	_local (value, env) << p_parser.parse_expression(p_value_node)
 	_local args << p_parser.parse_args(p_arg_nodes)	
-	>> dcn_call.new(value, args)
+	>> dcn_call.new(value, args, env)
 _endmethod
 $

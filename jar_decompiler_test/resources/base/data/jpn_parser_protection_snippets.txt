@@ -371,4 +371,29 @@ implements ExecutableMagik {
     }
 }
 ##########
+_method deco_test.do_move_action(action, source_element, target_element) 
+    _block @block16
+        _protect
+            _if (target_element _is _self.current_set_element)
+            _then
+                sw:scrapbook.set_current_result(_self.name)
+                 _leave @block16
+            _endif
+            _if  _not((target_element _is user:saved_sets_element))
+            _then
+                 _leave @block16
+            _endif
+            sw:query_result.new_non_persistent()
+            _try _with object
+                _self.scrapbook.store(_self.name)
+            _when scrapbook_read_only
+                
+            _endtry
+        _protection
+            _self.write(1)
+        _endprotect
+    _endblock
+    _return _unset
+_endmethod
+$
 ##########

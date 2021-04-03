@@ -694,6 +694,7 @@ _method deco_test.test_break_iter()
         _self.run2()
         _if _self.exit?
         _then
+             _local resultTuple2 << _unset
             _continue
         _endif
         _self.run3()

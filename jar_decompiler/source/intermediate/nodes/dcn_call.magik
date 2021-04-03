@@ -25,20 +25,29 @@ _pragma(classify_level=restricted, topic={decompiler})
 ## Node for a call, a procedure invocation.
 def_slotted_exemplar(:dcn_call,
 		     {
-			     {:value_node, _unset}
+			     {:value_node, _unset},
+			     {:env, _unset, :readable}
 		     }, :dcn_invocation)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_call.new(p_value_node, p_args)
-	_return _clone.init(p_value_node, p_args)
+_method dcn_call.new(p_value_node, p_args, _optional p_env)
+	_return _clone.init(p_value_node, p_args, p_env)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_call.init(p_value_node, p_args)
+_private _method dcn_call.init(p_value_node, p_args, _optional p_env)
 	.value_node << p_value_node
+	.env << p_env
 	_return _super.init(p_args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_call.name
+	## 
+	>> .value_node.name
 _endmethod
 $
 
@@ -54,6 +63,12 @@ _method dcn_call.decode_on(p_stream)
 		i_arg.decode_on(p_stream)
 	_endloop 
 	p_stream.write(")")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_call.accept_body_visitor(p_visitor)
+	.value_node.accept_body_visitor(p_visitor)
 _endmethod
 $
 

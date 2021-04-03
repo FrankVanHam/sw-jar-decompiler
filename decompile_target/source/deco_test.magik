@@ -10,41 +10,282 @@ def_slotted_exemplar(:deco_test,
 	:model)
 $
 
-_pragma(classify_level=basic, topic={explorer_model})
-_method deco_test.has_collection_parts?
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.try_1_1_1()
 	##
-	## Indicates whether this is a collection element that has
-	## collection parts as children.
-	##
-	>> _self.is_collection? _andif _self.children?
+	_self.before()
+	_try _with c1
+
+		_self.try()
+
+	_when error
+		_self.error(c1)
+
+	_when warning
+		_self.error1(c1)
+
+	_when directory_invalid_path
+		_self.error2(c1)
+	_endtry
+	_self.after()		
 _endmethod
 $
 
-_pragma(classify_level=advanced, usage={subclassable}, topic={explorer_model_plugin})
-_method deco_test.do_move_action( action, source_element, target_element )
-	
-	_protect
-		_if target_element _is _self.current_set_element
-		_then
-			# Store in the clipboard
-			scrapbook.set_current_result(_self.name)
-		_elif target_element _is saved_sets_element
-		_then
-			# Store a query_result
-			_local stored_result << query_result.new_non_persistent()
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.try_1_1_0()
+	##
+	_self.before()
+	_try _with c1
 
-			# And store in the scrapbook, preventing errors in case the
-			# scrapbook is readonly (multiple users logged on using the
-			# same name).
-			_try
-				_self.scrapbook.store(_self.name)
-			_when scrapbook_read_only
-			      # Shouldn't occur, since the scrapbook wasn't shown as a valid
-			      # target. 
-			_endtry
-		_endif
-	_protection
-		_self.write(1)
-	_endprotect
+		_self.try()
+
+	_when error
+		_self.error(c1)
+
+	_when warning
+		_self.error1(c1)
+	_endtry
+	_self.after()		
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.try_1_0_0()
+	##
+	_self.before()
+	_try _with c1
+
+		_self.try()
+
+	_when error
+		_self.error(c1)
+	_endtry
+	_self.after()		
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.try_2_2_2()
+	##
+	_self.before()
+	_try _with c1
+
+		_self.try()
+
+	_when error, information
+		_self.error(c1)
+
+	_when warning, bad_user_bookmarks
+		_self.error1(c1)
+
+	_when directory_invalid_path, directory_not_selected
+		_self.error2(c1)
+	_endtry
+	_self.after()		
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.try_2_2_1()
+	##
+	_self.before()
+	_try _with c1
+
+		_self.try()
+
+	_when error, information
+		_self.error(c1)
+
+	_when warning, bad_user_bookmarks
+		_self.error1(c1)
+
+	_when directory_invalid_path
+		_self.error2(c1)
+	_endtry
+	_self.after()		
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.try_2_2_0()
+	##
+	_self.before()
+	_try _with c1
+
+		_self.try()
+
+	_when error, information
+		_self.error(c1)
+
+	_when warning, bad_user_bookmarks
+		_self.error1(c1)
+	_endtry 
+	_self.after()		
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.try_2_1_0()
+	##
+	_self.before()
+	_try _with c1
+
+		_self.try()
+
+	_when error, information
+		_self.error(c1)
+
+	_when warning
+		_self.error1(c1)
+	_endtry 
+	_self.after()		
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.try_2_0_0()
+	##
+	_self.before()
+	_try _with c1
+
+		_self.try()
+
+	_when error, information
+		_self.error(c1)
+	_endtry 
+	_self.after()		
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.try_3_3_3()
+	##
+	_self.before()
+	_try _with c1
+
+		_self.try()
+
+	_when error, information, ds_file_unchanged
+		_self.error(c1)
+
+	_when warning, bad_user_bookmarks, document_too_large
+		_self.error1(c1)
+
+	_when directory_invalid_path, directory_not_selected, document_user_error
+		_self.error2(c1)
+	_endtry
+	_self.after()		
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.try_3_3_2()
+	##
+	_self.before()
+	_try _with c1
+
+		_self.try()
+
+	_when error, information, ds_file_unchanged
+		_self.error(c1)
+
+	_when warning, bad_user_bookmarks, document_too_large
+		_self.error1(c1)
+
+	_when directory_invalid_path, directory_not_selected
+		_self.error2(c1)
+	_endtry
+	_self.after()		
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.try_3_3_1()
+	##
+	_self.before()
+	_try _with c1
+
+		_self.try()
+
+	_when error, information, ds_file_unchanged
+		_self.error(c1)
+
+	_when warning, bad_user_bookmarks, document_too_large
+		_self.error1(c1)
+
+	_when directory_invalid_path
+		_self.error2(c1)
+	_endtry
+	_self.after()		
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.try_3_3_0()
+	##
+	_self.before()
+	_try _with c1
+
+		_self.try()
+
+	_when error, information, ds_file_unchanged
+		_self.error(c1)
+
+	_when warning, bad_user_bookmarks, document_too_large
+		_self.error1(c1)
+	_endtry
+	_self.after()		
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.try_3_2_0()
+	##
+	_self.before()
+	_try _with c1
+
+		_self.try()
+
+	_when error, information, ds_file_unchanged
+		_self.error(c1)
+
+	_when warning, bad_user_bookmarks
+		_self.error1(c1)
+	_endtry
+	_self.after()		
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.try_3_1_0()
+	##
+	_self.before()
+	_try _with c1
+
+		_self.try()
+
+	_when error, information, ds_file_unchanged
+		_self.error(c1)
+
+	_when warning
+		_self.error1(c1)
+	_endtry
+	_self.after()		
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_test.try_3_0_0()
+	##
+	_self.before()
+	_try _with c1
+
+		_self.try()
+
+	_when error, information, ds_file_unchanged
+		_self.error(c1)
+	_endtry
+	_self.after()		
 _endmethod
 $

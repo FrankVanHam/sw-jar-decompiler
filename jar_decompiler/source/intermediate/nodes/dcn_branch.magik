@@ -43,7 +43,13 @@ _private _method dcn_branch.init(p_input)
 _endmethod
 $
 
-
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.convert_to_not_with_body(p_body)
+	##
+	.input[1][1] << .input[1][1].not
+	.input[1][2] << p_body
+_endmethod
+$
 
 #_pragma(classify_level=restricted, topic={decompiler})
 ### Node for a branch statement. Branch contains an if and

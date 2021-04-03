@@ -26,15 +26,29 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_iter_visitor.accept(p_body)
 	##
+	_loop
+		_local did? << _self.do_accept(p_body)
+		_if did?.not _then _leave _endif 
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_iter_visitor.do_accept(p_body)
+	##
 	_local sts << p_body.statements
 	_for i_index, i_node _over sts.fast_keys_and_elements()
 	_loop
 		(ok?, idx) << _self.finally_iter?(i_node)
 		_if ok?
 		_then
-			sts[i_index] << _self.convert_to_finally_iter(i_node, idx)
+			(nd, rest) << _self.convert_to_finally_iter(i_node, idx)
+			sts[i_index] << nd
+			sts.insert(i_index+1, rest)
+			_return _true 
 		_endif
-	_endloop 
+	_endloop
+	_return _false 
 _endmethod
 $
 
@@ -77,21 +91,24 @@ _method jpn_iter_visitor.convert_to_finally_iter(p_node, p_index)
 		_local finally_body << dcn_body.new(finally_statements)
 		try_node.finally_body << finally_body
 	_endif
+	_local rest
 	_if p_node.catch_body _isnt _unset _andif
 	    p_node.catch_body.statements.empty?.not _andif
 	    p_node.catch_body.statements[1].is_class_of?(dcn_leave_result)
 	_then
 		_local tag << _self.loop_tag(p_node.catch_body.statements[1].local.name)
 		_if tag.empty?.not
-		_then 
+		_then
 			assignment_node.expression.assign_tag(tag)
-		_endif 
+		_endif
+		rest << p_node.catch_body.statements.slice_to_end(2)
+	_else
+		rest << {}
 	_endif 
 	
-	>> assignment_node
+	>> assignment_node, rest 
 _endmethod
 $
-
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_iter_visitor.loop_tag(p_name)

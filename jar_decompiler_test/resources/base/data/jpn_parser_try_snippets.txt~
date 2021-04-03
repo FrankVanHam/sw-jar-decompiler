@@ -16,7 +16,7 @@ public class deco_test_3468 {
                     DynamicAccessor.bootstrapBinder("!sys!condition_handler_cluster!", "sw", 1);
                     try {
                         Object[] objectArray = new Object[]{__env__[0]};
-                        ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), ConstantBuilder.procBootstrap("proc", (Class<?>)deco_test_3672.class, "proc___", "", 3, 3, 0, 0, (Object[])objectArray));
+                        ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), ConstantBuilder.procBootstrap("proc", (Class<?>)deco_test_3468.class, "proc___", "", 3, 3, 0, 0, (Object[])objectArray));
                         ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
                         DynamicScope.destroyFrame();
                         DynamicScope.destroyFrame();
@@ -94,7 +94,7 @@ public class deco_test_3468 {
                     DynamicAccessor.bootstrapBinder("!sys!condition_handler_cluster!", "sw", 1);
                     try {
                         Object[] objectArray = new Object[]{__env__[0]};
-                        CallSite callSite2 = ConstantBuilder.procBootstrap("proc", (Class<?>)deco_test_3672.class, "proc___2", "", 3, 3, 0, 0, (Object[])objectArray);
+                        CallSite callSite2 = ConstantBuilder.procBootstrap("proc", (Class<?>)deco_test_3468.class, "proc___2", "", 3, 3, 0, 0, (Object[])objectArray);
                         ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "warning"), callSite2, ConstantBuilder.symbolBootstrap("symbol", "error"), callSite2);
                         ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
                         DynamicScope.destroyFrame();
@@ -177,7 +177,7 @@ public class deco_test_3468 {
                     DynamicAccessor.bootstrapBinder("!sys!condition_handler_cluster!", "sw", 1);
                     try {
                         Object[] objectArray = new Object[]{__env__[0]};
-                        ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), ConstantBuilder.procBootstrap("proc", (Class<?>)deco_test_3672.class, "proc___3", "", 3, 3, 0, 0, (Object[])objectArray));
+                        ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), ConstantBuilder.procBootstrap("proc", (Class<?>)deco_test_3468.class, "proc___3", "", 3, 3, 0, 0, (Object[])objectArray));
                         ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
                         DynamicScope.destroyFrame();
                         DynamicScope.destroyFrame();
@@ -258,7 +258,7 @@ public class deco_test_3468 {
                     DynamicAccessor.bootstrapBinder("!sys!condition_handler_cluster!", "sw", 1);
                     try {
                         Object[] objectArray = new Object[]{__env__[0]};
-                        ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), ConstantBuilder.procBootstrap("proc", (Class<?>)deco_test_3672.class, "proc___4", "", 3, 3, 0, 0, (Object[])objectArray));
+                        ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), ConstantBuilder.procBootstrap("proc", (Class<?>)deco_test_3468.class, "proc___4", "", 3, 3, 0, 0, (Object[])objectArray));
                         ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
                         Integer n2 = 1;
                         DynamicScope.destroyFrame();
@@ -349,7 +349,7 @@ public class deco_test_3468 {
                         block16: {
                             Object object2;
                             Object[] objectArray = new Object[]{__env__[1]};
-                            ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), ConstantBuilder.procBootstrap("proc", (Class<?>)deco_test_3692.class, "proc___", "", 3, 3, 0, 0, (Object[])objectArray));
+                            ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), ConstantBuilder.procBootstrap("proc", (Class<?>)deco_test_3468.class, "proc___", "", 3, 3, 0, 0, (Object[])objectArray));
                             ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("try1()", (Object)_self));
                             EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)0);
                             EnvAccessor.bootstrapStorer("storeEnv", (Object)new Object(), (Object[])__env__, (int)0);
@@ -361,7 +361,7 @@ public class deco_test_3468 {
                                     DynamicAccessor.bootstrapBinder("!sys!condition_handler_cluster!", "sw", 1);
                                     try {
                                         Object[] objectArray2 = new Object[]{__env__[0]};
-                                        ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), ConstantBuilder.procBootstrap("proc", (Class<?>)deco_test_3692.class, "proc___2", "", 3, 3, 0, 0, (Object[])objectArray2));
+                                        ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "error"), ConstantBuilder.procBootstrap("proc", (Class<?>)deco_test_3468.class, "proc___2", "", 3, 3, 0, 0, (Object[])objectArray2));
                                         ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("try2()", (Object)_self));
                                         DynamicScope.destroyFrame();
                                         DynamicScope.destroyFrame();
@@ -416,6 +416,26 @@ public class deco_test_3468 {
             }
         }
         return ResultTuple.EMPTY_TUPLE;
+    }
+
+@Parent(method="deco_test__try_assign")
+    @SourceHash(value=91382809)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Proc")
+    @EnvVars(value={@EnvVar(name="14ed8aa0-7314-4ab4-83a4-6beccfc3c3af", type=Object.class, start=0, end=20, index=0)})
+    public static Object proc___(Object[] __env__, Object _self, Object cond) {
+        InterruptInfrastructure.checkAndProcessInterrupts();
+        throw Thrower.make(EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0), (ResultTuple)((Object)TupleBuilder.bootstrap("tb", cond)));
+    }
+
+@Parent(method="deco_test__try_assign")
+    @SourceHash(value=91382809)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Proc")
+    @EnvVars(value={@EnvVar(name="14ed8aa0-7314-4ab4-83a4-6beccfc3c3af", type=Object.class, start=0, end=20, index=0)})
+    public static Object proc___2(Object[] __env__, Object _self, Object cond) {
+        InterruptInfrastructure.checkAndProcessInterrupts();
+        throw Thrower.make(EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0), (ResultTuple)((Object)TupleBuilder.bootstrap("tb", cond)));
     }
 }
 

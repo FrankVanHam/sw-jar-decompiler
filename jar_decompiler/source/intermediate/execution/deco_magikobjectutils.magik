@@ -14,13 +14,13 @@ _method deco_magikobjectutils.createprocwithenv(p_parser, p_command_node,
 						 p_class_name_node, p_java_method_name_node,
 						 p_proc_name_node,
 						 p_nr_args, p_nr_mandatory_args,
-						 p_dono1, p_dono2)
+						 p_dono1, p_dono2, _optional p_env_node)
 
 	>> _self.createproc(p_parser, p_command_node,
 			    p_class_name_node, p_java_method_name_node,
 			    p_proc_name_node,
 			    p_nr_args, p_nr_mandatory_args,
-			    p_dono1, p_dono2, _true )
+			    p_dono1, p_dono2, _true, p_env_node )
 _endmethod
 $
 
@@ -29,7 +29,7 @@ _method deco_magikobjectutils.createproc(p_parser, p_command_node,
 					 p_class_name_node, p_java_method_name_node,
 					 p_proc_name_node,
 					 p_nr_args, p_nr_mandatory_args,
-					 p_dono1, p_dono2, _optional p_env?)
+					 p_dono1, p_dono2, _optional p_env?, p_env_node)
 
 	_local env? << p_env?.default(_false)
 	_local class_name << _if p_class_name_node.is_class_of?(jpn_cast)
@@ -49,8 +49,12 @@ _method deco_magikobjectutils.createproc(p_parser, p_command_node,
 	nr_args << p_nr_args.string_value.as_number()
 	nr_mandatory_args << p_nr_mandatory_args.string_value.as_number()
 
+	env << _if p_env_node _isnt _unset
+	       _then >> p_parser.parse_expression(p_env_node)
+	       _endif 
+
 	>> p_parser.publish_proc(class_name, java_method_name, proc_name,
-				 nr_args, nr_mandatory_args, env?)
+				 nr_args, nr_mandatory_args, env?), env
 _endmethod
 $
 

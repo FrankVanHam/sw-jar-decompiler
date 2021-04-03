@@ -1,0 +1,67 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_ignore_environment_building_visitor,{})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_ignore_environment_building_visitor.new()
+	>> _clone 
+_endmethod
+$
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_ignore_environment_building_visitor.accept(p_body)
+	##
+	_local sts << p_body.statements
+#	_global x
+#	x << sts
+#	1.stop
+
+	_local envs << equality_set.new()
+	_for i_index, i_node _over sts.fast_keys_and_elements()
+	_loop
+		_if i_node.is_class_of?(dcn_call) _andif
+		    i_node.env _isnt _unset
+		_then
+			envs.add(i_node.env.name)
+		_endif 	
+	_endloop
+
+	_for i_env _over envs.fast_elements()
+	_loop
+		_self.clean(sts, i_env)
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_ignore_environment_building_visitor.clean(p_sts, p_env)
+	##
+	_for i_index, i_node _over p_sts.fast_keys_and_elements()
+	_loop
+		_if _self.ignore?(i_node, p_env)
+		_then
+			p_sts[i_index] << dcn_no_op.new()
+		_endif
+	_endloop 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_ignore_environment_building_visitor.ignore?(p_node, p_env)
+	##
+	_if p_node.is_class_of?(dcn_local_assignment)
+	_then 
+		_local loc << p_node.only_local()
+		_if loc _is _unset _then _return _false _endif
+		
+		_local decl? << loc.is_kind_of?(dcn_local_declaration) _orif loc.is_kind_of?(dcn_local)
+
+		_return decl? _andif (loc.name = p_env)
+	_else
+		_return _false 
+	_endif 
+_endmethod
+$

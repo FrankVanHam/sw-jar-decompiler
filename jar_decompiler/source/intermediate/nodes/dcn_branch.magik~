@@ -401,6 +401,7 @@ _method dcn_branch.decode_on(p_stream)
 			_self.decode_body(i_body, "_then", p_stream)
 		_elif i_tag = :elif
 		_then
+			p_stream.newline()
 			p_stream.write( "_elif ")
 			i_cond.decode_on(p_stream)
 			p_stream.newline()

@@ -29,20 +29,86 @@ _method jpn_try_visitor.accept(p_body)
 #	44.stop
 	_for i_index, i_node _over sts.fast_keys_and_elements()
 	_loop
-		_if _self.is_try?(sts[i_index])
+		(ok?, idx) << _self.is_try?(i_node)
+		_if ok?
 		_then
-			sts[i_index] << _self.convert_to_try(sts[i_index])
+			sts[i_index] << _self.convert_to_try(i_node, idx)
+		_endif
+		(ok?, idx) << _self.is_try_in_try?(i_node)
+		_if ok?
+		_then
+			sts[i_index] << _self.convert_to_try_in_try(i_node, idx)
 		_endif 
 	_endloop 
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_try_visitor.convert_to_try(p_node) 
+_method jpn_try_visitor.convert_to_try_in_try(p_node, p_try_index)
 	##
-	_local body_sts << p_node.body.statements
+	_local sts << p_node.try_body.statements
+	
+	_local magik_try << _self.do_convert_to_try(sts, p_try_index)
+	sts[p_try_index] << magik_try
+	
+	_self.cleanup_statements(sts, p_try_index)
+	
+	>> p_node
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_try_visitor.convert_to_try(p_node, p_try_index)
+	##
+	_local sts << p_node.body.statements
+	_local magik_try << _self.do_convert_to_try(sts, p_try_index)
+	sts[p_try_index] << magik_try
+	
+	_self.cleanup_statements(sts, p_try_index)
+	
+	>> dcn_body.new(sts)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_try_visitor.cleanup_statements(sts, p_try_index)
+	##
+	_for i _over range(1,p_try_index-6)
+	_loop
+		_if sts[i].is_class_of?(dcn_call) _andif
+		    sts[i].name = "sys!install_handlers"
+		_then
+			sts[i] << dcn_no_op.new()
+		_endif 
+	_endloop 
+	
+	# Clear the try preparation
+	#                EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)0);
+	#                EnvAccessor.bootstrapStorer("storeEnv", (Object)new Object(), (Object[])__env__, (int)0);
+	#                DynamicAccessor.bootstrapBinder("__catch_tags_dynamic__", "sw", 1);
+	#                CallSite callSite = EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0);
+	#                DynamicAccessor.bootstrapStorer("__catch_tags_dynamic__", "sw", (Object)callSite);
+	
+	_for i _over range(1,5)
+	_loop
+		sts[p_try_index-i] << dcn_no_op.new()
+	_endloop 
+	
+	_for i _over range(p_try_index+1, sts.size)
+	_loop
+		sts[i] << dcn_no_op.new()
+	_endloop
+
+	# clear the condition declaration: Object object;
+	sts[1] << dcn_no_op.new()
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_try_visitor.do_convert_to_try(body_sts, p_try_index)
 	_local cond << body_sts[1].name 
-	_local sts << body_sts[body_sts.size-1].try_body.statements[1].try_body.statements[2].try_body.statements
+	_local sts << body_sts[p_try_index].try_body.statements[1].try_body.statements[2].try_body.statements
 	_local idx << 1
 	_for i_idx, i_stat _over sts.fast_keys_and_elements()
 	_loop
@@ -51,35 +117,132 @@ _method jpn_try_visitor.convert_to_try(p_node)
 			idx << i_idx+1
 			_leave
 		_endif
-	_endloop  
-	_local actual_sts << sts.slice(idx, sts.size-1)
-
-	_local inp << rope.new() 
-	_local br << p_node.body.statements.last
-	_for i_tag, i_cond, i_body _over br.condition_and_bodies()
-	_loop
-		_if i_tag = :if _orif i_tag = :elif 
-		_then
-			inp.add({_self.extract_condition(i_cond), i_body})
-		_endif
 	_endloop
+	
+	_local actual_sts << sts.slice(idx, sts.size-1)
+	
+	_local inp << rope.new()
+
+	_self.collect_whens(inp, body_sts, p_try_index)
+	
+#	_local branch_index 
+#	_for i _over range(p_try_index+1, body_sts.size)
+#	_loop
+#		_if body_sts[i].is_class_of?(dcn_branch) _andif
+#		    _self.taxonomy_includes_branch?(body_sts[i])
+#		_then
+#			branch_index << i
+#			_leave
+#		_endif
+#	_endloop 
+#	
+#	_local br << body_sts[branch_index]
+#	_local else_sts << body_sts.slice_to_end(branch_index+1)
+#	_if else_sts.empty?.not
+#	_then
+#		else_sts.add_first(body_sts[branch_index-1])
+#	_endif 
+#	_local else_body << dcn_body.new(else_sts)
+#	
+#	_for i_tag, i_cond, i_body _over br.condition_and_bodies()
+#	_loop
+#		_if i_tag = :if _orif i_tag = :elif 
+#		_then
+#			_local (conds, not?) << _self.extract_conditions(i_cond, i_body)
+#			body << _if not?
+#				_then
+#					>> else_body
+#				_else
+#					>> i_body
+#				_endif 
+#			inp.add({conds, body})
+#		_endif
+#	_endloop
 	>> dcn_try.new(cond, dcn_body.new(actual_sts), inp)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_try_visitor.extract_condition(p_cond) 
-	##
-	>> _if p_cond.is_class_of?(dcn_not)
-	   _then
-		   >> p_cond.expression.args[1].string_value
-	   _else
-		   >> p_cond.args[1].string_value
-	   _endif 
+_private _method jpn_try_visitor.collect_whens(inp, body_sts, p_try_index)
+	_if body_sts.empty? _then _return _endif
+
+	_local branch_index 
+	_for i _over range(p_try_index+1, body_sts.size)
+	_loop
+		_if body_sts[i].is_class_of?(dcn_branch) _andif
+		    _self.taxonomy_includes_branch?(body_sts[i])
+		_then
+			branch_index << i
+			_leave
+		_endif
+	_endloop 
+	_if branch_index _is _unset _then _return _endif
+	
+	_local br << body_sts[branch_index]
+	_local else_sts << body_sts.slice_to_end(branch_index+1)
+	_if else_sts.empty?.not
+	_then
+		else_sts.add_first(body_sts[branch_index-1])
+	_endif 
+	_local else_body << dcn_body.new(else_sts)
+	
+	_for i_tag, i_cond, i_body _over br.condition_and_bodies()
+	_loop
+		_if i_tag = :if _orif i_tag = :elif 
+		_then
+			_local (conds, not?) << _self.extract_conditions(i_cond, i_body)
+			body << _if not?
+				_then
+					>> else_body
+				_else
+					>> i_body
+				_endif 
+			inp.add({conds, body})
+		_else
+			_self.collect_whens(inp, i_body.statements, 0)
+		_endif
+	_endloop
 _endmethod
 $
 
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_try_visitor.taxonomy_includes_branch?(p_branch)
+	##
+	>> (p_branch.if_condition.is_class_of?(dcn_send) _andif
+		p_branch.if_condition.name = "taxonomy_includes?()") _orif
+		(p_branch.if_condition.is_class_of?(dcn_not) _andif
+		 p_branch.if_condition.expression.is_class_of?(dcn_send) _andif
+		 p_branch.if_condition.expression.name = "taxonomy_includes?()")
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_try_visitor.extract_conditions(p_cond, p_body)
+	##
+	>> _if p_cond.is_class_of?(dcn_not)
+	   _then
+		   _local conds << rope.new_with(p_cond.expression.args[1].string_value)
+		   _self.add_condition(conds, p_body)
+		   >> conds, _true
+	   _else
+		   _local conds << rope.new_with(p_cond.args[1].string_value)
+		   >> conds, _false
+	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_try_visitor.add_condition(conds, p_body)
+	_local last << p_body.statements.last
+	_if last.is_class_of?(dcn_branch)
+	_then 
+		conds.add(last.if_condition.expression.args[1].string_value)
+		_self.add_condition(conds, last.if_body)
+	_endif 
+_endmethod
+$
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_try_visitor.is_try?(p_node)
@@ -87,12 +250,58 @@ _method jpn_try_visitor.is_try?(p_node)
 	# deco:x[1].body.statements[8].try_body.statements[1].try_body.statements[1].name
 
 	_if p_node.is_kind_of?(dcn_block).not _then _return _false, :first_block _endif
+	
 	_local sts << p_node.body.statements
+
+	_local idx << _self.try_index(sts)
+
+	>> idx _isnt _unset, idx
+#	_if sts.size < 8 _then _return _false, :not_enough_statements _endif
+#
+#	_if sts[sts.size-1].is_kind_of?(dcn_unfinished_try).not _then _return _false, :second_last_should_be_unfinished _endif
+#	_if sts[sts.size-2].is_kind_of?(dcn_dynamic_store).not _then _return _false, :third_last_should_be_dynamic _endif
+#
+#	_if _self.try_index(sts) _is _unset _then 999.stop _endif 
+#	_return _true 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_try_visitor.is_try_in_try?(p_node)
+	##
+	## The java-try block contains the magik-try statements. The
+	## java-try will remain because likely it will be a protect block
+	##
+	_if p_node.is_kind_of?(dcn_unfinished_try).not _then _return _false, :no_try _endif
+	_local sts << p_node.try_body.statements
 	_if sts.size < 8 _then _return _false, :not_enough_statements _endif
 
 	_if sts[sts.size-1].is_kind_of?(dcn_unfinished_try).not _then _return _false, :second_last_should_be_unfinished _endif
 	_if sts[sts.size-2].is_kind_of?(dcn_dynamic_store).not _then _return _false, :third_last_should_be_dynamic _endif
+	
+	_local idx << _self.try_index(sts)
+	>> idx _isnt _unset, idx
+_endmethod
+$
 
-	_return _true 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_try_visitor.try_index(sts)
+	##
+	_local idx
+	_for i_index, i_node _over sts.fast_keys_and_elements()
+	_loop
+		_if i_node.is_class_of?(dcn_unfinished_try)
+		_then
+			idx << i_index
+			_leave 
+		_endif
+	_endloop
+	_if idx _is _unset _then _return _unset _endif
+	_if idx < 7        _then _return _unset _endif
+	
+	_if sts[idx-1].is_class_of?(dcn_dynamic_store).not  _then _return _unset _endif 
+	_if sts[idx-1].name <> "__catch_tags_dynamic__" _then _return _unset _endif
+	
+	>> idx
 _endmethod
 $

@@ -42,6 +42,12 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
+_method dcn_method.accept_body_visitor(p_visitor)
+	.body.accept_body_visitor(p_visitor)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
 _method dcn_method.method_name
 	>> .name.default("no_name_given_in_bind")
 _endmethod

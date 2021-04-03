@@ -17,7 +17,11 @@ _method jpn_ignore_assignment_visitor.accept(p_body)
 	_local sts << p_body.statements
 	_for i_index, i_node _over sts.fast_keys_and_elements()
 	_loop
-		_if i_node.is_kind_of?(dcn_local_assignment) _andif
+		_if _self.ignore_internal_definition?(i_node)
+		_then 
+			sts[i_index] << dcn_no_op.new()
+			
+		_elif i_node.is_kind_of?(dcn_local_assignment) _andif
 		    _self.ignore_left?(i_node)
 		_then
 			sts[i_index] << i_node.expression
@@ -29,6 +33,15 @@ _method jpn_ignore_assignment_visitor.accept(p_body)
 	_endloop 
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_ignore_assignment_visitor.ignore_internal_definition?(p_node)
+	## 
+	_if p_node.is_class_of?(dcn_local_declaration).not _then _return _false, :local_declaration _endif
+	_return p_node.is_type?("Object") _andif p_node.name = "__env__" 
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_ignore_assignment_visitor.ignore_left?(p_node)

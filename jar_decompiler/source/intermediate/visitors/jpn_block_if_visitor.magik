@@ -27,7 +27,12 @@ _method jpn_block_if_visitor.accept(p_body)
 			_if ok?
 			_then
 				sts[i_index] << _self.convert2(i_node, idx)
-			_endif 
+			_endif
+#			(ok?, idx) << _self.has_hidden_elif?(i_node)
+#			_if ok?
+#			_then
+#				_self.convert_hidden_elif(i_node, idx)
+#			_endif 
 		_endif 			
 	_endloop 
 _endmethod
@@ -82,9 +87,9 @@ _method jpn_block_if_visitor.is_hidden_if2?(p_block_node)
 	branch_index << _unset 
 	_for i_index, i_node _over block_body.statements.fast_keys_and_elements()
 	_loop
-		_if i_node.is_class_of?(dcn_local_assignment)
+		_if i_node.is_class_of?(dcn_unfinished_try)
 		_then
-			# ok, continue
+			_leave 
 		_else
 			# this should be the branch
 			_if i_node.is_class_of?(dcn_branch)
@@ -107,7 +112,7 @@ _method jpn_block_if_visitor.is_hidden_if2?(p_block_node)
 	_local break << if_body.statements[1]
 	_if break.is_class_of?(dcn_break).not _then _return _false, :branch_body_is_break _endif
 	_if break.name <> tag _then _return _false, :branch_body_break_not_matching_tag _endif
-
+	
 	_return _true, branch_index
 _endmethod
 $
@@ -167,5 +172,54 @@ _private _method jpn_block_if_visitor.extract_elif(p_block_node, before_stats, c
 		_endif 
 	_endif
 	>> cds
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_block_if_visitor.has_hidden_elif?(p_block_node)
+	##
+	# find a block that has a branch as a last statement that is
+	# exiting p_block_node
+	_for i_index, i_node _over p_block_node.body.statements.fast_keys_and_elements()
+	_loop
+		_if i_node.is_class_of?(dcn_block) _andif
+		    i_node.body.statements.empty?.not _andif
+		    i_node.body.statements.last.is_class_of?(dcn_branch) _andif
+		    _self.branch_is_exiting?(i_node.body.statements.last, p_block_node)
+		_then
+			idx << i_index
+			_leave
+		_endif
+	_endloop
+	>> idx _isnt _unset, idx
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_block_if_visitor.branch_is_exiting?(p_branch, p_block_node)
+	## 
+	_if p_branch.if_body.statements.size <> 1
+	_then
+		_return _false
+	_endif
+	_local stat << p_branch.if_body.statements[1]
+	>> _if stat.is_class_of?(dcn_break)
+	   _then
+		   >> stat.name = p_block_node.name
+	   _else
+		   >> stat.is_class_of?(dcn_throw)
+	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_block_if_visitor.convert_hidden_elif(p_block_node, p_index)
+	##
+	_local sts << p_block_node.body.statements
+	_local inner_block << sts[p_index]
+	_local else_sts << sts.remove_subseq(p_index+1, sts.size-p_index)
+
+	_local branch << inner_block.body.statements.last
+	branch.convert_to_not_with_body(dcn_body.new(else_sts))
 _endmethod
 $

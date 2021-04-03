@@ -23,6 +23,6 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_block.name
-	>> .lex_name.value
+	>> .lex_name.name
 _endmethod
 $

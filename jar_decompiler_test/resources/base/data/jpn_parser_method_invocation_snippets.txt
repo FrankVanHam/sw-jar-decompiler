@@ -879,3 +879,40 @@ _method deco_test.test_scatter_local(p_args)
 _endmethod
 $
 ##############
+## jpn_test_callsite
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4181 {
+    @SourceHash(value=1034583738)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_callsite(Object _self) {
+        CallSite dt = Invoker.bootstrapPrivate("get_dt()", (Object)_self);
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self, (Object)dt));
+        ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrap("do()", (Object)dt));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4180
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "test_callsite()", deco_test_4181.class, "deco_test__test_callsite", 1, 1));
+    }
+}
+
+############
+_method deco_test.test_callsite() 
+     _local dt << _self.get_dt()
+    _self.do(dt)
+    dt.do()
+    _return _unset
+_endmethod
+$
+############

@@ -41,12 +41,13 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_block.init(p_body, _optional p_name)
-	.body << p_body
+_private _method dcn_block.init(p_block, _optional p_name)
+	.body << p_block
 	.name << p_name
 	_return _self 
 _endmethod
 $
+
 
 #_pragma(classify_level=restricted, topic={decompiler})
 #_method dcn_block.accept_node_visitor(visitor)

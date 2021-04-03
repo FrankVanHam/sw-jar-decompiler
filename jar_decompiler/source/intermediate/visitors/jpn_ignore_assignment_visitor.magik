@@ -36,7 +36,9 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_ignore_assignment_visitor.ignore_internal_definition?(p_node)
-	## 
+	##
+	## Ignore: Object[] __env__;
+	##
 	_if p_node.is_class_of?(dcn_local_declaration).not _then _return _false, :local_declaration _endif
 	_return p_node.is_type?("Object") _andif p_node.name = "__env__" 
 _endmethod
@@ -61,7 +63,7 @@ _method jpn_ignore_assignment_visitor.ignore?(p_node)
 
 	_local decl? << loc.is_kind_of?(dcn_local_declaration) _orif loc.is_kind_of?(dcn_local)
 
-	_if decl? _andif loc.is_type?("ResultTuple") _then _return _true _endif
+	#_if decl? _andif loc.is_type?("ResultTuple") _then _return _true _endif
 	_if decl? _andif (loc.name = "__env__") _then _return _true  _endif
 	_if decl? _andif (loc.name = "__dynamic_frame__") _then _return _true  _endif
 	_if decl? _andif (loc.name = "__return_catcher__") _then _return _true  _endif

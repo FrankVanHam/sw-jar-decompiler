@@ -127,7 +127,7 @@ _method dcn_try.decode_on(p_stream)
 	_for i_cond, i_body _over _self.whens_and_body()
 	_loop
 		p_stream.write( "_when ")
-		p_stream.write(i_cond)
+		_self.decode_list_on(p_stream, i_cond)
 		p_stream.newline()
 		p_stream.indent(4)
 		i_body.decode_on(p_stream)

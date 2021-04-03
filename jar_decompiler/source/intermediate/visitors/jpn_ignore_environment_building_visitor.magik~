@@ -1,0 +1,12 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_ignore_environment_building_visitor,{})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_ignore_environment_building_visitor.new()
+	>> _clone 
+_endmethod
+$

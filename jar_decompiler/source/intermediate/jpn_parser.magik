@@ -464,11 +464,22 @@ _method jpn_parser.extract_import(p_meth_node)
 	##
 	_local anno << p_meth_node.annotations.select(
 			       predicate.using(
-				       _proc(x) >> x.name="EnvVars" _endproc
+				       _proc(x)
+					       >> x.name="EnvVars" _endproc
 					 )).an_element()
 	>> _if anno _isnt _unset
 	   _then
-		   >> anno.value.map(_proc(x) >> x.property(:name).string_value _endproc)
+		   _local values << rope.new()
+		   _for i_anno _over anno.value.fast_elements()
+		   _loop
+			   _local value << i_anno.property(:name).string_value
+			   
+			   _if value.includes?(%-).not
+			   _then
+				   values.add(value)
+			   _endif
+		   _endloop
+		   >> values
 	   _else
 		   >> {}
 	   _endif
@@ -613,7 +624,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_block(p_jnode)
 	##
-	>> dcn_block.new(_self.parse_body(p_jnode.body) ,p_jnode.name)
+	>> dcn_block.new(_self.parse_body(p_jnode.body), p_jnode.name)
 _endmethod
 $
 
@@ -623,7 +634,7 @@ _method jpn_parser.parse_loop(p_jnode)
 	_local exp << _if p_jnode.while _isnt _unset
 		      _then >> _self.parse_expression(p_jnode.while)
 		      _endif 
-	>> dcn_loop.new(_self.parse_body(p_jnode.body),exp,  p_jnode.tag)
+	>> dcn_loop.new(_self.parse_body(p_jnode.body), exp, p_jnode.tag)
 _endmethod
 $
 
