@@ -1,0 +1,149 @@
+_package deco
+$
+
+
+#remex(:tblock)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:tblock,
+	{
+		{:block_node, _unset, :readable},
+		{:type, _unset, :readable},
+		{:start_index, _unset, :writable},
+		{:parent, _unset, :writable},
+		{:child, _unset, :writable}
+		
+	})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method tblock.new(p_node, p_type)
+	>> _clone.init(p_node, p_type)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method tblock.init(p_node, p_type)
+	_if (p_type _is :try) _andif p_node.is_class_of?(dcn_unfinished_try).not 
+	_then
+		2.stop
+	_endif
+	_if (p_type _is :try_block) _andif p_node.is_class_of?(dcn_block).not 
+	_then
+		3.stop
+	_endif
+	_if (p_type _is :block) _andif p_node.is_class_of?(dcn_block).not 
+	_then
+		4.stop
+	_endif
+	.block_node << p_node
+	.type << p_type
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method tblock.replace_child_with(p_node)
+	##
+	_self.statements[.start_index-1] << p_node
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method tblock.before_try_statements
+	##
+	assert(_self.has_try?)
+	>> _self.statements.slice(1,.start_index-2)	
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method tblock.nested_try_statements
+	##
+	assert(_self.has_try?)
+	>> _self.statements[.start_index-1].try_body.statements[1].try_body.statements[2].try_body.statements
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method tblock.tag
+	>> _if _self.is_try?
+	   _then >> "try"
+	   _else >> .block_node.name
+	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method tblock.statements
+	>> _if .type _is :try
+	   _then >> .block_node.try_body.statements
+	   _else >> .block_node.body.statements
+	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method tblock.has_try?
+	>> .type _is :try _orif .type _is :try_block
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method tblock.is_try?
+	>> .type _is :try
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method tblock.after_try_statements
+	##
+	_local idx << .start_index
+	_for i_index, i_node _over _self.all_taxonomy_branches()
+	_loop
+		idx << i_index+1
+	_endloop
+	_return _self.statements.slice_to_end(idx)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method tblock.try_body << p_body
+	.block_node.try_body << p_body
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_iter _method tblock.all_taxonomy_branches()
+	_if .start_index _is _unset _then _return _endif
+
+	_local sts << _self.statements
+	_for i _over range(.start_index, sts.size)
+	_loop
+		_local n << sts[i]
+		_if n.is_class_of?(dcn_branch) _andif
+		    n.taxonomy_includes?
+		_then
+			_loopbody(i, n)
+		_endif 
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method tblock.taxonomy_branches?
+	_for i_branch _over _self.all_taxonomy_branches()
+	_loop
+		_return _true
+	_endloop
+	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method tblock.when_statements
+	##
+	>> _self.statements.slice_to_end(.start_index)
+_endmethod
+$

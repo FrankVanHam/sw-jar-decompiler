@@ -26,11 +26,11 @@ _method jpn_parser_class_snippet_test.run_test()
 	## 
 	_local s << deco:lexical_scanner.new(.before.read_stream())
 	_local p << deco:java_parser.new(s)
-	_local jpn_file << p.parse_file()
+	_local jpn_jar << p.parse_file()
 
 	_local jp << deco:jpn_parser.new()
-	_local dcn_node << jp.parse_file(jpn_file)
-	deco:jpn_execution_post_processor.process(dcn_node)
+	_local dcn_node << jp.parse_file(jpn_jar)
+	deco:jpn_execution_post_processor.process_jar(dcn_node)
 	
 	_local out_ind << indentation_stream.new(out << internal_text_output_stream.new())
 	dcn_node.decode_on(out_ind)

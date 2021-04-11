@@ -1,0 +1,98 @@
+_package deco
+$
+
+
+#remex(:tblock_factory)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:tblock_factory,
+	{})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method tblock_factory.new()
+	>> _clone.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method tblock_factory.init()
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method tblock_factory.create(p_node)
+	##
+	_if p_node.is_class_of?(dcn_block).not
+	_then
+		_return _unset
+	_else
+		_local blck << first_block << _self.create_one(p_node)
+		_loop
+			_if blck _is _unset _then _leave _endif 
+			_if blck.has_try? _then _leave _endif
+			
+			blck << _self.find_child(blck)
+		_endloop
+		
+		_if blck _isnt _unset _andif blck.has_try?
+		_then
+			_return first_block
+		_else
+			_return _unset 
+		_endif
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method tblock_factory.create_one(p_node)
+	(try?, try_index) << _self.has_try?(p_node)
+	>> _if try?
+	   _then
+		   _local tb << tblock.new(p_node, :try)
+		   tb.start_index << try_index+1
+		   >> tb
+	   _else
+		   >> tblock.new(p_node, :block)
+	   _endif 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method tblock_factory.has_try?(p_node)
+	>> jpn_try_visitor.has_try?(p_node)	
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method tblock_factory.find_child(p_tblock)
+	##
+	_local idx << _self.child_block_index(p_tblock)
+	_if idx _isnt _unset
+	_then
+		_local child << _self.create_one(p_tblock.statements[idx])
+		_if child _isnt _unset
+		_then
+			child.parent << p_tblock
+			p_tblock.child << child
+			p_tblock.start_index << idx+1
+			_return child
+		_endif
+	_endif
+	_return _unset
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method tblock_factory.child_block_index(p_tblock)
+	##
+	_local sts << p_tblock.statements
+	_if sts.size >=1 _andif sts[1].is_class_of?(dcn_block) _then _return 1 _endif
+	_if sts.size >=2 _andif sts[2].is_class_of?(dcn_block) _then _return 2 _endif
+	_return _unset 
+_endmethod
+$

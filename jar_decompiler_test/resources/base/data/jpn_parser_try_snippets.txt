@@ -67,7 +67,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.try()
-	_try _with object
+	_try
 		_self.do()
 	_when error
 		_self.error()
@@ -148,7 +148,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.try_when_when()
-	_try _with object
+	_try
 		_self.do()
 	_when warning
 		_self.warning()
@@ -229,7 +229,7 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.try_with_condition()
-	_try _with object
+	_try
 		_self.do()
 	_when error
 		object.report_error()
@@ -315,7 +315,7 @@ implements ExecutableMagik {
 ###########
 _method deco_test.try_assign() 
     _local n
-    _try  _with object
+    _try
         _self.do()
          _local n2 << 1
         n << n2
@@ -449,9 +449,9 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_nested_try() 
-    _try _with object
+    _try
         _self.try1()
-        _try _with object2
+        _try
             _self.try2()
         _when error
             object2.report_error()
@@ -595,7 +595,7 @@ _private _method deco_test.check_export_to_access(possible_engine_names)
     _local bl
     _for engine_name _over possible_engine_names.elements()
     _loop
-        _try _with object
+        _try
             _if _self.leave?
             _then
                  _leave
@@ -701,10 +701,9 @@ _method explorer_search_input_view.filter_search()
 	##Starts the search and makes it current.
 	##
      _local result_predicate << _unset
-    _try _with object
+    _try
         result_predicate << .predicate_component.predicate()
     _when invalid_map_trail_for_predicate, invalid_map_selection_for_predicate
-         _local object3 << object
         _self.top_frame.show_alert(result_predicate.report_contents_string)
     _endtry
     _self.close()
@@ -791,7 +790,7 @@ implements ExecutableMagik {
 ###########
 _method deco_test.test_try2() 
     _self.before()
-    _try _with object
+    _try
         _self.try1()
     _when error
         
@@ -883,10 +882,9 @@ implements ExecutableMagik {
 ###########
 _method deco_test.test_try3() 
     _self.before()
-    _try _with object
+    _try _with predicate_condition
         _self.try1()
     _when invalid_map_trail_for_predicate
-         _local predicate_condition << object
         _self.try2(predicate_condition)
     _endtry
     _self.after()
@@ -982,11 +980,9 @@ implements ExecutableMagik {
 ###########
 _method deco_test.test_try4() 
     _self.before()
-    _try _with object
+    _try _with predicate_condition
         _self.try1()
     _when invalid_map_trail_for_predicate, invalid_map_selection_for_predicate, document_too_large
-         _local object3 << object
-         _local predicate_condition << object3
         _self.try2(predicate_condition)
     _endtry
     _self.after()
@@ -1080,13 +1076,12 @@ implements ExecutableMagik {
 }
 #######
 _method explorer_export_plugin.test3
-    _try _with object
+    _try
         _self.export_filename(:excel, :select_excel_file, "*.xls", :|int!export_to_excel_save_as()|, :exporting_to_excel)
     _when user_interrupt
          _local bl << _true
         _self.action(:export_to_excel).enabled? << bl
     _when error, warning
-         _local object3 << object
         object3.report_on(sw:!error_output!)
     _endtry
     _return _unset

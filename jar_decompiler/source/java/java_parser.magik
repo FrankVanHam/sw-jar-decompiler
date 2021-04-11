@@ -1,0 +1,1094 @@
+_package deco
+$
+#remex(:java_parser)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## A parser for java that takes in a java_scanner and build jpn
+## parse nodes
+##
+def_slotted_exemplar(:java_parser,
+	{
+		{:context, _unset},
+		{:scanner, _unset}
+	})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+java_parser.define_shared_constant(:internal_types,
+	equality_set.new_with("boolean","double","byte","int","short","var","long","float","void"),
+	:private)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.new(p_scanner)
+	>> _clone.init(p_scanner)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.init(p_scanner)
+	.scanner << peekable_input_stream.new(p_scanner)
+	.context <<  java_context.new()
+	>> _self
+_endmethod
+$
+
+_pragma(classify_level=debug, topic={jar_decompiler})
+_method java_parser.define_locals(_gather p_names)
+	##
+	.context.add_all(p_names)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_file()
+	##
+	_local f << jpn_jar.new("file")
+	_loop
+		_local node << _self.get()
+		_if node _is _unset _then _leave _endif
+
+		f.add(node)
+	_endloop
+	>> f
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.get()
+	##
+	_local anns << _self.parse_annotations()
+	_local l << .scanner.peek()
+	_if l.is_keyword?
+	_then
+		_if l.value = "package"
+		_then
+			_return _self.parse_package()
+		_elif l.value = "import"
+		_then
+			_return _self.parse_import()
+		_elif l.value = "public"
+		_then
+			_return _self.parse_class(anns)
+		_endif
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_annotations()
+	##
+	_local ans << rope.new()
+	_loop 
+		_local l << .scanner.peek()
+		_if l.is_annotation?
+		_then
+			_local n << _self.parse_annotation()
+			ans.add(n)
+		_else
+			_leave
+		_endif
+	_endloop 
+	>> ans
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_annotation()
+	##
+	_local name << .scanner.get()
+	_local lex << .scanner.peek()
+	_if lex.is_separator?("(")
+	_then
+		props << _self.parse_annotation_properties()
+	_else
+		props << _unset
+	_endif 
+	>> jpn_annotation.new(name, props)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_annotation_properties()
+	##
+	_local props << property_list.new()
+	_self.ensure_separator("(")
+	_loop
+		_local lex << .scanner.peek()
+		_if lex.is_separator?(")") _then _leave _endif
+		_if lex.is_separator?(",")
+		_then
+			.scanner.get()
+		_endif
+		
+		_local key << .scanner.get() # dont care about the name at the moment
+		_self.ensure_operator("=")
+		_local lex << .scanner.peek()
+		_if lex.is_separator?("{")
+		_then
+			value << _self.parse_annotation_list_of_properties()
+		_else 
+			value << _self.parse_expression()
+		_endif
+		props[key.value.as_symbol()] << value 
+	_endloop
+	
+	_self.ensure_separator(")")
+	>> props
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_annotation_list_of_properties()
+	##
+	list << rope.new()
+	_self.ensure_separator("{")
+	_loop
+		_local lex << .scanner.peek()
+		_if lex.is_separator?("}") _then _leave _endif
+		_if lex.is_separator?(",")
+		_then
+			.scanner.get()
+		_endif
+		_local anno << _self.parse_annotation()
+		list.add(anno)
+	_endloop
+	_self.ensure_separator("}")
+	>> list		
+_endmethod
+$
+
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_class(_optional anns)
+	##
+	_self.ensure_keyword("public")
+	_self.ensure_keyword("class")
+	_local name << .scanner.get()
+
+	_local lex << .scanner.peek()
+	_if lex.is_keyword? _andif lex.value = "implements"
+	_then
+		.scanner.get()
+		parent << .scanner.get()
+	_else
+		parent << _unset
+	_endif
+	_self.ensure_separator("{")
+
+	_local methods << rope.new()
+	_loop
+		_local next << .scanner.peek()
+		_if next.is_separator? _then _leave _endif
+		_if next.is_eof? _then _leave _endif
+
+		_local ans << _self.parse_annotations()
+		_local meth << _self.parse_method(name.value, ans)
+		methods.add(meth)
+	_endloop
+
+	_self.ensure_separator("}")
+	_return jpn_class.new(name, parent, methods, anns )
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_method(p_class_name, _optional p_annotations )
+	##
+	.context << .context.push()
+	
+	_self.optional_keyword("public")
+	_self.optional_keyword("static")
+	_local type_or_name << .scanner.get()
+	_if type_or_name.value = p_class_name
+	_then
+		# constructor
+		type << _unset
+		name << type_or_name
+	_else
+		type << type_or_name
+		name << .scanner.get()
+	_endif 
+	#show("#############################", type.value, name.value)
+	_local lex << .scanner.peek()
+	_self.ensure_separator("(")
+	_local args << _self.parse_args()
+	_self.ensure_separator(")")
+	
+	_self.ensure_separator("{")
+	_local body << _self.parse_body(args)
+	_self.ensure_separator("}")
+	.context << .context.pop()
+	
+	_return jpn_method.new(name, args, body, p_annotations)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_args()
+	_local args << rope.new()
+	_loop
+		_local varargs? << _false 
+		_local lex << .scanner.peek()
+		_if lex.is_separator?
+		_then
+			_if lex.value = ")"
+			_then
+				_leave
+			_elif lex.value = ","
+			_then
+				.scanner.get()
+			_else
+				debug_print(lex)
+				1.stop
+			_endif
+		_endif
+		_local type << _self.parse_type()
+				
+		_local lex << .scanner.peek()
+		_if lex.is_separator?(".")
+		_then
+			.scanner.get()
+			.scanner.get()
+			.scanner.get()
+			varargs? << _true
+		_endif 
+				
+		_local identifier << .scanner.get()
+		args.add(jpn_arg.new(identifier, type, varargs? ))
+	_endloop
+	>> args
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_type()
+	##
+	_local name << .scanner.get()
+	_local type << jpn_type.new(name)
+	_loop 
+		_local lex << .scanner.peek()
+		_if lex.is_separator?("[")
+		_then
+			_self.ensure_separator("[")
+			_self.ensure_separator("]")
+			type << jpn_type.new(name, _true)
+			_leave 
+		_elif lex.is_separator?(".")
+		_then
+			_if .scanner.peek(2).is_separator?(".").not
+			_then 
+				.scanner.get()
+				_local ident << .scanner.get()
+				type << type.become_dotted(ident)
+			_else
+				_leave 				
+			_endif 
+		_else
+			_leave
+		_endif
+	_endloop
+	>> type
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_array_type(p_name)
+	##
+	_self.ensure_separator("[")
+	_self.ensure_separator("]")
+	_return jpn_type.new(p_name, _true)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_arg_types()
+	##
+	_local array? << _false 
+	_local types << rope.new()
+	_loop
+		_local type << .scanner.get()
+		types.add(type)
+		_local lex << .scanner.peek()
+		_if lex.is_operator?("|")
+		_then
+			.scanner.get()
+		_elif lex.is_separator?("[")
+		_then
+			_self.ensure_separator("[")
+			_self.ensure_separator("]")
+			array? << _true 
+		_else
+			_leave
+		_endif 
+	_endloop
+	>> types, array?
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_body(_optional p_args)
+	.context << .context.push()
+	.context.add_all(p_args.default({}).map(_proc(x) >> x.name _endproc))
+	_local stats << rope.new()
+	_loop
+		_local lex << .scanner.peek()
+		_if lex.is_separator?
+		_then
+			_if lex.value = "}"
+			_then
+				_leave
+			_elif lex.value = ";"
+			_then
+				.scanner.get()
+			_else
+				stats.add(_self.parse_statement())
+			_endif
+		_else
+			stats.add(_self.parse_statement())
+		_endif
+	_endloop
+	.context << .context.pop()
+	>> jpn_body.new(stats)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_statement()
+	##
+	_local lex << .scanner.peek()
+	_if lex.value = "return"
+	_then
+		_return _self.parse_return_statement()
+	_else
+		_return _self.parse_expression()
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_return_statement()
+	##
+	.scanner.get()
+	_local exp << _self.parse_expression(_true)
+	_return jpn_return.new(exp)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_expression(_optional p_identifier?, p_end_value, p_operator)
+
+	_dynamic !dcn_end_value!
+	_local exp << _self.parse_sub_expression()
+	_loop
+		_local lex << .scanner.peek()
+
+		_if (!dcn_end_value! _isnt _unset) _andif (lex.value = !dcn_end_value!)
+		_then
+			_return exp
+		_endif 
+		
+		_if lex.is_separator?(".")
+		_then
+			.scanner.get()
+			_local ident << .scanner.get()
+			exp << exp.become_dotted(ident)
+		
+		_elif lex.is_operator?("?")
+		_then
+			_if _self.operator_cf?(p_operator, "?")
+			_then
+				_return exp
+			_endif 
+			.scanner.get()
+			_dynamic !dcn_end_value! << ":"
+			_local then << _self.parse_expression(_unset, ":")
+			_local return_then << jpn_soft_return.new(then)
+			_local then_body << jpn_body.new({return_then})
+			_self.ensure_operator(":")
+			_local else << _self.parse_expression()
+			_local return_else << jpn_soft_return.new(else)
+			_local else_body << jpn_body.new({return_else})
+			
+			exp << jpn_if.new({{exp,then_body}, {_unset, else_body}})
+				
+		_elif lex.is_operator?(":") _andif (p_operator <> "?")
+		_then
+			_return _self.parse_block(exp)
+
+		_elif lex.is_operator?("!=") _orif
+		      lex.is_operator?("==") _orif
+		      lex.is_operator?("||") _orif
+		      lex.is_operator?("&&")
+		_then
+			_if _self.operator_cf?(p_operator, lex.value)
+			_then
+				_return exp
+			_endif
+			exp << _self.parse_test(exp)
+			
+		_elif lex.is_separator?("(")
+		_then
+			_if exp.is_class_of?(jpn_parenthesis)
+			_then
+				exp << _self.parse_cast(exp)
+			_else
+				_local (sender, meth) << exp.split_in_identifier_and_method()
+				exp << _self.parse_method_invocation(sender, meth)
+			_endif 
+		_elif lex.is_eof? _orif
+		      lex.is_separator? _orif
+		      lex.is_operator?(">")
+		_then
+			_leave 
+		_elif exp.is_class_of?(jpn_try) _orif
+		      exp.is_class_of?(jpn_if) _orif
+		      exp.is_class_of?(jpn_block)_orif
+		      exp.is_class_of?(jpn_loop)_orif
+		      exp.is_class_of?(jpn_break)_orif
+		      exp.is_class_of?(jpn_continue)_orif
+		      exp.is_class_of?(jpn_dotted)
+		_then
+			_leave
+		_elif exp.is_class_of?(jpn_parenthesis)
+		_then
+			exp << _self.parse_cast(exp)
+		_else
+			_leave 
+			show(:exp, exp)
+			exp.dp
+			exp << _self.parse_cast(exp)
+		_endif
+	_endloop
+	>> exp
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.operator_cf?(p_op1, p_op2)
+	##
+	## Does operator P_OP1 comes for P_OP2
+	##
+	_if p_op1 _is _unset _then _return _false _endif
+	
+	_local _constant order << {"!=", "==", "&&", "||", "?"}
+	>> order.index_equal_of(p_op1) < order.index_equal_of(p_op2)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_sub_expression()
+	_local lex << .scanner.peek()
+	
+	_if lex.is_separator?("(")
+	_then
+		_return _self.parse_parenthesis()
+	_elif lex.is_operator?("!")
+	_then
+		_return _self.parse_not()
+	_elif lex.is_operator?("?")
+	_then
+		_return _self.parse_identifier()
+
+	_elif lex.is_operator?("-")
+	_then
+		_return _self.parse_negative()
+		
+	_elif lex.is_identifier? _andif lex.value = "null"
+	_then
+		_return jpn_constant.new(.scanner.get())
+	_elif lex.is_separator?(";") _orif lex.is_separator?(")") _orif lex.is_eof?
+	_then
+		_return _unset
+	_else
+		_if _self.internal_types.includes?(lex.value)
+		_then 
+			_local ident << _self.parse_identifier()
+			next << .scanner.peek()
+			_if next.is_identifier? _or next.is_keyword?
+			_then
+				_return _self.parse_typed_assignment(ident)
+			_else
+				_return ident
+			_endif 
+			
+		_elif lex.is_identifier?
+		_then
+			_local ident << _self.parse_identifier()
+			next << .scanner.peek()
+						
+			_if next.is_operator?("=")
+			_then
+				# note: using lex, not identifier
+				_return _self.parse_assignment(lex)
+				
+			_elif next.is_identifier? _or next.is_keyword?
+			_then
+				_return _self.parse_typed_assignment(ident)
+			_else
+				_return ident
+			_endif
+		_elif lex.is_string?
+		_then
+			_return jpn_constant.new(.scanner.get())
+		_elif lex.is_number?
+		_then
+			_return jpn_constant.new(.scanner.get())
+		_elif lex.is_keyword?
+		_then
+			_if lex.value = "if"
+			_then
+				_return _self.parse_if()
+			_elif lex.value = "break"
+			_then
+				_return _self.parse_break()
+			_elif lex.value = "continue"
+			_then
+				_return _self.parse_continue()
+			_elif lex.value = "try"
+			_then
+				_return _self.parse_try()
+			_elif lex.value = "new"
+			_then
+				_return _self.parse_new()
+			_elif lex.value = "synchronized"
+			_then
+				_return _self.parse_synchronized()
+			_elif lex.value = "throw"
+			_then
+				_return _self.parse_throw()
+			_elif lex.value = "while"
+			_then
+				_return _self.parse_loop()
+			_elif lex.value = "do"
+			_then
+				_return _self.parse_while_loop()
+			_else
+				# variable with same name as keyword
+				_local type << _self.parse_identifier()
+				_return type
+			_endif
+		_else
+			debug_print(lex)
+			2.stop
+		_endif
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_loop(_optional p_tag)
+	##
+	_self.ensure_keyword("while")
+	_self.ensure_separator("(")
+	_self.ensure_identifier("true")
+	_self.ensure_separator(")")
+	_self.ensure_separator("{")
+	_local body << _self.parse_body()
+	_self.ensure_separator("}")
+	>> jpn_loop.new(body, _unset, p_tag)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_while_loop(_optional p_tag)
+	##
+	_self.ensure_keyword("do")
+	_self.ensure_separator("{")
+	_local body << _self.parse_body()
+	_self.ensure_separator("}")
+	_self.ensure_keyword("while")
+	_self.ensure_separator("(")
+	_local exp << _self.parse_expression()
+	_self.ensure_separator(")")
+	>> jpn_loop.new(body, exp, p_tag)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.is_variable?(p_name)
+	##
+	>> .context.includes?(p_name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_identifier()
+	## 
+	_local ident_lex << .scanner.get()
+	_local ident << _if _self.is_variable?(ident_lex.value)
+			_then
+				>> jpn_variable.new(ident_lex)
+			_else
+				>> jpn_type.new(ident_lex)
+			_endif
+	
+	_local next << .scanner.peek()
+	_if next.is_separator?("[")
+	_then
+		_if ident.is_class_of?(jpn_variable)
+		_then
+			ident << _self.parse_array_invocation(ident_lex)
+		_else 
+			ident << _self.parse_array_type(ident_lex)
+		_endif
+	_elif next.is_operator?("<")
+	_then
+		_self.parse_execution_args("<",">")
+	_endif
+	>> ident
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_array_invocation(p_lex)
+	##
+	_local args << _self.parse_execution_args("[","]")
+	>> jpn_array_access.new(p_lex, args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_synchronized()
+	## 
+	_self.ensure_keyword("synchronized")
+	_self.ensure_separator("(")	
+	_local exp << _self.parse_expression()
+	_self.ensure_separator(")")
+	_self.ensure_separator("{")
+	_local body << _self.parse_body()
+	_self.ensure_separator("}")	
+	>> jpn_synchronized.init(exp, body)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_throw()
+	## 
+	_self.ensure_keyword("throw")
+	_local exp << _self.parse_expression()
+	>> jpn_throw.new(exp)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_break()
+	## 
+	_self.ensure_keyword("break")
+	_local lex << .scanner.peek()
+	>> _if lex.is_identifier?
+	   _then 
+		   .scanner.get()
+		   >> jpn_break.new(lex)
+	   _else
+		   >> jpn_break.new()
+	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_continue()
+	## 
+	_self.ensure_keyword("continue")
+	_local lex << .scanner.peek()
+	>> _if lex.is_identifier?
+	   _then
+		   .scanner.get()
+		   >> jpn_continue.new(lex)
+	   _else
+		   >> jpn_continue.new()
+	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_new()
+	## 
+	_self.ensure_keyword("new")
+	_local array? << _false 
+	_local type << .scanner.get()
+	_local lex << .scanner.peek()
+	_if lex.is_separator?("(")
+	_then 
+		args << _self.parse_execution_args("(",")")
+	_elif lex.is_separator?("[")
+	_then
+		args << _self.parse_array_args()
+		array? << _true
+		lex << .scanner.peek()
+		_if lex.is_separator?("{")
+		_then
+			args << _self.parse_execution_args("{","}")
+		_endif 
+	_else
+		show(:type, type.value)
+		lex.dp
+		3.stop
+	_endif 
+	>> jpn_new.new(type, args, array?)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_try()
+	##
+	_self.ensure_keyword("try")
+	
+	_self.ensure_separator("{")
+	_local try_body << _self.parse_body()
+	_self.ensure_separator("}")
+
+	_local lex << .scanner.peek()
+	_if lex.is_keyword?("finally")
+	_then
+		_self.ensure_keyword("finally")
+		_self.ensure_separator("{")
+		finally_body << _self.parse_body()
+		_self.ensure_separator("}")
+	_else
+		finally_body << jpn_body.new()
+	_endif 
+	_local lex << .scanner.peek()
+	_if lex.is_keyword?("catch")
+	_then
+		_self.ensure_keyword("catch")
+		_self.ensure_separator("(")
+		catch_args << _self.parse_args()
+		_self.ensure_separator(")")
+		_self.ensure_separator("{")
+		catch_body << _self.parse_body(catch_args)
+		_self.ensure_separator("}")
+	_else
+		catch_args << {}
+		catch_body << jpn_body.new()
+	_endif
+	lex << .scanner.peek()
+	_if lex.is_separator?("{")
+	_then
+		_self.ensure_separator("{")
+		_self.parse_body()
+		_self.ensure_separator("}")
+	_endif 
+	>> jpn_try.new(try_body, catch_args, catch_body, finally_body)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_if()
+	##
+	_self.ensure_keyword("if")
+	_self.ensure_separator("(")
+	_local condition << _self.parse_expression()
+	_self.ensure_separator(")")
+
+	_local lex << .scanner.peek()
+	_if lex.is_separator?("{")
+	_then 
+		_self.ensure_separator("{")
+		then_body << _self.parse_body()
+		_self.ensure_separator("}")
+	_else
+		_local stat << _self.parse_statement()
+		then_body << dcn_body.new(rope.new_with(stat))
+	_endif 
+
+	_local input << rope.new_with( {condition, then_body} )
+	_loop
+		_local node << .scanner.peek()
+		_if node.is_keyword? _andif node.value = "else"
+		_then
+			.scanner.get()
+			node << .scanner.peek()
+			_if node.is_keyword? _andif node.value = "if"
+			_then
+				.scanner.get()
+				_self.ensure_separator("(")
+				condition << _self.parse_expression()
+				_self.ensure_separator(")")
+			_else
+				condition << _unset
+			_endif 
+			_self.ensure_separator("{")
+			body << _self.parse_body()
+			_self.ensure_separator("}")
+			
+			input.add({condition,body})
+		_else
+			_leave 
+		_endif
+	_endloop 
+	>> jpn_if.new(input)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_assignment(p_ident)
+	##
+	_local left << jpn_variable.new(p_ident)
+	_self.ensure_operator("=")
+	_local right << _self.parse_expression(_true)
+	>> jpn_assignment.new(left, right)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_test(p_exp)
+	##
+	_local op << .scanner.get()
+	_local right << _self.parse_expression(_true, _unset, op.value)
+	>> jpn_operation.new(p_exp, right, op)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_block(p_ident)
+	##
+	_self.ensure_operator(":")
+	_local lex << .scanner.peek()
+	_if lex.is_keyword?("while")
+	_then
+		_return _self.parse_loop(p_ident)
+	_else 
+		_self.ensure_separator("{")
+		body << _self.parse_body()
+		_self.ensure_separator("}")
+		_return jpn_block.new(p_ident, body)
+	_endif 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_typed_assignment(p_type)
+	##
+	_local ident << .scanner.get()
+	.context.add(ident.value)
+	
+	_local left << jpn_declaration.new(p_type,ident)
+	_local next << .scanner.peek()
+	_if next.is_operator?("=")
+	_then 
+		_self.ensure_operator("=")
+		_local right << _self.parse_expression(_true)
+		_return jpn_assignment.new(left, right)
+	_else
+		_return left
+	_endif 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_parenthesis()
+	##
+	_self.ensure_separator("(")
+	_local type << _self.parse_expression()
+	_self.ensure_separator(")")
+	_return jpn_parenthesis.new(type)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_not()
+	##
+	_self.ensure_operator("!")
+	_local exp << _self.parse_expression()
+	>> jpn_not.new(exp)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_negative()
+	##
+	_self.ensure_operator("-")
+	_local exp << _self.parse_expression()
+	>> jpn_negated.new(exp)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_cast(p_parenthesis)
+	##
+	_local value << _self.parse_expression(_true)
+	>> jpn_cast.new(p_parenthesis.expression,value)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_method_invocation(p_identifier, p_method)
+	##
+	_local args << _self.parse_execution_args("(",")")
+	>> jpn_method_invocation.new(p_identifier, p_method, args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_execution_args(p_p1, p_p2)
+	##
+	_local args << rope.new()
+	.scanner.get()
+	_loop
+		_local lex << .scanner.peek()
+		_if lex.is_separator? _orif lex.is_operator?
+		_then
+			_if lex.value = p_p2
+			_then
+				_leave
+			_elif lex.value = ","
+			_then
+				.scanner.get()
+				_continue
+			_endif
+		_endif
+		args.add(_self.parse_expression(_true))
+	_endloop
+	.scanner.get()
+	>> args
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_array_args()
+	##
+	_local args << rope.new()
+	_self.ensure_separator("[")
+	_loop
+		_local lex << .scanner.peek()
+		_if lex.is_separator?
+		_then
+			_if lex.value = "]"
+			_then
+				_leave
+			_elif lex.value = ","
+			_then
+				.scanner.get()
+				_continue
+			_endif
+		_endif
+		args.add(_self.parse_expression())
+	_endloop
+	_self.ensure_separator("]")
+	>> args
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_package()
+	##
+	_self.ensure_keyword("package")
+	_local type << _self.parse_dotted_type()
+	_self.ensure_separator(";")
+
+	_return jpn_package.new(type)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_import()
+	##
+	_self.ensure_keyword("import")
+	_local type << _self.parse_dotted_type()
+	_self.ensure_separator(";")
+
+	_return jpn_import.new(type)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.parse_dotted_type()
+	##
+	_local name << .scanner.get()
+	_loop
+		_local lex << .scanner.peek()
+		_if lex.is_separator?(".")
+		_then
+			lex << .scanner.get()
+			name.append_dotted(.scanner.get())
+		_else
+			_leave 
+		_endif
+	_endloop
+	>> jpn_type.new(name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.ensure_operator(p_op)
+	_local l << .scanner.get()
+	_if l.is_operator?.not
+	_then
+		condition.raise(:deco_expected_operator, :line, l.line, :column, l.column, :operator, p_op, :instead, l.value)
+	_endif
+	_if l.value <> p_op.write_string
+	_then
+		condition.raise(:deco_expected_operator, :line, l.line, :column, l.column, :operator, p_op, :instead, l.value)
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.ensure_separator(p_sep)
+	_local l << .scanner.get()
+	_if l.is_separator?.not
+	_then
+		condition.raise(:deco_expected_separator, :line, l.line, :column, l.column, :separator, p_sep, :instead, l.value)
+	_endif
+	_if l.value <> p_sep.write_string
+	_then
+		condition.raise(:deco_expected_separator, :line, l.line, :column, l.column, :separator, p_sep, :instead, l.value)
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.ensure_keyword(p_keyword)
+	_local l << .scanner.get()
+	_if l.is_keyword?.not
+	_then
+		condition.raise(:deco_expected_keyword, :line, l.line, :column, l.column, :keyword, p_keyword, :instead, l.value)
+	_endif
+	_if l.value <> p_keyword
+	_then
+		condition.raise(:deco_expected_keyword, :line, l.line, :column, l.column, :keyword, p_keyword, :instead, l.value)
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.ensure_identifier(p_identifier)
+	_local l << .scanner.get()
+	_if l.is_identifier?.not
+	_then
+		condition.raise(:deco_expected_identifier, :line, l.line, :column, l.column, :identifier, p_identifier, :instead, l.value)
+	_endif
+	_if l.value <> p_identifier
+	_then
+		condition.raise(:deco_expected_identifier, :line, l.line, :column, l.column, :identifier, p_identifier, :instead, l.value)
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method java_parser.optional_keyword(p_keyword)
+	_local l << .scanner.peek()
+	_if l.is_keyword? _andif l.value = p_keyword
+	_then
+		.scanner.get()
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.check_eof(p_lex, p_what)
+	##
+	_if p_lex.is_eof?
+	_then
+		condition.raise(:deco_unexpected_eof, :line, p_lex.line, :column, p_lex.column,
+				:while_doing, p_what)
+	_endif
+_endmethod
+$

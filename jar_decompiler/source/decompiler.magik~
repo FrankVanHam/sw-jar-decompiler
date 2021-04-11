@@ -1,83 +1,95 @@
 _package deco
 $
 
+#remex(:decompiler)
+
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:decompiler,
-	{
-		{:top, _unset}
-	})
+	{})
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method decompiler.new(p_top)
-	>> _clone.init(p_top)
+_method decompiler.new()
+	>> _clone.init()
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method decompiler.init(p_top)
-	.top << p_top
-	_self.process()
+_private _method decompiler.init()
 	>> _self
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method decompiler.process()
+_method decompiler.com_gesmallworld_magik_jars
 	##
-	_self.setup_executable()
+	_local jars << rope.new()
+	_local dir << smallworld_product.product_path
+	dir << system.pathname_down(dir, "libs")
+
+	_local names << {"com.gesmallworld.magik.runtime", "com.gesmallworld.magik.commons"}
+	_local channel << directory_channel.new(dir)
+	_loop
+		_local str << channel.get_full()
+		_if str _is _unset _then _leave _endif
+		
+		_for i_name _over names.fast_elements()
+		_loop
+			_if str.matches?(write_string("*", i_name, "*"))
+			_then
+				jars.add(str)
+			_endif 
+		_endloop 
+	_endloop
+	>> jars
 _endmethod
 $
 
+
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method decompiler.setup_executable()
+_method decompiler.decompile_jar_to_dir(p_jar_file, p_dir)
 	##
-	_local exec << _self.find_executable()
-	_local meth << _self.find_executable_method(exec)
-	_for i_stat _over meth.body.statements.fast_elements()
+	_local command << rope.new()
+	command.add("java")
+	command.add("-classpath")
+
+	_local classpath << internal_text_output_stream.new()
+	classpath.write(%")
+	classpath.write(smallworld_product.get_java_file("cfr-0.150.jar",:jar_decompiler))
+	classpath.write(%;)
+	_for i_fname _over _self.com_gesmallworld_magik_jars.fast_elements()
 	_loop
-		(exec_name, exec_name) << (_scatter i_stat.name.split_by(%.))
+		classpath.write(i_fname)
+		classpath.write(%;)
+	_endloop 
+	classpath.write(%")
+	command.add(classpath.string)
+	command.add("org.benf.cfr.reader.Main")
+	command.add(write_string(%", p_jar_file, %"))
+	_local (inp, pid) << system.input_from_command(command)
 
-		ex << !current_package!.all_packages[:deco][write_string(:deco_ + exec_name.lowercase).as_symbol()]
-		exec_meth << write_string(exec_name.lowercase,"()").as_symbol()
-		ex.perform(exec_meth, _scatter i_stat.args)
-	_endloop
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method decompiler.find_executable_method(p_class)
-	_for i_meth _over p_class.methods.fast_elements()
+	_local s << deco:lexical_scanner.new(inp)
+	_local p << deco:java_parser.new(s)
+	_local jpn_jar << p.parse_file()
+	
+	_local jp << deco:jpn_parser.new()
+	_local dcn_node << jp.parse_file(jpn_jar)
+	deco:jpn_execution_post_processor.process(dcn_node)
+	
+	_for i_class_node, i_body _over dcn_node.bodies.fast_keys_and_elements()
 	_loop
-		_if i_meth.name.value = "execute"
-		_then
-			_return i_meth
-		_endif
-	_endloop
-	condition.raise(:error, :string, "No execute method in class")
-_endmethod
-$
+		_if i_body.statements.empty? _then _continue _endif
+		
+		_local out_ind << indentation_stream.new(out << internal_text_output_stream.new())
+		dcn_node.decode_body_on(i_body, out_ind)
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method decompiler.find_executable()
-	_for i_class _over .top.content.fast_elements()
-	_loop
-		_if i_class.is_class? _andif
-		    i_class.implementation = "ExecutableMagik"
-		_then
-			_return i_class
-		_endif
-	_endloop
-	condition.raise(:error, :string, "No executable in file")
-_endmethod
-$
-
-
-
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method decompiler.write_on(p_out)
-	##
-
+		_local out_file << external_text_output_stream.new(p_dir+"\"+i_class_node.name)
+		_protect
+			write(out.string)
+			out_file.write(out.string)
+		_protection
+			out_file.close()
+		_endprotect 
+	_endloop 
 _endmethod
 $

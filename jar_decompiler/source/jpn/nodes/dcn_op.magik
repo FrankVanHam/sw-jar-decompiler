@@ -1,0 +1,395 @@
+##
+## File            : $File: (dcn_op.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-04-05
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package deco
+$
+
+#remex(:dcn_op)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## node for an operator, either binary or unary.
+def_slotted_exemplar(:dcn_op,
+		     {
+			     {:operator, _unset, :readable},
+			     {:operand1, _unset, :readable},
+			     {:operand2, _unset, :readable}
+		     }, :dcn_base)
+$
+_pragma(classify_level=restricted, topic={decompiler})
+dcn_op.define_shared_constant(
+	:allowed_operators, equality_set.new_with("_not","+","-","/","*","**","_div","_mod","_and","_andif","_orif","_or","=","~=", "_cf","<","<=",">",">=","_xor","_is","_isnt"),
+	:private )
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+dcn_op.define_shared_constant(
+	:not_operators, equality_hash_table.new_with(
+				    "=","~=",
+				    "~=","=",
+				    "<", ">=",
+				    "<=",">",
+				    ">","<=",
+				    ">=","<",
+				    "_is","_isnt",
+				    "_isnt","_is"),
+	:private )
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.new(operator, oper1, _optional oper2)
+	_return _clone.init(operator, oper1, oper2)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_op.init(operator, oper1, oper2)
+	assert(oper1 _isnt _false)
+	assert(_self.allowed_operators.includes?(operator))
+	.operator << operator
+	.operand1 << oper1
+	.operand2 << oper2
+	_return _self
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.operand2 << op
+	##
+	.operand2 << op
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.new_orif(left)
+	_return _self.new(:orif, left, .operand1)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.not
+	##
+	_local not_op << _self.not_operators[.operator]
+	>> _if not_op _isnt _unset
+	   _then
+		   >> dcn_op.new(not_op, .operand1, .operand2)
+	   _else
+		   >> dcn_not.new(_self)
+	   _endif 
+_endmethod
+$
+
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.is_op?
+	_return _true 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.accept_node_visitor(visitor)
+	_if .operand1 _isnt _unset
+	_then 
+		.operand1 << .operand1.accept_node_visitor(visitor)
+	_endif
+	_if .operand2 _isnt _unset
+	_then 
+		.operand2 << .operand2.accept_node_visitor(visitor)
+	_endif 
+	_return _super.accept_node_visitor(visitor)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.accept_body_visitor(visitor)
+	_if .operand1 _isnt _unset
+	_then 
+		.operand1.accept_body_visitor(visitor)
+	_endif
+	_if .operand2 _isnt _unset
+	_then 
+		.operand2.accept_body_visitor(visitor)
+	_endif 
+	_return _super.accept_body_visitor(visitor)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.is_chain_assign_for?(assign)
+	_return assign.chain_assign_operator?(_self, .operator, .operand1, .operand2)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.is_hidden_operator_assign_for_send?(send, args)
+	op2 << .operand2
+	_if op2 _is _unset _then _return _false _endif
+	_if _not op2.is_send? _then _return _false _endif
+	_return op2.is_hidden_operator_assign_for?(send, args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.is_hidden_operator_assign_for_slot?(slot)
+	op2 << .operand2
+	_if op2 _is _unset _then _return _false _endif
+	_if _not op2.is_slot? _then _return _false _endif
+	
+	_if _not op2.is_getter? _then _return _false _endif
+	
+	_if slot.slot_name <> op2.slot_name _then _return _false _endif
+	_return _true 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.as_operator_assign_send(token, sender, name, p_args, top_of_stack)
+	operator << .operator
+	args << p_args.copy()
+	args[1] << .operand1
+	_return dcn_send.new_operator_assign(token, sender, name, args, operator, top_of_stack)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.as_operator_assign_slot(token, slot_accessor, top_of_stack)
+	_return dcn_slot.new_operator_assign(token, slot_accessor, .operand1, .operator, top_of_stack)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.for_jump_node( jn, ex)
+	_if jn _is _unset
+	_then
+		sub_ex << ex.create_op()
+	_elif jn.test_for_unset?
+	_then
+		sub_ex << ex.create_is_unset_op(2)
+	_elif jn.test_for_not_unset?
+	_then
+		sub_ex << ex.create_isnt_unset_op(2)
+	_elif jn.test_for_false?
+	_then
+		sub_ex << ex.create_not_op(2)
+	_elif jn.test_for_true?
+	_then
+		sub_ex << ex.create_silent_true_op(2)
+	_else
+		sub_ex << ex.create_op()
+	_endif
+	_return sub_ex
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.for_jump_node_negated( jn, ex)
+	_if jn _is _unset
+	_then
+		sub_ex << ex.create_op()
+	_elif jn.test_for_unset?
+	_then
+		sub_ex << ex.create_isnt_unset_op(1)
+	_elif jn.test_for_not_unset?
+	_then
+		sub_ex << ex.create_is_unset_op(1)
+	_elif jn.test_for_true?
+	_then
+		sub_ex << ex.create_not_op(1)
+	_elif jn.test_for_false?
+	_then
+		sub_ex << ex.create_silent_true_op(1)
+	_else
+		sub_ex << ex.create_op()
+	_endif
+	_return sub_ex
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.result_count
+	_return 1
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.has_results?
+	_return _true 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.is_not?
+	_return .operator _is :not
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.try_index
+	_return .operand2.try_index_2
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.try_index_2
+	_return .operand1.value
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.is_combined_assignment?(a_local)
+	_if .operand2 _is _unset _andif
+	    .operand1 _is a_local _andif
+	    {:incremented, :decremented}.includes?(.operator)
+	_then
+		_return _true
+	_elif .operand2 _is a_local
+	_then
+		_return _true
+	_else 
+		_return _false 
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.decode_combined_assignment(a_stream, boot?)
+	_if .operand2 _is _unset
+	_then 
+		.operand1.decode_on(a_stream)
+		a_stream.write( "  ")
+		_self.decode_op_on( a_stream )
+		_if boot?
+		_then
+			a_stream.write( "^")
+		_endif 
+		a_stream.write( "<< 1")
+	_else
+		.operand2.decode_on(a_stream)
+		a_stream.write( "  ")
+		_self.decode_op_on( a_stream )
+		_if boot?
+		_then
+			a_stream.write( "^")
+		_endif 
+		a_stream.write( "<< ")
+		.operand1.decode_on(a_stream)
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.translate_op( op )
+	_return op
+	_return _self.translation[op]
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.decode_op_on( a_stream )
+	op << .operator
+	_if op _is :incremented
+	_then
+		a_stream.write("+")
+	_elif op _is :decremented
+	_then
+		a_stream.write("-")
+	_else
+		a_stream.write( _self.translate_op(op) )
+	_endif 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.decode_on( a_stream, _optional parent, statements )
+	op << .operator
+	_if .operand1 _isnt _unset _andif .operand2 _is _unset
+	_then
+		_if op _is :incremented
+		_then
+			a_stream.write( "(" )
+			.operand1.decode_on( a_stream )
+			a_stream.write( " + 1")
+			a_stream.write( ")" )
+		_elif op _is :decremented
+		_then
+			a_stream.write( "(" )
+			.operand1.decode_on( a_stream )
+			a_stream.write( " - 1")
+			a_stream.write( ")" )
+		_elif op _is :negated
+		_then
+			a_stream.write( "-" )
+			.operand1.decode_on( a_stream )
+			
+		_else
+			a_stream.write( _self.translate_op(op) )
+			a_stream.write( " " )
+			_if _self.is_not?
+			_then
+				a_stream.write( "(" )
+				.operand1.decode_on( a_stream )
+				a_stream.write( ")" )
+			_else 
+				.operand1.decode_on( a_stream )
+			_endif 
+		_endif 
+	_elif .operand1 _isnt _unset _andif .operand2 _isnt _unset
+	_then
+		_if op _is :isss
+		_then
+			.operand2.decode_on( a_stream )
+			
+		_elif {}.includes?(op)
+		_then
+			.operand1.decode_as_receiver_on( a_stream )
+			a_stream.write( " " )
+			a_stream.write( _self.translate_op(op) )
+			a_stream.write( " " )
+			.operand2.decode_as_receiver_on( a_stream )
+		_else 
+			a_stream.write( "(" )
+			.operand1.decode_as_receiver_on( a_stream )
+			a_stream.write( " " )
+			a_stream.write( _self.translate_op(op) )
+			a_stream.write( " " )
+			.operand2.decode_as_receiver_on( a_stream )
+			a_stream.write( ")" )
+		_endif 
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.is_test_for_true?
+	_return {:andif, :is, :isss}.includes?(.operator) _andif
+		(
+			(.operand1.is_constant? _andif (.operand1.value _is _true)) _orif
+			(.operand2.is_constant? _andif (.operand2.value _is _true))
+		)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_op.show_on( a_stream )
+	a_stream.write(_self.class_name, "(", .operand1, " ", .operator, " ", .operand2, ")" )
+_endmethod
+$
+

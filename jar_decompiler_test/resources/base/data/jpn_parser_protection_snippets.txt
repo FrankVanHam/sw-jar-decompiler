@@ -185,7 +185,7 @@ public class deco_test_4179 {
     @Debugger(value="MagikDebug")
     @CodeType(value="Method")
     @EnvVars(value={@EnvVar(name="11ff991f-678c-42ff-8fa6-eb5e998ce793", type=Object.class, start=26, end=159, index=0), @EnvVar(name="11ff991f-678c-42ff-8fa6-eb5e998ce793", type=Object.class, start=193, end=227, index=0), @EnvVar(name="11ff991f-678c-42ff-8fa6-eb5e998ce793", type=Object.class, start=263, end=267, index=0)})
-    public static Object deco_test__do_move_action(Object _self, Object action, Object source_element, Object target_element) {
+    public static Object deco_test__test_protect_try(Object _self, Object action, Object source_element, Object target_element) {
         block15: {
             Object[] __env__ = new Object[1];
             try {
@@ -239,7 +239,7 @@ public class deco_test_4179 {
         return ResultTuple.EMPTY_TUPLE;
     }
 
-    @Parent(method="deco_test__do_move_action")
+    @Parent(method="deco_test__test_protect_try")
     @SourceHash(value=91382809)
     @Debugger(value="MagikDebug")
     @CodeType(value="Proc")
@@ -258,16 +258,16 @@ implements ExecutableMagik {
     @Debugger(value="MagikDebug")
     @CodeType(value="TopLevel")
     public Object execute() {
-        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "do_move_action()", deco_test_4179.class, "deco_test__do_move_action", 4, 4));
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "test_protect_try()", deco_test_4179.class, "deco_test__test_protect_try", 4, 4));
     }
 }
 
 ############
-_method deco_test.do_move_action(action, source_element, target_element) 
+_method deco_test.test_protect_try(action, source_element, target_element) 
     _block @block15
         _protect
             sw:query_result.new_non_persistent()
-            _try _with object
+            _try
                 _self.scrapbook.store(user:name)
             _when scrapbook_read_only
                 
@@ -288,7 +288,7 @@ public class deco_test_4171 {
     @Debugger(value="MagikDebug")
     @CodeType(value="Method")
     @EnvVars(value={@EnvVar(name="f1faddf3-4058-4a7b-92e2-488d54a89c1d", type=Object.class, start=74, end=208, index=0), @EnvVar(name="f1faddf3-4058-4a7b-92e2-488d54a89c1d", type=Object.class, start=242, end=245, index=0)})
-    public static Object deco_test__do_move_action(Object _self, Object action, Object source_element, Object target_element) {
+    public static Object deco_test__test_protect_try2(Object _self, Object action, Object source_element, Object target_element) {
         block16: {
             Object[] __env__ = new Object[1];
             try {
@@ -347,7 +347,7 @@ public class deco_test_4171 {
         return ResultTuple.EMPTY_TUPLE;
     }
 
-    @Parent(method="deco_test__do_move_action")
+    @Parent(method="deco_test__test_protect_try2")
     @SourceHash(value=91382809)
     @Debugger(value="MagikDebug")
     @CodeType(value="Proc")
@@ -367,11 +367,11 @@ implements ExecutableMagik {
     @Debugger(value="MagikDebug")
     @CodeType(value="TopLevel")
     public Object execute() {
-        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "do_move_action()", deco_test_4171.class, "deco_test__do_move_action", 4, 4));
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "test_protect_try2()", deco_test_4171.class, "deco_test__test_protect_try2", 4, 4));
     }
 }
 ##########
-_method deco_test.do_move_action(action, source_element, target_element) 
+_method deco_test.test_protect_try2(action, source_element, target_element) 
     _block @block16
         _protect
             _if (target_element _is _self.current_set_element)
@@ -384,7 +384,7 @@ _method deco_test.do_move_action(action, source_element, target_element)
                  _leave @block16
             _endif
             sw:query_result.new_non_persistent()
-            _try _with object
+            _try
                 _self.scrapbook.store(_self.name)
             _when scrapbook_read_only
                 

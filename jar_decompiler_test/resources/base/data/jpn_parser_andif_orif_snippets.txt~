@@ -1,0 +1,315 @@
+## jpn_test_andif
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4381 {
+    @SourceHash(value=-916776549)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_andif(Object _self) {
+        block1: {
+            CallSite callSite = Invoker.bootstrapPrivate("test1", (Object)_self);
+            if (MagikObjectUtils.should_be_boolean(callSite)) {
+                callSite = Invoker.bootstrapPrivate("test2", (Object)_self);
+            }
+            if (!MagikObjectUtils.should_be_boolean(callSite)) break block1;
+            ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)1);
+        }
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4380
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_andif()", deco_test_4381.class, "deco_test__test_andif", 1, 1);
+    }
+}
+#########
+_method deco_test.test_andif() 
+    _if (_self.test1 _andif _self.test2)
+    _then
+        sw:show(1)
+    _endif
+    _return _unset
+_endmethod
+$
+#########
+## jpn_test_andif_else
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4381 {
+    @SourceHash(value=-1096226313)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_andif_else(Object _self) {
+        CallSite callSite = Invoker.bootstrapPrivate("test1", (Object)_self);
+        if (MagikObjectUtils.should_be_boolean(callSite)) {
+            callSite = Invoker.bootstrapPrivate("test2", (Object)_self);
+        }
+        if (MagikObjectUtils.should_be_boolean(callSite)) {
+            ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)1);
+        } else {
+            ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)2);
+        }
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4380
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+	MagikObjectUtils.createMethod("deco_test", "test_andif_else()", deco_test_4381.class, "deco_test__test_andif_else", 1, 1);
+    }
+}
+#########
+_method deco_test.test_andif_else() 
+    _if (_self.test1 _andif _self.test2)
+    _then
+        sw:show(1)
+    _else
+        sw:show(2)
+    _endif
+    _return _unset
+_endmethod
+$
+#########
+## jpn_test_andif_andif
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4381 {
+    @SourceHash(value=-157022783)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_andif_andif(Object _self) {
+        block2: {
+            CallSite callSite;
+            CallSite callSite2 = Invoker.bootstrapPrivate("test1", (Object)_self);
+            if (MagikObjectUtils.should_be_boolean(callSite2)) {
+                callSite2 = callSite = Invoker.bootstrapPrivate("test2", (Object)_self);
+            }
+            if (MagikObjectUtils.should_be_boolean(callSite2)) {
+                callSite = Invoker.bootstrapPrivate("test3", (Object)_self);
+            }
+            if (!MagikObjectUtils.should_be_boolean(callSite)) break block2;
+            ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)1);
+        }
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4380
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_andif_andif()", deco_test_4381.class, "deco_test__test_andif_andif", 1, 1);
+    }
+}
+#########
+_method deco_test.test_andif_andif() 
+    _if ((_self.test1 _andif _self.test2) _andif _self.test3)
+    _then
+        sw:show(1)
+    _endif
+    _return _unset
+_endmethod
+$
+#########
+## jpn_test_orif
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4381 {
+    @SourceHash(value=-791582049)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_orif(Object _self) {
+        block1: {
+            CallSite callSite = Invoker.bootstrapPrivate("test1", (Object)_self);
+            if (!MagikObjectUtils.should_be_boolean(callSite)) {
+                callSite = Invoker.bootstrapPrivate("test2", (Object)_self);
+            }
+            if (!MagikObjectUtils.should_be_boolean(callSite)) break block1;
+            ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)1);
+        }
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4380
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_orif()", deco_test_4381.class, "deco_test__test_orif", 1, 1);
+    }
+}
+#########
+_method deco_test.test_orif() 
+     _local callSite << (_self.test1 _orif _self.test2)
+    _if callSite
+    _then
+        sw:show(1)
+    _endif
+    _return _unset
+_endmethod
+$
+#########
+## jpn_test_orif_orif
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4381 {
+    @SourceHash(value=-1562743613)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_orif_orif(Object _self) {
+        block2: {
+            CallSite callSite;
+            CallSite callSite2 = Invoker.bootstrapPrivate("test1", (Object)_self);
+            if (!MagikObjectUtils.should_be_boolean(callSite2)) {
+                callSite2 = callSite = Invoker.bootstrapPrivate("test2", (Object)_self);
+            }
+            if (!MagikObjectUtils.should_be_boolean(callSite2)) {
+                callSite = Invoker.bootstrapPrivate("test3", (Object)_self);
+            }
+            if (!MagikObjectUtils.should_be_boolean(callSite)) break block2;
+            ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)1);
+        }
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4380
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_orif_orif()", deco_test_4381.class, "deco_test__test_orif_orif", 1, 1);
+    }
+}
+#########
+_method deco_test.test_orif_orif() 
+    _if ((_self.test1 _orif _self.test2) _orif _self.test3)
+    _then
+        sw:show(1)
+    _endif
+    _return _unset
+_endmethod
+$
+#########
+## jpn_test_andif_orif1
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4381 {
+    @SourceHash(value=1290779935)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_andif_orif1(Object _self) {
+        block2: {
+            CallSite callSite;
+            CallSite callSite2 = Invoker.bootstrapPrivate("test1", (Object)_self);
+            if (MagikObjectUtils.should_be_boolean(callSite2)) {
+                callSite2 = callSite = Invoker.bootstrapPrivate("test2", (Object)_self);
+            }
+            if (!MagikObjectUtils.should_be_boolean(callSite2)) {
+                callSite = Invoker.bootstrapPrivate("test3", (Object)_self);
+            }
+            if (!MagikObjectUtils.should_be_boolean(callSite)) break block2;
+            ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)1);
+        }
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4380
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_andif_orif1()", deco_test_4381.class, "deco_test__test_andif_orif1", 1, 1);
+    }
+}
+#########
+_method deco_test.test_andif_orif1() 
+    _if ((_self.test1 _andif _self.test2) _orif _self.test3)
+    _then
+        sw:show(1)
+    _endif
+    _return _unset
+_endmethod
+$
+#########
+## jpn_test_andif_orif2
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4381 {
+    @SourceHash(value=-617319128)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__test_andif_orif2(Object _self) {
+        block1: {
+            CallSite callSite = Invoker.bootstrapPrivate("test1", (Object)_self);
+            if (MagikObjectUtils.should_be_boolean(callSite) && !MagikObjectUtils.should_be_boolean(callSite = Invoker.bootstrapPrivate("test2", (Object)_self))) {
+                callSite = Invoker.bootstrapPrivate("test3", (Object)_self);
+            }
+            if (!MagikObjectUtils.should_be_boolean(callSite)) break block1;
+            ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)1);
+        }
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4380
+implements ExecutableMagik {
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "test_andif_orif2()", deco_test_4381.class, "deco_test__test_andif_orif2", 1, 1));
+    }
+}
+#########
+_method deco_test.test_andif_orif2() 
+    _if (_self.test1 _andif (_self.test2 _orif _self.test3))
+    _then
+        sw:show(1)
+    _endif
+    _return _unset
+_endmethod
+$
+#########

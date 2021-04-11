@@ -1,0 +1,25 @@
+_package deco
+$
+
+#remex(:jpn_jar)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_jar,
+	{
+		{:content, _unset, :readable}
+	},
+	:jpn_base)
+$
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_jar.init()
+	##
+	.content << rope.new()
+	>> _super.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_jar.add(p_node)
+	.content.add(p_node)
+_endmethod
+$

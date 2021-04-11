@@ -1,0 +1,656 @@
+##
+## File            : $File: (dcn_branch.magik) $
+## SCM             : $URL$
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written    : 2012-04-05
+## Date changed    : $Date$
+## Revision        : $Rev$
+
+_package deco
+$
+
+#remex(:dcn_branch)
+$
+_pragma(classify_level=restricted, topic={decompiler})
+## Node for a branch statement. Branch contains an if and
+## optionally and else statement, both with results.
+def_slotted_exemplar(:dcn_branch,
+		     {
+			     {:input, _unset, :readable}
+		     }, :dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.new(p_input)
+	##
+	>> _clone.init(p_input)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_branch.init(p_input)
+	.input << rope.new_from(p_input)
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.convert_to_not_with_body(p_body)
+	##
+	.input[1][1] << .input[1][1].not
+	.input[1][2] << p_body
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.if_condition << p_condition
+	## 
+	.input[1][1] << p_condition
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.convert_to_or(p_condition)
+	##
+	.input[1][1] << dcn_op.new("_or", .input[1][1], p_condition)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.convert_last_to_or(p_condition)
+	##
+	.input.last[1] << dcn_op.new("_or", .input.last[1], p_condition)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.set_body(p_body)
+	##
+	.input[1][2] << p_body 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.taxonomy_includes?
+
+	_local exp << _if _self.if_condition.is_class_of?(dcn_not)
+		      _then >> _self.if_condition.expression
+		      _else >> _self.if_condition
+		      _endif
+	>> _if exp.is_class_of?(dcn_send)
+	   _then >> exp.name = "taxonomy_includes?()"
+	   _else >> _false
+	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.break_tag
+	##
+	_local sts << _self.if_body.statements
+	_if sts.empty?.not
+	_then
+		_local n << sts.last
+		_if n.is_class_of?(dcn_break)
+		_then
+			_return n.name
+		_endif
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.taxonomy_conditions
+	_local cnds << rope.new()
+	_for i_branch _over _self.self_and_nested()
+	_loop
+		cnds.add(i_branch.local_taxonomy_condition)
+	_endloop
+	>> cnds
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.local_taxonomy_condition
+	>> _self.local_taxonomy_condition(_self.if_condition)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.local_taxonomy_condition(p_condition)
+	_local exp << _if p_condition.is_class_of?(dcn_not)
+		      _then >> p_condition.expression
+		      _else >> p_condition
+		      _endif
+	>> exp.args[1].string_value
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.is_throw?
+	_for i_branch _over _self.self_and_nested()
+	_loop
+		_if i_branch.is_local_throw?
+		_then
+			_return _true
+		_endif
+	_endloop
+	_return _false
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.is_not?
+	## 
+	>> _self.if_condition.is_class_of?(dcn_not)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.is_local_throw?
+	_local sts << _self.if_body.statements
+	_if sts.empty?.not
+	_then
+		_local n << sts.last
+		_if n.is_class_of?(dcn_throw)
+		_then
+			_return _true
+		_endif
+	_endif
+	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_iter _method dcn_branch.self_and_nested()
+	## 
+	_local b << _self
+	_loop
+		_loopbody(b)
+		_local sts << b.if_body.statements
+		_if sts.empty?.not
+		_then
+			_local n << sts.last
+			_if n.is_class_of?(dcn_branch)
+			_then
+				b << n
+			_else
+				_leave 
+			_endif
+		_else
+			_leave 
+		_endif
+	_endloop 
+_endmethod
+$
+
+
+
+
+
+#_pragma(classify_level=restricted, topic={decompiler})
+### Node for a branch statement. Branch contains an if and
+### optionally and else statement, both with results.
+#def_slotted_exemplar(:dcn_branch,
+#		     {
+#			     {:statements, _unset},
+#			     {:results, _unset},
+#			     {:token,_unset},
+#			     {:end_pc, _unset, :readable},
+#			     
+#			     {:else_statements, _unset},
+#			     {:else_results, _unset},
+#			     {:else_token,_unset},
+#			     
+#			     {:expression, _unset}
+#		     }, :dcn_base)
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.new(token, expression, statements, results, _optional else_token, else_statements, else_results, end_pc)
+#	_return _clone.init(token, expression, statements, results, else_token, else_statements, else_results, end_pc)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_private _method dcn_branch.init(token, expression, statements, results, _optional else_token, else_statements, else_results, end_pc)
+#	.token << token
+#	_if token _is _unset
+#	_then
+#		assert( end_pc _isnt _unset, "should have end_pc")
+#		.end_pc << end_pc
+#	_else
+#		.end_pc << token.end_pc
+#	_endif 
+#	.statements << rope.deco_check_type(statements)
+#	.results << rope.deco_check_type(results)
+#	
+#	.else_token   << else_token
+#	.else_statements << rope.deco_check_type(else_statements)
+#	.else_results    << rope.deco_check_type(else_results)
+#		
+#	.expression << expression
+#	_return _self
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.accept_node_visitor(visitor)
+#	.expression << .expression.accept_node_visitor(visitor)
+#	_self.accept_node_visitor_in_vector(visitor, .statements)
+#	_self.accept_node_visitor_in_vector(visitor, .results)
+#	_if .else_statements _isnt _unset
+#	_then 
+#		_self.accept_node_visitor_in_vector(visitor, .else_statements)
+#	_endif
+#	_if .else_results _isnt _unset
+#	_then 
+#		_self.accept_node_visitor_in_vector(visitor, .else_results)
+#	_endif 
+#	_return _super.accept_node_visitor(visitor)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.accept_body_visitor(visitor)
+#	.expression.accept_body_visitor(visitor)
+#	_self.accept_body_visitor_in_vector(visitor, .statements)
+#	_self.accept_body_visitor_in_vector(visitor, .results)
+#	_if .else_statements _isnt _unset
+#	_then 
+#		_self.accept_body_visitor_in_vector(visitor, .else_statements)
+#	_endif
+#	_if .else_results _isnt _unset
+#	_then 
+#		_self.accept_body_visitor_in_vector(visitor, .else_results)
+#	_endif
+#	
+#	visitor.visit(_self, .statements)
+#	_if .else_statements _isnt _unset
+#	_then 
+#		visitor.visit(_self, .else_statements)
+#	_endif 
+#	_return _super.accept_body_visitor(visitor)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_private _method dcn_branch.statements
+#	_return .statements
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.results
+#	_return .results
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.has_results?
+#	
+#	_return .results.empty?.not
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.is_case_or_branch?
+#	_return _true
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_private _method dcn_branch.try_index
+#	_return .expression.try_index
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.register_for_try(whens)
+#	try_index << _self.try_index
+#	branch_statements << _self.statements
+#	whens[try_index] << property_list.new_with(
+#				    :statements, branch_statements,
+#				    :results, _self.results )
+#	_return try_index, branch_statements
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_iter _method dcn_branch.branches()
+#	_loopbody(_self)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.result_count
+#	c1 << 0
+#	_for i_res _over .results.fast_elements()
+#	_loop
+#		c1 +<< i_res.result_count
+#	_endloop
+#	_if .else_results _isnt _unset
+#	_then
+#		c2 << 0
+#		_for i_res _over .else_results.fast_elements()
+#		_loop
+#			c2 +<< i_res.result_count
+#		_endloop
+#	_else
+#		c2 << c1
+#	_endif
+#	_return c1.max(c2)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.is_hidden_case?
+#	_return (.else_statements _isnt _unset) _andif
+#		(
+#		(
+#			(.else_statements.size = 1) _andif
+#				(.else_statements[1].is_case_or_branch?)
+#		) _orif
+#		(
+#			(.else_statements.empty? )_andif
+#				(.else_results.size = 1) _andif
+#				(.else_results[1].is_case_or_branch?)
+#		))
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.as_case()
+#	_if _self.is_hidden_case?
+#	_then
+#		c << dcn_case.new()
+#		_self.add_to_case(c)
+#	_else
+#		c << _unset 
+#	_endif
+#	_return c
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.add_to_case(c)
+#	
+#	c.add(_self)
+#	_if _self.is_hidden_case?
+#	_then
+#		_if .else_statements.size = 1
+#		_then 
+#			b << .else_statements[1]
+#		_else
+#			b << .else_results[1]
+#		_endif 
+#		.else_statements << _unset
+#		.else_results << _unset
+#		.else_token << _unset 
+#		b.add_to_case(c)
+#	_endif
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.is_andif?
+#	
+#	test? << (.expression _isnt _unset) _andif
+#		 (.expression.is_test_for_true?  )
+#	
+#	_return (.else_statements _is _unset) _andif
+#		test? _andif 
+#		.statements.empty? _andif
+#		_not .results.empty?
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.as_andif()
+#	assert(.results.size = 1)
+#	sub_ex1 << dcn_op.for_jump_node_negated(.token, .expression)
+#	sub_ex2 << .results[1]
+#	_return dcn_op.new(:andif, sub_ex2, sub_ex1)
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.is_orif?
+#	test? << (.expression _isnt _unset) _andif
+#		 (.expression.is_op?) _andif
+#		 (.expression.is_not?)
+#	
+#	_return (.else_statements _is _unset) _andif
+#		(.expression _isnt _unset) _andif
+#		test? _andif 
+#		.statements.empty? _andif
+#		_not .results.empty?
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.as_orif()
+#	assert(.results.size = 1)
+#	_return .expression.new_orif(.results.an_element())
+#	#_return dcn_op.new(:orif, .results.an_element(), .expression.sys!slot(:operand1))
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.pc
+#	_return .token.pc
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.has_condition?
+#	_return .token.has_condition?
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.has_forward_jump?
+#	_return .token.has_forward_jump?
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.has_backward_jump?
+#	_return .token.has_backward_jump?
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.decode_then(a_stream)
+#	a_stream.write("_then")
+#	a_stream.indent()
+#	a_stream.newline()
+#	_self.decode_statements_on(a_stream, .statements)
+#	_if .results.empty?.not
+#	_then
+#		a_stream.write(">> ")
+#		_self.decode_node_list_on(a_stream, .results)
+#		a_stream.newline()
+#	_endif
+#	a_stream.unindent()
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.decode_else(a_stream)
+#	_if .else_statements _isnt _unset
+#	_then
+#		_self.decode_like_else_on(a_stream)
+#	_endif 
+#_endmethod
+#$
+#
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.if_condition
+	## 
+	_for i_tag, i_cond, i_body _over _self.condition_and_bodies()
+	_loop
+		_if i_tag = :if
+		_then
+			_return i_cond
+		_endif
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.if_body
+	## 
+	_for i_tag, i_cond, i_body _over _self.condition_and_bodies()
+	_loop
+		_if i_tag = :if
+		_then
+			_return i_body
+		_endif
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.accept_body_visitor(p_visitor)
+	_for i_tag, i_cond, i_body _over _self.condition_and_bodies()
+	_loop
+		_if i_body _isnt _unset
+		_then
+			i_body.accept_body_visitor(p_visitor)
+		_endif
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.just_if?
+	##
+	>> .input.size = 1
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.decode_on(p_stream)
+	_for i_tag, i_cond, i_body _over _self.condition_and_bodies()
+	_loop
+		_if i_tag = :if
+		_then
+			p_stream.write( "_if ")
+			i_cond.decode_on(p_stream)
+			p_stream.newline()
+			_self.decode_body(i_body, "_then", p_stream)
+		_elif i_tag = :elif
+		_then
+			p_stream.newline()
+			p_stream.write( "_elif ")
+			i_cond.decode_on(p_stream)
+			p_stream.newline()
+			_self.decode_body(i_body, "_then", p_stream)
+		_else
+			p_stream.newline()
+			_self.decode_body(i_body, "_else", p_stream)
+		_endif
+	_endloop 
+	p_stream.newline()
+	p_stream.write("_endif")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_iter _method dcn_branch.condition_and_bodies()
+	_for i_index, i_vec _over .input.fast_keys_and_elements()
+	_loop
+		_local (cond, body) << (_scatter i_vec)
+		_local tag << _if i_index = 1
+			      _then >> :if
+			      _elif cond _isnt _unset
+			      _then >> :elif
+			      _else >> :else
+			      _endif
+		_loopbody(tag, cond, body)
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_branch.decode_body(p_body, p_keyword, p_stream)
+	p_stream.write(p_keyword)
+	p_stream.indent(4)
+	p_stream.newline()
+	p_body.decode_on(p_stream)
+	p_stream.unindent(4)
+_endmethod
+$
+
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.decode_test_on(p_stream)
+#	_if .token _is _unset
+#	_then
+#		p_stream.write( "(")
+#		.expression.decode_on( p_stream )
+#		p_stream.write( ")")
+#		_return
+#	_endif 
+#	
+#	_if .token.sys!slot(:is?) _is _true _andif
+#	    .token.sys!slot(:compare_value) _is _true
+#	_then
+#		p_stream.write( "_not (")
+#		.expression.decode_on( p_stream )
+#		p_stream.write( ")")
+#	_else 
+#		p_stream.write( "(")
+#		
+#		_if .token.test_for_false?
+#		_then
+#			.expression.decode_on( p_stream )
+#		_elif .token.test_for_true?
+#		_then
+#			p_stream.write( "_not ")
+#			.expression.decode_on( p_stream )
+#		_else
+#			.expression.decode_eval_exp_on( p_stream )
+#			_if .token.sys!slot(:is?)
+#			_then
+#				p_stream.write( " _isnt ")
+#			_else
+#				p_stream.write( " _is ")
+#			_endif
+#			p_stream.write( "_", .token.sys!slot(:compare_value).write_string.lowercase )
+#		_endif 
+#		p_stream.write( ")")
+#	_endif
+#_endmethod
+#$
+#
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method dcn_branch.decode_like_else_on( p_stream )
+#	
+#	p_stream.write( "_else ")
+#	p_stream.newline()
+#	p_stream.indent()
+#	_self.decode_statements_on(p_stream, .else_statements)
+#	_if .else_results.empty?.not
+#	_then
+#		p_stream.write(">> ")
+#		_self.decode_node_list_on(p_stream, .else_results)
+#		p_stream.newline()
+#	_endif
+#	p_stream.unindent()
+#_endmethod
+#$

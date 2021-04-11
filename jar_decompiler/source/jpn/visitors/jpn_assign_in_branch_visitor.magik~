@@ -1,0 +1,163 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_block_andorif_visitor,{})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_block_andorif_visitor.new()
+	>> _clone 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_block_andorif_visitor.accept(p_body)
+	##
+	_loop
+		_local did? << _self.try_accept(p_body)
+		_if did?.not _then _leave _endif 
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_block_andorif_visitor.try_accept(p_body)
+	##
+	_local sts << p_body.statements
+	_for i_index, i_node _over sts.fast_keys_and_elements()
+	_loop
+		_if i_index+1 < sts.size
+		_then
+			n1 << sts[i_index+0]
+			n2 << sts[i_index+1]
+			_if _self.is_andif?(n1, n2)
+			_then
+				sts[i_index+0] << dcn_no_op.new()
+				sts[i_index+1] << _self.convert_to_andif(n1,n2)
+				_return _true
+				
+			_elif _self.is_orif?(n1, n2)
+			_then
+				sts[i_index+0] << dcn_no_op.new()
+				sts[i_index+1] << _self.convert_to_orif(n1,n2)
+				_return _true
+
+			_elif _self.merge_assign_and_branch?(n1,n2)
+			_then
+				sts[i_index+0] << dcn_no_op.new()
+				sts[i_index+1] << _self.merge_assign_and_branch?(n1,n2)
+				_return _true
+			_endif
+		_endif
+	_endloop
+	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_block_andorif_visitor.merge_assign_and_branch?(n1,n2)
+	##
+	_if n1.is_class_of?(dcn_local_assignment).not _then _return _false, :no_local_assignment1 _endif
+	_if n2.is_class_of?(dcn_branch).not _then _return _false, :no_branch _endif
+
+	_local a_local << n1.only_local()
+	_if a_local _is _unset _then _return _false, :no_single_local_1 _endif
+	_local exp1 << n1.expression
+	_local local_name << a_local.name
+	_local c_loc << n2.if_condition
+	_if c_loc.is_class_of?(dcn_local).not _then _return _false, :condition_should_be_local _endif
+	_if c_loc.name <> local_name _then _return _false, :condition_should_be_known_name _endif
+	_return _true 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_block_andorif_visitor.merge_assign_and_branch(n1,n2)
+	n2.if_condition << n1
+	>> n2
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_block_andorif_visitor.is_andif?(n1, n2)
+	##
+	_if n1.is_class_of?(dcn_local_assignment).not _then _return _false, :no_local_assignment1 _endif
+	_if n2.is_class_of?(dcn_branch).not _then _return _false, :no_branch _endif
+		
+	_local a_local << n1.only_local()
+	_if a_local _is _unset _then _return _false, :no_single_local_1 _endif
+	_local exp1 << n1.expression
+	
+	_local local_name << a_local.name
+	
+	_if n2.just_if?.not _then _return _false, :not_just_only_if _endif
+	_local c_loc << n2.if_condition
+	_if c_loc.is_class_of?(dcn_local).not _then _return _false, :condition_should_be_local _endif
+	_if c_loc.name <> local_name _then _return _false, :condition_should_be_known_name _endif
+	_local stats << n2.if_body.statements
+	_if stats.size <> 1 _then _return _false, :branch_body_size_should_be_1 _endif
+	_local ass << stats[1]
+	_if ass.is_kind_of?(dcn_local_assignment).not _then _return _false, :branch_body_is_assign _endif
+	_local b_local << ass.only_local()
+	_if b_local _is _unset _then _return _false, :branch_body_is_no_local_assign _endif
+	_if b_local.name <> local_name _then _return _false, :branch_body_local_name_incorrect _endif
+	_local exp2 << ass.expression
+	_return _true 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_block_andorif_visitor.convert_to_andif(n1, n2)
+	##
+	_local a_local << n1.only_local()
+	_local exp1 << n1.expression
+	_local exp2 << n2.if_body.statements[1].expression
+
+	n1.expression << dcn_op.new("_andif", exp1, exp2)
+	>> n1
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_block_andorif_visitor.is_orif?(n1, n2)
+	##
+	_if n1.is_class_of?(dcn_local_assignment).not _then _return _false, :no_local_assignment1 _endif
+	_if n2.is_class_of?(dcn_branch).not _then _return _false, :no_branch _endif
+	
+	_local a_local << n1.only_local()
+	_if a_local _is _unset _then _return _false, :no_single_local_1 _endif
+	_local exp1 << n1.expression
+	
+	_local local_name << a_local.name
+	
+	_if n2.just_if?.not _then _return _false, :not_just_only_if _endif
+	_local c_loc << n2.if_condition
+	_if c_loc.is_class_of?(dcn_not).not _then _return _false, :should_be_not _endif
+	c_loc << c_loc.not
+	_if c_loc.is_class_of?(dcn_local).not _then _return _false, :condition_should_be_local _endif
+	_if c_loc.name <> local_name _then _return _false, :condition_should_be_known_name _endif
+	_local stats << n2.if_body.statements
+	_if stats.size <> 1 _then _return _false, :branch_body_size_should_be_1 _endif
+	_local ass << stats[1]
+	_if ass.is_kind_of?(dcn_local_assignment).not _then _return _false, :branch_body_is_assign _endif
+	_local b_local << ass.only_local()
+	_if b_local _is _unset _then _return _false, :branch_body_is_no_local_assign _endif
+	_if b_local.name <> local_name _then _return _false, :branch_body_local_name_incorrect _endif
+	_local exp2 << ass.expression
+	_return _true 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_block_andorif_visitor.convert_to_orif(n1, n2)
+	##
+	_local a_local << n1.only_local()
+	_local exp1 << n1.expression
+	_local exp2 << n2.if_body.statements[1].expression
+
+	n1.expression << dcn_op.new("_orif", exp1, exp2)
+	>> n1
+_endmethod
+$

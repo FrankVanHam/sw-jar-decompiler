@@ -1,10 +1,7 @@
 define_package
 assert
 
-ingestion/
-intermediate/
-
-#java_command
-#decompiler
+java/
+jpn/
 
 sw/

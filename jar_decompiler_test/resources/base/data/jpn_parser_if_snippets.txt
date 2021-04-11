@@ -587,11 +587,7 @@ _method deco_test.process_initialisation_data_element(xml_element)
                     _then
                          _local id << category.attribute(:name).as_symbol()
                         .find_categories.add_last({id, _self.application.message(id)})
-                         _local object << (category.attribute(:default) = "yes")
-                        _if  _not(object)
-                        _then
-                            object << (.find_default_category _is _unset)
-                        _endif
+                         _local object << ((category.attribute(:default) = "yes") _orif (.find_default_category _is _unset))
                         _if object
                         _then
                             .find_default_category << id

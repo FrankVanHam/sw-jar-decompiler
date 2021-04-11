@@ -303,7 +303,7 @@ _method deco_test.setup_data()
     _proc(ace_name)
         _import me
             _local resultTuple
-            _try _with object
+            _try 
                  _local resultTuple2 << me.get_ace_control_for(ace_name)
                 resultTuple << resultTuple2
             _when does_not_understand

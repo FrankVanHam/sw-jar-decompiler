@@ -10,18 +10,26 @@ def_slotted_exemplar(:jpn_parser_class_snippet_test,
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-jpn_parser_class_snippet_test.define_shared_constant(:filename, "jpn_parser_class_snippets.txt", :private)
+jpn_parser_class_snippet_test.define_shared_constant(:filename, "none.txt", :private)
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method jpn_parser_class_snippet_test.infrastructure?
+	##
+	>> _self.exemplar _is jpn_parser_class_snippet_test
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method jpn_parser_class_snippet_test.run_test()
 	## 
 	_local s << deco:lexical_scanner.new(.before.read_stream())
 	_local p << deco:java_parser.new(s)
-	_local jpn_file << p.parse_file()
+	_local jpn_jar << p.parse_file()
 
 	_local jp << deco:jpn_parser.new()
-	_local dcn_node << jp.parse_file(jpn_file)
+	_local dcn_node << jp.parse_file(jpn_jar)
 	deco:jpn_execution_post_processor.process(dcn_node)
 	
 	_local out_ind << indentation_stream.new(out << internal_text_output_stream.new())

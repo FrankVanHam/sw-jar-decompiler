@@ -298,4 +298,21 @@ implements ExecutableMagik {
 }
 
 ############
+_method deco_test.setup_data() 
+    me << _self
+    _proc(ace_name)
+        _import me
+            _local resultTuple
+            _try _with object
+                 _local resultTuple2 << me.get_ace_control_for(ace_name)
+                resultTuple << resultTuple2
+            _when does_not_understand
+                sw:write(me.message(:invalid_ace_name, me.name, ace_name))
+                resultTuple << _unset
+            _endtry
+            _return resultTuple
+    _endproc("test")
+    _return _unset
+_endmethod
+$
 ############

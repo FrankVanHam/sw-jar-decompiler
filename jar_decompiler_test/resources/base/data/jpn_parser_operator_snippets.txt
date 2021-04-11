@@ -187,13 +187,15 @@ implements ExecutableMagik {
 }
 ###########
 _method deco_test.test_logical_operators(a, b) 
-    _local c << (a _and b)
+     _local c << (a _and b)
     _self.use(c)
-    c << (a _andif b)
+     _local object << (a _andif b)
+    c << object
     _self.use(c)
     c << (a _or b)
     _self.use(c)
-    c << (a _orif b)
+     _local object2 << (a _orif b)
+    c << object2
     _self.use(c)
     c << (a _xor b)
     _self.use(c)
@@ -206,6 +208,7 @@ _method deco_test.test_logical_operators(a, b)
     _return _unset
 _endmethod
 $
+
 ###########
 ## jpn_method_test_unary_operators
 @CodeType(value="Subsidiary")

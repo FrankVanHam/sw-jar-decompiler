@@ -1,0 +1,44 @@
+_package deco
+$
+
+#remex(:jpn_try_branch_normalizer_visitor)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_try_branch_normalizer_visitor,
+	{})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_try_branch_normalizer_visitor.new()
+	>> _clone.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_try_branch_normalizer_visitor.init()
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_try_branch_normalizer_visitor.accept(p_body)
+	##
+	_local sts << p_body.statements
+#	_global x
+#	x << sts
+#	44.stop
+	_for i_index, i_node _over sts.fast_keys_and_elements()
+	_loop
+		(ok?, idx) << _self.is_try?(i_node)
+		_if ok?
+		_then
+			sts[i_index] << _self.convert_to_try(i_node, idx)
+		_endif
+		(ok?, idx) << _self.is_try_in_try?(i_node)
+		_if ok?
+		_then
+			sts[i_index] << _self.convert_to_try_in_try(i_node, idx)
+		_endif 
+	_endloop 
+_endmethod
+$

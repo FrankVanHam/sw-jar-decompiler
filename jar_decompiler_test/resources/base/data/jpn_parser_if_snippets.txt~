@@ -807,4 +807,153 @@ implements ExecutableMagik {
     }
 }
 ###########
+_private _iter _method deco_test.explorers(object) 
+    _for el _over .embedded_explorer_views.fast_elements()
+    _loop
+        _loopbody (el)
+    _endloop
+    _if (_self.get_dialog(:explorer) _isnt _unset)
+    _then
+        _for element _over .dialogs.fast_elements()
+        _loop
+            _loopbody (element)
+        _endloop
+    _elif (object _is _true)
+    _then
+        _loopbody (_self.start_explorer_view(_true))
+    _endif
+    _return _unset
+_endmethod
+$
 ###########
+## jpn_test_if_elif_elif_elif_loop
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4159 {
+    @SourceHash(value=-1936166617)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    @EnvVars(value={@EnvVar(name="__dynamic_frame__", type=Object.class, start=88, end=118, index=0), @EnvVar(name="__dynamic_frame__", type=Object.class, start=33, end=218, index=1), @EnvVar(name="__loopbody__", type=Object.class, start=15, end=219, index=3), @EnvVar(name="__loopenv__", type=Object.class, start=24, end=219, index=2)})
+    public static Object deco_test__explorers(MethodHandle __loopbody__, Object[] __loopenv__, Object _self, Object object) {
+        block1: {
+            Object[] __env__;
+            block2: {
+                block0: {
+                    __env__ = new Object[4];
+                    EnvAccessor.bootstrapReseter("resetEnv", (Object)__loopbody__, (Object[])__env__, (int)3);
+                    EnvAccessor.bootstrapReseter("resetEnv", (Object)__loopenv__, (Object[])__env__, (int)2);
+                    EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)1);
+                    EnvAccessor.bootstrapStorer("storeEnv", (Object)DynamicScope.getFrame(), (Object[])__env__, (int)1);
+                    ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("fast_elements()", (MethodHandle)cfr_ldc_0(), (Object[])__env__, (Object)Invoker.bootstrapPrivate("$slot_get_embedded_explorer_views()", (Object)_self)));
+                    if (Invoker.bootstrapPrivate("get_dialog()", (Object)_self, (Object)ConstantBuilder.symbolBootstrap("symbol", "explorer")) == null) break block0;
+                    EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)0);
+                    EnvAccessor.bootstrapStorer("storeEnv", (Object)DynamicScope.getFrame(), (Object[])__env__, (int)0);
+                    ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrap("fast_elements()", (MethodHandle)cfr_ldc_1(), (Object[])__env__, (Object)Invoker.bootstrapPrivate("$slot_get_dialogs()", (Object)_self)));
+                    break block1;
+                }
+                if (!MagikObjectUtils.is(object, Boolean.TRUE)) break block2;
+                LoopBodyInvoker.naturalBootstrap("_loopbody", (MethodHandle)((MethodHandle)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)3))), (Object[])((Object[])EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)2)), (Object)Invoker.bootstrapPrivate("start_explorer_view()", (Object)_self));
+                break block1;
+            }
+            if (!MagikObjectUtils.is(object, Boolean.FALSE)) break block1;
+            LoopBodyInvoker.naturalBootstrap("_loopbody", (MethodHandle)((MethodHandle)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)3))), (Object[])((Object[])EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)2)), (Object)Invoker.bootstrapPrivate("stop_explorer_view()", (Object)_self));
+        }
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @Parent(method="deco_test__explorers")
+    @Debugger(value="MagikDebug")
+    @CodeType(value="LoopBody")
+    public static Object __loopbody_(Object[] __env__, Object el) {
+        ResultTuple resultTuple;
+        DynamicScope __iterator_frame__ = DynamicScope.interjectFrame((DynamicScope)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1)));
+        try {
+            LoopBodyInvoker.naturalBootstrap("_loopbody", (MethodHandle)((MethodHandle)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)3))), (Object[])((Object[])EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)2)), (Object)el);
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.interjectFrame(__iterator_frame__);
+            throw throwable;
+        }
+        DynamicScope.interjectFrame(__iterator_frame__);
+        return resultTuple;
+    }
+
+    @Parent(method="deco_test__explorers")
+    @Debugger(value="MagikDebug")
+    @CodeType(value="LoopBody")
+    public static Object __loopbody_2(Object[] __env__, Object element) {
+        ResultTuple resultTuple;
+        DynamicScope __iterator_frame__ = DynamicScope.interjectFrame((DynamicScope)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0)));
+        try {
+            LoopBodyInvoker.naturalBootstrap("_loopbody", (MethodHandle)((MethodHandle)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)3))), (Object[])((Object[])EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)2)), (Object)element);
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.interjectFrame(__iterator_frame__);
+            throw throwable;
+        }
+        DynamicScope.interjectFrame(__iterator_frame__);
+        return resultTuple;
+    }
+
+    /*
+     * Works around MethodHandle LDC.
+     */
+    static MethodHandle cfr_ldc_0() {
+        try {
+            return MethodHandles.lookup().findStatic(deco_test_4159.class, "__loopbody_", MethodType.fromMethodDescriptorString("([Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null));
+        }
+        catch (NoSuchMethodException | IllegalAccessException except) {
+            throw new IllegalArgumentException(except);
+        }
+    }
+
+    /*
+     * Works around MethodHandle LDC.
+     */
+    static MethodHandle cfr_ldc_1() {
+        try {
+            return MethodHandles.lookup().findStatic(deco_test_4159.class, "__loopbody_2", MethodType.fromMethodDescriptorString("([Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null));
+        }
+        catch (NoSuchMethodException | IllegalAccessException except) {
+            throw new IllegalArgumentException(except);
+        }
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4158
+implements ExecutableMagik {
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "explorers()", deco_test_4159.class, "deco_test__explorers", 4, 3, true, false, true, 0);
+    }
+}
+##############
+_private _iter _method deco_test.explorers(object) 
+    _for el _over .embedded_explorer_views.fast_elements()
+    _loop
+        _loopbody (el)
+    _endloop
+    _if (_self.get_dialog(:explorer) _isnt _unset)
+    _then
+        _for element _over .dialogs.fast_elements()
+        _loop
+            _loopbody (element)
+        _endloop
+    _elif (object _is _true)
+    _then
+        _loopbody (_self.start_explorer_view())
+    _elif (object _is _false)
+    _then
+        _loopbody (_self.stop_explorer_view())
+    _endif
+    _return _unset
+_endmethod
+$
+##############
