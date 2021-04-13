@@ -44,7 +44,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method java_parser.parse_file()
 	##
-	_local f << jpn_file.new("file")
+	_local f << jpn_jar.new("file")
 	_loop
 		_local node << _self.get()
 		_if node _is _unset _then _leave _endif
