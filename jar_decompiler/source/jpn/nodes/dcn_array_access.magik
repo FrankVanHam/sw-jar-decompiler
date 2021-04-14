@@ -29,6 +29,13 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
+_method dcn_array_access.is_type?(p_type)
+	>> _false 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
 _method dcn_array_access.decode_on(p_stream)
 	## 
 	p_stream.write(.name)

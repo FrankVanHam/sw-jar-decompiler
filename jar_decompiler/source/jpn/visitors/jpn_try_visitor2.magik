@@ -69,26 +69,26 @@ _method jpn_try_visitor2.convert(p_node, p_tblock)
 		ordered_tags.add_first(rope.new())
 		_if i_tblock.taxonomy_branches?
 		_then
-			show(1)
+
 			_for i_index, i_branch _over i_tblock.all_taxonomy_branches()
 			_loop
 				_if i_branch.is_throw? _andif i_branch.is_not?
 				_then
-					show(2)
+					
 					_local break << _self.break(i_tblock, i_index+1)
 					_if break _is _unset 
 					_then
-						show(3)
+						
 						_if i_tblock.has_try?.not _andif
 						    _self.last_statement?(i_tblock, i_index)
 						_then
-							show(4)
+							
 							_local jump_block << blks[i_tblock.tag].parent
 							blocks_used.add(jump_block)
 							conditions[jump_block.tag].add_all_last(i_branch.taxonomy_conditions)
 							ordered_tags.first.add(jump_block.tag)
 						_else
-							show(5)
+							
 							blocks_used.add(i_tblock)
 							conditions["in block"] << rope.new_from(i_branch.taxonomy_conditions)
 
@@ -100,7 +100,7 @@ _method jpn_try_visitor2.convert(p_node, p_tblock)
 							ordered_tags.first.add("in block")
 						_endif 
 					_else
-						show(6)
+						
 						_local jump_block << blks[break.name].parent
 						blocks_used.add(jump_block)
 						conditions[jump_block.tag].add_all_last(i_branch.taxonomy_conditions)
@@ -109,7 +109,7 @@ _method jpn_try_visitor2.convert(p_node, p_tblock)
 					_endif 
 				_elif i_branch.break_tag _isnt _unset
 				_then
-					show(7)
+					
 					_if blks[i_branch.break_tag] _isnt _unset
 					_then 
 						_local jump_block << blks[i_branch.break_tag].parent
@@ -122,7 +122,7 @@ _method jpn_try_visitor2.convert(p_node, p_tblock)
 						_endif
 					_endif 
 				_else
-					show(8)
+					
 					blocks_used.add(i_tblock)
 					_local c << 0
 					_for i_tag, i_cond, i_body _over i_branch.condition_and_bodies()
@@ -159,14 +159,13 @@ _method jpn_try_visitor2.convert(p_node, p_tblock)
 				_endif 
 			_endloop
 		_else
-			show(9)
+			
 			_local (when_sts, cnd) << _self.process_when_statements(i_tblock.when_statements)
 			whens[i_tblock.tag] << when_sts
 			_if cnd _isnt _unset _then try_condition << cnd _endif
 		_endif 
 	_endloop
 
-	show(:highest_level_block)
 	# Find highest level block
 	_local highest_level_block
 	_for i_tblock _over _self.all_blocks(p_tblock)
@@ -220,7 +219,6 @@ _method jpn_try_visitor2.convert(p_node, p_tblock)
 		
 	sts.add(try_node)
 
-	show(highest_level_block.tag, highest_level_block.is_try?)
 	_if highest_level_block.is_try?
 	_then
 		_local after_sts << highest_level_block.after_try_statements

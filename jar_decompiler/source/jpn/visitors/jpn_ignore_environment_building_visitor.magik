@@ -55,9 +55,10 @@ _private _method jpn_ignore_environment_building_visitor.ignore?(p_node, p_env)
 	_if p_node.is_class_of?(dcn_local_assignment)
 	_then 
 		_local loc << p_node.only_local()
+		
 		_if loc _is _unset _then _return _false _endif
 		
-		_local decl? << loc.is_kind_of?(dcn_local_declaration) _orif loc.is_kind_of?(dcn_local)
+		_local decl? << loc.is_kind_of?(dcn_local_declaration) _orif loc.is_kind_of?(dcn_local) _orif loc.is_kind_of?(dcn_array_access)
 
 		_return decl? _andif (loc.name = p_env)
 	_else

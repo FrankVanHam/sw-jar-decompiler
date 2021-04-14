@@ -789,7 +789,6 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_conditional_operator()
 	_local inp << write_string("CallSite n_percent_str = a ? b : c;")
-#	_local inp << write_string("CallSite n_percent_str = MagikObjectUtils.should_be_boolean(BinaryDispatcher.bootstrap('\\l', n_percent, Integer.valueOf(100))) ? BinaryDispatcher.bootstrap('+', ConstantBuilder.stringBootstrap('string', ' '), Invoker.bootstrap('write_string', n_percent)) : Invoker.bootstrap('write_string', n_percent);")
 	inp << inp.substitute_character(%', %")
 	
 	_local s << deco:lexical_scanner.new(inp.read_stream())
@@ -803,6 +802,37 @@ _method java_parser_test.test_conditional_operator()
 	_self.assert_equals("c", m.right.else.statements[1].expression.name)
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_conditional_nested_operator()
+	_local inp << write_string("CallSite val = a ? (b ? ba:bb) : (c ? ca:cb);")
+	inp << inp.substitute_character(%', %")
+	
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	p.define_locals("a", "b", "ba", "bb", "c", "ca", "cb")
+	
+	_local m << p.parse_expression()
+
+	_self.assert_true(m.is_kind_of?(deco:jpn_assignment), "should be an assignment")
+	_self.assert_true(m.right.is_class_of?(deco:jpn_if), "right should be an if")
+	_self.assert_equals("a", m.right.condition.name)
+	_self.assert_true(x.right.then.statements[1].expression.is_class_of?(deco:jpn_parenthesis), "then is ()" )
+	_local right_left << x.right.then.statements[1].expression.expression
+	_self.assert_true(right_left.is_class_of?(deco:jpn_if), "right should be an if")
+	_self.assert_equals("b", right_left.condition.name)
+	_self.assert_equals("ba", right_left.then.statements[1].expression.name)
+	_self.assert_equals("bb", right_left.else.statements[1].expression.name)
+
+	_local right_right << x.right.else.statements[1].expression.expression
+	_self.assert_true(right_right.is_class_of?(deco:jpn_if), "right should be an if")
+	_self.assert_equals("c", right_right.condition.name)
+	_self.assert_equals("ca", right_right.then.statements[1].expression.name)
+	_self.assert_equals("cb", right_right.else.statements[1].expression.name)
+_endmethod
+$
+
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_conditional_operator1()

@@ -267,6 +267,9 @@ _method jpn_parser.parse_variable(p_jnode)
 	>> _if p_jnode.is_kind_of?(jpn_declaration)
 	   _then
 		   >> dcn_local_declaration.new(p_jnode.name, p_jnode.type.name)
+	   _elif p_jnode.is_class_of?(jpn_array_access)
+	   _then
+		   >> _self.parse_array_access(p_jnode)
 	   _else 
 		   >> dcn_local.new(1, p_jnode.name, _unset, p_jnode.type)
 	   _endif 
@@ -333,7 +336,7 @@ _method jpn_parser.parse_execution_class(p_class_node)
 	_local class_name << p_class_node.name
 	_local super_name << p_class_node.implementation
 
-	_local dcn_file << .top.create_file()
+	_local file << .top.create_file(class_name)
 	_for i_meth _over p_class_node.methods.fast_elements()
 	_loop
 		_if i_meth.type = "TopLevel"
@@ -350,7 +353,7 @@ _method jpn_parser.parse_execution_class(p_class_node)
 					       _else >> i_statement
 					       _endif
 
-				dcn_file.add_statement(stat)
+				file.add_statement(stat)
 			_endloop
 		_endif
 	_endloop

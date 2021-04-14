@@ -147,7 +147,6 @@ _method jpn_try_branch_normalizer_visitor.reformat_subbranch2(p_node)
 
 	_if ok?
 	_then 
-		show(last_block.name, ok?, b1, b2)
 		_local stats << last_block.body.statements
 		_local cond
 		_for i _over range(b1, b2)

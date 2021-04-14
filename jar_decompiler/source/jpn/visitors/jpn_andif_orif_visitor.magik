@@ -93,15 +93,10 @@ _method jpn_andif_orif_visitor.is_andif_orif?(n1, n2)
 	_if a_local _is _unset _then _return _false, :no_single_local_1 _endif
 	_local local_name << a_local.name
 
-	show(:is_andif_orif?)
-	show(local_name)
-
 	_if n2.just_if?.not _then _return _false, :not_just_only_if _endif
 	_local c_loc << n2.if_condition
 
-	show(c_loc)
 	_if c_loc.is_class_of?(dcn_op).not _then _return _false, :not_operator _endif
-	show(c_loc.operator, c_loc.operand1, c_loc.operand2)
 	_if c_loc.operator <> "_and" _then _return _false, :no_and _endif
 	_if c_loc.operand1.is_class_of?(dcn_local).not _then _return _false, :no_left_local _endif
 	_if c_loc.operand2.is_class_of?(dcn_not).not _then _return _false, :no_right_not _endif
@@ -257,7 +252,6 @@ _method jpn_andif_orif_visitor.convert_to_orif_orif(n1, n2)
 
 	_local ass << n2.if_body.statements[1].expression
 
-	show( n2.if_condition.expression)
 	_local cnd << n2.if_condition.expression # not(cnd)
 	cnd.operand2 << cnd.operand2.expression
 
