@@ -34,23 +34,62 @@ _method jpn_parser.parse_file(p_top_node)
 	.top << dcn_jar.new()
 	_for i_node _over p_top_node.content.fast_elements()
 	_loop
-		_local pn << _self.parse_expression(i_node)
+		_local pn << _self.parse_statement(i_node)
 		#.top.add_statement(pn)
 	_endloop
 	>> .top
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_parser.parse_statement(p_jnode)
-	>> _self.parse_expression(p_jnode)
-_endmethod
-$
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_sender(p_node)
 	##
 	_return _self.parse_expression(p_node)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_statement(p_node)
+	_if p_node.is_class_of?(jpn_return)
+	_then
+		_return _self.parse_return_statement(p_node)
+	_elif p_node.is_class_of?(jpn_soft_return)
+	_then
+		_return _self.parse_soft_return_statement(p_node)
+#	_elif p_node.is_class_of?(jpn_if)
+#	_then
+#		_return _self.parse_branch(p_node)
+	_elif p_node.is_class_of?(jpn_try)
+	_then
+		_return _self.parse_try(p_node)
+	_elif p_node.is_class_of?(jpn_synchronized)
+	_then
+		_return _self.parse_synchronized(p_node)
+	_elif p_node.is_class_of?(jpn_block)
+	_then
+		_return _self.parse_block(p_node)
+	_elif p_node.is_class_of?(jpn_break)
+	_then
+		_return _self.parse_break(p_node)
+	_elif p_node.is_class_of?(jpn_continue)
+	_then
+		_return _self.parse_continue(p_node)
+	_elif p_node.is_class_of?(jpn_loop)
+	_then
+		_return _self.parse_loop(p_node)
+	_elif p_node.is_class_of?(jpn_throw)
+	_then
+		_return _self.parse_throw(p_node)
+	_elif p_node.is_class_of?(jpn_package)
+	_then
+		_return _self.parse_package(p_node)
+	_elif p_node.is_class_of?(jpn_import)
+	_then
+		_return _self.parse_import(p_node)
+	_else 
+		_return _self.parse_expression(p_node)
+	_endif 
 _endmethod
 $
 
@@ -85,12 +124,12 @@ _method jpn_parser.parse_expression(p_node)
 	_then
 		(exec, meth) << _self.executer_and_method_from_string(p_node.string_value)
 		_return exec.perform(meth, _self)
-	_elif p_node.is_class_of?(jpn_return)
-	_then
-		_return _self.parse_return_statement(p_node)
-	_elif p_node.is_class_of?(jpn_soft_return)
-	_then
-		_return _self.parse_soft_return_statement(p_node)
+#	_elif p_node.is_class_of?(jpn_return)
+#	_then
+#		_return _self.parse_return_statement(p_node)
+#	_elif p_node.is_class_of?(jpn_soft_return)
+#	_then
+#		_return _self.parse_soft_return_statement(p_node)
 	_elif p_node.is_class_of?(jpn_class)
 	_then
 		_return _self.parse_class(p_node)
@@ -109,48 +148,48 @@ _method jpn_parser.parse_expression(p_node)
 	_elif p_node.is_class_of?(jpn_declaration)
 	_then
 		_return _self.parse_declaration(p_node)
-	_elif p_node.is_class_of?(jpn_try)
-	_then
-		_return _self.parse_try(p_node)
-	_elif p_node.is_class_of?(jpn_synchronized)
-	_then
-		_return _self.parse_synchronized(p_node)
+#	_elif p_node.is_class_of?(jpn_try)
+#	_then
+#		_return _self.parse_try(p_node)
+#	_elif p_node.is_class_of?(jpn_synchronized)
+#	_then
+#		_return _self.parse_synchronized(p_node)
 	_elif p_node.is_class_of?(jpn_this)
 	_then
 		_return dcn_self.new()
-	_elif p_node.is_class_of?(jpn_block)
-	_then
-		_return _self.parse_block(p_node)
+#	_elif p_node.is_class_of?(jpn_block)
+#	_then
+#		_return _self.parse_block(p_node)
 	_elif p_node.is_class_of?(jpn_not)
 	_then
 		_return _self.parse_not(p_node)
 	_elif p_node.is_class_of?(jpn_negated)
 	_then
 		_return _self.parse_negated(p_node)
-	_elif p_node.is_class_of?(jpn_break)
-	_then
-		_return _self.parse_break(p_node)
-	_elif p_node.is_class_of?(jpn_continue)
-	_then
-		_return _self.parse_continue(p_node)
-	_elif p_node.is_class_of?(jpn_loop)
-	_then
-		_return _self.parse_loop(p_node)
-	_elif p_node.is_class_of?(jpn_throw)
-	_then
-		_return _self.parse_throw(p_node)
+#	_elif p_node.is_class_of?(jpn_break)
+#	_then
+#		_return _self.parse_break(p_node)
+#	_elif p_node.is_class_of?(jpn_continue)
+#	_then
+#		_return _self.parse_continue(p_node)
+#	_elif p_node.is_class_of?(jpn_loop)
+#	_then
+#		_return _self.parse_loop(p_node)
+#	_elif p_node.is_class_of?(jpn_throw)
+#	_then
+#		_return _self.parse_throw(p_node)
 	_elif p_node.is_class_of?(jpn_array_access)
 	_then
 		_return _self.parse_array_access(p_node)
 	_elif p_node.is_class_of?(jpn_operation)
 	_then
 		_return _self.parse_operation(p_node)
-	_elif p_node.is_class_of?(jpn_package)
-	_then
-		_return _self.parse_package(p_node)
-	_elif p_node.is_class_of?(jpn_import)
-	_then
-		_return _self.parse_import(p_node)
+#	_elif p_node.is_class_of?(jpn_package)
+#	_then
+#		_return _self.parse_package(p_node)
+#	_elif p_node.is_class_of?(jpn_import)
+#	_then
+#		_return _self.parse_import(p_node)
 	_else
 		_global x
 		x << p_node
@@ -502,7 +541,7 @@ _method jpn_parser.parse_body(p_body_jnode)
 	_local statements << rope.new()
 	_for i_jnode _over p_body_jnode.statements.fast_elements()
 	_loop
-		_local statement_node << _self.parse_expression(i_jnode)
+		_local statement_node << _self.parse_statement(i_jnode)
 		statements.add(statement_node)
 	_endloop
 	>> dcn_body.new(statements)

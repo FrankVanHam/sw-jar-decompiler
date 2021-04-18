@@ -116,7 +116,7 @@ _method jpn_parser_test.test_return_empty_tuple()
 	_local jpn_exp << p.parse_statement()
 
 	_local jp << deco:jpn_parser.new()
-	_local dcn_node << jp.parse_expression(jpn_exp)
+	_local dcn_node << jp.parse_statement(jpn_exp)
 	_self.assert_true(dcn_node.is_class_of?(deco:dcn_return), "should be return")
 	_self.assert_true(dcn_node.expression.is_class_of?(deco:dcn_constant), "return value should be unset")
 

@@ -1,14 +1,2 @@
 method_extras
-
-#object_extras
-#slotted_format_mixin_extras
-#indexed_format_mixin_extras
-#enumeration_value_extras
-#
 procedure_extras
-#mixin_mixin_extras
-#magikc_pragma_extras
-#
-#simple_vector_extras
-#rope_extras
-#stack_extras

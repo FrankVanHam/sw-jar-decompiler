@@ -48,7 +48,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method java_parser.parse_file()
 	##
-	_local f << jpn_jar.new("file")
+	_local f << jpn_jar.new()
 	_loop
 		_local node << _self.get()
 		_if node _is _unset _then _leave _endif
@@ -399,8 +399,7 @@ _method java_parser.parse_statement()
 		
 		_if next.is_operator?("=")
 		_then
-			# note: using lex, not identifier
-			_return _self.parse_assignment(ident)#lex)
+			_return _self.parse_assignment(ident)
 			
 		_elif next.is_identifier? _or next.is_keyword?
 		_then
@@ -470,13 +469,7 @@ _method java_parser.parse_expression(_optional p_exp)
 
 		_elif lex.is_separator?("(")
 		_then
-			_if exp.is_class_of?(jpn_parenthesis)
-			_then
-				exp << _self.parse_cast(exp)
-			_else
-				_local (sender, meth) << exp.split_in_identifier_and_method()
-				exp << _self.parse_method_invocation(sender, meth)
-			_endif 
+			exp << _self.parse_execution_parenthesis(exp)
 		_elif lex.is_eof? _orif
 		      lex.is_separator? 
 		_then
@@ -491,6 +484,20 @@ _method java_parser.parse_expression(_optional p_exp)
 	>> exp
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.parse_execution_parenthesis(p_exp)
+	##
+	>> _if p_exp.is_class_of?(jpn_parenthesis)
+	   _then
+		   >> _self.parse_cast(p_exp)
+	   _else
+		   _local (sender, meth) << p_exp.split_in_identifier_and_method()
+		   >> _self.parse_method_invocation(sender, meth)
+	   _endif
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.parse_dot(exp)
@@ -525,7 +532,10 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method java_parser.parse_sub_expression()
 	_local lex << .scanner.peek()
 	
-	_if lex.is_separator?("(")
+	_if lex.is_separator?(";") _orif lex.is_eof?
+	_then
+		_return _unset
+	_elif lex.is_separator?("(")
 	_then
 		_return _self.parse_parenthesis()
 	_elif lex.is_operator?("!")
@@ -534,7 +544,6 @@ _method java_parser.parse_sub_expression()
 	_elif lex.is_operator?("?")
 	_then
 		_return _self.parse_identifier()
-
 	_elif lex.is_operator?("-")
 	_then
 		_return _self.parse_negative()
@@ -542,29 +551,6 @@ _method java_parser.parse_sub_expression()
 	_elif lex.is_identifier? _andif lex.value = "null"
 	_then
 		_return jpn_constant.new(.scanner.get())
-	_elif lex.is_separator?(";") _orif lex.is_eof?
-	_then
-		_return _unset
-	_elif lex.is_identifier? _orif
-	      _self.internal_types.includes?(lex.value)
-	_then
-		_local ident << _self.parse_identifier()
-		next << .scanner.peek()
-		
-		_if next.is_operator?("=")
-		_then
-#			_global x
-#			x << ident
-#			244.stop
-			# note: using lex, not identifier
-			_return _self.parse_assignment(ident)#lex)
-			
-#		_elif next.is_identifier? _or next.is_keyword?
-#		_then
-#			#_return _self.parse_typed_assignment(ident)
-		_else
-			_return ident
-		_endif
 	_elif lex.is_string?
 	_then
 		_return jpn_constant.new(.scanner.get())
@@ -578,6 +564,18 @@ _method java_parser.parse_sub_expression()
 			_return _self.parse_new()
 		_else
 			_return _self.parse_identifier()
+		_endif
+	_elif lex.is_identifier? _orif
+	      _self.internal_types.includes?(lex.value)
+	_then
+		_local ident << _self.parse_identifier()
+		next << .scanner.peek()
+		
+		_if next.is_operator?("=")
+		_then
+			_return _self.parse_assignment(ident)			
+		_else
+			_return ident
 		_endif
 	_else
 		debug_print(lex)

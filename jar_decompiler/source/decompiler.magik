@@ -23,20 +23,24 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method decompiler.decompile_product(p_product, _optional p_dir)
 	##
-	_for i_mod _over p_product.defined_modules.fast_elements()
+	_for i_module _over p_product.defined_modules.fast_elements()
 	_loop
-		_local jar_file << _self.get_jar_file(p_module, _true)
+		_local jar_file << _self.get_jar_file(i_module, _true)
 		_if jar_file _isnt _unset
 		_then 
-			_local dir << p_dir.default(p_module.full_directory)
+			_local dir << _if p_dir _isnt _unset
+				      _then
+					      >> system.pathname_down(p_dir, i_module.name)
+				      _else
+					      >> i_module.full_directory
+				      _endif 
 			_self.decompile_jar_to_dir(jar_file, dir)
 		_else
-			write("No jar file found for ", i_mod)
+			write("No jar file found for ", i_module)
 		_endif 
 	_endloop 
 _endmethod
 $
-
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method decompiler.decompile_module(p_module, _optional p_dir)
@@ -56,15 +60,38 @@ _private _method decompiler.get_jar_file(p_module, _optional p_safe?)
 	# sw_core.interaction_components.1.jar
 	_local prod << p_module.product
 	_local file << write_string(prod.name, ".", p_module.name, ".", p_module.version.default(0), ".jar")
-	_local jar_file << system.pathname_down(prod.directory, "libs", file)
-	_if system.file_exists?(jar_file).not
+
+	_for i_dir _over _self.directory_to_root(prod.directory)
+	_loop		
+		jar_file << system.pathname_down(i_dir, "libs", file)
+		
+		_if system.file_exists?(jar_file) _then _leave _endif
+	_endloop
+	_if system.file_exists?(jar_file).not 
 	_then
+		jar_file << _unset 
 		_if p_safe? _isnt _true
 		_then 
 			condition.raise(:error, :string, write_string("The module jar file ", file, " does not exist."))
 		_endif 
 	_endif
 	>> jar_file	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _iter _method decompiler.directory_to_root(p_dir)
+	##
+	_local dir << p_dir 
+	_loop
+		_loopbody(dir)
+
+		_local upper << system.pathname_up(dir)
+
+		_if (upper = dir) _orif (upper _is _unset) _then _leave _endif
+		
+		dir << upper
+	_endloop 
 _endmethod
 $
 

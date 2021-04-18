@@ -1,62 +1,19 @@
-#% text_encoding = iso8859_1
-##
-## File            : method_extras.magik
-##
-## Copyright       : Realworld Systems
-##                   e-mail  : support@realworldwide.com
-##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
-##                   tel     : +31(0)345 614319
-##                   fax     : +31(0)345 614406
-##
-## Contains        : 
-##
-##
-## Date written    : May/2008
-## Date changed    : May/2008
-##
-## `Source contents (Starts with evt. Shared Cons/vars, Automatically maintained):'
-##
-## '|Methods (Public)|:`
-##                  method.shared_variable_setter?
-## `Source Code'
-#&&
-#
 _package user
 $
 
-_pragma(classify_level=restricted, topic={decompiler})
-_method method.deco_shared_variable_setter?
-	## Answer if this method is actually a setter for a
-	## shared_variable. 
-	_if _not .value.is_class_of?(procedure) _then _return _false, 1 _endif
-	_if _not (.value.code_vector.size = 5) _then _return _false, 2 _endif
-	_if _not (.value.num_literals = 2) _then _return _false, 3 _endif
-	_if _not (.value.literal(0).class_name _is :method) _then _return _false, 4 _endif
-	_if _not (.value.literal(1) _is :|value<<| _orif .value.literal(1) _is :|value^<<|) _then _return _false, 5 _endif
-	_return _true 
-_endmethod
-$
+#_pragma(classify_level=restricted, topic={decompiler})
+#_method method.deco_shared_variable_setter?
+#	## Answer if this method is actually a setter for a
+#	## shared_variable. 
+#	_if _not .value.is_class_of?(procedure) _then _return _false, 1 _endif
+#	_if _not (.value.code_vector.size = 5) _then _return _false, 2 _endif
+#	_if _not (.value.num_literals = 2) _then _return _false, 3 _endif
+#	_if _not (.value.literal(0).class_name _is :method) _then _return _false, 4 _endif
+#	_if _not (.value.literal(1) _is :|value<<| _orif .value.literal(1) _is :|value^<<|) _then _return _false, 5 _endif
+#	_return _true 
+#_endmethod
+#$
 
-_pragma(classify_level=restricted, topic={decompiler})
-_method method.deco_contains_licence_check?
-	_if _not .value.is_class_of?(procedure) _then _return _false _endif
-	_for i_index _over range(0, .value.num_literals-1)
-	_loop
-		lit << .value.literal(i_index)
-		_if _not lit.is_class_of?(value_holder) _then _continue _endif
-		_if _not lit.value.is_class_of?(simple_vector) _then _continue _endif
-		_if _not lit.value.size = 2 _then _continue _endif
-		_if _not lit.value[1].is_class_of?(procedure) _then _continue _endif
-		
-		_if _not lit.value[1].num_literals>2 _then _continue _endif
-		_if lit.value[1].literal(2).is_class_of?(sw:licence_manageR)
-		_then
-			_return _true
-		_endif 
-	_endloop
-	_return _false 
-_endmethod
-$
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method method.deco_method_finder_ids

@@ -1,27 +1,14 @@
 _package user
 $
 
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method method.deco_shared_variable_setter?
-#	## Answer if this method is actually a setter for a
-#	## shared_variable. 
-#	_if _not .value.is_class_of?(procedure) _then _return _false, 1 _endif
-#	_if _not (.value.code_vector.size = 5) _then _return _false, 2 _endif
-#	_if _not (.value.num_literals = 2) _then _return _false, 3 _endif
-#	_if _not (.value.literal(0).class_name _is :method) _then _return _false, 4 _endif
-#	_if _not (.value.literal(1) _is :|value<<| _orif .value.literal(1) _is :|value^<<|) _then _return _false, 5 _endif
-#	_return _true 
-#_endmethod
-#$
-
-
 _pragma(classify_level=restricted, topic={decompiler})
 _method method.deco_method_finder_ids
+	## return the ids that can be used in the method finder.
 	meta << _self.owner.metadata
 	glb << meta[:exemplar_global]
-	_return {
-			_self.name.write_string,
-			write_string( glb.package.name, ":", glb.key )
-		}
+	>> {
+		   _self.name.write_string,
+		   write_string( glb.package.name, ":", glb.key )
+	   }
 _endmethod
 $

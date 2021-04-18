@@ -1,7 +1,10 @@
 _package deco
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
+_pragma(classify_level=basic, topic={jar_decompiler})
+##
+## The context holds the variable names. It is hierarchical structured.
+## 
 def_slotted_exemplar(:java_context,
 	{
 		{:parent, _unset},
@@ -9,7 +12,7 @@ def_slotted_exemplar(:java_context,
 	})
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
+_pragma(classify_level=basic, topic={jar_decompiler})
 _method java_context.new(_optional p_parent)
 	##
 	>> _clone.init(p_parent)
@@ -25,37 +28,38 @@ _private _method java_context.init(p_parent)
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
+_pragma(classify_level=basic, topic={jar_decompiler})
 _method java_context.add_all(_gather p_names)
 	## 
 	.locals.add_all(_scatter p_names)
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
+_pragma(classify_level=basic, topic={jar_decompiler})
 _method java_context.add(p_name) 
 	.locals.add(p_name)
 _endmethod
 $
 
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
+_pragma(classify_level=basic, topic={jar_decompiler})
 _method java_context.push()
 	##
 	>> java_context.new(_self)
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
+_pragma(classify_level=basic, topic={jar_decompiler})
 _method java_context.pop()
 	## 
 	_return .parent	
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
+_pragma(classify_level=basic, topic={jar_decompiler})
 _method java_context.includes?(p_name)
-	## 
+	##
+	## Answer if P_NAME is known in self or one of the parents.
+	##
 	>> _if .locals.includes?(p_name)
 	   _then >> _true
 	   _elif .parent _is _unset
