@@ -8,7 +8,7 @@ _pragma(classify_level=advanced, topic={jar_decompiler})
 ## parse nodes.
 ## the main method is parse_file()
 #
-# By no means a full (or good) java parser, but enough for the
+# By no means a complete (or good) java parser, but enough for the
 # java code that is generated for Magik.
 #
 def_slotted_exemplar(:java_parser,
@@ -76,35 +76,36 @@ _method java_parser.get()
 	## Get the main object: package, import or class.
 	##
 	_local anns << _self.parse_annotations()
-	_local l << .scanner.peek()
-	_if l.is_keyword?
+	_local lex << .scanner.peek()
+	_if lex.is_keyword?
 	_then
-		_if l.value = "package"
+		_if lex.value = "package"
 		_then
 			_return _self.parse_package()
-		_elif l.value = "import"
+		_elif lex.value = "import"
 		_then
 			_return _self.parse_import()
-		_elif l.value = "public"
+		_elif lex.value = "public"
 		_then
 			_return _self.parse_class(anns)
 		_else
-			condition.raise(:deco_unexpected_keyword, :line, l.line, :column, l.column, :keyword, l.name)
+			condition.raise(:deco_unexpected_keyword, :line, lex.line, :column, lex.column, :keyword, lex.name)
 		_endif
 	_endif
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_annotations()
+_private _method java_parser.parse_annotations()
 	##
+	## Parse Java annotations; typcally before a class or method
+	## definition that contains important meta data.
 	_local ans << rope.new()
 	_loop 
-		_local l << .scanner.peek()
-		_if l.is_annotation?
+		_local lex << .scanner.peek()
+		_if lex.is_annotation?
 		_then
-			_local n << _self.parse_annotation()
-			ans.add(n)
+			ans.add(_self.parse_annotation())
 		_else
 			_leave
 		_endif
@@ -114,10 +115,10 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_annotation()
+_private _method java_parser.parse_annotation()
 	##
 	_local name << .scanner.get()
-	_local lex << .scanner.peek()
+	_local lex  << .scanner.peek()
 	_if lex.is_separator?("(")
 	_then
 		props << _self.parse_annotation_properties()
@@ -129,7 +130,9 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_annotation_properties()
+_private _method java_parser.parse_annotation_properties()
+	##
+	## Parse annotation like: @Debugger(value="MagikDebug")
 	##
 	_local props << property_list.new()
 	_self.ensure_separator("(")
@@ -141,9 +144,9 @@ _method java_parser.parse_annotation_properties()
 			.scanner.get()
 		_endif
 		
-		_local key << .scanner.get() # dont care about the name at the moment
+		_local key << .scanner.get()
 		_self.ensure_operator("=")
-		_local lex << .scanner.peek()
+		lex << .scanner.peek()
 		_if lex.is_separator?("{")
 		_then
 			value << _self.parse_annotation_list_of_properties()
@@ -159,7 +162,10 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_annotation_list_of_properties()
+_private _method java_parser.parse_annotation_list_of_properties()
+	##
+	## Parse annotation properties, like:
+	## @EnvVars(value={@EnvVar(name="__dynamic_frame__", type=Object.class, start=21, end=53, index=0), @EnvVar(name="_self", type=Object.class, start=13, end=54, index=1)})
 	##
 	list << rope.new()
 	_self.ensure_separator("{")
@@ -170,24 +176,20 @@ _method java_parser.parse_annotation_list_of_properties()
 		_then
 			.scanner.get()
 		_endif
-		_local anno << _self.parse_annotation()
-		list.add(anno)
+		list.add(_self.parse_annotation())
 	_endloop
 	_self.ensure_separator("}")
 	>> list		
 _endmethod
 $
 
-
-
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_class(_optional anns)
+_private _method java_parser.parse_class(_optional p_annotations)
 	##
 	_self.ensure_keyword("public")
 	_self.ensure_keyword("class")
-	_local name << .scanner.get()
-
-	_local lex << .scanner.peek()
+	_local name_lex << .scanner.get()
+	_local lex      << .scanner.peek()
 	_if lex.is_keyword? _andif lex.value = "implements"
 	_then
 		.scanner.get()
@@ -196,20 +198,28 @@ _method java_parser.parse_class(_optional anns)
 		parent << _unset
 	_endif
 	_self.ensure_separator("{")
+	_local methods << _self.parse_class_methods(name_lex.value)
+	_self.ensure_separator("}")
+	
+	_return jpn_class.new(name_lex, parent, methods, p_annotations )
+_endmethod
+$
 
-	_local methods << rope.new()
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.parse_class_methods(p_name)
+	## 
+	 _local methods << rope.new()
 	_loop
 		_local next << .scanner.peek()
 		_if next.is_separator? _then _leave _endif
-		_if next.is_eof? _then _leave _endif
+		_if next.is_eof?       _then _leave _endif
 
-		_local ans << _self.parse_annotations()
-		_local meth << _self.parse_method(name.value, ans)
+		_local annotations << _self.parse_annotations()
+		_local meth        << _self.parse_method(p_name, annotations)
+		
 		methods.add(meth)
 	_endloop
-
-	_self.ensure_separator("}")
-	_return jpn_class.new(name, parent, methods, anns )
+	>> methods
 _endmethod
 $
 
@@ -220,20 +230,22 @@ _method java_parser.parse_method(p_class_name, _optional p_annotations )
 	
 	_self.optional_keyword("public")
 	_self.optional_keyword("static")
-	_local type_or_name << .scanner.get()
-	_if type_or_name.value = p_class_name
+	_local type_or_name_lex << .scanner.get()
+	
+	_if type_or_name_lex.value = p_class_name
 	_then
 		# constructor
 		type << _unset
-		name << type_or_name
+		name << type_or_name_lex
 	_else
-		type << type_or_name
+		# normal method
+		type << type_or_name_lex
 		name << .scanner.get()
 	_endif 
 	
 	_local lex << .scanner.peek()
 	_self.ensure_separator("(")
-	_local args << _self.parse_args()
+	_local args << _self.parse_parameters()
 	_self.ensure_separator(")")
 	
 	_self.ensure_separator("{")
@@ -246,7 +258,11 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_args()
+_private _method java_parser.parse_parameters()
+	##
+	## Parse invocation of parameters
+	## e.g: (Object[] __env__, Object i_index, Object ... i_var)
+	##
 	_local args << rope.new()
 	_loop
 		_local varargs? << _false 
@@ -260,17 +276,14 @@ _method java_parser.parse_args()
 			_then
 				.scanner.get()
 			_else
-				debug_print(lex)
-				1.stop
+				condition.raise(:deco_unexpected_separator, :line, lex.line, :column, lex.column, :separator, lex.name)
 			_endif
 		_endif
-		_local type << _self.parse_type()
+		_local type << _self.parse_type_declaration()
 				
-		_local lex << .scanner.peek()
-		_if lex.is_separator?(".")
+		lex << .scanner.peek()
+		_if lex.is_separator?("...")
 		_then
-			.scanner.get()
-			.scanner.get()
 			.scanner.get()
 			varargs? << _true
 		_endif 
@@ -283,7 +296,9 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_type()
+_private _method java_parser.parse_type_declaration()
+	##
+	## Parse type like: Object, ContinueCatcher.Continue, Object[]
 	##
 	_local name << .scanner.get()
 	_local type << jpn_type.new(name)
@@ -297,58 +312,19 @@ _method java_parser.parse_type()
 			_leave 
 		_elif lex.is_separator?(".")
 		_then
-			_if .scanner.peek(2).is_separator?(".").not
-			_then 
-				.scanner.get()
-				_local ident << .scanner.get()
-				type << type.become_dotted(ident)
-			_else
-				_leave 				
-			_endif 
+			.scanner.get()
+			_local ident << .scanner.get()
+			type << type.become_dotted(ident)
 		_else
-			_leave
-		_endif
+			_leave 				
+		_endif 
 	_endloop
 	>> type
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_array_type(p_name)
-	##
-	_self.ensure_separator("[")
-	_self.ensure_separator("]")
-	_return jpn_type.new(p_name, _true)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_arg_types()
-	##
-	_local array? << _false 
-	_local types << rope.new()
-	_loop
-		_local type << .scanner.get()
-		types.add(type)
-		_local lex << .scanner.peek()
-		_if lex.is_operator?("|")
-		_then
-			.scanner.get()
-		_elif lex.is_separator?("[")
-		_then
-			_self.ensure_separator("[")
-			_self.ensure_separator("]")
-			array? << _true 
-		_else
-			_leave
-		_endif 
-	_endloop
-	>> types, array?
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_body(_optional p_args)
+_private _method java_parser.parse_body(_optional p_args)
 	.context << .context.push()
 	.context.add_all(p_args.default({}).map(_proc(x) >> x.name _endproc))
 	_local stats << rope.new()
@@ -356,10 +332,10 @@ _method java_parser.parse_body(_optional p_args)
 		_local lex << .scanner.peek()
 		_if lex.is_separator?
 		_then
-			_if lex.value = "}"
+			_if lex.value = "}"   # eof body
 			_then
 				_leave
-			_elif lex.value = ";"
+			_elif lex.value = ";" # eof statements
 			_then
 				.scanner.get()
 			_else
@@ -406,21 +382,23 @@ _method java_parser.parse_statement()
 	_then
 		_return _self.parse_while_loop()
 
-	_elif lex.is_identifier? _orif
-	      _self.internal_types.includes?(lex.value)
+	_elif _self.serves_as_identifier?(lex)
 	_then
-		_local ident << _self.parse_identifier()
-		next << .scanner.peek()
+		_local ident << _self.parse_identifier_or_type()
+		_local next  << .scanner.peek()
 		
 		_if next.is_operator?("=")
 		_then
+			# e.g.: x = 10;
 			_return _self.parse_assignment(ident)
 			
-		_elif next.is_identifier? _or next.is_keyword?
+		_elif _self.serves_as_identifier?(next)
 		_then
+			# e.g.: int x = 10;
 			_return _self.parse_typed_assignment(ident)
 		_else
-			_return _self.parse_expression(ident)
+			# no assignment, so continue parsing expression
+			_return _self.parse_expression_starting(ident)
 		_endif
 	_else
 		_return _self.parse_expression()
@@ -429,7 +407,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_return_statement()
+_private _method java_parser.parse_return_statement()
 	##
 	.scanner.get()
 	_local exp << _self.parse_expression()
@@ -438,18 +416,30 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_expression(_optional p_exp)
+_method java_parser.parse_expression()
+	##
+	## parse a wide range of expressions. Optional a starting
+	## expression P_EXP can be given.
+	##
+	# is invoked in recursion.
+	#
+	_local exp << _self.parse_sub_expression()
+	>> _self.parse_expression_starting(exp)
+_endmethod
+$
 
-	_local stop_value << .end_value_stack.first
-	_local current_operator << .operator_stack.first
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.parse_expression_starting(p_exp)
+	##
+	## 
+	_local stop_value       << .end_value_stack.first  # a end_value could have been provided
+	_local current_operator << .operator_stack.first   # we might be processing an operator
 
-	_local exp << _if p_exp _isnt _unset
-		      _then >> p_exp
-		      _else >> _self.parse_sub_expression()
-		      _endif 
+	# build-up exp in recursion
+	_local exp << p_exp
 	_loop
 		_local lex << .scanner.peek()
-
+		
 		_if (stop_value _isnt _unset) _andif (lex.value = stop_value)
 		_then
 			_return exp
@@ -461,6 +451,7 @@ _method java_parser.parse_expression(_optional p_exp)
 		
 		_elif lex.is_operator?("?")
 		_then
+			# test operator order
 			_if _self.operator_cf?(current_operator, "?")
 			_then
 				_return exp
@@ -472,6 +463,7 @@ _method java_parser.parse_expression(_optional p_exp)
 		      lex.is_operator?("||") _orif
 		      lex.is_operator?("&&")
 		_then
+			# test operator order
 			_if _self.operator_cf?(current_operator, lex.value)
 			_then
 				_return exp
@@ -485,11 +477,12 @@ _method java_parser.parse_expression(_optional p_exp)
 		_elif lex.is_separator?("(")
 		_then
 			exp << _self.parse_execution_parenthesis(exp)
+			
 		_elif lex.is_eof? _orif
 		      lex.is_separator? 
 		_then
 			_leave 
-		_elif exp.is_class_of?(jpn_parenthesis)
+		_elif exp.is_parenthesis?
 		_then
 			exp << _self.parse_cast(exp)
 		_else
@@ -503,7 +496,8 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.parse_execution_parenthesis(p_exp)
 	##
-	>> _if p_exp.is_class_of?(jpn_parenthesis)
+	## Either we are casting or invoking a method.
+	>> _if p_exp.is_parenthesis?
 	   _then
 		   >> _self.parse_cast(p_exp)
 	   _else
@@ -512,7 +506,6 @@ _private _method java_parser.parse_execution_parenthesis(p_exp)
 	   _endif
 _endmethod
 $
-
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.parse_dot(exp)
@@ -527,24 +520,14 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.parse_expression_until(p_end)
 	##
 	.end_value_stack.push(p_end)
-	_local then << _self.parse_expression()
+	_local exp << _self.parse_expression()
 	.end_value_stack.pop()
-	>> then
+	>> exp
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method java_parser.parse_expression_until(p_end)
-	##
-	.end_value_stack.push(p_end)
-	_local then << _self.parse_expression()
-	.end_value_stack.pop()
-	>> then
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_sub_expression()
+_private _method java_parser.parse_sub_expression()
 	_local lex << .scanner.peek()
 	
 	_if lex.is_separator?(";") _orif lex.is_eof?
@@ -558,6 +541,7 @@ _method java_parser.parse_sub_expression()
 		_return _self.parse_not()
 	_elif lex.is_operator?("?")
 	_then
+		# this ? is an unknown identifier, like in: (Class<?>)a_var
 		_return _self.parse_identifier()
 	_elif lex.is_operator?("-")
 	_then
@@ -578,12 +562,11 @@ _method java_parser.parse_sub_expression()
 		_then
 			_return _self.parse_new()
 		_else
-			_return _self.parse_identifier()
+			_return _self.parse_type_identifier()
 		_endif
-	_elif lex.is_identifier? _orif
-	      _self.internal_types.includes?(lex.value)
+	_elif _self.serves_as_identifier?(lex)
 	_then
-		_local ident << _self.parse_identifier()
+		_local ident << _self.parse_identifier_or_type()
 		next << .scanner.peek()
 		
 		_if next.is_operator?("=")
@@ -593,14 +576,22 @@ _method java_parser.parse_sub_expression()
 			_return ident
 		_endif
 	_else
-		debug_print(lex)
-		2.stop
+		condition.raise(:deco_unexpected_token, :line, lex.line, :column, lex.column, :token, lex.value)
 	_endif
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_loop(_optional p_tag)
+_private _method java_parser.serves_as_identifier?(p_lex)
+	## 
+	## Answer if P_LEX could service as an identifier in the Java language.
+	>> p_lex.is_identifier? _orif
+		_self.internal_types.includes?(p_lex.value)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.parse_loop(_optional p_tag)
 	##
 	_self.ensure_keyword("while")
 	_self.ensure_separator("(")
@@ -614,7 +605,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_while_loop(_optional p_tag)
+_private _method java_parser.parse_while_loop(_optional p_tag)
 	##
 	_self.ensure_keyword("do")
 	_self.ensure_separator("{")
@@ -629,34 +620,38 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.is_variable?(p_name)
+_private _method java_parser.is_variable?(p_name)
 	##
 	>> .context.includes?(p_name)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_identifier()
+_private _method java_parser.parse_identifier_or_type()
+	##
+	_local lex << .scanner.peek()
+	>> _if _self.is_variable?(lex.value)
+	   _then
+		   >> _self.parse_identifier()
+	   _else
+		   >> _self.parse_type_identifier()
+	   _endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.parse_identifier()
 	## 
 	_local ident_lex << .scanner.get()
-	_local ident << _if _self.is_variable?(ident_lex.value)
-			_then
-				>> jpn_variable.new(ident_lex)
-			_else
-				>> jpn_type.new(ident_lex)
-			_endif
+	_local ident << jpn_variable.new(ident_lex)
 	
 	_local next << .scanner.peek()
 	_if next.is_separator?("[")
 	_then
-		_if ident.is_class_of?(jpn_variable)
-		_then
-			ident << _self.parse_array_invocation(ident_lex)
-		_else 
-			ident << _self.parse_array_type(ident_lex)
-		_endif
+		ident << _self.parse_array_invocation(ident_lex)
 	_elif next.is_operator?("<")
 	_then
+		# parse the args and ignore them.
 		_self.parse_execution_args("<",">")
 	_endif
 	>> ident
@@ -664,7 +659,28 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_array_invocation(p_lex)
+_private _method java_parser.parse_type_identifier()
+	##
+	_local ident 
+	_local ident_lex << .scanner.get()
+	_local next_lex      << .scanner.peek()
+	_if next_lex.is_separator?("[")
+	_then
+		ident << _self.parse_array_type(ident_lex)
+	_else
+		ident << jpn_type.new(ident_lex)
+		_if next_lex.is_operator?("<")
+		_then
+			# parse the args and ignore them.
+			_self.parse_execution_args("<",">")
+		_endif
+	_endif 
+	>> ident
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.parse_array_invocation(p_lex)
 	##
 	_local args << _self.parse_execution_args("[","]")
 	>> jpn_array_access.new(p_lex, args)
@@ -672,7 +688,16 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_synchronized()
+_private _method java_parser.parse_array_type(p_name)
+	##
+	_self.ensure_separator("[")
+	_self.ensure_separator("]")
+	_return jpn_type.new(p_name, _true)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.parse_synchronized()
 	## 
 	_self.ensure_keyword("synchronized")
 	_self.ensure_separator("(")	
@@ -686,7 +711,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_throw()
+_private _method java_parser.parse_throw()
 	## 
 	_self.ensure_keyword("throw")
 	_local exp << _self.parse_expression()
@@ -695,14 +720,13 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_break()
+_private _method java_parser.parse_break()
 	## 
 	_self.ensure_keyword("break")
 	_local lex << .scanner.peek()
 	>> _if lex.is_identifier?
 	   _then 
-		   .scanner.get()
-		   >> jpn_break.new(lex)
+		   >> jpn_break.new(.scanner.get())
 	   _else
 		   >> jpn_break.new()
 	   _endif 
@@ -710,14 +734,13 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_continue()
+_private _method java_parser.parse_continue()
 	## 
 	_self.ensure_keyword("continue")
 	_local lex << .scanner.peek()
 	>> _if lex.is_identifier?
 	   _then
-		   .scanner.get()
-		   >> jpn_continue.new(lex)
+		   >> jpn_continue.new(.scanner.get())
 	   _else
 		   >> jpn_continue.new()
 	   _endif 
@@ -725,12 +748,12 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_new()
+_private _method java_parser.parse_new()
 	## 
 	_self.ensure_keyword("new")
 	_local array? << _false 
 	_local type << .scanner.get()
-	_local lex << .scanner.peek()
+	_local lex  << .scanner.peek()
 	_if lex.is_separator?("(")
 	_then 
 		args << _self.parse_execution_args("(",")")
@@ -744,14 +767,14 @@ _method java_parser.parse_new()
 			args << _self.parse_execution_args("{","}")
 		_endif 
 	_else
-		3.stop
+		condition.raise(:deco_unexpected_token, :line, lex.line, :column, lex.column, :token, lex.value)
 	_endif 
 	>> jpn_new.new(type, args, array?)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_try()
+_private _method java_parser.parse_try()
 	##
 	_self.ensure_keyword("try")
 	
@@ -769,12 +792,12 @@ _method java_parser.parse_try()
 	_else
 		finally_body << jpn_body.new()
 	_endif 
-	_local lex << .scanner.peek()
+	lex << .scanner.peek()
 	_if lex.is_keyword?("catch")
 	_then
 		_self.ensure_keyword("catch")
 		_self.ensure_separator("(")
-		catch_args << _self.parse_args()
+		catch_args << _self.parse_parameters()
 		_self.ensure_separator(")")
 		_self.ensure_separator("{")
 		catch_body << _self.parse_body(catch_args)
@@ -786,6 +809,7 @@ _method java_parser.parse_try()
 	lex << .scanner.peek()
 	_if lex.is_separator?("{")
 	_then
+		# some nonsense can come behind the try() block.
 		_self.ensure_separator("{")
 		_self.parse_body()
 		_self.ensure_separator("}")
@@ -795,7 +819,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_if()
+_private _method java_parser.parse_if()
 	##
 	_self.ensure_keyword("if")
 	_self.ensure_separator("(")
@@ -843,7 +867,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_assignment(left) #p_ident)
+_private _method java_parser.parse_assignment(left) #p_ident)
 	##
 	#_local left << jpn_variable.new(p_ident)
 	_self.ensure_operator("=")
@@ -853,7 +877,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_test(p_exp)
+_private _method java_parser.parse_test(p_exp)
 	##
 	_local op << .scanner.get()
 	.operator_stack.push(op.value)
@@ -881,7 +905,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.operator_cf?(p_op1, p_op2)
+_private _method java_parser.operator_cf?(p_op1, p_op2)
 	##
 	## Does operator P_OP1 comes for P_OP2
 	##
@@ -893,7 +917,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_block(p_ident)
+_private _method java_parser.parse_block(p_ident)
 	##
 	_self.ensure_operator(":")
 	_local lex << .scanner.peek()
@@ -911,14 +935,14 @@ $
 
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_typed_assignment(p_type)
+_private _method java_parser.parse_typed_assignment(p_type)
 	##
 	_local ident << .scanner.get()
 	.context.add(ident.value)
 	
 	_local left << jpn_declaration.new(p_type,ident)
-	_local next << .scanner.peek()
-	_if next.is_operator?("=")
+	_local next_lex << .scanner.peek()
+	_if next_lex.is_operator?("=")
 	_then 
 		_self.ensure_operator("=")
 		_local right << _self.parse_expression()
@@ -931,7 +955,7 @@ $
 
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_parenthesis()
+_private _method java_parser.parse_parenthesis()
 	##
 	_self.ensure_separator("(")
 	_local type << _self.parse_expression_until(")")
@@ -941,7 +965,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_not()
+_private _method java_parser.parse_not()
 	##
 	_self.ensure_operator("!")
 	_local exp << _self.parse_expression()
@@ -950,7 +974,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_negative()
+_private _method java_parser.parse_negative()
 	##
 	_self.ensure_operator("-")
 	_local exp << _self.parse_expression()
@@ -959,7 +983,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_cast(p_parenthesis)
+_private _method java_parser.parse_cast(p_parenthesis)
 	##
 	_local value << _self.parse_expression()
 	>> jpn_cast.new(p_parenthesis.expression,value)
@@ -967,7 +991,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_method_invocation(p_identifier, p_method)
+_private _method java_parser.parse_method_invocation(p_identifier, p_method)
 	##
 	_local args << _self.parse_execution_args("(",")")
 	>> jpn_method_invocation.new(p_identifier, p_method, args)
@@ -975,7 +999,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_execution_args(p_p1, p_p2)
+_private _method java_parser.parse_execution_args(p_p1, p_p2)
 	##
 	_local args << rope.new()
 	.scanner.get()
@@ -1000,7 +1024,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_array_args()
+_private _method java_parser.parse_array_args()
 	##
 	_local args << rope.new()
 	_self.ensure_separator("[")
@@ -1025,7 +1049,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_package()
+_private _method java_parser.parse_package()
 	##
 	_self.ensure_keyword("package")
 	_local type << _self.parse_dotted_type()
@@ -1036,7 +1060,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_import()
+_private _method java_parser.parse_import()
 	##
 	_self.ensure_keyword("import")
 	_local type << _self.parse_dotted_type()
@@ -1047,7 +1071,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.parse_dotted_type()
+_private _method java_parser.parse_dotted_type()
 	##
 	_local name << .scanner.get()
 	_loop
@@ -1065,7 +1089,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.ensure_operator(p_op)
+_private _method java_parser.ensure_operator(p_op)
 	_local l << .scanner.get()
 	_if l.is_operator?.not
 	_then
@@ -1079,7 +1103,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.ensure_separator(p_sep)
+_private _method java_parser.ensure_separator(p_sep)
 	_local l << .scanner.get()
 	_if l.is_separator?.not
 	_then
@@ -1093,7 +1117,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.ensure_keyword(p_keyword)
+_private _method java_parser.ensure_keyword(p_keyword)
 	_local l << .scanner.get()
 	_if l.is_keyword?.not
 	_then
@@ -1107,7 +1131,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.ensure_identifier(p_identifier)
+_private _method java_parser.ensure_identifier(p_identifier)
 	_local l << .scanner.get()
 	_if l.is_identifier?.not
 	_then
@@ -1121,7 +1145,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method java_parser.optional_keyword(p_keyword)
+_private _method java_parser.optional_keyword(p_keyword)
 	_local l << .scanner.peek()
 	_if l.is_keyword? _andif l.value = p_keyword
 	_then

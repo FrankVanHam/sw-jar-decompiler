@@ -31,3 +31,11 @@ _method jpn_parenthesis.decode_on(p_stream)
 	.expression.decode_on(p_stream)
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parenthesis.become_dotted(p_ident)
+	##
+	_return jpn_dotted.new(_self, p_ident)
+_endmethod
+$
+

@@ -107,7 +107,18 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexical_scanner.get_separator()
-	>> lexeme.new_separator(_self.get_char().write_string, .line, .column)
+	_local ch << _self.get_char()
+	_if ch = %.
+	_then 
+		_local next << _self.peek_char()
+		_if next = %.
+		_then
+			_self.get_char()
+			_self.get_char()
+			_return lexeme.new_separator("...", .line, .column)
+		_endif
+	_endif 
+	_return lexeme.new_separator(ch.write_string, .line, .column)
 _endmethod
 $
 

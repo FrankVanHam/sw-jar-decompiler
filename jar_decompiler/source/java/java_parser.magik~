@@ -2,11 +2,15 @@ _package deco
 $
 #remex(:java_parser)
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
+_pragma(classify_level=advanced, topic={jar_decompiler})
 ##
 ## A parser for java that takes in a java_scanner and build jpn
-## parse nodes
-##
+## parse nodes.
+## the main method is parse_file()
+#
+# By no means a full (or good) java parser, but enough for the
+# java code that is generated for Magik.
+#
 def_slotted_exemplar(:java_parser,
 	{
 		{:context,         _unset},
@@ -17,12 +21,15 @@ def_slotted_exemplar(:java_parser,
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## internal keywords that could represent a type.
+##
 java_parser.define_shared_constant(:internal_types,
 	equality_set.new_with("boolean","double","byte","int","short","var","long","float","void"),
 	:private)
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
+_pragma(classify_level=advanced, topic={jar_decompiler})
 _method java_parser.new(p_scanner)
 	>> _clone.init(p_scanner)
 _endmethod
@@ -41,12 +48,16 @@ $
 _pragma(classify_level=debug, topic={jar_decompiler})
 _method java_parser.define_locals(_gather p_names)
 	##
+	## Fake the availability of the names locals. Used for unit tests.
+	##
 	.context.add_all(p_names)
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
+_pragma(classify_level=advanced, topic={jar_decompiler})
 _method java_parser.parse_file()
+	##
+	## parse the scanner as a jpn_jar node
 	##
 	_local f << jpn_jar.new()
 	_loop
@@ -62,6 +73,8 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method java_parser.get()
 	##
+	## Get the main object: package, import or class.
+	##
 	_local anns << _self.parse_annotations()
 	_local l << .scanner.peek()
 	_if l.is_keyword?
@@ -75,6 +88,8 @@ _method java_parser.get()
 		_elif l.value = "public"
 		_then
 			_return _self.parse_class(anns)
+		_else
+			condition.raise(:deco_unexpected_keyword, :line, l.line, :column, l.column, :keyword, l.name)
 		_endif
 	_endif
 _endmethod

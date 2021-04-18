@@ -105,7 +105,7 @@ _method jpn_parser.parse_expression(p_node)
 	_elif p_node.is_class_of?(jpn_cast)
 	_then
 		_return _self.parse_cast(p_node)
-	_elif p_node.is_class_of?(jpn_parenthesis)
+	_elif p_node.is_parenthesis?
 	_then
 		_return _self.parse_parenthesis(p_node)
 	_elif p_node.is_class_of?(jpn_method_invocation)
@@ -399,7 +399,6 @@ _method jpn_parser.parse_method(p_class_name, p_meth_node)
 	_local env << deco_envaccessor.save()
 	
 	_self.apply_annotations(p_meth_node)
-	write(p_class_name, ":", p_meth_node.name)
 	_local body << _self.parse_body(p_meth_node.body)
 	
 	deco_envaccessor.restore(env)

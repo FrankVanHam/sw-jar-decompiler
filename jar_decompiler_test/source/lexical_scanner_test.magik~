@@ -69,6 +69,26 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method lexical_scanner_test.test_char()
+
+	_local s << deco:lexical_scanner.new(write_string("'+'").read_stream())
+	_local l << s.get()
+	_self.assert_true(l.is_string?, "should be string")
+	_self.assert_equals(l.value, "+", "Value should be +")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method lexical_scanner_test.test_special_char()
+
+	_local s << deco:lexical_scanner.new(write_string("'\.'").read_stream())
+	_local l << s.get()
+	_self.assert_true(l.is_string?, "should be string")
+	_self.assert_equals(l.value, ".", "Value should be .")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method lexical_scanner_test.test_annotation()
 
 	_local s << deco:lexical_scanner.new("  @Topics ".read_stream())

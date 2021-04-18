@@ -39,3 +39,9 @@ _method jpn_parenthesis.become_dotted(p_ident)
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parenthesis.is_parenthesis?
+	## 
+	>> _true 
+_endmethod
+$
