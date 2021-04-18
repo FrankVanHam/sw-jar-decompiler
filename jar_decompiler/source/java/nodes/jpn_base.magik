@@ -4,6 +4,9 @@ $
 #remex(:jpn_base)
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## base class for all java parser nodes (jpn)
+##
 def_slotted_exemplar(:jpn_base,
 	{})
 $

@@ -395,7 +395,9 @@ _method java_parser.parse_statement()
 		_elif _self.serves_as_identifier?(next)
 		_then
 			# e.g.: int x = 10;
-			_return _self.parse_typed_assignment(ident)
+			# or
+			# int x;
+			_return _self.parse_typed_declaration(ident)
 		_else
 			# no assignment, so continue parsing expression
 			_return _self.parse_expression_starting(ident)
@@ -567,7 +569,7 @@ _private _method java_parser.parse_sub_expression()
 	_elif _self.serves_as_identifier?(lex)
 	_then
 		_local ident << _self.parse_identifier_or_type()
-		next << .scanner.peek()
+		_local next << .scanner.peek()
 		
 		_if next.is_operator?("=")
 		_then
@@ -663,7 +665,7 @@ _private _method java_parser.parse_type_identifier()
 	##
 	_local ident 
 	_local ident_lex << .scanner.get()
-	_local next_lex      << .scanner.peek()
+	_local next_lex  << .scanner.peek()
 	_if next_lex.is_separator?("[")
 	_then
 		ident << _self.parse_array_type(ident_lex)
@@ -834,7 +836,7 @@ _private _method java_parser.parse_if()
 		_self.ensure_separator("}")
 	_else
 		_local stat << _self.parse_statement()
-		then_body << dcn_body.new(rope.new_with(stat))
+		then_body << jpn_body.new(rope.new_with(stat))
 	_endif 
 
 	_local input << rope.new_with( {condition, then_body} )
@@ -857,7 +859,7 @@ _private _method java_parser.parse_if()
 			body << _self.parse_body()
 			_self.ensure_separator("}")
 			
-			input.add({condition,body})
+			input.add({condition, body})
 		_else
 			_leave 
 		_endif
@@ -867,28 +869,29 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method java_parser.parse_assignment(left) #p_ident)
+_private _method java_parser.parse_assignment(p_left)
 	##
-	#_local left << jpn_variable.new(p_ident)
 	_self.ensure_operator("=")
 	_local right << _self.parse_expression()
-	>> jpn_assignment.new(left, right)
+	>> jpn_assignment.new(p_left, right)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method java_parser.parse_test(p_exp)
+_private _method java_parser.parse_test(p_left)
 	##
 	_local op << .scanner.get()
 	.operator_stack.push(op.value)
 	_local right << _self.parse_expression()
 	.operator_stack.pop()
-	>> jpn_operation.new(p_exp, right, op)
+	>> jpn_operation.new(p_left, right, op)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method java_parser.parse_condition(exp)
+_private _method java_parser.parse_condition(p_condition)
+	##
+	## parse ? condition x = a ? b : c
 	##
 	.operator_stack.push("?")
 	.scanner.get()
@@ -900,14 +903,14 @@ _private _method java_parser.parse_condition(exp)
 	_local return_else << jpn_soft_return.new(else)
 	_local else_body << jpn_body.new({return_else})
 	.operator_stack.pop()
-	>> jpn_if.new({{exp,then_body}, {_unset, else_body}})
+	>> jpn_if.new({{p_condition, then_body}, {_unset, else_body}})
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.operator_cf?(p_op1, p_op2)
 	##
-	## Does operator P_OP1 comes for P_OP2
+	## Does operator P_OP1 comes for P_OP2?
 	##
 	_if p_op1 _is _unset _then _return _false _endif
 	
@@ -926,7 +929,7 @@ _private _method java_parser.parse_block(p_ident)
 		_return _self.parse_loop(p_ident)
 	_else 
 		_self.ensure_separator("{")
-		body << _self.parse_body()
+		_local body << _self.parse_body()
 		_self.ensure_separator("}")
 		_return jpn_block.new(p_ident, body)
 	_endif 
@@ -935,7 +938,9 @@ $
 
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method java_parser.parse_typed_assignment(p_type)
+_private _method java_parser.parse_typed_declaration(p_type)
+	##
+	## could be assignment too.
 	##
 	_local ident << .scanner.get()
 	.context.add(ident.value)
@@ -986,7 +991,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.parse_cast(p_parenthesis)
 	##
 	_local value << _self.parse_expression()
-	>> jpn_cast.new(p_parenthesis.expression,value)
+	>> jpn_cast.new(p_parenthesis.expression, value)
 _endmethod
 $
 
@@ -1073,18 +1078,19 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.parse_dotted_type()
 	##
-	_local name << .scanner.get()
+	_local name_lex << .scanner.get()
+	_local type << jpn_type.new(name_lex)
 	_loop
 		_local lex << .scanner.peek()
 		_if lex.is_separator?(".")
 		_then
 			lex << .scanner.get()
-			name.append_dotted(.scanner.get())
+			type << type.become_dotted(.scanner.get())
 		_else
 			_leave 
 		_endif
 	_endloop
-	>> jpn_type.new(name)
+	>> type
 _endmethod
 $
 

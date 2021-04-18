@@ -22,3 +22,15 @@ _method jpn_declaration.init(p_type, p_identifier)
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_declaration.name
+	>> .lex_identifier.value
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_declaration.type
+	## 
+	>> .type
+_endmethod
+$

@@ -24,7 +24,7 @@ _method java_parser_method_definition_test.test_method_no_args()
 
 	_local m << node.methods[1]
 	_self.assert_true(m.args.empty?, "should have no args")
-	_self.assert_true(m.body.empty?, "should have no body")
+	_self.assert_true(m.body.statements.empty?, "should have no body")
 _endmethod
 $
 
@@ -114,7 +114,7 @@ _method java_parser_method_definition_test.test_class_method_with_annotation()
 
 	_local m << node.methods[1]
 	_self.assert_true(m.args.empty?, "should have no args")
-	_self.assert_true(m.body.empty?, "should have no body")
+	_self.assert_true(m.body.statements.empty?, "should have no body")
 	_self.assert_equals(4, m.annotations.size)
 	
 _endmethod

@@ -6,7 +6,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_declaration,
 	{
-		{:type,  _unset, :readable},
+		{:type,           _unset, :readable},
 		{:lex_identifier, _unset, :readable}
 	},
 	:jpn_base)
@@ -16,6 +16,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_declaration.init(p_type, p_identifier)
 	assert(p_type.is_class_of?(jpn_type))
 	assert(p_identifier.is_class_of?(lexeme))
+	
 	.type << p_type
 	.lex_identifier << p_identifier
 	>> _super.init()

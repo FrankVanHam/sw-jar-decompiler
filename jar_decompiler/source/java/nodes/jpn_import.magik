@@ -14,8 +14,6 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_import.init(p_type)
 	##
-	assert(p_type.is_class_of?(jpn_type))
-	
 	.type << p_type
 	>> _super.init()
 _endmethod
