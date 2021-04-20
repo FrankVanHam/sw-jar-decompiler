@@ -27,3 +27,16 @@ _method jpn_array_access.name
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_array_access.parse_expression(p_parser)
+	##
+	>> p_parser.parse_array_access(_self)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_array_access.is_array_access?
+	##
+	>> _true 
+_endmethod
+$

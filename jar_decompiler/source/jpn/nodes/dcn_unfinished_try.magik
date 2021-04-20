@@ -97,3 +97,10 @@ _method dcn_unfinished_try.decode_on(a_stream, _optional parent, statements)
 	a_stream.write( "_endunfinished_try")
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_unfinished_try.is_unfinished_try?
+	##
+	>> _true 
+_endmethod
+$

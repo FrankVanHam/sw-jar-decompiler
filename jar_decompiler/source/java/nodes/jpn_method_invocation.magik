@@ -6,9 +6,9 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_method_invocation,
 	{
-		{:sender, _unset, :readable},
+		{:sender,   _unset, :readable},
 		{:lex_name, _unset, :readable},
-		{:args, _unset, :readable}
+		{:args,     _unset, :readable}
 	},
 	:jpn_base)
 $
@@ -43,5 +43,12 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_method_invocation.become_dotted(p_ident)
 	##
 	_return jpn_dotted.new(_self , p_ident)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_method_invocation.parse_expression(p_parser)
+	##
+	>> p_parser.parse_method_invocation(_self)
 _endmethod
 $

@@ -45,7 +45,12 @@ _method dcn_dynamic_store.value
 _endmethod
 $
 
-
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_dynamic_store.is_dynamic_store?
+	##
+	>> _true
+_endmethod
+$
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_dynamic_store.decode_on( a_stream )
@@ -59,7 +64,7 @@ $
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_dynamic_store.convert_to_package_declaration()
 	##
-	>> dcn_package.new(.name)
+	>> dcn_package.new(.value_node.args[1].string_value)
 _endmethod
 $
 

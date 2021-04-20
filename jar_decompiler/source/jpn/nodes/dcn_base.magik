@@ -432,3 +432,32 @@ _method dcn_base.is_null?
 	>> _false 
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_dynamic_store?
+	##
+	>> _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_return?
+	##
+	>> _false 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_local?
+	## 
+	>> _false
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_unfinished_try?
+	##
+	>> _false 
+_endmethod
+$

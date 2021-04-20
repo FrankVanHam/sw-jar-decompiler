@@ -16,3 +16,10 @@ _method jpn_throw.init(p_expression)
 	>> _super.init()
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_throw.parse_statement(p_parser)
+	## 
+	>> p_parser.parse_throw(_self)
+_endmethod
+$

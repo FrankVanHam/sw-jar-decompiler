@@ -87,7 +87,7 @@ _method jpn_block_if_visitor.is_hidden_if2?(p_block_node)
 	branch_index << _unset 
 	_for i_index, i_node _over block_body.statements.fast_keys_and_elements()
 	_loop
-		_if i_node.is_class_of?(dcn_unfinished_try)
+		_if i_node.is_unfinished_try?
 		_then
 			_leave 
 		_else

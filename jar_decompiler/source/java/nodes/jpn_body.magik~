@@ -20,21 +20,3 @@ _method jpn_body.init(_optional p_statements)
 	>> _super.init()
 _endmethod
 $
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_body.size
-	>> .statements.size
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_body.empty?
-	>> .statements.empty?
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_body[p_nr]
-	>> .statements[p_nr]
-_endmethod
-$

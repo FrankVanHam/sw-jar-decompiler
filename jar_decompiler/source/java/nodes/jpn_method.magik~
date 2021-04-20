@@ -1,0 +1,50 @@
+_package deco
+$
+
+#remex(:jpn_method)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_method,
+	{
+		{:lex_name,    _unset},
+		{:args,        _unset, :readable},
+		{:body,        _unset, :readable},
+		{:annotations, _unset, :readable}
+	},
+	:jpn_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_method.init(p_lex_name, p_args, p_body, _optional p_annotations)
+	##
+	.lex_name << p_lex_name
+	.args << p_args
+	.body << p_body
+	.annotations << p_annotations.default({})
+	>> _super.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_method.name
+	##
+	>> .lex_name.value
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_method.type
+	##
+	## Rerturn the type of the method, derived from the annotations.
+	#
+	_for i_ann _over .annotations.fast_elements()
+	_loop
+		_if i_ann.name = "CodeType"
+		_then
+			_return i_ann.value.string_value
+		_endif
+	_endloop 
+_endmethod
+$
+
+

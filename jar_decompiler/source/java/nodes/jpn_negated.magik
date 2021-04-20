@@ -4,6 +4,9 @@ $
 #remex(:jpn_negated)
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## A node that make the expression negative
+##
 def_slotted_exemplar(:jpn_negated,
 	{
 		{:expression, _unset, :readable}
@@ -16,5 +19,12 @@ _method jpn_negated.init(p_expression)
 	##
 	.expression << p_expression
 	>> _super.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_negated.parse_expression(p_parser)
+	##
+	>> p_parser.parse_negated(_self)
 _endmethod
 $

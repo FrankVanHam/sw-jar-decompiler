@@ -6,7 +6,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_variable,
 	{
-		{:type, _unset, :readable},
+		{:type,     _unset, :readable},
 		{:lex_name, _unset, :readable}
 	},
 	:jpn_base)
@@ -37,42 +37,15 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_variable.as_variable()
-	>> _self 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_variable.split_in_identifier_and_method()
-	##
-	_local idx << .lex_name.value.rindex_of(%.)
-	_if idx _isnt _unset
-	_then 
-		_return .lex_name.split(idx)
-	_else
-		_return jpn_this.new(), .lex_name 
-	_endif 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_variable.become_dotted(p_ident)
 	##
 	_return jpn_dotted.new(_self, p_ident)
 _endmethod
 $
 
-
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_variable.add_dotted(p_lex)
+_method jpn_variable.parse_expression(p_parser)
 	##
-	.lex_name.append_dotted(p_lex)
-	>> _self 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_variable.string_value
-	>> .lex_name.value
+	>> p_parser.parse_variable(_self)
 _endmethod
 $

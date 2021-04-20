@@ -7,8 +7,8 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_new,
 	{
 		{:lex_type, _unset},
-		{:args, _unset, :readable},
-		{:array?, _unset, :readable}
+		{:args,     _unset, :readable},
+		{:array?,   _unset, :readable}
 	},
 	:jpn_base)
 $
@@ -26,5 +26,12 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_new.type
 	>> .lex_type.value
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_new.parse_expression(p_parser)
+	##
+	>> p_parser.parse_new(_self)
 _endmethod
 $

@@ -13,3 +13,5 @@
 :deco_unexpected_token		The token #3 at line #1, column #2 was not expected
 
 :deco_unexpected_eof		The input ended abruptly line #1, column #2 while doing #3
+
+:deco_unexpected_node		The node #1 was not expected during processing

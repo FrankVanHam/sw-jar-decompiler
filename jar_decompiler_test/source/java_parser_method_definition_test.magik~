@@ -19,12 +19,12 @@ _method java_parser_method_definition_test.test_method_no_args()
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.get()
-	_self.assert_true(node.is_kind_of?(deco:jpn_class), "should be class")
+	_self.assert_true(node.is_class_of?(deco:jpn_class), "should be class")
 	_self.assert_equals(1, node.methods.size, "should have one method")
 
 	_local m << node.methods[1]
 	_self.assert_true(m.args.empty?, "should have no args")
-	_self.assert_true(m.body.empty?, "should have no body")
+	_self.assert_true(m.body.statements.empty?, "should have no body")
 _endmethod
 $
 
@@ -68,7 +68,7 @@ _method java_parser_method_definition_test.test_method_with_args()
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.get()
-	_self.assert_true(node.is_kind_of?(deco:jpn_class), "should be class")
+	_self.assert_true(node.is_class_of?(deco:jpn_class), "should be class")
 	_self.assert_equals(1, node.methods.size, "should have one method")
 
 	_local m << node.methods[1]
@@ -86,7 +86,7 @@ _method java_parser_method_definition_test.test_method_with_gather_args()
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.get()
-	_self.assert_true(node.is_kind_of?(deco:jpn_class), "should be class")
+	_self.assert_true(node.is_class_of?(deco:jpn_class), "should be class")
 	_self.assert_equals(1, node.methods.size, "should have one method")
 
 	_local m << node.methods[1]
@@ -109,12 +109,12 @@ _method java_parser_method_definition_test.test_class_method_with_annotation()
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.get()
-	_self.assert_true(node.is_kind_of?(deco:jpn_class), "should be class")
+	_self.assert_true(node.is_class_of?(deco:jpn_class), "should be class")
 	_self.assert_equals(1, node.methods.size, "should have one method")
 
 	_local m << node.methods[1]
 	_self.assert_true(m.args.empty?, "should have no args")
-	_self.assert_true(m.body.empty?, "should have no body")
+	_self.assert_true(m.body.statements.empty?, "should have no body")
 	_self.assert_equals(4, m.annotations.size)
 	
 _endmethod

@@ -146,7 +146,7 @@ _method jpn_andif_orif_visitor.is_andif?(n1, n2)
 	_local stats << n2.if_body.statements
 	_if stats.size <> 1 _then _return _false, :branch_body_size_should_be_1 _endif
 	_local ass << stats[1]
-	_if ass.is_kind_of?(dcn_local_assignment).not _then _return _false, :branch_body_is_assign _endif
+	_if ass.is_class_of?(dcn_local_assignment).not _then _return _false, :branch_body_is_assign _endif
 	_local b_local << ass.only_local()
 	_if b_local _is _unset _then _return _false, :branch_body_is_no_local_assign _endif
 	_if b_local.name <> local_name _then _return _false, :branch_body_local_name_incorrect _endif
@@ -182,7 +182,7 @@ _method jpn_andif_orif_visitor.is_andif_andif?(n1, n2)
 	_if c_loc.operand2.is_class_of?(dcn_local_assignment).not _then _return _false, :right_operator_isnt_assignment _endif
 	_local ass << c_loc.operand2
 	
-	_if ass.is_kind_of?(dcn_local_assignment).not _then _return _false, :branch_body_no_is_assign _endif
+	_if ass.is_class_of?(dcn_local_assignment).not _then _return _false, :branch_body_no_is_assign _endif
 	_local b_local << ass.only_local()
 	_if b_local _is _unset _then _return _false, :branch_body_is_no_local_assign _endif
 	_if b_local.name <> local_name _then _return _false, :branch_body_local_name_incorrect _endif
@@ -190,7 +190,7 @@ _method jpn_andif_orif_visitor.is_andif_andif?(n1, n2)
 	_local stats << n2.if_body.statements
 	_if stats.size <> 1 _then _return _false, :branch_body_size_should_be_1 _endif
 	_local ass << stats[1]
-	_if ass.is_kind_of?(dcn_local_assignment).not _then _return _false, :branch_body_is_assign _endif
+	_if ass.is_class_of?(dcn_local_assignment).not _then _return _false, :branch_body_is_assign _endif
 	_local b_local << ass.only_local()
 	_if b_local _is _unset _then _return _false, :branch_body_is_no_local_assign _endif
 	_if b_local.name <> local_name _then _return _false, :branch_body_local_name_incorrect _endif
@@ -230,7 +230,7 @@ _method jpn_andif_orif_visitor.is_orif_orif?(n1, n2)
 	_if c_loc.expression.operand2.is_class_of?(dcn_local_assignment).not _then _return _false, :right_operator_isnt_assignment _endif
 	_local ass << c_loc.expression.operand2
 	
-	_if ass.is_kind_of?(dcn_local_assignment).not _then _return _false, :branch_body_no_is_assign _endif
+	_if ass.is_class_of?(dcn_local_assignment).not _then _return _false, :branch_body_no_is_assign _endif
 	_local b_local << ass.only_local()
 	_if b_local _is _unset _then _return _false, :branch_body_is_no_local_assign _endif
 	_if b_local.name <> local_name _then _return _false, :branch_body_local_name_incorrect _endif
@@ -238,7 +238,7 @@ _method jpn_andif_orif_visitor.is_orif_orif?(n1, n2)
 	_local stats << n2.if_body.statements
 	_if stats.size <> 1 _then _return _false, :branch_body_size_should_be_1 _endif
 	_local ass << stats[1]
-	_if ass.is_kind_of?(dcn_local_assignment).not _then _return _false, :branch_body_is_assign _endif
+	_if ass.is_class_of?(dcn_local_assignment).not _then _return _false, :branch_body_is_assign _endif
 	_local b_local << ass.only_local()
 	_if b_local _is _unset _then _return _false, :branch_body_is_no_local_assign _endif
 	_if b_local.name <> local_name _then _return _false, :branch_body_local_name_incorrect _endif
@@ -285,7 +285,7 @@ _method jpn_andif_orif_visitor.is_orif?(n1, n2)
 	_local stats << n2.if_body.statements
 	_if stats.size <> 1 _then _return _false, :branch_body_size_should_be_1 _endif
 	_local ass << stats[1]
-	_if ass.is_kind_of?(dcn_local_assignment).not _then _return _false, :branch_body_is_assign _endif
+	_if ass.is_class_of?(dcn_local_assignment).not _then _return _false, :branch_body_is_assign _endif
 	_local b_local << ass.only_local()
 	_if b_local _is _unset _then _return _false, :branch_body_is_no_local_assign _endif
 	_if b_local.name <> local_name _then _return _false, :branch_body_local_name_incorrect _endif

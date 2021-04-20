@@ -1,0 +1,29 @@
+_package deco
+$
+
+#remex(:jpn_break)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_break,
+	{
+		{:lex_name, _unset, :readable}
+	},
+	:jpn_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_break.init(_optional p_lex_name)
+	##
+	.lex_name << p_lex_name
+	>> _super.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_break.name
+	## 
+	>> _if .lex_name _isnt _unset
+	   _then >> .lex_name.value
+	   _endif 
+_endmethod
+$

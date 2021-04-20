@@ -5,8 +5,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_this,
-	{
-	},
+	{},
 	:jpn_base)
 $
 
@@ -15,9 +14,17 @@ _method jpn_this.init()
 	>> _self 
 _endmethod
 $
-#
-#_pragma(classify_level=restricted, topic={jar_decompiler})
-#_method jpn_this.name
-#	>> "_self"
-#_endmethod
-#$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_this.parse_expression(p_parser)
+	##
+	>> dcn_self.new()
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_this.is_this?
+	>> _true  
+_endmethod
+$

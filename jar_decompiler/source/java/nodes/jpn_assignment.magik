@@ -23,3 +23,9 @@ _method jpn_assignment.init(p_left, p_right)
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_assignment.parse_expression(p_parser)
+	##
+	>> p_parser.parse_assignment(_self)
+_endmethod
+$

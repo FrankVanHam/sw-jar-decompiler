@@ -60,7 +60,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_protection_builder_visitor.should_convert?(p_node)
 	##
-	_if p_node.is_class_of?(dcn_unfinished_try).not _then _return _false, :dcn_unfinished_try _endif
+	_if p_node.is_unfinished_try?.not _then _return _false, :dcn_unfinished_try _endif
 	_if p_node.finally_body _is _unset _then _return _false, :no_finally _endif
 	_if p_node.finally_body.statements.empty? _then _return _false, :empty_finally _endif
 	_if p_node.finally_body.statements[1].is_class_of?(dcn_interrupts).not _then _return _false, :dcn_interrupts _endif

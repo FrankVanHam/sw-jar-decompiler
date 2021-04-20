@@ -65,18 +65,18 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_pop_visitor.is_remainder?(p_node)
-	>> p_node.is_kind_of?(dcn_remainder)
+	>> p_node.is_class_of?(dcn_remainder)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_pop_visitor.is_remainder_assignment?(p_node)
-	_if p_node.is_kind_of?(dcn_local_assignment)
+	_if p_node.is_class_of?(dcn_local_assignment)
 	_then
 		_local loc << p_node.only_local()
 		_if loc _isnt _unset
 		_then
-			_return p_node.expression.is_kind_of?(dcn_remainder)
+			_return p_node.expression.is_class_of?(dcn_remainder)
 		_else
 			_return _false
 		_endif 
@@ -88,12 +88,12 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_pop_visitor.is_pop_assignment?(p_node)
-	_if p_node.is_kind_of?(dcn_local_assignment)
+	_if p_node.is_class_of?(dcn_local_assignment)
 	_then
 		_local loc << p_node.only_local()
 		_if loc _isnt _unset
 		_then
-			_return p_node.expression.is_kind_of?(dcn_pop)
+			_return p_node.expression.is_class_of?(dcn_pop)
 		_else
 			_return _false
 		_endif 
@@ -105,7 +105,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_pop_visitor.is_result_tuple?(p_node)
-	_if p_node.is_kind_of?(dcn_local_assignment)
+	_if p_node.is_class_of?(dcn_local_assignment)
 	_then
 		_local loc << p_node.only_local()
 		_if loc _isnt _unset

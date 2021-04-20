@@ -25,3 +25,10 @@ _method jpn_import.name
 	>> .type.name
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_import.parse_statement(p_parser)
+	## 
+	>> p_parser.parse_import(_self)
+_endmethod
+$

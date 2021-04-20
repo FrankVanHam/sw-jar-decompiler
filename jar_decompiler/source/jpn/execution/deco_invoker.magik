@@ -123,7 +123,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method deco_invoker.iter?(p_method, p_sender, _gather p_args)
 	##
-	>> _if p_sender.is_kind_of?(jpn_cast)
+	>> _if p_sender.is_class_of?(jpn_cast)
 	   _then
 		   >> p_sender.type.name = "MethodHandle"
 	   _else

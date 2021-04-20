@@ -89,11 +89,11 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_catch_builder_visitor.should_convert?(p_node)
 	##
-	_if p_node.is_class_of?(dcn_unfinished_try).not _then _return _false, :dcn_unfinished_try _endif
+	_if p_node.is_unfinished_try?.not _then _return _false, :dcn_unfinished_try _endif
 	_if p_node.try_body.statements.size <> 1 _then _return _false, :size_gt_1 _endif
 
 	_local sub_node << p_node.try_body.statements[1]
-	_if sub_node.is_class_of?(dcn_unfinished_try).not _then _return _false, :dcn2_unfinished_try _endif
+	_if sub_node.is_unfinished_try?.not _then _return _false, :dcn2_unfinished_try _endif
 	_if sub_node.catch_body _is _unset _then _return _false, :no_catch _endif
 
 	_local catch? << _false 

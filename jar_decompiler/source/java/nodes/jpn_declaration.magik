@@ -35,3 +35,17 @@ _method jpn_declaration.type
 	>> .type
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_declaration.parse_statement(p_parser)
+	## 
+	>> p_parser.parse_declaration(_self)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_declaration.is_declaration?
+	## 
+	>> _true 
+_endmethod
+$

@@ -4,24 +4,31 @@ $
 #remex(:jpn_dotted)
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## add a lexeme dotted to a jpn node.
+##
 def_slotted_exemplar(:jpn_dotted,
 	{
-		{:list, _unset, :readable}
+		{:base, _unset, :readable},
+		{:add,  _unset, :readable}
 	},
 	:jpn_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_dotted.new(p_one, p_other)
+_method jpn_dotted.new(p_base, p_add)
 	##
-	>> _clone.init(p_one, p_other)
+	>> _clone.init(p_base, p_add)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method jpn_dotted.init(p_one, p_other)
+_private _method jpn_dotted.init(p_base, p_add)
 	##
-	.list << rope.new_with(p_one, p_other)
+	#assert(p_base.is_class_of?(lexeme))
+	assert(p_add.is_class_of?(lexeme))
+	.base << p_base
+	.add  << p_add
 	>> _self 
 _endmethod
 $
@@ -33,34 +40,30 @@ _method jpn_dotted.name
 _endmethod
 $
 
-
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_dotted.become_dotted()
-	>> _self 
+_method jpn_dotted.become_dotted(p_lex)
+	##
+	>> jpn_dotted.new(_self, p_lex)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_dotted.split_in_identifier_and_method()
-	>> .list[1], .list[2]
+	>> .base, .add
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_dotted.string_value
 	##
-	_local s << internal_text_output_stream.new()
-	_local comma? << _false 
-	_for idx, lex _over .list.fast_keys_and_elements()
-	_loop
-		_if (comma?^<<_true) _then s.write(".")  _endif
-		_if idx=1
-		_then
-			s.write(lex.string_value)
-		_else 
-			s.write(lex.value)
-		_endif 
-	_endloop
-	>> s.string
+	>> write_string(.base.string_value, ".", .add.value)
+	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_dotted.parse_expression(p_parser)
+	##
+	>> p_parser.parse_dotted(_self)
 _endmethod
 $

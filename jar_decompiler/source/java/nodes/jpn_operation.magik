@@ -6,8 +6,8 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_operation,
 	{
-		{:left,  _unset, :readable},
-		{:right, _unset, :readable},
+		{:left,          _unset, :readable},
+		{:right,         _unset, :readable},
 		{:operation_lex, _unset}
 	},
 	:jpn_base)
@@ -29,5 +29,12 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_operation.operation
 	## 
 	>> .operation_lex.value
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_operation.parse_expression(p_parser)
+	##
+	>> p_parser.parse_operation(_self)
 _endmethod
 $

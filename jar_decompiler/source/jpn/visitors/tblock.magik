@@ -24,7 +24,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method tblock.init(p_node, p_type)
-	_if (p_type _is :try) _andif p_node.is_class_of?(dcn_unfinished_try).not 
+	_if (p_type _is :try) _andif p_node.is_unfinished_try?.not 
 	_then
 		2.stop
 	_endif

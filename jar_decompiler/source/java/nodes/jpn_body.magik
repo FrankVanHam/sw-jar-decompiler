@@ -20,3 +20,10 @@ _method jpn_body.init(_optional p_statements)
 	>> _super.init()
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_body.parse_expression(p_parser)
+	##
+	>> p_parser.parse_body(_self)
+_endmethod
+$

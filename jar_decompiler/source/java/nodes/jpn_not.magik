@@ -4,6 +4,9 @@ $
 #remex(:jpn_not)
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## A node that make the expression boolean inverse (not)
+##
 def_slotted_exemplar(:jpn_not,
 	{
 		{:expression, _unset, :readable}
@@ -16,5 +19,12 @@ _method jpn_not.init(p_expression)
 	##
 	.expression << p_expression
 	>> _super.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_not.parse_expression(p_parser)
+	##
+	>> p_parser.parse_not(_self)
 _endmethod
 $

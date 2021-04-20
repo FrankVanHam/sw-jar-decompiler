@@ -29,7 +29,7 @@ $
 _pragma(classify_level=restricted, topic={decompiler})
 _private _method dcn_method.init(p_class_name, p_method_name, p_args, p_scatter?, p_body, p_type, p_iter? )
 
-	assert(p_body.is_kind_of?(dcn_body))
+	assert(p_body.is_class_of?(dcn_body))
 
 	.private? << _false 
 	.abstract? << _false

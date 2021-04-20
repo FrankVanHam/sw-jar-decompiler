@@ -1,0 +1,27 @@
+_package deco
+$
+
+#remex(:jpn_package)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_package,
+	{
+		{:type, _unset}
+	},
+	:jpn_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_package.init(p_type)
+	##
+	.type << p_type
+	>> _super.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_package.name
+	##
+	>> .type.name
+_endmethod
+$

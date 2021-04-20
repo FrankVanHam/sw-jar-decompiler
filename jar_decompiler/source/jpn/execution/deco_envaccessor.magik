@@ -66,7 +66,7 @@ _method deco_envaccessor.bootstrapstorer(p_parser, p_action, p_exp, p_env, p_ind
 		_local name << .var_names[index.string_value]
 		_if name _isnt _unset
 		_then 
-			_local left  << dcn_local.new(0,name, :local, "Object")
+			_local left  << dcn_local.new(name)
 			_local right << p_parser.parse_expression(p_exp)
 			
 			_return dcn_local_assignment.new(left, right)
@@ -89,7 +89,7 @@ _method deco_envaccessor.bootstrapfetcher(p_parser, p_action, p_env, p_index)
 
 		_if name _isnt _unset
 		_then
-			_return dcn_local.new(0, name)
+			_return dcn_local.new(name)
 		_else
 			_return loc
 		_endif 
@@ -98,7 +98,7 @@ _method deco_envaccessor.bootstrapfetcher(p_parser, p_action, p_env, p_index)
 #		_then
 #			_return loc
 #		_else
-#			_return dcn_local.new(0, name)
+#			_return dcn_local.new(name)
 #		_endif 
 	_else 
 		_return dcn_no_op.new()

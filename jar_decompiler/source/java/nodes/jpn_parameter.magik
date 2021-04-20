@@ -1,10 +1,10 @@
 _package deco
 $
 
-#remex(:jpn_arg)
+#remex(:jpn_parameter)
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-def_slotted_exemplar(:jpn_arg,
+def_slotted_exemplar(:jpn_parameter,
 	{
 		{:lex_name, _unset, :readable},
 		{:type,     _unset, :readable},
@@ -14,7 +14,7 @@ def_slotted_exemplar(:jpn_arg,
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_arg.init(p_lex_name, p_type, p_varargs?)
+_method jpn_parameter.init(p_lex_name, p_type, p_varargs?)
 
 	assert(p_lex_name.is_class_of?(lexeme))
 	assert(p_type.is_class_of?(jpn_type) _orif p_type.is_class_of?(jpn_dotted))
@@ -27,7 +27,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_arg.name
+_method jpn_parameter.name
 	## 
 	>> .lex_name.value
 _endmethod

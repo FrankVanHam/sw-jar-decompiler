@@ -42,7 +42,7 @@ _method dcn_shared_variable.decode_on( a_stream )
 	_endif
 	a_stream.write("," )
 	a_stream.newline()
-	_if value.is_kind_of?(procedure)
+	_if value.is_class_of?(procedure)
 	_then
 		dec << decompiler.new()
 		node << dec.decompile_procedure(value)

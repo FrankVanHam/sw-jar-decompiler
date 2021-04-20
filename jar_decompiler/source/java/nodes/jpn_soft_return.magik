@@ -2,6 +2,9 @@ _package deco
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## Node for a ">> " return statement
+##
 def_slotted_exemplar(:jpn_soft_return,
 	{
 		{:expression, _unset, :readable}
@@ -17,3 +20,9 @@ _method jpn_soft_return.init(p_exp)
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_soft_return.parse_statement(p_parser)
+	## 
+	>> p_parser.parse_soft_return_statement(_self)
+_endmethod
+$

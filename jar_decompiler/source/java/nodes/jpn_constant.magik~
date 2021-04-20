@@ -6,7 +6,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_constant,
 	{
-		{:lex, _unset, :readable},
+		{:lex,    _unset, :readable},
 		{:array?, _unset, :readable}
 	},
 	:jpn_base)

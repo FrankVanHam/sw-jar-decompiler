@@ -54,15 +54,15 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method jpn_iter_visitor.iter?(p_node)
-	>> p_node.is_kind_of?(dcn_local_assignment) _andif
-		p_node.expression.is_kind_of?(dcn_iter)
+	>> p_node.is_class_of?(dcn_local_assignment) _andif
+		p_node.expression.is_class_of?(dcn_iter)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_iter_visitor.finally_iter?(p_node)
 	##
-	_if p_node.is_class_of?(dcn_unfinished_try).not _then _return _false, :not_unfinised_try _endif
+	_if p_node.is_unfinished_try?.not _then _return _false, :not_unfinised_try _endif
 	_if p_node.args _is _unset _then _return _false, :no_args _endif
 	_if p_node.args.size<1 _then _return _false, :no_args_size _endif
 	_if p_node.args[1] <> "leave" _then _return _false, :no_leave _endif

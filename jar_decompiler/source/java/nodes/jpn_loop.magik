@@ -6,9 +6,9 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_loop,
 	{
-		{:lex_tag,_unset, :readable},
-		{:while,  _unset, :readable},
-		{:body,   _unset, :readable}
+		{:lex_tag, _unset, :readable},
+		{:while,   _unset, :readable},
+		{:body,    _unset, :readable}
 	},
 	:jpn_base)
 $
@@ -29,5 +29,12 @@ _method jpn_loop.tag
 	>> _if .lex_tag _isnt _unset
 	   _then >> .lex_tag.name
 	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_loop.parse_statement(p_parser)
+	## 
+	>> p_parser.parse_loop(_self)
 _endmethod
 $

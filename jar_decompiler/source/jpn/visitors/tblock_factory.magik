@@ -55,7 +55,7 @@ _method tblock_factory.create_one(p_node)
 	(try?, try_index) << _self.has_try?(p_node)
 	>> _if try?
 	   _then
-		   _local tb << _if p_node.is_class_of?(dcn_unfinished_try)
+		   _local tb << _if p_node.is_unfinished_try?
 				_then >> tblock.new(p_node, :try)
 				_else >> tblock.new(p_node, :try_block)
 				_endif 
@@ -73,7 +73,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method tblock_factory.has_try?(p_node)
-	_local sts << _if p_node.is_class_of?(dcn_unfinished_try)
+	_local sts << _if p_node.is_unfinished_try?
 		      _then >>p_node.try_body.statements
 		      _else >> p_node.body.statements
 		      _endif 
@@ -90,7 +90,7 @@ _method tblock_factory.try_index(sts)
 	_local idx
 	_for i_index, i_node _over sts.fast_keys_and_elements()
 	_loop
-		_if i_node.is_class_of?(dcn_unfinished_try)
+		_if i_node.is_unfinished_try?
 		_then
 			idx << i_index
 			_leave 
@@ -99,7 +99,7 @@ _method tblock_factory.try_index(sts)
 	_if idx _is _unset _then _return _unset _endif
 	_if idx < 7        _then _return _unset _endif
 	
-	_if sts[idx-1].is_class_of?(dcn_dynamic_store).not  _then _return _unset _endif 
+	_if sts[idx-1].is_dynamic_store?.not  _then _return _unset _endif 
 	_if sts[idx-1].name <> "__catch_tags_dynamic__" _then _return _unset _endif
 	
 	>> idx
@@ -138,6 +138,6 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method tblock_factory.is_block_or_try?(p_node)
 	>> p_node.is_class_of?(dcn_block) _orif
-		p_node.is_class_of?(dcn_unfinished_try)
+		p_node.is_unfinished_try?
 _endmethod
 $

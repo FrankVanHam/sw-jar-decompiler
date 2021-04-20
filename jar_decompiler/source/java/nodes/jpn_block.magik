@@ -26,3 +26,10 @@ _method jpn_block.name
 	>> .lex_name.name
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_block.parse_statement(p_parser)
+	## 
+	>> p_parser.parse_block(_self)
+_endmethod
+$

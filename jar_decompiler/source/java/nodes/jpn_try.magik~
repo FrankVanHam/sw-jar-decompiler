@@ -1,0 +1,32 @@
+_package deco
+$
+
+#remex(:jpn_try)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_try,
+	{
+		{:try_body,     _unset, :readable},
+		{:finally_body, _unset, :readable},
+		{:exceptions,   _unset, :readable},
+		{:catch_body,   _unset, :readable}
+	},
+	:jpn_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_try.init(p_try_body, p_exceptions, p_catch_body, p_finally_body)
+
+	assert(p_try_body.is_kind_of?(jpn_base))
+	assert(p_exceptions.is_kind_of?(sw:ro_indexed_collection_mixin))
+	assert(p_catch_body.is_kind_of?(jpn_base))
+	
+	.try_body << p_try_body
+	.exceptions << p_exceptions
+	.catch_body << p_catch_body
+	.finally_body << p_finally_body
+	
+	>> _super.init()
+_endmethod
+$
+

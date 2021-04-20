@@ -49,3 +49,10 @@ _method jpn_constant.is_number?
 	>> .lex.is_number?
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_constant.parse_expression(p_parser)
+	##
+	>> p_parser.parse_constant(_self)
+_endmethod
+$

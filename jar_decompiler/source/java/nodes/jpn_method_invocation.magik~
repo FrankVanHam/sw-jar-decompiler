@@ -1,0 +1,47 @@
+_package deco
+$
+
+#remex(:jpn_method_invocation)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_method_invocation,
+	{
+		{:sender,   _unset, :readable},
+		{:lex_name, _unset, :readable},
+		{:args,     _unset, :readable}
+	},
+	:jpn_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_method_invocation.init(p_sender, p_lex_name, p_args)
+	assert(p_sender _is _unset _orif p_sender.is_kind_of?(jpn_base))
+	assert(p_lex_name.is_class_of?(lexeme))
+	.sender << p_sender
+	.lex_name << p_lex_name
+	.args << p_args
+	>> _super.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_method_invocation.name
+	>> .lex_name.value
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_method_invocation.identifier
+	##
+	>> _if .sender _isnt _unset
+	   _then >> .sender.name
+	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_method_invocation.become_dotted(p_ident)
+	##
+	_return jpn_dotted.new(_self , p_ident)
+_endmethod
+$

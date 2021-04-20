@@ -16,7 +16,7 @@ _method java_parser_test.test_package()
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.get()
-	_self.assert_true(node.is_kind_of?(deco:jpn_package), "should be package")
+	_self.assert_true(node.is_class_of?(deco:jpn_package), "should be package")
 	_self.assert_equals("magik.decompile_target", node.name)
 _endmethod
 $
@@ -28,7 +28,7 @@ _method java_parser_test.test_import()
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.get()
-	_self.assert_true(node.is_kind_of?(deco:jpn_import), "should be import")
+	_self.assert_true(node.is_class_of?(deco:jpn_import), "should be import")
 	_self.assert_equals("magik.decompile_target", node.name)
 _endmethod
 $
@@ -42,7 +42,7 @@ _method java_parser_test.test_method_invocation()
 
 	_local node << p.parse_expression()
 
-	_self.assert_true(node.is_kind_of?(deco:jpn_method_invocation), "should be an invocation")
+	_self.assert_true(node.is_class_of?(deco:jpn_method_invocation), "should be an invocation")
 	_self.assert_equals("obj", node.sender.name)
 	_self.assert_equals("dothing", node.name)
 _endmethod
@@ -56,7 +56,7 @@ _method java_parser_test.test_negative_constant()
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.parse_expression()
-	_self.assert_true(node.is_kind_of?(deco:jpn_negated), "should be an negative")
+	_self.assert_true(node.is_class_of?(deco:jpn_negated), "should be an negative")
 _endmethod
 $
 
@@ -69,7 +69,7 @@ _method java_parser_test.test_self_method_invocation()
 
 	_local node << p.parse_expression()
 
-	_self.assert_true(node.is_kind_of?(deco:jpn_method_invocation), "should be an invocation")
+	_self.assert_true(node.is_class_of?(deco:jpn_method_invocation), "should be an invocation")
 	_self.assert_true(node.sender.is_class_of?(deco:jpn_this))
 	_self.assert_equals("dothing", node.name)
 _endmethod
@@ -83,9 +83,9 @@ _method java_parser_test.test_concat_method_invocation()
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.parse_expression()
-	_self.assert_true(node.is_kind_of?(deco:jpn_method_invocation), "should be an invocation")
+	_self.assert_true(node.is_class_of?(deco:jpn_method_invocation), "should be an invocation")
 	_self.assert_equals("doanother", node.name)
-	_self.assert_true(node.sender.is_kind_of?(deco:jpn_method_invocation), "should be a nested invocation")
+	_self.assert_true(node.sender.is_class_of?(deco:jpn_method_invocation), "should be a nested invocation")
 	_self.assert_equals("dothing", node.sender.name)
 
 _endmethod
@@ -99,7 +99,7 @@ _method java_parser_test.test_concat_cast_method_invocation()
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.parse_expression()
-	_self.assert_true(node.is_kind_of?(deco:jpn_method_invocation), "should be an invocation")
+	_self.assert_true(node.is_class_of?(deco:jpn_method_invocation), "should be an invocation")
 _endmethod
 $
 
@@ -111,7 +111,7 @@ _method java_parser_test.test_method_invocation_with_args()
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.parse_expression()
-	_self.assert_true(node.is_kind_of?(deco:jpn_method_invocation), "should be an invocation")
+	_self.assert_true(node.is_class_of?(deco:jpn_method_invocation), "should be an invocation")
 _endmethod
 $
 
@@ -123,8 +123,8 @@ _method java_parser_test.test_method_invocation_with_method_handle_args()
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.parse_expression()
-	_self.assert_true(node.is_kind_of?(deco:jpn_method_invocation), "should be an invocation")
-	_self.assert_true(node.args[1].expression.is_kind_of?(deco:jpn_method_invocation))
+	_self.assert_true(node.is_class_of?(deco:jpn_method_invocation), "should be an invocation")
+	_self.assert_true(node.args[1].expression.is_class_of?(deco:jpn_method_invocation))
 _endmethod
 $
 
@@ -137,8 +137,8 @@ _method java_parser_test.test_method_invocation_with_casted_args()
 	p.define_locals("x")
 
 	_local node << p.parse_expression()
-	_self.assert_true(node.is_kind_of?(deco:jpn_method_invocation), "should be an invocation")
-	_self.assert_true(node.args[1].expression.is_kind_of?(deco:jpn_variable))
+	_self.assert_true(node.is_class_of?(deco:jpn_method_invocation), "should be an invocation")
+	_self.assert_true(node.args[1].expression.is_class_of?(deco:jpn_variable))
 _endmethod
 $
 
@@ -149,8 +149,8 @@ _method java_parser_test.test_assignment()
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 
-	_local node << p.parse_expression()
-	_self.assert_true(node.is_kind_of?(deco:jpn_assignment), "should be an assignment")
+	_local node << p.parse_statement()
+	_self.assert_true(node.is_class_of?(deco:jpn_assignment), "should be an assignment")
 _endmethod
 $
 
@@ -161,8 +161,8 @@ _method java_parser_test.test_array_type_assignment()
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 
-	_local node << p.parse_expression()
-	_self.assert_true(node.is_kind_of?(deco:jpn_assignment), "should be an assignment")
+	_local node << p.parse_statement()
+	_self.assert_true(node.is_class_of?(deco:jpn_assignment), "should be an assignment")
 _endmethod
 $
 
@@ -173,8 +173,8 @@ _method java_parser_test.test_array_type_direct_assignment()
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 
-	_local node << p.parse_expression()
-	_self.assert_true(node.is_kind_of?(deco:jpn_assignment), "should be an assignment")
+	_local node << p.parse_statement()
+	_self.assert_true(node.is_class_of?(deco:jpn_assignment), "should be an assignment")
 _endmethod
 $
 
@@ -185,8 +185,8 @@ _method java_parser_test.test_array_type_direct_array_assignment()
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 
-	_local node << p.parse_expression()
-	_self.assert_true(node.is_kind_of?(deco:jpn_assignment), "should be an assignment")
+	_local node << p.parse_statement()
+	_self.assert_true(node.is_class_of?(deco:jpn_assignment), "should be an assignment")
 	_self.assert_equals(1,node.right.args.size)
 _endmethod
 $
@@ -199,8 +199,8 @@ _method java_parser_test.test_array_type_direct_array_assignment2()
 	_local p << deco:java_parser.new(s)
 	p.define_locals("env")
 	
-	_local node << p.parse_expression()
-	_self.assert_true(node.is_kind_of?(deco:jpn_assignment), "should be an assignment")
+	_local node << p.parse_statement()
+	_self.assert_true(node.is_class_of?(deco:jpn_assignment), "should be an assignment")
 	_self.assert_equals(1,node.right.args.size)
 _endmethod
 $
@@ -213,8 +213,8 @@ _method java_parser_test.test_array_type_direct_array_assignment3()
 	_local p << deco:java_parser.new(s)
 	p.define_locals("env")
 	
-	_local node << p.parse_expression()
-	_self.assert_true(node.is_kind_of?(deco:jpn_assignment), "should be an assignment")
+	_local node << p.parse_statement()
+	_self.assert_true(node.is_class_of?(deco:jpn_assignment), "should be an assignment")
 	_self.assert_equals(1, node.right.args.size)
 _endmethod
 $
@@ -227,7 +227,7 @@ _method java_parser_test.test_class()
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.get()
-	_self.assert_true(node.is_kind_of?(deco:jpn_class), "should be class")
+	_self.assert_true(node.is_class_of?(deco:jpn_class), "should be class")
 _endmethod
 $
 
@@ -239,7 +239,7 @@ _method java_parser_test.test_new()
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.parse_expression()
-	_self.assert_true(node.is_kind_of?(deco:jpn_new), "should be new")
+	_self.assert_true(node.is_class_of?(deco:jpn_new), "should be new")
 _endmethod
 $
 
@@ -251,7 +251,7 @@ _method java_parser_test.test_declaration()
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.parse_statement()
-	_self.assert_true(node.is_kind_of?(deco:jpn_declaration), "should be declaration")
+	_self.assert_true(node.is_declaration?, "should be declaration")
 _endmethod
 $
 
@@ -264,8 +264,8 @@ _method java_parser_test.test_return()
 	p.define_locals("avar")
 
 	_local node << p.parse_statement()
-	_self.assert_true(node.is_kind_of?(deco:jpn_return), "should be return")
-	_self.assert_true(node.expression.is_kind_of?(deco:jpn_variable, "should be returning a variable"))
+	_self.assert_true(node.is_class_of?(deco:jpn_return), "should be return")
+	_self.assert_true(node.expression.is_class_of?(deco:jpn_variable, "should be returning a variable"))
 _endmethod
 $
 
@@ -277,8 +277,8 @@ _method java_parser_test.test_return_empty_tuple()
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.parse_statement()
-	_self.assert_true(node.is_kind_of?(deco:jpn_return), "should be return")
-	_self.assert_true(node.expression.is_kind_of?(deco:jpn_dotted), "should be returning dotted")
+	_self.assert_true(node.is_class_of?(deco:jpn_return), "should be return")
+	_self.assert_true(node.expression.is_class_of?(deco:jpn_dotted), "should be returning dotted")
 _endmethod
 $
 
@@ -291,7 +291,7 @@ _method java_parser_test.test_new_with_args()
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.parse_expression()
-	_self.assert_true(node.is_kind_of?(deco:jpn_new), "should be new")
+	_self.assert_true(node.is_class_of?(deco:jpn_new), "should be new")
 	_self.assert_equals(2, node.args.size)
 _endmethod
 $
@@ -303,8 +303,8 @@ _method java_parser_test.test_throw()
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 
-	_local node << p.parse_expression()
-	_self.assert_true(node.is_kind_of?(deco:jpn_throw), "should be throw")
+	_local node << p.parse_statement()
+	_self.assert_true(node.is_class_of?(deco:jpn_throw), "should be throw")
 _endmethod
 $
 
@@ -315,9 +315,9 @@ _method java_parser_test.test_throw_new()
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 
-	_local node << p.parse_expression()
-	_self.assert_true(node.is_kind_of?(deco:jpn_throw), "should be throw")
-	_self.assert_true(node.expression.is_kind_of?(deco:jpn_new), "should be throwing a new")
+	_local node << p.parse_statement()
+	_self.assert_true(node.is_class_of?(deco:jpn_throw), "should be throw")
+	_self.assert_true(node.expression.is_class_of?(deco:jpn_new), "should be throwing a new")
 _endmethod
 $
 
@@ -376,7 +376,7 @@ _method java_parser_test.test_nested_annotation()
 	_self.assert_true(node.is_class_of?(deco:jpn_class))
 	_self.assert_equals(1,node.annotations.size)
 	_local anno << node.annotations[1]
-	_self.assert_true(anno.value[1].is_kind_of?(deco:jpn_annotation))
+	_self.assert_true(anno.value[1].is_class_of?(deco:jpn_annotation))
 _endmethod
 $
 
@@ -389,7 +389,7 @@ _method java_parser_test.test_class_with_implements()
 	_local p << deco:java_parser.new(s)
 
 	_local node << p.get()
-	_self.assert_true(node.is_kind_of?(deco:jpn_class), "should be class")
+	_self.assert_true(node.is_class_of?(deco:jpn_class), "should be class")
 	_self.assert_equals("a_class", node.name)
 	_self.assert_equals("ExecutableMagik", node.implementation)
 _endmethod
@@ -439,7 +439,7 @@ _method java_parser_test.test_method_definition_without_args()
 	_local p << deco:java_parser.new(s)
 
 	_local m << p.parse_method("deco_test")
-	_self.assert_true(m.is_kind_of?(deco:jpn_method), "Should be an body")
+	_self.assert_true(m.is_class_of?(deco:jpn_method), "Should be an body")
 _endmethod
 $
 
@@ -454,7 +454,7 @@ _method java_parser_test.test_method_definition_with_question()
 	_local p << deco:java_parser.new(s)
 
 	_local m << p.parse_method("deco_test")
-	_self.assert_true(m.is_kind_of?(deco:jpn_method), "Should be an body")
+	_self.assert_true(m.is_class_of?(deco:jpn_method), "Should be an body")
 _endmethod
 $
 
@@ -469,7 +469,7 @@ _method java_parser_test.test_method_definition_with_exclamation()
 	_local p << deco:java_parser.new(s)
 
 	_local m << p.parse_method("deco_test")
-	_self.assert_true(m.is_kind_of?(deco:jpn_method), "Should be an body")
+	_self.assert_true(m.is_class_of?(deco:jpn_method), "Should be an body")
 _endmethod
 $
 
@@ -481,8 +481,8 @@ _method java_parser_test.test_casting()
 	_local p << deco:java_parser.new(s)
 	p.define_locals("a_var")
 
-	_local c << p.parse_expression()
-	_self.assert_true(c.is_kind_of?(deco:jpn_cast), "should be cast")
+	_local c << p.parse_statement()
+	_self.assert_true(c.is_class_of?(deco:jpn_cast), "should be cast")
 _endmethod
 $
 
@@ -494,8 +494,8 @@ _method java_parser_test.test_casting_questionmark()
 	_local p << deco:java_parser.new(s)
 	p.define_locals("a_var")
 
-	_local c << p.parse_expression()
-	_self.assert_true(c.is_kind_of?(deco:jpn_cast), "should be cast")
+	_local c << p.parse_statement()
+	_self.assert_true(c.is_class_of?(deco:jpn_cast), "should be cast")
 _endmethod
 $
 
@@ -506,8 +506,8 @@ _method java_parser_test.test_double_casting()
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 
-	_local c << p.parse_expression()
-	_self.assert_true(c.is_kind_of?(deco:jpn_cast), "should be cast")
+	_local c << p.parse_statement()
+	_self.assert_true(c.is_class_of?(deco:jpn_cast), "should be cast")
 _endmethod
 $
 
@@ -518,8 +518,8 @@ _method java_parser_test.test_double_casting_method()
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 
-	_local c << p.parse_expression()
-	_self.assert_true(c.is_kind_of?(deco:jpn_cast), "should be cast")
+	_local c << p.parse_statement()
+	_self.assert_true(c.is_class_of?(deco:jpn_cast), "should be cast")
 _endmethod
 $
 
@@ -531,7 +531,7 @@ _method java_parser_test.test_array_casting()
 	_local p << deco:java_parser.new(s)
 
 	_local c << p.parse_expression()
-	_self.assert_true(c.is_kind_of?(deco:jpn_cast), "should be cast")
+	_self.assert_true(c.is_class_of?(deco:jpn_cast), "should be cast")
 	_self.assert_true(c.type.array?, "should be an array type")
 _endmethod
 $
@@ -544,7 +544,7 @@ _method java_parser_test.test_keyword_casting()
 	_local p << deco:java_parser.new(s)
 
 	_local c << p.parse_expression()
-	_self.assert_true(c.is_kind_of?(deco:jpn_cast), "should be cast")
+	_self.assert_true(c.is_class_of?(deco:jpn_cast), "should be cast")
 _endmethod
 $
 
@@ -556,7 +556,7 @@ _method java_parser_test.test_keyword_array_casting()
 	_local p << deco:java_parser.new(s)
 
 	_local c << p.parse_expression()
-	_self.assert_true(c.is_kind_of?(deco:jpn_cast), "should be cast")
+	_self.assert_true(c.is_class_of?(deco:jpn_cast), "should be cast")
 	_self.assert_true(c.type.array?, "should be an array type")
 _endmethod
 $
@@ -568,8 +568,8 @@ _method java_parser_test.test_if()
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 
-	_local m << p.parse_expression()
-	_self.assert_true(m.is_kind_of?(deco:jpn_if), "should be an if statement")
+	_local m << p.parse_statement()
+	_self.assert_true(m.is_class_of?(deco:jpn_if), "should be an if statement")
 _endmethod
 $
 
@@ -580,8 +580,8 @@ _method java_parser_test.test_if_else()
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 
-	_local m << p.parse_expression()
-	_self.assert_true(m.is_kind_of?(deco:jpn_if), "should be an if statement")
+	_local m << p.parse_statement()
+	_self.assert_true(m.is_class_of?(deco:jpn_if), "should be an if statement")
 	_self.assert_true(m.else _isnt _unset , "should be an else statement")
 _endmethod
 $
@@ -598,9 +598,9 @@ _method java_parser_test.test_try_catch()
 
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
-	_local m << p.parse_expression()
+	_local m << p.parse_statement()
 
-	_self.assert_true(m.is_kind_of?(deco:jpn_try), "should be an try")
+	_self.assert_true(m.is_class_of?(deco:jpn_try), "should be an try")
 	_self.assert_equals(1, m.exceptions.size, "should be one exceptions")
 _endmethod
 $
@@ -617,9 +617,9 @@ _method java_parser_test.test_try_catch2()
 
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
-	_local m << p.parse_expression()
+	_local m << p.parse_statement()
 
-	_self.assert_true(m.is_kind_of?(deco:jpn_try), "should be an try")
+	_self.assert_true(m.is_class_of?(deco:jpn_try), "should be an try")
 	_self.assert_equals(1, m.exceptions.size, "should be one exceptions")
 _endmethod
 $
@@ -636,9 +636,9 @@ _method java_parser_test.test_try_catches()
 
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
-	_local m << p.parse_expression()
+	_local m << p.parse_statement()
 
-	_self.assert_true(m.is_kind_of?(deco:jpn_try), "should be an try")
+	_self.assert_true(m.is_class_of?(deco:jpn_try), "should be an try")
 	_self.assert_equals(m.exceptions.size, 2)
 _endmethod
 $
@@ -650,9 +650,9 @@ _method java_parser_test.test_xxx()
 
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
-	_local m << p.parse_expression()
+	_local m << p.parse_statement()
 	#debug_print(m.right)
-	#_self.assert_true(m.right.is_kind_of?(deco:jpn_method_invocation), "should be a method invoc")
+	#_self.assert_true(m.right.is_class_of?(deco:jpn_method_invocation), "should be a method invoc")
 _endmethod
 $
 
@@ -664,9 +664,9 @@ _method java_parser_test.test_local_execution()
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 	p.define_locals("resultTuple")
-	_local m << p.parse_expression()
-	_self.assert_true(m.is_kind_of?(deco:jpn_method_invocation), "should be a method")
-	_self.assert_true(m.sender.is_kind_of?(deco:jpn_variable), "should be a local variable method")
+	_local m << p.parse_statement()
+	_self.assert_true(m.is_class_of?(deco:jpn_method_invocation), "should be a method")
+	_self.assert_true(m.sender.is_class_of?(deco:jpn_variable), "should be a local variable method")
 _endmethod
 $
 
@@ -676,9 +676,9 @@ _method java_parser_test.test_void_type()
 	_local inp << write_string("void obj;")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
-	_local m << p.parse_expression()
+	_local m << p.parse_statement()
 	
-	_self.assert_true(m.is_kind_of?(deco:jpn_declaration), "should be a local declaration")
+	_self.assert_true(m.is_declaration?, "should be a local declaration")
 _endmethod
 $
 
@@ -691,10 +691,10 @@ _method java_parser_test.test_assign_typed_local_with_local()
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 	p.define_locals("a")
-	_local m << p.parse_expression()
+	_local m << p.parse_statement()
 	
-	_self.assert_true(m.is_kind_of?(deco:jpn_assignment), "should be a local assignment")
-	_self.assert_true(m.right.is_kind_of?(deco:jpn_variable), "should be a variable")
+	_self.assert_true(m.is_class_of?(deco:jpn_assignment), "should be a local assignment")
+	_self.assert_true(m.right.is_class_of?(deco:jpn_variable), "should be a variable")
 _endmethod
 $
 
@@ -705,12 +705,12 @@ _method java_parser_test.test_assign_local_with_local()
 
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
-	p.define_locals("a")
-	_local m << p.parse_expression()
+	p.define_locals("obj", "a")
+	_local m << p.parse_statement()
 	
-	_self.assert_true(m.is_kind_of?(deco:jpn_assignment), "should be a local assignment")
-	_self.assert_true(m.left.is_kind_of?(deco:jpn_variable), "left should be a variable")
-	_self.assert_true(m.right.is_kind_of?(deco:jpn_variable), "right should be a variable")
+	_self.assert_true(m.is_class_of?(deco:jpn_assignment), "should be a local assignment")
+	_self.assert_true(m.left.is_class_of?(deco:jpn_variable), "left should be a variable")
+	_self.assert_true(m.right.is_class_of?(deco:jpn_variable), "right should be a variable")
 _endmethod
 $
 
@@ -720,8 +720,8 @@ _method java_parser_test.test_block()
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 	
-	_local m << p.parse_expression()
-	_self.assert_true(m.is_kind_of?(deco:jpn_block), "should be a block")
+	_local m << p.parse_statement()
+	_self.assert_true(m.is_class_of?(deco:jpn_block), "should be a block")
 _endmethod
 $
 
@@ -731,8 +731,8 @@ _method java_parser_test.test_break()
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 	
-	_local m << p.parse_expression()
-	_self.assert_true(m.is_kind_of?(deco:jpn_break), "should be a break")
+	_local m << p.parse_statement()
+	_self.assert_true(m.is_class_of?(deco:jpn_break), "should be a break")
 _endmethod
 $
 
@@ -742,8 +742,8 @@ _method java_parser_test.test_loop()
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 	
-	_local m << p.parse_expression()
-	_self.assert_true(m.is_kind_of?(deco:jpn_loop), "should be a loop")
+	_local m << p.parse_statement()
+	_self.assert_true(m.is_class_of?(deco:jpn_loop), "should be a loop")
 	_self.assert_true(m.tag _is _unset , "should have no tag")
 _endmethod
 $
@@ -754,8 +754,8 @@ _method java_parser_test.test_loop_tag()
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 	
-	_local m << p.parse_expression()
-	_self.assert_true(m.is_kind_of?(deco:jpn_loop), "should be a loop")
+	_local m << p.parse_statement()
+	_self.assert_true(m.is_class_of?(deco:jpn_loop), "should be a loop")
 	_self.assert_true(m.tag = "block0" , "should have tag")
 _endmethod
 $
@@ -766,8 +766,8 @@ _method java_parser_test.test_loop_while()
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 	
-	_local m << p.parse_expression()
-	_self.assert_true(m.is_kind_of?(deco:jpn_loop), "should be a loop")
+	_local m << p.parse_statement()
+	_self.assert_true(m.is_class_of?(deco:jpn_loop), "should be a loop")
 	_self.assert_true(m.while _isnt _unset, "should have while expression")
 _endmethod
 $
@@ -781,8 +781,8 @@ _method java_parser_test.test_if_break()
 	_local p << deco:java_parser.new(s)
 	p.define_locals("_self")
 	
-	_local m << p.parse_expression()
-	_self.assert_true(m.is_kind_of?(deco:jpn_if), "should be a branch")
+	_local m << p.parse_statement()
+	_self.assert_true(m.is_class_of?(deco:jpn_if), "should be a branch")
 _endmethod
 $
 
@@ -795,8 +795,8 @@ _method java_parser_test.test_conditional_operator()
 	_local p << deco:java_parser.new(s)
 	p.define_locals("a", "b", "c")
 	
-	_local m << p.parse_expression()
-	_self.assert_true(m.is_kind_of?(deco:jpn_assignment), "should be an assignment")
+	_local m << p.parse_statement()
+	_self.assert_true(m.is_class_of?(deco:jpn_assignment), "should be an assignment")
 	_self.assert_equals("a", m.right.condition.name)
 	_self.assert_equals("b", m.right.then.statements[1].expression.name)
 	_self.assert_equals("c", m.right.else.statements[1].expression.name)
@@ -812,19 +812,19 @@ _method java_parser_test.test_conditional_nested_operator()
 	_local p << deco:java_parser.new(s)
 	p.define_locals("a", "b", "ba", "bb", "c", "ca", "cb")
 	
-	_local m << p.parse_expression()
+	_local m << p.parse_statement()
 
-	_self.assert_true(m.is_kind_of?(deco:jpn_assignment), "should be an assignment")
+	_self.assert_true(m.is_class_of?(deco:jpn_assignment), "should be an assignment")
 	_self.assert_true(m.right.is_class_of?(deco:jpn_if), "right should be an if")
 	_self.assert_equals("a", m.right.condition.name)
-	_self.assert_true(x.right.then.statements[1].expression.is_class_of?(deco:jpn_parenthesis), "then is ()" )
-	_local right_left << x.right.then.statements[1].expression.expression
+	_self.assert_true(m.right.then.statements[1].expression.is_class_of?(deco:jpn_parenthesis), "then is ()" )
+	_local right_left << m.right.then.statements[1].expression.expression
 	_self.assert_true(right_left.is_class_of?(deco:jpn_if), "right should be an if")
 	_self.assert_equals("b", right_left.condition.name)
 	_self.assert_equals("ba", right_left.then.statements[1].expression.name)
 	_self.assert_equals("bb", right_left.else.statements[1].expression.name)
 
-	_local right_right << x.right.else.statements[1].expression.expression
+	_local right_right << m.right.else.statements[1].expression.expression
 	_self.assert_true(right_right.is_class_of?(deco:jpn_if), "right should be an if")
 	_self.assert_equals("c", right_right.condition.name)
 	_self.assert_equals("ca", right_right.then.statements[1].expression.name)
@@ -842,8 +842,8 @@ _method java_parser_test.test_conditional_operator1()
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
 	
-	_local m << p.parse_expression()
-	_self.assert_true(m.is_kind_of?(deco:jpn_assignment), "should be an assignment")
+	_local m << p.parse_statement()
+	_self.assert_true(m.is_class_of?(deco:jpn_assignment), "should be an assignment")
 _endmethod
 $
 
@@ -857,10 +857,10 @@ _method java_parser_test.test_conditional()
 	_local p << deco:java_parser.new(s)
 	p.define_locals("x")
 	_local jpn_exp << p.parse_statement()
-	_self.assert_true(jpn_exp.is_kind_of?(deco:jpn_return), "should be a return")
-	show(jpn_exp.expression)
+	_self.assert_true(jpn_exp.is_class_of?(deco:jpn_return), "should be a return")
+
 	jpn_exp.expression.dp
-	_self.assert_true(jpn_exp.expression.is_kind_of?(deco:jpn_if), "should be an if")
+	_self.assert_true(jpn_exp.expression.is_class_of?(deco:jpn_if), "should be an if")
 _endmethod
 $
 
@@ -873,9 +873,9 @@ _method java_parser_test.test_conditional2()
 	_local p << deco:java_parser.new(s)
 	p.define_locals("x")
 	_local jpn_exp << p.parse_statement()
-	_self.assert_true(jpn_exp.is_kind_of?(deco:jpn_return), "should be a return")
+	_self.assert_true(jpn_exp.is_class_of?(deco:jpn_return), "should be a return")
 	
-	_self.assert_true(jpn_exp.expression.is_kind_of?(deco:jpn_if), "should be an if")
+	_self.assert_true(jpn_exp.expression.is_class_of?(deco:jpn_if), "should be an if")
 _endmethod
 $
 
@@ -913,8 +913,8 @@ _method java_parser_test.test_or_if()
 	_local p << deco:java_parser.new(s)
 	p.define_locals("a", "b")
 
-	_local m << p.parse_expression()
-	_self.assert_true(m.is_kind_of?(deco:jpn_if), "should be an if statement")
-	_self.assert_true(m.condition.is_kind_of?(deco:jpn_operation), "should be an if operation")
+	_local m << p.parse_statement()
+	_self.assert_true(m.is_class_of?(deco:jpn_if), "should be an if statement")
+	_self.assert_true(m.condition.is_class_of?(deco:jpn_operation), "should be an if operation")
 _endmethod
 $

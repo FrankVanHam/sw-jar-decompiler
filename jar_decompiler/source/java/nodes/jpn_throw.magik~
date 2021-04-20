@@ -1,0 +1,18 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_throw,
+	{
+		{:expression, _unset, :readable}
+	},
+	:jpn_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_throw.init(p_expression)
+	assert(p_expression.is_kind_of?(jpn_base))
+	.expression << p_expression
+	>> _super.init()
+_endmethod
+$

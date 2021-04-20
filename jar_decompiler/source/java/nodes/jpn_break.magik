@@ -27,3 +27,10 @@ _method jpn_break.name
 	   _endif 
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_break.parse_statement(p_parser)
+	## 
+	>> p_parser.parse_break(_self)
+_endmethod
+$

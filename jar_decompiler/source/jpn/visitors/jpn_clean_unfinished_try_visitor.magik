@@ -59,7 +59,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_clean_unfinished_try_visitor.must_clean?(p_node)
 	##
-	_if p_node.is_kind_of?(dcn_unfinished_try).not _then _return _false _endif
+	_if p_node.is_unfinished_try?.not _then _return _false _endif
 	_if p_node.catch_body _is _unset _then _return _false _endif
 
 	_return _true 

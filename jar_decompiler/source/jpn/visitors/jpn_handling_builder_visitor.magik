@@ -132,7 +132,7 @@ _method jpn_handling_builder_visitor.should_convert?(p_node, p_prev)
 	_if p_prev.is_class_of?(dcn_dynamic_declaration).not _then _return _false, :no_store_before _endif
 	_if p_prev.name <> "!sys!condition_handler_cluster!"  _then _return _false, :no_handler _endif
 	
-	_if p_node.is_class_of?(dcn_unfinished_try).not _then _return _false, :dcn_unfinished_try _endif
+	_if p_node.is_unfinished_try?.not _then _return _false, :dcn_unfinished_try _endif
 	
 	_local handling? << _false 
 	_for i_arg _over p_node.args.fast_elements()

@@ -27,3 +27,10 @@ _method jpn_continue.name
 	   _endif 
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_continue.parse_statement(p_parser)
+	## 
+	>> p_parser.parse_continue(_self)
+_endmethod
+$

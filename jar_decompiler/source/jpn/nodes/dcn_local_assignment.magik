@@ -293,7 +293,7 @@ _method dcn_local_assignment.decode_on(a_stream)
 	_local declare? << _false
 	_for i_node _over .local_nodes.fast_elements()
 	_loop
-		_if i_node.is_kind_of?(dcn_local_declaration)
+		_if i_node.is_class_of?(dcn_local_declaration)
 		_then
 			declare? << _true
 		_endif

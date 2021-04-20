@@ -263,7 +263,7 @@ _private _method java_parser.parse_parameters()
 	## Parse invocation of parameters
 	## e.g: (Object[] __env__, Object i_index, Object ... i_var)
 	##
-	_local args << rope.new()
+	_local params << rope.new()
 	_loop
 		_local varargs? << _false 
 		_local lex << .scanner.peek()
@@ -289,9 +289,9 @@ _private _method java_parser.parse_parameters()
 		_endif 
 				
 		_local identifier << .scanner.get()
-		args.add(jpn_arg.new(identifier, type, varargs?))
+		params.add(jpn_parameter.new(identifier, type, varargs?))
 	_endloop
-	>> args
+	>> params
 _endmethod
 $
 
@@ -324,9 +324,9 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method java_parser.parse_body(_optional p_args)
+_private _method java_parser.parse_body(_optional p_params)
 	.context << .context.push()
-	.context.add_all(p_args.default({}).map(_proc(x) >> x.name _endproc))
+	.context.add_all(p_params.default({}).map(_proc(x) >> x.name _endproc))
 	_local stats << rope.new()
 	_loop
 		_local lex << .scanner.peek()

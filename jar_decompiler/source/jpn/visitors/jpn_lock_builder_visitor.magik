@@ -61,7 +61,7 @@ _method jpn_lock_builder_visitor.should_convert?(p_node)
 	_if p_node.is_class_of?(dcn_synchronized).not _then _return _false, :dcn_sync _endif
 	_if p_node.body _is _unset _then _return _false, :no_body _endif
 	_if p_node.body.statements.empty? _then _return _false, :empty_finally _endif
-	_if p_node.body.statements[1].is_class_of?(dcn_unfinished_try).not _then _return _false, :dcn_interrupts _endif
+	_if p_node.body.statements[1].is_unfinished_try?.not _then _return _false, :dcn_interrupts _endif
 	
 	>> _true 
 _endmethod

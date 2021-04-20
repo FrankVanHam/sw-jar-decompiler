@@ -6,10 +6,10 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:jpn_try,
 	{
-		{:try_body, _unset, :readable},
+		{:try_body,     _unset, :readable},
 		{:finally_body, _unset, :readable},
-		{:exceptions, _unset, :readable},
-		{:catch_body, _unset, :readable}
+		{:exceptions,   _unset, :readable},
+		{:catch_body,   _unset, :readable}
 	},
 	:jpn_base)
 $
@@ -30,3 +30,9 @@ _method jpn_try.init(p_try_body, p_exceptions, p_catch_body, p_finally_body)
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_try.parse_statement(p_parser)
+	## 
+	>> p_parser.parse_try(_self)
+_endmethod
+$
