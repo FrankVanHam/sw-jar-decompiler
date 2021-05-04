@@ -4,7 +4,7 @@ jpn_block_if_visitor
 jpn_loop_while_visitor
 jpn_ignore_assignment_visitor
 jpn_pop_visitor
-jpn_try_visitor2
+jpn_try_visitor
 jpn_clean_unfinished_try_visitor
 jpn_iter_leave_continue_visitor
 jpn_iter_result_hider_visitor
@@ -17,4 +17,3 @@ jpn_ignore_environment_building_visitor
 tblock
 tblock_factory
 jpn_andif_orif_visitor
-jpn_assign_in_branch_visitor

@@ -1,0 +1,28 @@
+_package deco
+$
+
+#remex(:dcn_clone)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## Node for _clone.
+def_slotted_exemplar(:dcn_clone, {}, :dcn_base )
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_clone.new()
+	_return _clone.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_clone.init()
+	_return _self
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_clone.decode_on(p_stream)
+	p_stream.write( "_clone" )
+_endmethod
+$

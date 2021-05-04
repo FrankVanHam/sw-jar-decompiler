@@ -1,0 +1,11 @@
+_package user
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method object.deco_method_finder_id
+	## return the id that can be used in the method finder.
+	meta << _self.define_method_target.metadata
+	glb << meta[:exemplar_global]
+	>> write_string( glb.package.name, ":", glb.key )
+_endmethod
+$

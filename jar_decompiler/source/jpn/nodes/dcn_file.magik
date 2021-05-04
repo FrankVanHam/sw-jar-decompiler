@@ -8,8 +8,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:dcn_file,
 		      {
 			      {:name, _unset, :readable},
-			      {:body, _unset, :readable},
-			      {:source_file, _unset, :readable}
+			      {:body, _unset, :readable}
 		      },
 		      :dcn_base)
 $
@@ -30,13 +29,6 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method dcn_file.source_file << p_file
-	## 
-	.source_file << p_file
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
 _method dcn_file.add_statement(p_statement)
 	## 
 	.body.statements.add(p_statement)
@@ -45,20 +37,32 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method dcn_file.get_file_name()
-	##
-	>> _if .source_file _isnt _unset
-	   _then
-		   >> _self.get_file_name_from_source_file()
-	   _else
-		   >> _self.get_file_name_from_content()
-	   _endif
+	
+	_for i_stat _over .body.statements.fast_elements()
+	_loop
+		_if i_stat.is_dynamic_store? _andif
+		    i_stat.name = "!source_file!"
+		_then
+			_local path << i_stat.value.string_value
+			_return _self.get_file_name_from_source_file(path)
+			
+		_elif i_stat.is_def_object?
+		_then
+			_return write_string(i_stat.target_name, ".magik")
+
+		_elif i_stat.is_method?
+		_then
+			_return write_string(i_stat.exemplar_name, "_extras.magik")
+		_endif
+	_endloop
+	_return write_string(.name, ".magik")
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method dcn_file.get_file_name_from_source_file()
+_private _method dcn_file.get_file_name_from_source_file(p_file)
 	##
-	_local file << .source_file
+	_local file << p_file.copy()
 	file << file.substitute_string("/","\").substitute_string("\\","\")
 
 	_local index << file.lowercase.rindex_of_seq("source")
@@ -78,26 +82,6 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method dcn_file.get_file_name_from_content()
-	
-	_for i_stat _over .body.statements.fast_elements()
-	_loop
-		_if i_stat.is_class_of?(dcn_call) _andif
-		    i_stat.name = "def_slotted_exemplar"
-		_then
-			_return write_string(i_stat.args[1].string_value, ".magik")
-
-		_elif i_stat.is_class_of?(dcn_method)
-		_then
-			_return write_string(i_stat.exemplar_name, "_extras.magik")
-		_endif
-	_endloop
-	_return write_string(.name, ".magik")
-_endmethod
-$
-
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
 _method dcn_file.empty?
 	>> .body.statements.empty?
 _endmethod
@@ -108,7 +92,10 @@ _method dcn_file.decode_on(p_stream)
 	##
 	_for i_statement _over .body.statements.fast_elements()
 	_loop
-		_if i_statement.is_no_op? _then _continue _endif 
+		_if i_statement.is_no_op? _then _continue _endif
+		_if i_statement.is_dynamic_store? _andif
+		    i_statement.name = "!source_file!" _then _continue _endif
+		
 		i_statement.decode_on(p_stream)
 		p_stream.newline()
 		p_stream.write("$")
@@ -117,7 +104,6 @@ _method dcn_file.decode_on(p_stream)
 	_endloop
 _endmethod
 $
-
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method dcn_file.accept_body_visitor(p_visitor)

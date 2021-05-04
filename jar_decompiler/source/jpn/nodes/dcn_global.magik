@@ -6,8 +6,8 @@ _pragma(classify_level=restricted, topic={decompiler})
 def_slotted_exemplar(:dcn_global,
 		     {
 			     {:package, _unset, :readable},
-			     {:name, _unset, :readable},
-			     {:at?, _unset, :readable}
+			     {:name,    _unset, :readable},
+			     {:at?,     _unset, :readable}
 		     }, :dcn_base )
 $
 

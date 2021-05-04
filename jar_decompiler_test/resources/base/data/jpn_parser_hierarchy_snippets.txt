@@ -35,13 +35,13 @@ implements ExecutableMagik {
     }
 }
 ###########
-sw:def_slotted_exemplar(:deco_test_a, {}, :model)
+def_slotted_exemplar(:deco_test_a, {}, :model)
 $
 
-sw:def_slotted_exemplar(:deco_test_b, {}, {@sw:top_level_geometry, :number_mixin})
+def_slotted_exemplar(:deco_test_b, {}, {@sw:top_level_geometry, :number_mixin})
 $
 
-sw:def_slotted_exemplar(:deco_test_combi, {}, {:deco_test_a, :deco_test_b})
+def_slotted_exemplar(:deco_test_combi, {}, {:deco_test_a, :deco_test_b})
 $
 
 _method deco_test_combi.init() 
@@ -84,7 +84,7 @@ implements ExecutableMagik {
     }
 }
 ############
-sw:def_slotted_exemplar(:deco_test, {}, :model)
+def_slotted_exemplar(:deco_test, {}, :model)
 $
 
 _method deco_test.init() 
@@ -92,4 +92,46 @@ _method deco_test.init()
 _endmethod
 $
 ############
+## jpn_super_activate
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_tester_4083 {
+    @SourceHash(value=13885341)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_tester__activate(Object _self, Object ... args) {
+        Object[] results = ((ResultTuple)((Object)Invoker.superTupleBootstrap("activate()", "model", "sw", (Object)_self, (Object[])((Object[])Invoker.bootstrapPrivate("for_scatter()", (Object)args))))).asAllResults();
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("disabled_check()", (Object)_self));
+        return TupleBuilder.bootstrap("tb", (Object[])Invoker.bootstrapPrivate("for_scatter()", (Object)results));
+    }
+}
 
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_tester_4082
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_tester_4082() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_tester", "activate()", deco_tester_4083.class, "deco_tester__activate", 2, 1));
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+##############
+_method deco_tester.activate(_optional _gather args) 
+     _local results <<  _allresults _super(model).activate(( _scatter args))
+    _self.disabled_check()
+    _return ( _scatter results)
+_endmethod
+$
+##############

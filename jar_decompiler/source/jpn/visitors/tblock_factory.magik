@@ -5,39 +5,43 @@ $
 #remex(:tblock_factory)
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## Builder of tblocks and their hierarchy
+##
 def_slotted_exemplar(:tblock_factory,
 	{})
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method tblock_factory.new()
-	>> _clone.init()
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method tblock_factory.init()
-	>> _self 
+	>> _clone
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method tblock_factory.create(p_node)
 	##
+	## Create tblock with all hierarchy.
+	## Return _unset if P_NODE is not suitable for a tblock.
+	##
 	_if _self.is_block_or_try?(p_node).not
 	_then
 		_return _unset
 	_else
+		# iterate over the children. blck is the var diving deep,
+		# first_block is still the frist one.
 		_local blck << first_block << _self.create_one(p_node)
 		_loop
 			_if blck _is _unset _then _leave _endif 
-			_if blck.has_try? _then _leave _endif
+			_if blck.has_try?   _then _leave _endif
 			
 			blck << _self.find_child(blck)
 		_endloop
 		
 		_if blck _isnt _unset _andif blck.has_try?
 		_then
+			# If the lower blck is a try, then return the first_block as a
+			# correct parent to work with.
 			_return first_block
 		_else
 			_return _unset 
@@ -48,31 +52,32 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method tblock_factory.create_one(p_node)
+	##
 	_if _self.is_block_or_try?(p_node).not
 	_then
 		_return _unset
 	_endif 
 	(try?, try_index) << _self.has_try?(p_node)
-	>> _if try?
-	   _then
-		   _local tb << _if p_node.is_unfinished_try?
-				_then >> tblock.new(p_node, :try)
-				_else >> tblock.new(p_node, :try_block)
-				_endif 
-		   tb.start_index << try_index+1
-		   >> tb
-	   _elif p_node.is_class_of?(dcn_block)
-	   _then 
-		   >> tblock.new(p_node, :block)
-	   _else
-		   >> _unset 
-	   _endif 
+	_if try?
+	_then
+		_local tb << _if p_node.is_unfinished_try?
+			     _then >> tblock.new(p_node, :try)
+			     _else >> tblock.new(p_node, :try_block)
+			     _endif 
+		tb.start_index << try_index+1
+		_return  tb
+	_elif p_node.is_block?
+	_then 
+		_return tblock.new(p_node, :block)
+	_else
+		_return _unset 
+	_endif 
 _endmethod
 $
 
-
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method tblock_factory.has_try?(p_node)
+	##
 	_local sts << _if p_node.is_unfinished_try?
 		      _then >>p_node.try_body.statements
 		      _else >> p_node.body.statements
@@ -85,10 +90,12 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method tblock_factory.try_index(sts)
+_method tblock_factory.try_index(p_statements)
+	##
+	## Return the index of the try statement.
 	##
 	_local idx
-	_for i_index, i_node _over sts.fast_keys_and_elements()
+	_for i_index, i_node _over p_statements.fast_keys_and_elements()
 	_loop
 		_if i_node.is_unfinished_try?
 		_then
@@ -99,8 +106,8 @@ _method tblock_factory.try_index(sts)
 	_if idx _is _unset _then _return _unset _endif
 	_if idx < 7        _then _return _unset _endif
 	
-	_if sts[idx-1].is_dynamic_store?.not  _then _return _unset _endif 
-	_if sts[idx-1].name <> "__catch_tags_dynamic__" _then _return _unset _endif
+	_if p_statements[idx-1].is_dynamic_store?.not  _then _return _unset _endif 
+	_if p_statements[idx-1].name <> "__catch_tags_dynamic__" _then _return _unset _endif
 	
 	>> idx
 _endmethod
@@ -128,6 +135,8 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method tblock_factory.child_block_index(p_tblock)
 	##
+	## Try the first or second statement. Else fail
+	##
 	_local sts << p_tblock.statements
 	_if sts.size >=1 _andif _self.is_block_or_try?(sts[1]) _then _return 1 _endif
 	_if sts.size >=2 _andif _self.is_block_or_try?(sts[2]) _then _return 2 _endif
@@ -137,7 +146,8 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method tblock_factory.is_block_or_try?(p_node)
-	>> p_node.is_class_of?(dcn_block) _orif
+	##
+	>> p_node.is_block? _orif
 		p_node.is_unfinished_try?
 _endmethod
 $

@@ -1,6 +1,8 @@
 _package deco
 $
 
+#remex(:deco_thread)
+
 def_slotted_exemplar(:deco_thread, {}, :deco_execution_base)
 $
 

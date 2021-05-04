@@ -4,22 +4,24 @@ $
 #remex(:jpn_iter_visitor)
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-def_slotted_exemplar(:jpn_iter_visitor,
-	{
-		{:file, _unset}
-	})
+##
+## Convert a try block with an iter to a Magik iter.
+## Like:
+##        try {
+##            EnvAccessor.bootstrapStorer("storeEnv", (Object)DynamicScope.getFrame(), (Object[])__env__, (int)0);
+##            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("fast_elements()", (MethodHandle)cfr_ldc_0(), (Object[])__env__, (Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1)));
+##        }
+##        catch (LeaveCatcher.Leave leave) {
+##            ((LeaveCatcher)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)2))).getLeaveResult(leave);
+##        }
+
+##
+def_slotted_exemplar(:jpn_iter_visitor, {})
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_iter_visitor.new(p_file)
-	>> _clone.init(p_file)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method jpn_iter_visitor.init(p_file)
-	.file << p_file
-	>> _self 
+_method jpn_iter_visitor.new()
+	>> _clone
 _endmethod
 $
 
@@ -39,10 +41,10 @@ _method jpn_iter_visitor.do_accept(p_body)
 	_local sts << p_body.statements
 	_for i_index, i_node _over sts.fast_keys_and_elements()
 	_loop
-		(ok?, idx) << _self.finally_iter?(i_node)
+		(ok?, idx) << _self.iter?(i_node)
 		_if ok?
 		_then
-			(nd, rest) << _self.convert_to_finally_iter(i_node, idx)
+			_local (nd, rest) << _self.convert_to_iter(i_node, idx)
 			sts[i_index] << nd
 			sts.insert(i_index+1, rest)
 			_return _true 
@@ -53,23 +55,17 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method jpn_iter_visitor.iter?(p_node)
-	>> p_node.is_class_of?(dcn_local_assignment) _andif
-		p_node.expression.is_class_of?(dcn_iter)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_iter_visitor.finally_iter?(p_node)
+_method jpn_iter_visitor.iter?(p_node)
 	##
 	_if p_node.is_unfinished_try?.not _then _return _false, :not_unfinised_try _endif
 	_if p_node.args _is _unset _then _return _false, :no_args _endif
-	_if p_node.args.size<1 _then _return _false, :no_args_size _endif
+	_if p_node.args.empty? _then _return _false, :no_args_size _endif
 	_if p_node.args[1] <> "leave" _then _return _false, :no_leave _endif
 
 	_for i_index, i_stat _over p_node.try_body.statements.fast_keys_and_elements()
 	_loop
-		_if _self.iter?(i_stat)
+		_if i_stat.is_local_assignment? _andif
+		    i_stat.expression.is_iter?
 		_then
 			_return _true, i_index
 		_endif
@@ -79,7 +75,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_iter_visitor.convert_to_finally_iter(p_node, p_index)
+_method jpn_iter_visitor.convert_to_iter(p_node, p_index)
 	##
 	_local assignment_node << p_node.try_body.statements[p_index]
 	_local try_node << assignment_node.expression
@@ -94,7 +90,7 @@ _method jpn_iter_visitor.convert_to_finally_iter(p_node, p_index)
 	_local rest
 	_if p_node.catch_body _isnt _unset _andif
 	    p_node.catch_body.statements.empty?.not _andif
-	    p_node.catch_body.statements[1].is_class_of?(dcn_leave_result)
+	    p_node.catch_body.statements[1].is_leave_result?
 	_then
 		_local tag << _self.loop_tag(p_node.catch_body.statements[1].local.name)
 		_if tag.empty?.not
@@ -112,6 +108,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_iter_visitor.loop_tag(p_name)
+	##
 	_local idx << p_name.default("").rindex_of_seq("__")
 	>> _if idx _isnt _unset
 	   _then >> p_name.slice_to_end(idx+2)

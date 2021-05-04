@@ -86,6 +86,9 @@ _method jpn_parser_base_snippet_test.assert_equals_execution_strings(p_goal, p_g
 					"Given:", newline_char,
 					p_given))
 		_self.fail("Strings are not equal")
+
+		write(goal)
+		write(given)
 	_endif 
 _endmethod
 $

@@ -1,23 +1,5 @@
-##
-## File            : $File: (dcn_handling.magik) $
-## SCM             : $URL$
-##
-## Copyright       : Realworld Systems
-##                   e-mail  : support@realworld-systems.com
-##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
-##                   tel     : +31(0)345 614406
-##                   fax     : +31(0)345 614319
-##
-## Contains        : 
-##
-##
-## Date written    : 2012-04-06
-## Date changed    : $Date$
-## Revision        : $Rev$
-
 _package deco
 $
-
 
 #remex(:dcn_handling)
 $
@@ -25,67 +7,48 @@ $
 _pragma(classify_level=restricted, topic={decompiler})
 ## Node for a single handling statements. 
 def_slotted_exemplar( :dcn_handling,
-		       {{:conditions, _unset},
-			{:proc_node,_unset}}, :dcn_base)
+		       {
+			       {:conditions, _unset},
+			       {:proc_node,  _unset}
+		       }, :dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_handling.new( conditions, proc_node )
-	_return _clone.init(conditions,proc_node)
+	_return _clone.init(conditions, proc_node)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_handling.init(conditions,proc_node)
+_private _method dcn_handling.init(conditions, proc_node)
 	.conditions << conditions
-	.proc_node << proc_node
+	.proc_node  << proc_node
 	_return _self 
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_handling.accept_node_visitor(visitor)
-	.proc_node.accept_node_visitor(visitor)
-	_return _super.accept_node_visitor(visitor)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
 _method dcn_handling.accept_body_visitor(visitor)
-	.proc_node.accept_body_visitor(visitor)
+	_if .proc_node _isnt _unset
+	_then 
+		.proc_node.accept_body_visitor(visitor)
+	_endif 
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_handling.try_index
-	_return .proc_node.try_index
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_handling.register_for_try(whens)
-	try_index << _self.try_index
-	conditions << _self.try_conditions
-	whens[try_index][:conditions] << conditions
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_handling.try_conditions
-	_return .conditions
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_handling.decode_on( a_stream, _optional parent, statements )
-	a_stream.write( "_handling " )
+_method dcn_handling.decode_on(p_stream)
+	p_stream.write( "_handling " )
 	comma? << _false 
 	_for cond _over .conditions.fast_elements()
 	_loop
-		_if (comma? ^<< _true) _then a_stream.write( ", ") _endif
-		a_stream.write( cond )
+		_if (comma? ^<< _true) _then p_stream.write( ", ") _endif
+		p_stream.write( cond )
 	_endloop
-	a_stream.write( " _with " )
-	.proc_node.decode_on( a_stream )
+	_if .proc_node _isnt _unset
+	_then 
+		p_stream.write( " _with " )
+		.proc_node.decode_on( p_stream )
+	_endif 
 _endmethod
 $

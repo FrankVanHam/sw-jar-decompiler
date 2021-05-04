@@ -1,0 +1,116 @@
+_package deco
+$
+
+#remex(:dcn_constant)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## node representing a constant value.
+def_slotted_exemplar(:dcn_constant,
+		     {
+			     {:type, _unset, :readable},
+			     {:string_value, _unset, :readable}
+		     },
+		     :dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_constant.new_string(p_value)
+	##
+	>> _clone.init(:string, p_value)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_constant.new_number(p_value)
+	##
+	>> _clone.init(:number, p_value)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_constant.new_symbol(p_value)
+	##
+	>> _clone.init(:symbol, p_value)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_constant.new_character(p_value)
+	##
+	>> _clone.init(:character, p_value)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_constant.new_literal(p_value)
+	##
+	>> _clone.init(:literal, p_value)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_constant.new_proc(p_value)
+	##
+	>> _clone.init(:proc, p_value)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_constant.init(p_type, p_string_value)
+	## 
+	.type << p_type
+	.string_value << p_string_value
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_constant.decode_on(p_stream)
+	_if .type _is :string
+	_then
+		p_stream.write(%", .string_value, %")
+	_elif .type _is :symbol
+	_then
+		_if .string_value.includes?(%() _orif
+		    .string_value.includes?(%[)
+		_then
+			p_stream.write(%:, %|, .string_value, %|)
+		_else 
+			p_stream.write(%:, .string_value)
+		_endif 
+	_elif .type _is :number
+	_then
+		p_stream.write(.string_value)
+	_elif .type _is :character
+	_then
+		p_stream.write(%%,.string_value)
+	_elif .type _is :literal
+	_then
+		_if .string_value = "null"
+		_then
+			p_stream.write("_unset")
+		_else 
+			p_stream.write(.string_value)
+		_endif 
+	_elif .type _is :proc
+	_then
+		p_stream.write(.string_value)
+	_else
+		13.stop
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_constant.is_null?
+	>> .type _is :literal _andif .string_value="null"
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_constant.is_constant?
+	## 
+	>> _true 
+_endmethod
+$

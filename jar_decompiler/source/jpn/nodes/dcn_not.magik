@@ -16,7 +16,6 @@ _method dcn_not.new(p_expression)
 _endmethod
 $
 
-
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method dcn_not.init(p_expression)
 	##
@@ -32,12 +31,18 @@ _method dcn_not.not
 _endmethod
 $
 
-
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method dcn_not.decode_on(p_stream)
 	## 
 	p_stream.write(" _not(")
 	.expression.decode_on(p_stream)
 	p_stream.write(")")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_not.is_not?
+	##
+	>> _true
 _endmethod
 $

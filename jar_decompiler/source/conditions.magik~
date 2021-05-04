@@ -21,3 +21,5 @@ condition.define_condition(:deco_unexpected_identifier, :deco_error, {:line, :co
 $
 condition.define_condition(:deco_unexpected_eof,        :deco_error, {:line, :column, :while_doing})
 $
+condition.define_condition(:deco_unexpected_node,       :deco_error, {:node})
+$

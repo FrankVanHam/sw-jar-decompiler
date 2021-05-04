@@ -16,7 +16,6 @@ _method dcn_body.new(_optional p_statements)
 _endmethod
 $
 
-
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method dcn_body.init(_optional p_statements)
 	##
@@ -33,11 +32,6 @@ _method dcn_body.empty?
 	>> .statements.empty?
 _endmethod
 $
-#
-#_method dcn_body.statements
-#>> .statements
-#_endmethod
-#$
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method dcn_body.decode_on(p_stream)
@@ -56,9 +50,24 @@ $
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_body.accept_body_visitor(p_visitor)
 	p_visitor.accept(_self)
-	_for i_stat _over .statements.fast_elements()
+	_self.accept_body_visitor_in_list(p_visitor, .statements)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_iter _method dcn_body.pair_of_nodes()
+	##  
+	_local sts << .statements
+	_local idx1 << idx2 << _unset 
+	_for i_index, i_node _over sts.fast_keys_and_elements()
 	_loop
-		i_stat.accept_body_visitor(p_visitor)
+		_if i_node.is_no_op? _then _continue _endif
+		idx1 << idx2
+		idx2 << i_index
+		_if idx1 _isnt _unset 
+		_then
+			_loopbody(sts, idx1, idx2, i_node)
+		_endif
 	_endloop 
 _endmethod
 $

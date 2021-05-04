@@ -6,13 +6,14 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_methodhandles.lookup(p_parser)
+	##
 	>> _self 
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_methodhandles.findstatic(p_parser, p_type, p_name, p_whatever)
-	
-	>> dcn_easter_egg.new(p_name.string_value)
+	##
+	_return dcn_no_op.open()
 _endmethod
 $

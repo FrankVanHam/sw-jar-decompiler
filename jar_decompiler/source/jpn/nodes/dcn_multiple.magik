@@ -29,12 +29,7 @@ _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_multiple.decode_on(p_stream)
 	##
 	p_stream.write("(")
-	_local c? << _false 
-	_for i_exp _over .expressions.fast_elements()
-	_loop
-		_if (c? ^<<_true) _then p_stream.write(", ") _endif
-		i_exp.decode_on(p_stream)
-	_endloop
+	_self.decode_list_on(p_stream, .expressions)
 	p_stream.write(")")
 _endmethod
 $

@@ -1,0 +1,245 @@
+_package deco
+$
+
+#remex(:dcn_method_finder)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+##
+## Node to decode method finder values
+##
+def_slotted_exemplar(:dcn_method_finder,
+	{
+		{:single_name,   _unset},
+
+		{:method_name,   _unset},
+		{:exemplar_name, _unset}
+	},
+	:dcn_base )
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+dcn_method_finder.define_shared_constant(:levels_in_method_finder,
+	{"basic", "advanced", "debug", "deprecated", "restricted"}, :private )
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+dcn_method_finder.define_shared_constant(:uages_in_method_finder,
+	{"subclass", "redefinable", "not_international","internal", "external"}, :private )
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+dcn_method_finder.define_shared_constant(:bs_in_method_finder,
+	{"classconst", "classvar", "private"}, :private )
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_method_finder.new_named(p_single_name)
+	##
+	>> _clone.init(p_single_name, _unset, _unset)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_method_finder.new_method(p_method_name, p_exemplar_name)
+	##
+	>> _clone.init(_unset, p_method_name, p_exemplar_name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_method_finder.init(p_single_name, p_method_name, p_exemplar_name)
+	.single_name   << p_single_name
+	.method_name   << p_method_name
+	.exemplar_name << p_exemplar_name
+	>> _self
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={decompiler})
+_method dcn_method_finder.decode_comment_on(p_stream, p_tab?)
+	_local comment << _self.get_comment(p_tab?)
+	_if comment _isnt _unset
+	_then
+		p_stream.write( comment )
+		p_stream.newline()
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={decompiler})
+_method dcn_method_finder.decode_pragma_on(p_stream)
+	##
+	(level, topics, usages) << _self.level_topics_and_usages
+	
+	_if level _isnt _unset _orif
+	    topics.empty?.not _orif
+	    usages.empty?.not
+	_then
+		bef? << _false 
+		p_stream.write( "_pragma(")
+		_if level _isnt _unset
+		_then
+			p_stream.write( "classify_level=", level)
+			def? << _true 
+		_endif
+		_if topics.empty?.not
+		_then
+			bef? << _true 
+			_if bef? _then p_stream.write( ", ") _endif 
+			p_stream.write( "topic={")
+			_self.write_list_on(p_stream, topics)
+			p_stream.write( "}")
+		_endif 
+		_if usages.empty?.not
+		_then
+			bef? << _true 
+			_if bef? _then p_stream.write( ", ") _endif 
+			p_stream.write( "usage={")
+			_self.write_list_on(p_stream, usages)
+			p_stream.write( "}")
+		_endif 
+		p_stream.write( ")")
+		p_stream.newline()
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={decompiler})
+_private _method dcn_method_finder.level_topics_and_usages
+	## 
+	## Return the pragma topics (symbols) for the method.
+	#
+	_local props << _unset 
+	_try
+		_if .single_name _isnt _unset
+		_then
+			props << method_finder.get_class_info(.single_name)
+		_else
+			props << method_finder.get_method_info(.method_name, .exemplar_name)
+		_endif 
+	_when error
+		props << _unset
+	_endtry
+	
+	>> _self.level_topics_and_usages_for_props(props)
+_endmethod
+$
+
+_pragma(classify_level=basic, topic={decompiler})
+_private _method dcn_method_finder.get_comment(p_tab?)
+	##
+	_local str << _unset 
+	_try
+		_if .single_name _isnt _unset
+		_then
+			str << method_finder.get_class_public_comments(.single_name, _true)
+		_else
+			str << method_finder.get_method_public_comments(.method_name, .exemplar_name, _true)
+		_endif 
+
+		_if str _isnt _unset
+		_then
+			str << _self.format_comment(str, p_tab?)
+		_endif 
+	_when error
+	      str << _unset
+	_endtry
+	_return str
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_method_finder.format_comment(p_comment, p_tab?)
+	##
+	## Format the comment: Add tabs and add a space after ##
+	#
+	_local tab << "    "
+	_local comment << p_comment.copy()
+	_if comment.empty?.not
+	_then
+		_if comment.last _is newline_char
+		_then
+			comment << comment.slice(1, comment.size-1)
+		_endif
+	_endif 
+	_if comment.empty?.not
+	_then
+		_if p_tab?
+		_then 
+			comment << write_string( tab, comment)
+			comment << comment.substitute_string( "##", "## " )
+			comment << comment.substitute_string( newline_char, write_string(newline_char,tab))
+		_else
+			comment << comment.substitute_string( "##", "## " )
+		_endif 
+	_endif
+	_return comment
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_method_finder.level_topics_and_usages_for_props(p_props)
+	## filter the topics and usages from the props that were given bij the
+	## method finder.
+	_if p_props _isnt _unset
+	_then
+		topics << p_props[:topics]
+	_endif
+	_if topics _isnt _unset
+	_then
+		list << topics.split_by(space_char)
+		topics << equality_set.new_from(list)
+	_else
+		topics << equality_set.new()
+	_endif
+	(level, topics, usages) << _self.level_topics_and_usages_for(topics)
+	
+	_for top _over topics.elements()
+	_loop
+		_if top.includes?(%:) _orif
+		    top.includes?(%/) _orif
+		    top.includes?(%\)
+		_then
+			topics.remove(top)
+		_endif 
+	_endloop
+	topics << topics.as_sorted_collection()
+	usages << usages.as_sorted_collection()
+	_return level, topics, usages
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_method_finder.level_topics_and_usages_for(p_topics)
+	##
+	_local topics << p_topics.copy()
+	_local usages << equality_set.new()
+	_local level << _unset 
+	_if topics.empty?.not 
+	_then
+		topics.remove("no_comment")
+		_for i_level _over _self.levels_in_method_finder.fast_elements()
+		_loop
+			was? << topics.remove(i_level)
+			_if was?
+			_then
+				level << i_level
+			_endif 
+		_endloop
+		_for i_usage _over _self.uages_in_method_finder.fast_elements()
+		_loop
+			was? << topics.remove(i_usage)
+			_if was?
+			_then
+				usages.add(i_usage)
+			_endif 
+		_endloop
+		_for i_usage _over _self.bs_in_method_finder.fast_elements()
+		_loop
+			topics.remove(i_usage)
+		_endloop
+	_endif 
+	 >> level, topics, usages
+_endmethod
+$

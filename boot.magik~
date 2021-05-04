@@ -3,6 +3,8 @@ $
 
 
 _block
+	sw:method_finder.auto_start? << _true
+	
 	_dynamic !source_file!
 	write(!source_file!)
 
@@ -18,6 +20,8 @@ _endblock
 $
 
 #sw_module_manager.save_compiled_module(sw_module_manager.module(:decompile_target))
+
+#deco:decompiler.new(_true).decompile_jar_dir_to_dir("D:\SW526\core\sw_core\libs", "sw_core.*.jar", "c:\temp")
 
 _block 
 	simple_munit_gui.open()

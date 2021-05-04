@@ -1,6 +1,7 @@
 _package deco
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:deco_constantbuilder, {}, :deco_execution_base)
 $
 
@@ -17,7 +18,7 @@ _method deco_constantbuilder.stringbootstrap(p_parser, p_type_node, p_value_node
 	   _then
 		   >> dcn_constant.new_string(str_value)
 	   _else
-		   1.stop
+		   condition.raise(:deco_unexpected_node, :node, p_type_node)
 	   _endif
 _endmethod
 $
@@ -40,7 +41,7 @@ _method deco_constantbuilder.symbolbootstrap(p_parser, p_type_node, p_value_node
 	   _then
 		   >> dcn_constant.new_symbol(str_value)
 	   _else
-		   1.stop
+		   condition.raise(:deco_unexpected_node, :node, p_type_node)
 	   _endif
 _endmethod
 $

@@ -621,7 +621,7 @@ public class deco_test_4565 {
     @Debugger(value="MagikDebug")
     @CodeType(value="Method")
     @EnvVars(value={@EnvVar(name="4bec260d-2db6-4afa-81f7-5fa71560dcec", type=Object.class, start=15, end=142, index=0), @EnvVar(name="4bec260d-2db6-4afa-81f7-5fa71560dcec", type=Object.class, start=214, end=228, index=0)})
-    public static Object explorer_search_input_view__filter_search(Object _self) {
+    public static Object deco_test__filter_search_123(Object _self) {
         block9: {
             Object object;
             Object[] __env__ = new Object[1];
@@ -671,7 +671,7 @@ public class deco_test_4565 {
         return ResultTuple.EMPTY_TUPLE;
     }
 
-    @Parent(method="explorer_search_input_view__filter_search")
+    @Parent(method="deco_test__filter_search_123")
     @SourceHash(value=91382809)
     @Debugger(value="MagikDebug")
     @CodeType(value="Proc")
@@ -690,16 +690,12 @@ implements ExecutableMagik {
     @Debugger(value="MagikDebug")
     @CodeType(value="TopLevel")
     public Object execute() {
-        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("explorer_search_input_view", "filter_search()", deco_test_4565.class, "explorer_search_input_view__filter_search", 1, 1));
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "filter_search_123()", deco_test_4565.class, "deco_test__filter_search_123", 1, 1));
     }
 }
 
 ############
-_pragma(classify_level=restricted, topic={explorer_view_plugin})
-_method explorer_search_input_view.filter_search() 
-	##
-	##Starts the search and makes it current.
-	##
+_method deco_test.filter_search_123() 
      _local result_predicate << _unset
     _try
         result_predicate << .predicate_component.predicate()

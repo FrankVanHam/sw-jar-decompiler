@@ -5,17 +5,20 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:decompiler,
-	{})
+	{
+		{:safe?, _unset}
+	})
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method decompiler.new()
-	>> _clone.init()
+_method decompiler.new(_optional p_safe?)
+	>> _clone.init(p_safe?)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method decompiler.init()
+_private _method decompiler.init(_optional p_safe?)
+	.safe? << p_safe?.default(_false)
 	>> _self
 _endmethod
 $
@@ -95,8 +98,40 @@ _private _iter _method decompiler.directory_to_root(p_dir)
 _endmethod
 $
 
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method decompiler.decompile_jar_dir_to_dir(p_search_dir, p_match, p_dir)
+	_local ch << directory_channel.new(p_search_dir, p_match)
+	_loop
+		_local path << ch.get_full()
+		_if path _is _unset _then _leave _endif
+
+		write("Decompiling: ", path)
+		_self.decompile_jar_to_dir(path, p_dir)
+	_endloop
+_endmethod
+$
+
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method decompiler.decompile_jar_to_dir(p_jar_file, p_dir)
+	##
+	_if .safe?
+	_then
+		_try
+			_handling error _with _self.report_error_proc
+			
+			_self.int!decompile_jar_to_dir(p_jar_file, p_dir)
+		_when error
+			
+		_endtry 
+	_else
+		_self.int!decompile_jar_to_dir(p_jar_file, p_dir)
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method decompiler.int!decompile_jar_to_dir(p_jar_file, p_dir)
 	##
 	_local inp << _self.get_java_decompiler_stream(p_jar_file)
 	_protect 
@@ -118,6 +153,16 @@ _method decompiler.decompile_jar_to_dir(p_jar_file, p_dir)
 	_endprotect 
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method decompiler.report_error_proc
+	>> _proc(p_condition)
+		   p_condition.report_contents_on(!output!)
+		   !traceback!(!output!)
+	   _endproc 
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method decompiler.com_gesmallworld_magik_jars

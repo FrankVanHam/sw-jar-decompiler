@@ -54,32 +54,51 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_snippet.read_snippet(p_stream)
-	_local name << _unset
 	_local str1 << str2 << _unset 
+	_local name << _self.find_title(p_stream)
+	_if name _isnt _unset
+	_then
+		str1 << _self.find_part(p_stream)
+		str2 << _self.find_part(p_stream)
+	_endif
+	>> name, str1, str2
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method deco_snippet.find_title(p_stream)
+	##
+	_local name << _unset 
+	_loop
+		_local str << p_stream.get_line()
+		
+		_if str _is _unset _then _leave _endif
+		_if str.matches?("## *")
+		_then
+			name << str.slice_to_end(4).trim_spaces().as_symbol()
+			_leave 
+		_endif
+	_endloop 
+	>> name 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method deco_snippet.find_part(p_stream)
+	##
 	_local out << internal_text_output_stream.new()
 	_loop
 		_local str << p_stream.get_line()
 		
 		_if str _is _unset _then _leave _endif
-		_if str.matches?("##*")
+		_if str.matches?("####*")
 		_then
-			_if name _is _unset
-			_then
-				name << str.slice_to_end(3).trim_spaces().as_symbol()
-			_elif str1 _is _unset
-			_then
-				str1 << out.string
-				out.reset()
-			_elif str2 _is _unset
-			_then
-				str2 << out.string
-				_leave
-			_endif
+			_leave
 		_else
 			out.write(str)
 			out.newline()
 		_endif
 	_endloop
-	>> name, str1, str2 
+	>> out.string
 _endmethod
 $

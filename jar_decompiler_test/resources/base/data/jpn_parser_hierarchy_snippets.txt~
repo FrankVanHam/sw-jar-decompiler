@@ -1,0 +1,95 @@
+## jpn_method_test_hierarchy
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4005 {
+    @SourceHash(value=-478120835)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test_combi__init(Object _self) {
+        return Invoker.superNaturalBootstrap("init()", "deco_test_a", "user", (Object)_self, (Object)1, (Object)ConstantBuilder.stringBootstrap("string", "1"));
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4004
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_4004() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "def_slotted_exemplar"), (Object)ConstantBuilder.symbolBootstrap("symbol", "deco_test_a"), (Object)VectorBuilder.EMPTY_VECTOR, (Object)ConstantBuilder.symbolBootstrap("symbol", "model"));
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "def_slotted_exemplar"), (Object)ConstantBuilder.symbolBootstrap("symbol", "deco_test_b"), (Object)VectorBuilder.EMPTY_VECTOR, (Object)VectorBuilder.bootstrap("vb", ConstantBuilder.globalAccessorBootstrap("findCell", "sw", "top_level_geometry"), ConstantBuilder.symbolBootstrap("symbol", "number_mixin")));
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "def_slotted_exemplar"), (Object)ConstantBuilder.symbolBootstrap("symbol", "deco_test_combi"), (Object)VectorBuilder.EMPTY_VECTOR, (Object)VectorBuilder.bootstrap("vb", ConstantBuilder.symbolBootstrap("symbol", "deco_test_a"), ConstantBuilder.symbolBootstrap("symbol", "deco_test_b")));
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test_combi", "init()", deco_test_4005.class, "deco_test_combi__init", 1, 1));
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+###########
+def_slotted_exemplar(:deco_test_a, {}, :model)
+$
+
+def_slotted_exemplar(:deco_test_b, {}, {@sw:top_level_geometry, :number_mixin})
+$
+
+def_slotted_exemplar(:deco_test_combi, {}, {:deco_test_a, :deco_test_b})
+$
+
+_method deco_test_combi.init() 
+    _return _super(deco_test_a).init(1, "1")
+_endmethod
+$
+###########
+## jpn_method_test_simple_hierarchy
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_4011 {
+    @SourceHash(value=-1231401501)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_test__init(Object _self) {
+        return Invoker.superNaturalBootstrap("init()", "model", "sw", (Object)_self, (Object)1, (Object)ConstantBuilder.stringBootstrap("string", "1"));
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_4010
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_test_4010() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "def_slotted_exemplar"), (Object)ConstantBuilder.symbolBootstrap("symbol", "deco_test"), (Object)VectorBuilder.EMPTY_VECTOR, (Object)ConstantBuilder.symbolBootstrap("symbol", "model"));
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_test", "init()", deco_test_4011.class, "deco_test__init", 1, 1));
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+############
+def_slotted_exemplar(:deco_test, {}, :model)
+$
+
+_method deco_test.init() 
+    _return _super(model).init(1, "1")
+_endmethod
+$
+############
+

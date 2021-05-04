@@ -1,0 +1,14 @@
+_package user
+$
+
+#remex(:jpn_parser_pragma_snippet_test)
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+def_slotted_exemplar(:jpn_parser_pragma_snippet_test,
+	{},
+	:jpn_parser_class_snippet_test)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+jpn_parser_pragma_snippet_test.define_shared_constant(:filename, "jpn_parser_pragma_snippets.txt", :private)
+$

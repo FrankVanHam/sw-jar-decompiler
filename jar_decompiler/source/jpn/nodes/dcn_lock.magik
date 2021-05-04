@@ -1,20 +1,3 @@
-##
-## File            : $File: (dcn_lock.magik) $
-## SCM             : $URL$
-##
-## Copyright       : Realworld Systems
-##                   e-mail  : support@realworld-systems.com
-##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
-##                   tel     : +31(0)345 614406
-##                   fax     : +31(0)345 614319
-##
-## Contains        : 
-##
-##
-## Date written    : 2012-04-06
-## Date changed    : $Date$
-## Revision        : $Rev$
-
 _package deco
 $
 

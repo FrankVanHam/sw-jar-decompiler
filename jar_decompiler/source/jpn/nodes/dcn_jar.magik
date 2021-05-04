@@ -25,11 +25,11 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method dcn_jar.init()
-	.bodies << hash_table.new()
-	.methods << rope.new()
-	.procs << rope.new()
+	.bodies       << hash_table.new()
+	.methods      << rope.new()
+	.procs        << rope.new()
 	.java_classes << rope.new()
-	.files << rope.new()
+	.files        << rope.new()
 	_return _self 
 _endmethod
 $
@@ -40,14 +40,6 @@ _method dcn_jar.create_file(p_name)
 	_local file << dcn_file.new(p_name)
 	.files.add(file)
 	>> file 
-_endmethod
-$
-
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method dcn_jar.add_statement(p_class_node, p_node)
-	1.stop
-	.bodies[p_class_node].statements.add(p_node)
 _endmethod
 $
 
@@ -62,13 +54,6 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method dcn_jar.add_method(p_method_node)
 	##
 	.methods.add(p_method_node)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method dcn_jar.add_proc(p_proc_node)
-	##
-	.procs.add(p_proc_node)
 _endmethod
 $
 

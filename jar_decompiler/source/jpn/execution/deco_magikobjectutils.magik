@@ -1,13 +1,14 @@
 _package deco
 $
 
+#remex(:deco_magikobjectutils)
+$
+
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:deco_magikobjectutils,
 	{},
 	:deco_execution_base)
 $
-
-
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_magikobjectutils.createprocwithenv(p_parser, p_command_node,
@@ -15,7 +16,7 @@ _method deco_magikobjectutils.createprocwithenv(p_parser, p_command_node,
 						 p_proc_name_node,
 						 p_nr_args, p_nr_mandatory_args,
 						 p_dono1, p_dono2, _optional p_env_node)
-
+	##
 	>> _self.createproc(p_parser, p_command_node,
 			    p_class_name_node, p_java_method_name_node,
 			    p_proc_name_node,
@@ -30,22 +31,17 @@ _method deco_magikobjectutils.createproc(p_parser, p_command_node,
 					 p_proc_name_node,
 					 p_nr_args, p_nr_mandatory_args,
 					 p_dono1, p_dono2, _optional p_env?, p_env_node)
-
+	##
 	_local env? << p_env?.default(_false)
-	_local class_name << _if p_class_name_node.is_class_of?(jpn_cast)
-			     _then >> p_class_name_node.expression.string_value
+	_local class_name << _if p_class_name_node.is_cast?
+			     _then >> p_class_name_node.core_expression.string_value
 			     _else >> p_class_name_node.string_value
 			     _endif 
 	_local java_method_name << p_java_method_name_node.string_value
 	_local proc_name << p_proc_name_node.string_value
-	
-	# strip the .class
-	_if class_name.matches?("*.class")
-	_then
-		class_name << class_name.slice(1, class_name.size-6)
-	_endif
-	java_method_name << java_method_name.substitute_string("\\","\")
-	
+
+	(class_name, java_method_name) << _self.normalize_class_and_method(class_name, java_method_name)
+		
 	nr_args << p_nr_args.string_value.as_number()
 	nr_mandatory_args << p_nr_mandatory_args.string_value.as_number()
 
@@ -65,18 +61,17 @@ _method deco_magikobjectutils.createmethod(p_parser,
 					   p_class_name_node, p_java_method_name_node,
 					   p_nr_args, p_nr_mandatory_args,
 					   _optional p_x?, p_private?, p_abstract?, p_nr?)
+	##
 	_local exemplar_name << p_exemplar_name.string_value
 	_local method_name << p_method_name.string_value
-	_local class_name << p_class_name_node.string_value
+	_local class_name << _if p_class_name_node.is_cast?
+			     _then >> p_class_name_node.core_expression.string_value
+			     _else >> p_class_name_node.string_value
+			     _endif 
 	_local java_method_name << p_java_method_name_node.string_value
 
-	# strip the .class
-	_if class_name.matches?("*.class")
-	_then
-		class_name << class_name.slice(1, class_name.size-6)
-	_endif
-	java_method_name << java_method_name.substitute_string("\\","\")
-
+	(class_name, java_method_name) << _self.normalize_class_and_method(class_name, java_method_name)
+	
 	nr_args << p_nr_args.string_value.as_number()
 	nr_mandatory_args << p_nr_mandatory_args.string_value.as_number()
 
@@ -94,6 +89,22 @@ _method deco_magikobjectutils.createmethod(p_parser,
 				   abstract?, private?)
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method deco_magikobjectutils.normalize_class_and_method(p_class_name, p_java_method_name)
+	## 
+	# strip the .class
+	_if p_class_name.matches?("*.class")
+	_then
+		class_name << p_class_name.slice(1, p_class_name.size-6)
+	_else
+		class_name << p_class_name
+	_endif
+	java_method_name << p_java_method_name.substitute_string("\\","\")
+	>> class_name, java_method_name
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_magikobjectutils.should_be_boolean(p_parser, p_expression)

@@ -29,6 +29,15 @@ java_parser.define_shared_constant(:internal_types,
 	:private)
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## internal keywords that could represent a type.
+##
+java_parser.define_shared_constant(:internal_constants,
+	equality_set.new_with("true", "false", "null"),
+	:private)
+$
+
 _pragma(classify_level=advanced, topic={jar_decompiler})
 _method java_parser.new(p_scanner)
 	>> _clone.init(p_scanner)
@@ -241,7 +250,9 @@ _method java_parser.parse_method(p_class_name, _optional p_annotations )
 		# normal method
 		type << type_or_name_lex
 		name << .scanner.get()
-	_endif 
+	_endif
+
+	show(:java_parser, name.value)
 	
 	_local lex << .scanner.peek()
 	_self.ensure_separator("(")
@@ -263,7 +274,7 @@ _private _method java_parser.parse_parameters()
 	## Parse invocation of parameters
 	## e.g: (Object[] __env__, Object i_index, Object ... i_var)
 	##
-	_local args << rope.new()
+	_local params << rope.new()
 	_loop
 		_local varargs? << _false 
 		_local lex << .scanner.peek()
@@ -289,9 +300,9 @@ _private _method java_parser.parse_parameters()
 		_endif 
 				
 		_local identifier << .scanner.get()
-		args.add(jpn_parameter.new(identifier, type, varargs?))
+		params.add(jpn_parameter.new(identifier, type, varargs?))
 	_endloop
-	>> args
+	>> params
 _endmethod
 $
 
@@ -324,9 +335,9 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method java_parser.parse_body(_optional p_args)
+_private _method java_parser.parse_body(_optional p_params)
 	.context << .context.push()
-	.context.add_all(p_args.default({}).map(_proc(x) >> x.name _endproc))
+	.context.add_all(p_params.default({}).map(_proc(x) >> x.name _endproc))
 	_local stats << rope.new()
 	_loop
 		_local lex << .scanner.peek()
@@ -549,7 +560,7 @@ _private _method java_parser.parse_sub_expression()
 	_then
 		_return _self.parse_negative()
 		
-	_elif lex.is_identifier? _andif lex.value = "null"
+	_elif lex.is_identifier? _andif _self.internal_constants.includes?(lex.value)
 	_then
 		_return jpn_constant.new(.scanner.get())
 	_elif lex.is_string?
@@ -558,14 +569,6 @@ _private _method java_parser.parse_sub_expression()
 	_elif lex.is_number?
 	_then
 		_return jpn_constant.new(.scanner.get())
-	_elif lex.is_keyword?
-	_then
-		_if lex.value = "new"
-		_then
-			_return _self.parse_new()
-		_else
-			_return _self.parse_type_identifier()
-		_endif
 	_elif _self.serves_as_identifier?(lex)
 	_then
 		_local ident << _self.parse_identifier_or_type()
@@ -577,6 +580,14 @@ _private _method java_parser.parse_sub_expression()
 		_else
 			_return ident
 		_endif
+	_elif lex.is_keyword?
+	_then
+		_if lex.value = "new"
+		_then
+			_return _self.parse_new()
+		_else
+			_return _self.parse_type_identifier()
+		_endif
 	_else
 		condition.raise(:deco_unexpected_token, :line, lex.line, :column, lex.column, :token, lex.value)
 	_endif
@@ -586,7 +597,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.serves_as_identifier?(p_lex)
 	## 
-	## Answer if P_LEX could service as an identifier in the Java language.
+	## Answer if P_LEX could service as an identifier in the Java language.	
 	>> p_lex.is_identifier? _orif
 		_self.internal_types.includes?(p_lex.value)
 _endmethod
@@ -597,12 +608,12 @@ _private _method java_parser.parse_loop(_optional p_tag)
 	##
 	_self.ensure_keyword("while")
 	_self.ensure_separator("(")
-	_self.ensure_identifier("true")
+	_local cond << _self.parse_expression()
 	_self.ensure_separator(")")
 	_self.ensure_separator("{")
 	_local body << _self.parse_body()
 	_self.ensure_separator("}")
-	>> jpn_loop.new(body, _unset, p_tag)
+	>> jpn_loop.new(body, _true, cond, p_tag)
 _endmethod
 $
 
@@ -617,7 +628,7 @@ _private _method java_parser.parse_while_loop(_optional p_tag)
 	_self.ensure_separator("(")
 	_local exp << _self.parse_expression()
 	_self.ensure_separator(")")
-	>> jpn_loop.new(body, exp, p_tag)
+	>> jpn_loop.new(body, _false, exp, p_tag)
 _endmethod
 $
 

@@ -2,7 +2,7 @@ _package deco
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-## Node a _leave statement.
+## Node for a _leave statement.
 def_slotted_exemplar( :dcn_leave_result,
 		       {
 			       {:local, _unset, :readable}
@@ -26,5 +26,12 @@ _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_leave_result.decode_on(p_stream)
 	p_stream.write("_leave_result ")
 	.local.decode_on(p_stream)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_leave_result.is_leave_result?
+	##
+	>> _true 
 _endmethod
 $

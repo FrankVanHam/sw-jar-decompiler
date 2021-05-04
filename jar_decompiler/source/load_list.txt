@@ -4,6 +4,6 @@ conditions
 
 java/
 jpn/
-sw/
+#sw/
 
 decompiler

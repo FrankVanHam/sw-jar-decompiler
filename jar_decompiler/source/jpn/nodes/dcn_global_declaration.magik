@@ -6,8 +6,8 @@ _pragma(classify_level=restricted, topic={decompiler})
 def_slotted_exemplar(:dcn_global_declaration,
 		     {
 			     {:package, _unset, :readable},
-			     {:name, _unset, :readable},
-			     {:value, _unset, :readable}
+			     {:name,    _unset, :readable},
+			     {:value,   _unset, :readable}
 		     }, :dcn_base )
 $
 
@@ -19,9 +19,9 @@ $
 
 _pragma(classify_level=restricted, topic={decompiler})
 _private _method dcn_global_declaration.init(p_name, p_package, p_value)
-	.name << p_name
+	.name    << p_name
 	.package << p_package
-	.value << p_value
+	.value   << p_value
 	>> _self 
 _endmethod
 $
@@ -29,7 +29,22 @@ $
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_global_declaration.decode_on(p_stream)
 	##
+	_self.decode_pragma_on(p_stream)
+	_self.decode_comment_on(p_stream, _false )
 	p_stream.write("_global _constant ", .name, " << " )
 	.value.decode_on(p_stream)
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_global_declaration.method_finder
+	##
+	_local id1 << .name
+	_local id2 << "<global>"
+	>> _if id1 _isnt _unset _and id2 _isnt _unset 
+	   _then 
+		   >> dcn_method_finder.new_method(id1, id2)
+	   _endif 
+_endmethod
+$
+

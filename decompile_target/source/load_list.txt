@@ -1,2 +1,2 @@
-deco_test1
-deco_test2
+#deco_pragma_tester
+deco_tester

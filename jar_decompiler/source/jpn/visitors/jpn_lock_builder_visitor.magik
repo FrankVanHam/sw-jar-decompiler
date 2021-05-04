@@ -5,6 +5,9 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 ##
+## Find try statements that are actually Magik _lock
+## Like:
+##
 ##InterruptInfrastructure.checkAndProcessInterrupts();
 ##        synchronized (callSite) {
 ##            try {
@@ -24,13 +27,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_lock_builder_visitor.new()
-	>> _clone.init()
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method jpn_lock_builder_visitor.init()
-	>> _self 
+	>> _clone
 _endmethod
 $
 
@@ -38,13 +35,6 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_lock_builder_visitor.accept(p_body)
 	##
 	_local sts << p_body.statements
-	_local prev << _unset
-#	_if sts[1].is_class_of?(dcn_no_op).not
-#	_then 
-#		_global x
-#		x << sts
-#		2.stop
-#	_endif 
 	_for i_index, i_node _over sts.fast_keys_and_elements()
 	_loop
 		_if _self.should_convert?(i_node)
@@ -58,7 +48,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_lock_builder_visitor.should_convert?(p_node)
 	##
-	_if p_node.is_class_of?(dcn_synchronized).not _then _return _false, :dcn_sync _endif
+	_if p_node.is_synchronized?.not _then _return _false, :dcn_sync _endif
 	_if p_node.body _is _unset _then _return _false, :no_body _endif
 	_if p_node.body.statements.empty? _then _return _false, :empty_finally _endif
 	_if p_node.body.statements[1].is_unfinished_try?.not _then _return _false, :dcn_interrupts _endif

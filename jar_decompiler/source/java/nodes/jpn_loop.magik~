@@ -31,3 +31,10 @@ _method jpn_loop.tag
 	   _endif 
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_loop.parse_statement(p_parser)
+	## 
+	>> p_parser.parse_loop(_self)
+_endmethod
+$

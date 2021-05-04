@@ -1,14 +1,15 @@
 _package deco
 $
 
+#remex(:deco_tuplebuilder)
+
 _pragma(classify_level=restricted, topic={jar_decompiler})
-def_slotted_exemplar(:deco_tuplebuilder,
-	{},
-	:deco_execution_base)
+def_slotted_exemplar(:deco_tuplebuilder, {}, :deco_execution_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_tuplebuilder.bootstrap(p_parser, p_thing, _gather p_expression_nodes)
+	##
 	_local exprs << _self.expressions(p_parser, _scatter p_expression_nodes)
 	>> _if exprs.size = 1
 	   _then 

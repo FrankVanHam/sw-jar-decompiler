@@ -2,6 +2,9 @@ _package deco
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## Cleanup leftover statements that have no representation in Magik.
+##
 def_slotted_exemplar(:jpn_cleanup_visitor,{})
 $
 
@@ -19,9 +22,6 @@ _method jpn_cleanup_visitor.accept(p_body)
 	_loop
 		_if i_node.is_class_of?(dcn_pop) 
 		_then sts[i_index] << dcn_no_op.new() _endif 
-#		_if i_node.is_class_of?(dcn_remainder) _orif
-#		    i_node.is_class_of?(dcn_pop) 
-#		_then sts[i_index] << dcn_no_op.new() _endif 
 	_endloop 
 _endmethod
 $

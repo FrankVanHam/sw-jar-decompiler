@@ -27,37 +27,25 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_handling_builder_visitor.new()
-	>> _clone.init()
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method jpn_handling_builder_visitor.init()
-	>> _self 
+	>> _clone
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_handling_builder_visitor.accept(p_body)
 	##
-	_local sts << p_body.statements
-	_local prev << _unset
-#	_if sts.size>3
-#	_then 
-#		_global x
-#		x << sts
-#		2.stop
-#	_endif 
-	_for i_index, i_node _over sts.fast_keys_and_elements()
+	_for sts, idx1, idx2, i_node _over p_body.pair_of_nodes()
 	_loop
-		_local handling? << _self.should_convert?(i_node, prev)
+		_local n1 << sts[idx1]
+		_local n2 << sts[idx2]
+		
+		_local handling? << _self.should_convert?(n2, n1)
 		_if handling?
-		_then			
-			sts[i_index] << _self.convert(i_node)
-			sts[i_index-1] << dcn_no_op.new()
+		_then
+			sts[idx1] << dcn_no_op.new()		
+			sts[idx2] << _self.convert(n2)
 		_endif
-		prev << i_node
-	_endloop 
+	_endloop
 _endmethod
 $
 
@@ -78,26 +66,27 @@ _method jpn_handling_builder_visitor.convert(p_try_node)
 	_local procs << equality_hash_table.new()
 	_for i_index, i_node _over sts.fast_keys_and_elements()
 	_loop
-		_if i_node.is_class_of?(dcn_local_assignment)
+		_if i_node.is_local_assignment?
 		_then
-			_local name << 	i_node.only_local().name
+			_local name << 	i_node.single_name
 			procs[name] << i_node.expression
 			
 			sts[i_index] << dcn_no_op.new()
 		_else
+			# must be the call
 			call_index << i_index
 			_leave
 		_endif
 	_endloop
 
-	_local call << sts[call_index]
+	_local call << sts[call_index]	
 	sts[call_index] << dcn_no_op.new()
 
 	_local handles << rope.new()
 	_for i_err, i_proc _over call.args.fast_elements_in_pairs()
 	_loop
 		_local err << i_err.string_value
-		_local prc << _if i_proc.is_class_of?(dcn_local)
+		_local prc << _if i_proc.is_local?
 			      _then >> procs[i_proc.name]
 			      _else >> i_proc
 			      _endif
@@ -129,7 +118,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_handling_builder_visitor.should_convert?(p_node, p_prev)
 	##
 	_if p_prev _is _unset _then _return _false, :no_prev _endif
-	_if p_prev.is_class_of?(dcn_dynamic_declaration).not _then _return _false, :no_store_before _endif
+	_if p_prev.is_dynamic_declaration?.not _then _return _false, :no_store_before _endif
 	_if p_prev.name <> "!sys!condition_handler_cluster!"  _then _return _false, :no_handler _endif
 	
 	_if p_node.is_unfinished_try?.not _then _return _false, :dcn_unfinished_try _endif
@@ -143,6 +132,38 @@ _method jpn_handling_builder_visitor.should_convert?(p_node, p_prev)
 			_leave 
 		_endif
 	_endloop
+
+	_if handling?
+	_then
+		handling? << _self.try_has_call?(p_node)
+	_endif
+	
 	>> handling?
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_handling_builder_visitor.try_has_call?(p_try_node)
+	##
+	## Test if the try_node hasd a sys!install_handlers call node.
+	##
+	_local sts << p_try_node.try_body.statements
+	_for i_index, i_node _over sts.fast_keys_and_elements()
+	_loop
+		_if i_node.is_local_assignment?
+		_then
+		_else
+			_if i_node.is_call?
+			_then
+				_if i_node.name = "sys!install_handlers"
+				_then 
+					_return _true 
+				_endif 
+				_leave
+			_endif
+			_leave
+		_endif
+	_endloop
+	_return _false 
 _endmethod
 $

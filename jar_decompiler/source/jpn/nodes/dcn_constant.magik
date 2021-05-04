@@ -1,23 +1,5 @@
-##
-## File            : $File: (dcn_constant.magik) $
-## SCM             : $URL$
-##
-## Copyright       : Realworld Systems
-##                   e-mail  : support@realworld-systems.com
-##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
-##                   tel     : +31(0)345 614406
-##                   fax     : +31(0)345 614319
-##
-## Contains        : 
-##
-##
-## Date written    : 2012-04-02
-## Date changed    : $Date$
-## Revision        : $Rev$
-
 _package deco
 $
-
 
 #remex(:dcn_constant)
 $
@@ -26,7 +8,7 @@ _pragma(classify_level=restricted, topic={decompiler})
 ## node representing a constant value.
 def_slotted_exemplar(:dcn_constant,
 		     {
-			     {:type, _unset, :readable},
+			     {:type,         _unset, :readable},
 			     {:string_value, _unset, :readable}
 		     },
 		     :dcn_base)
@@ -126,248 +108,16 @@ _method dcn_constant.is_null?
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_constant.is_constant?
+	## 
+	>> _true 
+_endmethod
+$
 
-
-		     
-#
-#
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-### node representing a constant value. Decoding it into a
-### string can get kind a tricky.
-#def_slotted_exemplar(:dcn_constant,
-#		     {
-#			     {:value,_unset, :readable},
-#			     {:indirect?, _unset, :readable},
-#			     {:dynamic?, _unset, :readable},
-#			     {:dynamic_loaded?, _unset, :readable}
-#		     }, :dcn_base )
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_constant.new(value, _optional indirect?)
-#	_return _clone.init(value, indirect?)
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_private _method dcn_constant.init(value, indirect?)
-#	.value << value
-#	.indirect? << indirect?.default(_false)
-#	.dynamic_loaded? << _false 
-#	.dynamic? << _false 
-#	_return _self
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_constant.force_declare_local()
-#	## polymorphism for locals
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_constant.is_constant?
-#	_return _true  
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_constant.is_global?(value)
-#	_return .value.is_class_of?(global_variable) _andif
-#		.value.value.is_class_of?(value)
-#_endmethod
-#$
-#
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_constant.declare_dynamic()
-#	.dynamic? << _true
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_constant.declare_dynamic_loaded()
-#	.dynamic_loaded? << _true 
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_constant.has_results?
-#	_return _true 
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_constant.result_count
-#	_return 1
-#_endmethod
-#$
-#_method dcn_constant.declare()
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_constant.scattered?
-#	_return _false 
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_constant.show_on( a_stream )
-#	a_stream.write(_self.class_name, "(", .value, ")" )
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_constant.decode_scattered_on( a_stream )
-#	assert( .value.is_class_of?( simple_vector ) )
-#	.value[1].decode_on(a_stream )
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_constant.decode_on( a_stream, _optional parent, statements )
-#	_return _self.decode_it_on( .value, a_stream )
-#_endmethod
-#$
-#
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_private _iter _method dcn_constant.chars_and_specials(string)
-#	_for i_char _over string.fast_elements() 
-#	_loop
-#		_if (i_char _is %")
-#		_then
-#			_loopbody(%", :special)
-#		_elif (i_char _is %space)
-#		_then
-#			_loopbody(%space, :char)
-#		_elif character.prop!char_to_name.includes_key?(i_char)
-#		_then
-#			cha << character.prop!char_to_name[i_char]
-#			_loopbody(cha, :special)
-#		_else
-#			_loopbody(i_char, :char)
-#		_endif
-#	_endloop
-#_endmethod 
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_private _iter _method dcn_constant.string_in_bits(string)
-#	str << internal_text_output_stream.new()
-#	_for i_string, i_type _over _self.chars_and_specials(string)
-#	_loop
-#		_if i_type _is :special
-#		_then
-#			s << str.string
-#			_if s.empty?.not
-#			_then
-#				_loopbody(s, :string)
-#				str.reset()
-#			_endif 
-#			_loopbody(i_string, :special)
-#		_else
-#			str.write(i_string)
-#		_endif
-#	_endloop
-#	s << str.string
-#	_if s.empty?.not
-#	_then
-#		_loopbody(s, :string)
-#		str.reset()
-#	_endif 
-#_endmethod 
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_constant.special_string?(string)
-#	_for i_string, i_type _over _self.string_in_bits(string)
-#	_loop
-#		_if i_type _isnt :string
-#		_then
-#			_return _true 
-#		_endif
-#	_endloop
-#	_return _false
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_constant.decode_as_vector_on(a_stream, value)
-#	_if value _is simple_vector
-#	_then
-#		a_stream.write( "{}" )
-#	_else
-#		a_stream.write( "{" )
-#		_for index, elem _over value.fast_keys_and_elements()
-#		_loop
-#			_self.decode_it_on(elem, a_stream)
-#			_if index _isnt value.size
-#			_then
-#				a_stream.write( ", " )
-#			_endif 
-#		_endloop
-#		a_stream.write( "}" )
-#	_endif 
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_constant.decode_as_global_on(a_stream, glob)
-#	_if .dynamic?
-#	_then
-#		a_stream.write(glob.key )
-#	_elif _not .indirect?
-#	_then
-#		_if glob.key.write_string[1] = %!
-#		_then
-#			a_stream.write(glob.key )
-#		_else
-#			a_stream.write("@", glob.key )
-#		_endif 
-#	_else 
-#		glob.write_on(a_stream)
-#	_endif 
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_constant.decode_as_string_on( a_stream, value )
-#	_if _self.special_string?(value)
-#	_then 
-#		a_stream.write("(")
-#		comma? << _false 
-#		_for i_string, i_type _over _self.string_in_bits(value)
-#		_loop
-#			_if (comma? ^<< _true)
-#			_then
-#				a_stream.write("+")
-#			_endif
-#			_if i_type _is :special
-#			_then 
-#				a_stream.write(%%, i_string)
-#			_else
-#				a_stream.write(%", i_string, %")
-#			_endif 
-#		_endloop
-#		a_stream.write(")")
-#	_else
-#		a_stream.write(%", value, %")			
-#	_endif
-#_endmethod
-#$
-#
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_constant.decode_it_on( value, a_stream )
-#	value.deco_decode_as_constant_on(a_stream, _self )
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_constant.deco_decode_as_call_on(a_stream, call)
-#	_return .value.deco_decode_as_call_on(a_stream, call)
-#_endmethod
-#$
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_constant.name
+	## 
+	>> .string_value
+_endmethod
+$

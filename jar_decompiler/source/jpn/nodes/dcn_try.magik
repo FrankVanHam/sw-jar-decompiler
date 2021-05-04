@@ -1,20 +1,3 @@
-##
-## File            : $File: (dcn_try.magik) $
-## SCM             : $URL$
-##
-## Copyright       : Realworld Systems
-##                   e-mail  : support@realworld-systems.com
-##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
-##                   tel     : +31(0)345 614406
-##                   fax     : +31(0)345 614319
-##
-## Contains        : 
-##
-##
-## Date written    : 2012-04-06
-## Date changed    : $Date$
-## Revision        : $Rev$
-
 _package deco
 $
 
@@ -26,23 +9,24 @@ _pragma(classify_level=restricted, topic={decompiler})
 def_slotted_exemplar( :dcn_try,
 	{
 		{:condition, _unset, :readable},
-		{:body,_unset, :readable},
-		{:whens, _unset, :readable},
-		{:results, _unset, :readable}
+		{:body,      _unset, :readable},
+		{:whens,     _unset, :readable},
+		{:results,   _unset, :readable}
 	}, :dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_try.new(condition, body, whens)
-	_return _clone.init(condition, body, whens)
+_method dcn_try.new(p_condition, p_body, p_whens)
+	_return _clone.init(p_condition, p_body, p_whens)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_try.init(condition, body, whens)
-	.condition << condition
-	.body << body
-	.whens << whens
+_private _method dcn_try.init(p_condition, p_body, p_whens)
+	assert(p_body _isnt _unset)
+	.condition << p_condition
+	.body      << p_body
+	.whens     << p_whens
 	_return _self
 _endmethod
 $
@@ -59,10 +43,8 @@ $
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_try.accept_body_visitor(visitor)
-	_if .body _isnt _unset
-	_then 
-		.body.accept_body_visitor(visitor)
-	_endif
+	.body.accept_body_visitor(visitor)
+	
 	_for i_cond, i_body _over _self.whens_and_body()
 	_loop
 		i_body.accept_body_visitor(visitor)
@@ -70,42 +52,6 @@ _method dcn_try.accept_body_visitor(visitor)
 _endmethod
 $
 
-
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_try.accept_node_visitor(visitor)
-#	_if .condition _isnt _unset
-#	_then 
-#		.condition << .condition.accept_node_visitor(visitor)
-#	_endif 
-#	_self.accept_node_visitor_in_vector(visitor, .body)
-#	_for prop _over .whens.fast_elements()
-#	_loop
-#		_self.accept_node_visitor_in_vector(visitor, prop[:statements])
-#		_self.accept_node_visitor_in_vector(visitor, prop[:results])
-#	_endloop 
-#	_self.accept_node_visitor_in_vector(visitor, .results)
-#	_return _super.accept_node_visitor(visitor)
-#_endmethod
-#$
-#
-
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_try.result_count
-#	_return .results.size
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_try.decode_list_on(a_stream, list)
-#	_for index, elem _over list.fast_keys_and_elements()
-#	_loop
-#		a_stream.write(elem)
-#		_if index <> list.size _then a_stream.write(", ") _endif 
-#	_endloop
-#_endmethod
-#$
-#
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_try.decode_on(p_stream)
 	p_stream.write( "_try ")
@@ -118,16 +64,11 @@ _method dcn_try.decode_on(p_stream)
 	.body.decode_on(p_stream)
 	p_stream.newline()
 	p_stream.unindent(4)
-#	_if .results.empty?.not
-#	_then
-#		p_stream.write(">> ")
-#		_self.decode_node_list_on(p_stream, .results)
-#		p_stream.newline()
-#	_endif
+	
 	_for i_cond, i_body _over _self.whens_and_body()
 	_loop
 		p_stream.write( "_when ")
-		_self.decode_list_on(p_stream, i_cond)
+		_self.write_list_on(p_stream, i_cond)
 		p_stream.newline()
 		p_stream.indent(4)
 		i_body.decode_on(p_stream)

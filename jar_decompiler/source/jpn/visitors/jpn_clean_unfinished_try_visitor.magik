@@ -4,22 +4,20 @@ $
 #remex(:jpn_clean_unfinished_try_visitor)
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## Any unfinished try will be converted to just the code in the try_block.
+## Obviously this is the last resort after all other
+## conversions have failed.
+##
 def_slotted_exemplar(:jpn_clean_unfinished_try_visitor,
 	{})
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_clean_unfinished_try_visitor.new()
-	>> _clone.init()
+	>> _clone
 _endmethod
 $
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method jpn_clean_unfinished_try_visitor.init()
-	>> _self 
-_endmethod
-$
-
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_clean_unfinished_try_visitor.accept(p_body)
 	##
@@ -62,11 +60,6 @@ _method jpn_clean_unfinished_try_visitor.must_clean?(p_node)
 	_if p_node.is_unfinished_try?.not _then _return _false _endif
 	_if p_node.catch_body _is _unset _then _return _false _endif
 
-	_return _true 
-	_local sts << p_node.catch_body.statements
-	_if sts.size <> 2 _then _return _false _endif
-	
-	>> sts[1].is_class_of?(dcn_no_op) _andif
-		sts[2].is_class_of?(dcn_throw)
+	_return _true
 _endmethod
 $

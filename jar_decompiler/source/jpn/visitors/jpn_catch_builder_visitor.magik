@@ -24,13 +24,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_catch_builder_visitor.new()
-	>> _clone.init()
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method jpn_catch_builder_visitor.init()
-	>> _self 
+	>> _clone
 _endmethod
 $
 
@@ -43,9 +37,6 @@ _method jpn_catch_builder_visitor.accept(p_body)
 		_local (catch?, var) << _self.should_convert?(i_node)
 		_if catch?
 		_then
-#			_global x
-#			x << sts
-#			888.stop
 			_local tag << sts[i_index-2].expression
 			sts[i_index-1] << dcn_no_op.new()
 			sts[i_index-2] << dcn_no_op.new()
@@ -72,9 +63,9 @@ _method jpn_catch_builder_visitor.convert_return_local(catch_struct, var)
 	_local sts << catch_struct.body.statements
 	_local idx << sts.size
 	_local last << sts[idx]
-	_if last.is_class_of?(dcn_local_assignment)
+	_if last.is_local_assignment?
 	_then
-		_if last.expression.is_class_of?(dcn_constant) _andif
+		_if last.expression.is_constant? _andif
 		    last.expression.is_null?
 		_then
 			sts[idx] << dcn_no_op.new()
@@ -84,7 +75,6 @@ _method jpn_catch_builder_visitor.convert_return_local(catch_struct, var)
 	_endif 
 _endmethod
 $
-
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_catch_builder_visitor.should_convert?(p_node)
@@ -109,10 +99,10 @@ _method jpn_catch_builder_visitor.should_convert?(p_node)
 	_local catch_var << _unset 
 	_for i_stat _over sub_node.catch_body.statements.fast_elements()
 	_loop
-		_if i_stat.is_class_of?(dcn_local_assignment) _andif
-		    i_stat.only_local() _isnt _unset
+		_if i_stat.is_local_assignment? _andif
+		    i_stat.single_local _isnt _unset
 		_then
-			catch_var << i_stat.only_local().name
+			catch_var << i_stat.single_local.name
 			_leave
 		_endif
 	_endloop

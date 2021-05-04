@@ -219,6 +219,19 @@ _method java_parser_test.test_array_type_direct_array_assignment3()
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_new_array_with_array_values()
+	## 
+	_local inp << write_string("var5 = new Object[]{__env__[3], __env__[4]};")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	p.define_locals("var5", "__env__")
+	
+	_local node << p.parse_statement()
+	_self.assert_true(node.is_class_of?(deco:jpn_assignment), "should be an assignment")
+	_self.assert_equals(2, node.right.args.size)
+_endmethod
+$
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_class()
@@ -711,6 +724,21 @@ _method java_parser_test.test_assign_local_with_local()
 	_self.assert_true(m.is_class_of?(deco:jpn_assignment), "should be a local assignment")
 	_self.assert_true(m.left.is_class_of?(deco:jpn_variable), "left should be a variable")
 	_self.assert_true(m.right.is_class_of?(deco:jpn_variable), "right should be a variable")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_assign_local_with_bool()
+	_local inp << write_string("obj = true;")
+	inp << inp.substitute_character(%', %")
+
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	p.define_locals("obj")
+	_local m << p.parse_statement()
+	
+	_self.assert_true(m.is_class_of?(deco:jpn_assignment), "should be a local assignment")
+	_self.assert_true(m.right.is_class_of?(deco:jpn_constant), "should be constant")
 _endmethod
 $
 

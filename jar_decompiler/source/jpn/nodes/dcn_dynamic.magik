@@ -1,29 +1,11 @@
-##
-## File            : $File: (dcn_dynamic.magik) $
-## SCM             : $URL$
-##
-## Copyright       : Realworld Systems
-##                   e-mail  : support@realworld-systems.com
-##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
-##                   tel     : +31(0)345 614406
-##                   fax     : +31(0)345 614319
-##
-## Contains        : 
-##
-##
-## Date written    : 2012-04-06
-## Date changed    : $Date$
-## Revision        : $Rev$
-
 _package deco
 $
-
 
 #remex(:dcn_dynamic)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-## a node for storing a dynamic value.
+## a node for a dynamic value.
 def_slotted_exemplar(:dcn_dynamic,
 		     {
 			     {:package,    _unset},
@@ -48,7 +30,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_dynamic.decode_on( a_stream )
-	a_stream.write( .package, ":", .name)
+_method dcn_dynamic.decode_on( p_stream )
+	p_stream.write( .package, ":", .name)
 _endmethod
 $

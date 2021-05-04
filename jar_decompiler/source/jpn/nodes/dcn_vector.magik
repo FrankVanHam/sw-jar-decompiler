@@ -1,20 +1,3 @@
-##
-## File            : $File: (dcn_vector.magik) $
-## SCM             : $URL$
-##
-## Copyright       : Realworld Systems
-##                   e-mail  : support@realworld-systems.com
-##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
-##                   tel     : +31(0)345 614406
-##                   fax     : +31(0)345 614319
-##
-## Contains        : 
-##
-##
-## Date written    : 2012-04-06
-## Date changed    : $Date$
-## Revision        : $Rev$
-
 _package deco
 $
 
@@ -44,18 +27,23 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_vector.accept_body_visitor(visitor)
-	_for i_value _over .values.fast_elements()
-	_loop
-		i_value.accept_body_visitor(visitor)
-	_endloop 
+_method dcn_vector.accept_body_visitor(p_visitor)
+	_self.accept_body_visitor_in_list(p_visitor, .values)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_vector.decode_on(a_stream)
-	a_stream.write("{")
-	_self.decode_node_list_on(a_stream, .values)
-	a_stream.write("}")
+_method dcn_vector.decode_on(p_stream)
+	p_stream.write("{")
+	_self.decode_list_on(p_stream, .values)
+	p_stream.write("}")
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_vector.is_vector?
+	##
+	>> _true
 _endmethod
 $

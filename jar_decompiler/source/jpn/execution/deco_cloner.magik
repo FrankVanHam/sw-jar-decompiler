@@ -1,11 +1,12 @@
 _package deco
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:deco_cloner, {}, :deco_execution_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_cloner.makeclone(p_parser)
-	>> dcn_constant.new_literal("_clone")
+	>> dcn_clone.new()
 _endmethod
 $

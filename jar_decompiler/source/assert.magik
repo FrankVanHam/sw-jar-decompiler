@@ -1,7 +1,6 @@
 _package deco
 $
 
-
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _global _constant assert <<
 	_proc @assertion(p_bool, _optional p_comment)

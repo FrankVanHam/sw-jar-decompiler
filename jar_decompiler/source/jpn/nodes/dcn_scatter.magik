@@ -5,7 +5,9 @@ $
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-## node for a scattering
+##
+## node for a scattering results
+##
 def_slotted_exemplar(:dcn_scatter,
 		     {
 			     {:expression, _unset, :readable}
@@ -29,7 +31,6 @@ _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_scatter.pop()
 	##
 	>> _self 
-#	>> dcn_pop.new(_self)
 _endmethod
 $
 

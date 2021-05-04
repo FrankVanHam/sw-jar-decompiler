@@ -8,8 +8,8 @@ _pragma(classify_level=restricted, topic={decompiler})
 ## a node for storing a dynamic value.
 def_slotted_exemplar(:dcn_dynamic_store,
 		     {
-			     {:package,    _unset},
-			     {:name,       _unset},
+			     {:package,    _unset, :readable},
+			     {:name,       _unset, :readable},
 			     {:value_node, _unset, :readable}
 		     }, :dcn_base)
 $
@@ -24,10 +24,9 @@ $
 _pragma(classify_level=restricted, topic={decompiler})
 _private _method dcn_dynamic_store.init(p_name, p_package, p_value_node)
 	##
-	.name << p_name
-	.package << p_package
+	.name       << p_name
+	.package    << p_package
 	.value_node << p_value_node
-	
 	>> _self 
 _endmethod
 $
@@ -53,11 +52,11 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_dynamic_store.decode_on( a_stream )
-	a_stream.write( "_dynamic " )
-	a_stream.write( .package, ":", .name)
-	a_stream.write( " << " )
-	.value_node.decode_on( a_stream )
+_method dcn_dynamic_store.decode_on( p_stream )
+	p_stream.write( "_dynamic " )
+	p_stream.write( .package, ":", .name)
+	p_stream.write( " << " )
+	.value_node.decode_on( p_stream )
 _endmethod
 $
 
@@ -67,108 +66,3 @@ _method dcn_dynamic_store.convert_to_package_declaration()
 	>> dcn_package.new(.value_node.args[1].string_value)
 _endmethod
 $
-
-
-
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-### a node for storing a dynamic value.
-#def_slotted_exemplar(:dcn_dynamic_store,
-#		     {
-#			     {:dis_node,_unset},
-#			     {:dynamic_node, _unset},
-#			     {:value_node, _unset},
-#			     {:top_of_stack, _unset}
-#		     }, :dcn_base)
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_dynamic_store.new(dis_node, dynamic_node, value_node, top_of_stack)
-#	_return _clone.init(dis_node, dynamic_node, value_node, top_of_stack)
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_private _method dcn_dynamic_store.init(dis_node, dynamic_node, value_node, top_of_stack)
-#	.dis_node << dis_node
-#	.dynamic_node << dynamic_node
-#	.value_node << value_node
-#	.top_of_stack << top_of_stack
-#	_return _self
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_dynamic_store.accept_node_visitor(visitor)
-#	.dynamic_node << .dynamic_node.accept_node_visitor(visitor)
-#	.value_node << .value_node.accept_node_visitor(visitor)
-#	_return _super.accept_node_visitor(visitor)
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_dynamic_store.accept_body_visitor(visitor)
-#	.dynamic_node.accept_body_visitor(visitor)
-#	.value_node.accept_body_visitor(visitor)
-#	_super.accept_body_visitor(visitor)
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_dynamic_store.top_of_stack_during_decompile
-#	_return .top_of_stack
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_dynamic_store.decode_on( a_stream, _optional a_parent, p_statements )
-#	_if .dis_node.is_bind?
-#	_then 
-#		a_stream.write( "_dynamic " )
-#	_endif 
-#	.dynamic_node.decode_on( a_stream )
-#	_if _self.is_assign?
-#	_then 
-#		a_stream.write( " << " )
-#		.value_node.decode_on( a_stream )
-#	_endif
-#	a_stream.newline()
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_dynamic_store.decode_lhs_on(a_stream)
-#	.dynamic_node.decode_on( a_stream )
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_dynamic_store.has_rhs?
-#	_return _self.is_assign? 
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_dynamic_store.decode_rhs_on(a_stream)
-#	.value_node.decode_on( a_stream )
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})	
-#_method dcn_dynamic_store.expression
-#	_return .value_node
-#_endmethod
-#$
-#
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_dynamic_store.is_assign?
-#	_return .dynamic_node _isnt .value_node
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_dynamic_store.is_single_assign?
-#	_return _self.is_assign?
-#_endmethod
-#$

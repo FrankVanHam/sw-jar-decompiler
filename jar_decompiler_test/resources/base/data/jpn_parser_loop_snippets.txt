@@ -86,7 +86,11 @@ implements ExecutableMagik {
 _method deco_test.test_loop_continue()
 	_loop
 		_self.use()
-		_if _self.test? _then _continue _endif 
+		_if _self.test?
+        	_then
+			_local resultTuple << _unset
+            		_continue
+        	_endif
 		_self.dont_use()
 	_endloop
 _endmethod
@@ -247,6 +251,104 @@ _method deco_test.test_loop_exit_var_condition()
     _local var << a
     _self.show(var)
     _return  _unset
+_endmethod
+$
+###########
+## jpn_loop_after
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_tester_4080 {
+    @SourceHash(value=1503780222)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_tester__test_loop_return_after(Object _self) {
+        do {
+            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
+        } while (!MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("stop?", (Object)_self)));
+        return 2;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_tester_4079
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_tester_4079() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_tester", "test_loop_return_after()", deco_tester_4080.class, "deco_tester__test_loop_return_after", 1, 1);
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+
+###########
+_method deco_tester.test_loop_return_after() 
+    _loop
+        _self.do()
+        _if _self.stop?
+        _then
+             _leave
+        _endif
+    _endloop
+    _return 2
+_endmethod
+$
+###########
+## jpn_loop_before
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_tester_4080 {
+    @SourceHash(value=-1138217627)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_tester__test_loop_return_before(Object _self) {
+        while (!MagikObjectUtils.should_be_boolean(Invoker.bootstrapPrivate("stop?", (Object)_self))) {
+            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("do()", (Object)_self));
+        }
+        return 2;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_tester_4079
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_tester_4079() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_tester", "test_loop_return_before()", deco_tester_4080.class, "deco_tester__test_loop_return_before", 1, 1));
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+
+###########
+_method deco_tester.test_loop_return_before() 
+    _loop
+        _if _self.stop?
+        _then
+             _leave
+        _endif
+        _self.do()
+    _endloop
+    _return 2
 _endmethod
 $
 ###########

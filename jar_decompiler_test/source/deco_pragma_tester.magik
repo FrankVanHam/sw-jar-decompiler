@@ -1,0 +1,65 @@
+_package user
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## Comment for deco_pragma_tester
+## Line 2
+##
+def_slotted_exemplar(:deco_pragma_tester,
+	{},
+	:model)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## Comment for shared constant
+## Line 2
+##
+deco_pragma_tester.define_shared_constant(:a__constant, {}, :private)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## Comment for shared variable
+## Line 2
+##
+deco_pragma_tester.define_shared_variable(:a__variable, {}, :private)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_pragma_tester.a__method()
+	## Method a_method
+	## Line 2
+	##
+_endmethod
+$
+
+_pragma(classify_level=advanced, topic={jar_decompiler, dm})
+##
+## Comment for deco_pragma_tester_mixin
+## Line 2
+##
+def_mixin(:deco_pragma_tester_mixin)
+$
+
+
+_pragma(classify_level=advanced, topic={jar_decompiler, dm})
+##
+## Comment for a proc
+## Line 2
+##
+_global _constant a__proc << _proc()
+				    write("Hello")
+			    _endproc 
+$
+
+
+_pragma(classify_level=advanced, topic={jar_decompiler, dm})
+##
+## Comment for a dynamic
+## Line 2
+##
+_global  a__dynamic? << _false 
+$
+

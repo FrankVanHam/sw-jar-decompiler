@@ -35,7 +35,7 @@ implements ExecutableMagik {
     }
 }
 #############
-sw:def_slotted_exemplar(:deco_test, {{:slot_a, _unset}, {:slot_b, 1}, {:slot_c, _unset, :readable}, {:slot_d, "stop", :writable}})
+def_slotted_exemplar(:deco_test, {{:slot_a, _unset}, {:slot_b, 1}, {:slot_c, _unset, :readable}, {:slot_d, "stop", :writable}})
 $
 
 _method deco_test.test_basic_slot_access() 
@@ -84,7 +84,7 @@ implements ExecutableMagik {
     }
 }
 #############
-sw:def_slotted_exemplar(:deco_test, {})
+def_slotted_exemplar(:deco_test, {})
 $
 
 user:deco_test.define_pseudo_slot(:slot_a)

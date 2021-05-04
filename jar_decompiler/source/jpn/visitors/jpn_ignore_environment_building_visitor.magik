@@ -2,6 +2,10 @@ _package deco
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## Ignore the variables that are a substitute for the __env__
+## var that we are ignoring also
+##
 def_slotted_exemplar(:jpn_ignore_environment_building_visitor,{})
 $
 
@@ -14,14 +18,10 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_ignore_environment_building_visitor.accept(p_body)
 	##
 	_local sts << p_body.statements
-#	_global x
-#	x << sts
-#	1.stop
-
 	_local envs << equality_set.new()
 	_for i_index, i_node _over sts.fast_keys_and_elements()
 	_loop
-		_if i_node.is_class_of?(dcn_call) _andif
+		_if i_node.is_call? _andif
 		    i_node.env _isnt _unset
 		_then
 			envs.add(i_node.env.name)
@@ -52,13 +52,15 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method jpn_ignore_environment_building_visitor.ignore?(p_node, p_env)
 	##
-	_if p_node.is_class_of?(dcn_local_assignment)
+	_if p_node.is_local_assignment?
 	_then 
-		_local loc << p_node.only_local()
+		_local loc << p_node.single_local
 		
 		_if loc _is _unset _then _return _false _endif
 		
-		_local decl? << loc.is_class_of?(dcn_local_declaration) _orif loc.is_class_of?(dcn_local) _orif loc.is_class_of?(dcn_array_access)
+		_local decl? << loc.is_local_declaration? _orif
+				loc.is_local? _orif
+				loc.is_vector_access?
 
 		_return decl? _andif (loc.name = p_env)
 	_else

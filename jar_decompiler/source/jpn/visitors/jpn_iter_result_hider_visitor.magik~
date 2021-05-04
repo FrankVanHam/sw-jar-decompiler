@@ -1,0 +1,140 @@
+_package deco
+$
+
+#remex(:jpn_iter_result_hider_visitor)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## In Java each iter ends with a "return" statement, but often this
+## does not need to be translated to a ">>" statement in Magik.
+##
+def_slotted_exemplar(:jpn_iter_result_hider_visitor,
+	{})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_iter_result_hider_visitor.new()
+	>> _clone
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_iter_result_hider_visitor.accept(p_body)
+	##
+	_local sts << p_body.statements
+	_for i_index, i_node _over sts.fast_keys_and_elements()
+	_loop
+		_if _self.should_clear_unset_results?(i_node)
+		_then
+			_local body << i_node.expression.body
+			body.accept_body_visitor(jpn_clean_results_visitor.new())
+
+			_self.clear_last_if_continue(body)
+		_endif
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_iter_result_hider_visitor.clear_last_if_continue(p_body)
+	##
+	_local sts << p_body.statements
+	_local last << sts.last
+	_if last.is_class_of?(dcn_continue) _andif
+	    last.results.empty?
+	_then
+		sts.remove_last()
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_iter_result_hider_visitor.should_clear_unset_results?(p_node)
+	##
+	_if p_node.is_local_assignment?.not _then _return _false, :no_local_assignment _endif
+	_if p_node.expression.is_iter?.not _then _return _false, :no_iter _endif
+
+	_local name << p_node.single_name.default("")
+	_if name.matches?("*ignored*").not _then _return _false, :no_ignore _endif
+	
+	_return _true 
+_endmethod
+$
+
+#remex(:jpn_clean_results_visitor)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## Whipes unneccessary result nodes from an iter.
+##
+def_slotted_exemplar(:jpn_clean_results_visitor,
+	{})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_clean_results_visitor.new()
+	>> _clone
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_clean_results_visitor.accept(p_body)
+	##
+	
+	_local sts << p_body.statements
+	
+	_for i_index, i_node _over sts.fast_keys_and_elements()
+	_loop
+		_if _self.is_result_tuple?(i_node)
+		_then
+			sts[i_index] << dcn_no_op.new()
+		_endif
+		_if _self.is_continue_result_tuple_throw?(i_node)
+		_then
+			sts[i_index] << _self.remove_result_tuple_throw(i_node)
+		_endif 
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_clean_results_visitor.is_continue_result_tuple_throw?(p_node)
+	##
+	_if p_node.is_class_of?(dcn_continue) _andif
+	    p_node.results.size = 1 
+	_then
+		_return p_node.results[1].name.matches?("resultTuple*")
+	_endif
+	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_clean_results_visitor.remove_result_tuple_throw(p_node)
+	##
+	p_node.empty_results()
+	>> p_node
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_clean_results_visitor.is_result_tuple?(p_node)
+	##
+	_if p_node.is_local_declaration?
+	_then
+		_return p_node.name = "resultTuple"
+	_elif p_node.is_local_assignment? _andif
+	      p_node.single_local _isnt _unset 
+	_then
+		_return p_node.single_local.name = "resultTuple"
+	_elif p_node.is_continue? _andif
+	      p_node.results.size = 1
+	_then
+		_return p_node.results[1].name = "resultTuple"
+	_else
+		_return _false 
+	_endif 
+_endmethod
+$
+
+

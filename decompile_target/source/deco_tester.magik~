@@ -1,0 +1,16 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+##
+def_slotted_exemplar(:deco_tester,
+	{}, :model)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_tester.activate(_gather args)
+	results << _allresults _super.activate(_scatter args)
+	_self.disabled_check()
+	>> _scatter results
+_endmethod
+$

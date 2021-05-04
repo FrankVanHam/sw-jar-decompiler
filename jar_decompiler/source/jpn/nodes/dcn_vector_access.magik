@@ -1,0 +1,54 @@
+_package deco
+$
+
+#remex(:dcn_vector_access)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## node for a local array access.
+def_slotted_exemplar(:dcn_vector_access,
+		     {
+			     {:name, _unset, :readable},
+			     {:args, _unset, :readable}
+		     }, :dcn_base )
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_vector_access.new(p_name, p_args)
+	>> _clone.init(p_name, p_args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_vector_access.init(p_name, p_args)
+	## 
+	.name << p_name
+	.args << p_args
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_vector_access.is_type?(p_type)
+	##
+	>> _false 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_vector_access.decode_on(p_stream)
+	## 
+	p_stream.write(.name)
+	p_stream.write("[")
+	_self.decode_list_on(p_stream, .args)
+	p_stream.write("]")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_vector_access.is_vector_access?
+	##
+	>> _true 
+_endmethod
+$

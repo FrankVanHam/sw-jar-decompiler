@@ -27,8 +27,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_continue_result.decode_on(p_stream)
+_method dcn_throw_checktag.decode_on(p_stream)
 	p_stream.write("_throw_checktag")
-	.local.decode_on(p_stream)
 _endmethod
 $

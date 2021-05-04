@@ -1,0 +1,115 @@
+## jpn_pragma_test
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_pragma_tester_4274 {
+    @SourceHash(value=-1416921853)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_pragma_tester__a_method(Object _self) {
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @SourceHash(value=1838365928)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Proc")
+    public static Object proc___(Object _self) {
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "write"), (Object)ConstantBuilder.stringBootstrap("string", "Hello"));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_pragma_tester_4273
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_pragma_tester_4273() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        DynamicAccessor.bootstrapStorer("!source_file!", "sw", (Object)ConstantBuilder.stringBootstrap("string", "C:\\Users\\frnkv\\source\\repos\\sw-jar-decompiler\\decompile_target\\source\\deco_pragma_tester.magik"));
+        DynamicAccessor.bootstrapStorer("!current_package!", "sw", (Object)ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "package"), ConstantBuilder.stringBootstrap("string", "deco")));
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "def_slotted_exemplar"), (Object)ConstantBuilder.symbolBootstrap("symbol", "deco_pragma_tester"), (Object)VectorBuilder.EMPTY_VECTOR, (Object)ConstantBuilder.symbolBootstrap("symbol", "model"));
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("define_shared_constant()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "deco", "deco_pragma_tester"), (Object)ConstantBuilder.symbolBootstrap("symbol", "a__constant"), (Object)VectorBuilder.EMPTY_VECTOR, (Object)ConstantBuilder.symbolBootstrap("symbol", "private")));
+        ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrap("define_shared_variable()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "deco", "deco_pragma_tester"), (Object)ConstantBuilder.symbolBootstrap("symbol", "a__variable"), (Object)VectorBuilder.EMPTY_VECTOR, (Object)ConstantBuilder.symbolBootstrap("symbol", "private")));
+        MagikObjectUtils.createMethod("deco_pragma_tester", "a__method()", deco_pragma_tester_4274.class, "deco_pragma_tester__a_method", 1, 1);
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "def_mixin"), (Object)ConstantBuilder.symbolBootstrap("symbol", "deco_pragma_tester_mixin"));
+        GlobalAccessor.bootstrapStorer2("storeGlobal2", "deco", "a__proc", (Object)ConstantBuilder.procWithEmptyEnvBootstrap("proc", (Class<?>)deco_pragma_tester_4274.class, "proc___", "", 1, 1, 0, 0));
+        GlobalAccessor.bootstrapStorer2("storeGlobal2", "deco", "a__dynamic?", (Object)Boolean.FALSE);
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+
+############
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## Comment for deco_pragma_tester
+## Line 2
+##
+def_slotted_exemplar(:deco_pragma_tester, {}, :model)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler}, usage={internal})
+##
+## Comment for shared constant
+## Line 2
+##
+deco_pragma_tester.define_shared_constant(:a__constant, {}, :private)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler}, usage={internal})
+##
+## Comment for shared variable
+## Line 2
+##
+deco_pragma_tester.define_shared_variable(:a__variable, {}, :private)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_pragma_tester.a__method() 
+	## Method a_method
+	## Line 2
+	## 
+    _return _unset
+_endmethod
+$
+
+_pragma(classify_level=advanced, topic={dm,jar_decompiler})
+##
+## Comment for deco_pragma_tester_mixin
+## Line 2
+##
+def_mixin(:deco_pragma_tester_mixin)
+$
+
+_pragma(classify_level=advanced, topic={dm, jar_decompiler})
+## 
+## Comment for a proc
+## Line 2
+## 
+_global _constant a__proc << _proc()
+        sw:write("Hello")
+        _return _unset
+_endproc
+$
+
+_pragma(classify_level=advanced, topic={dm, jar_decompiler})
+	## 
+	## Comment for a dynamic
+	## Line 2
+	## 
+_global _constant a__dynamic? << _false
+$
+############

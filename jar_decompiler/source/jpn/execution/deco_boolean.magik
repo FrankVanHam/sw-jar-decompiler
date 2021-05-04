@@ -1,6 +1,7 @@
 _package deco
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:deco_boolean, {}, :deco_execution_base)
 $
 

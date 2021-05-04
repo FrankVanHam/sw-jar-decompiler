@@ -1,0 +1,125 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:deco_invoker,
+	{},
+	:deco_execution_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_invoker.supernaturalbootstrap(p_parser, p_name_node, p_super_node,
+					   p_super_exemplar_node, p_self_node, _gather p_args)
+	_local args << p_parser.parse_args(p_args)
+	>> dcn_super.new(p_name_node.string_value, p_super_node.string_value,
+			 p_super_exemplar_node.string_value, args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_invoker.superbootstrap(p_parser, p_name_node, p_super_node,
+				    p_super_exemplar_node, p_self_node, _gather p_args)
+	_local args << p_parser.parse_args(p_args)
+	>> dcn_super.new(p_name_node.string_value, p_super_node.string_value,
+			 p_super_exemplar_node.string_value, args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_invoker.tuplebootstrapprivate(p_parser, p_method, p_sender, _gather p_args)
+	>> _self.bootstrap(p_parser, p_method, p_sender, _scatter p_args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_invoker.tuplebootstrap(p_parser, p_method, p_sender, _gather p_args)
+	>> _self.bootstrap(p_parser, p_method, p_sender, _scatter p_args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_invoker.bootstrapprivate(p_parser, p_method, p_sender, _gather p_args)
+	>> _self.bootstrap(p_parser, p_method, p_sender, _scatter p_args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_invoker.bootstrap(p_parser, p_method, p_sender, _gather p_args)
+	##
+	>> _if p_method.string_value.matches?("$slot*")
+	   _then
+		   >> _self.slot_method(p_parser, p_method, p_sender, _scatter p_args)
+	   _elif _self.iter?(p_method, p_sender, _scatter p_args)
+	   _then
+		   >> p_parser.parse_iter(p_method, p_sender, _scatter p_args)
+	   _else
+		   >> _self.boot_method(p_parser, p_method.string_value, p_sender, _scatter p_args)
+	   _endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_invoker.slot_method(p_parser, p_method, p_sender, _gather p_args)
+	## 
+	_local meth << p_method.string_value
+	>> _if meth.matches?("$slot_get_*")
+	   _then
+		   >> _self.slot_get_method(p_parser, p_method, p_sender, _scatter p_args)
+	   _else
+		   >> _self.slot_set_method(p_parser, p_method, p_sender, _scatter p_args)
+	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_invoker.slot_get_method(p_parser, p_method, p_sender, _gather p_args)
+	## 
+	_local meth << p_method.string_value
+	_local slot_name << meth.slice(11, meth.size-2)
+	>> dcn_slot.new(slot_name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_invoker.slot_set_method(p_parser, p_method, p_sender, _gather p_args)
+	## 
+	_local meth << p_method.string_value
+	_local slot_name << meth.slice(11, meth.size-2)
+
+	_local exp << p_parser.parse_expression(p_args[1])
+	>> dcn_local_assignment.new(dcn_slot.new(slot_name), exp)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_invoker.boot_method(p_parser, p_method_name, p_sender, _gather p_args)
+	##
+	_local sender << p_parser.parse_sender(p_sender)
+	_if sender _is _unset
+	_then
+		sender << dcn_self.new()
+	_endif
+	_local args << p_parser.parse_args(p_args)
+	
+	_if p_method_name = "for_scatter()"
+	_then
+		_return dcn_scatter.new(sender)
+	_else
+		_return dcn_send.new(sender, p_method_name, args)
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method deco_invoker.iter?(p_method, p_sender, _gather p_args)
+	##
+	>> _if p_sender.is_cast?
+	   _then
+		   >> p_sender.type.name = "MethodHandle"
+	   _else
+		   >> _false
+	   _endif
+_endmethod
+$
+

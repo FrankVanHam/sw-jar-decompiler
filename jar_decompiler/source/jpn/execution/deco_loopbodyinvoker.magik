@@ -14,11 +14,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_loopbodyinvoker.naturalbootstrap(p_parser, p_name_node, p_method_node,
 					      p_end_node, _gather p_args)
 	##
-	_local args << rope.new()
-	_for i_arg _over p_args.fast_elements()
-	_loop
-		args.add(p_parser.parse_expression(i_arg))
-	_endloop
+	_local args << p_parser.parse_args(p_args)
 	_return dcn_loopbody.new(args)
 _endmethod
 $

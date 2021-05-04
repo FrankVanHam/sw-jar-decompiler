@@ -32,3 +32,21 @@ _method jpn_cast.parse_expression(p_parser)
 	>> p_parser.parse_cast(_self)
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_cast.core_expression
+	##
+	>> _if .expression.is_cast?
+	   _then >> .expression.core_expression?
+	   _else >> .expression
+	   _endif 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_cast.is_cast?
+	##
+	>> _true 
+_endmethod
+$

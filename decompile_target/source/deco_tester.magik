@@ -1,0 +1,22 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+##
+def_slotted_exemplar(:deco_tester,
+	{}, :model)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_iter _method deco_tester.test_recursive_iter()
+
+	_for i _over range(1, 5)
+	_loop 
+		_for e _over _self.test_recursive_iter()
+		_loop
+			_loopbody(e)
+			show(e)
+		_endloop
+	_endloop 
+_endmethod
+$

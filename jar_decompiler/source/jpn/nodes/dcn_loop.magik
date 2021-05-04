@@ -1,20 +1,3 @@
-##
-## File            : $File: (dcn_loop.magik) $
-## SCM             : $URL$
-##
-## Copyright       : Realworld Systems
-##                   e-mail  : support@realworld-systems.com
-##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
-##                   tel     : +31(0)345 614406
-##                   fax     : +31(0)345 614319
-##
-## Contains        : 
-##
-##
-## Date written    : 2012-04-06
-## Date changed    : $Date$
-## Revision        : $Rev$
-
 _package deco
 $
 
@@ -25,78 +8,77 @@ _pragma(classify_level=restricted, topic={decompiler})
 ## 
 def_slotted_exemplar(:dcn_loop,
 	{
-		{:tag,   _unset, :readable},
-		{:body,  _unset, :readable},
-		{:while, _unset, :readable}
+		{:tag,          _unset, :readable},
+		{:body,         _unset, :readable},
+		{:while_first?, _unset, :readable},
+		{:while,        _unset, :readable}
 	},
 	:dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_loop.new(p_body, _optional p_while, p_tag)
-	_return _clone.init(p_body,p_while,  p_tag)
+_method dcn_loop.new(p_body, _optional p_while_first?, p_while, p_tag)
+	_return _clone.init(p_body, p_while_first?, p_while,  p_tag)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_loop.init(p_body, p_while, p_tag)
-	.body << p_body
-	.tag << p_tag
+_private _method dcn_loop.init(p_body, p_while_first?, p_while, p_tag)
+	.body  << p_body
+	.while_first?  << p_while_first?
+	.tag   << p_tag
 	.while << p_while
 	_return _self 
 _endmethod
 $
 
-
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_loop.accept_node_visitor(visitor)
-#	_self.accept_node_visitor_in_vector(visitor, .statements)
-#	_self.accept_node_visitor_in_vector(visitor, .results)
-#	_return _super.accept_node_visitor(visitor)
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_loop.accept_body_visitor(visitor)
-#	_self.accept_body_visitor_in_vector(visitor, .statements)
-#	_self.accept_body_visitor_in_vector(visitor, .results)
-#	
-#	visitor.visit(_self, .statements)
-#	_super.accept_body_visitor(visitor)
-#_endmethod
-#$
-#
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_loop.decode_on(a_stream, _optional parent, statements)
-	a_stream.write( "_loop")
+_method dcn_loop.decode_on(p_stream)
+	p_stream.write( "_loop")
 	_if .tag _isnt _unset
 	_then
-		a_stream.write( " @", .tag)
+		p_stream.write( " @", .tag)
 	_endif 
-	a_stream.newline()
-	a_stream.indent(4)
-	.body.decode_on(a_stream)
-	a_stream.newline()
-	a_stream.unindent(4)
-	a_stream.write( "_endloop")
+	p_stream.newline()
+	p_stream.indent(4)
+	_self.decode_body_on(p_stream)
+	p_stream.newline()
+	p_stream.unindent(4)
+	p_stream.write( "_endloop")
 _endmethod
 $
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_loop.result_count
-#	_return .results.size
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_loop.has_results?
-#	_return .results.empty?.not 
-#_endmethod
-#$
 
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_loop.decode_body_on(p_stream)
+	##
+	_if .while_first? _then _self.decode_while(p_stream) _endif
+	.body.decode_on(p_stream)
+	_if .while_first?.not _then _self.decode_while(p_stream) _endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_loop.decode_while(p_stream)
+	##
+	_if .while _isnt _unset _andif
+		.while.is_constant?.not
+	_then
+		p_stream.newline()
+		_local branch << dcn_if.new({{.while.not, dcn_break.new()}})
+		branch.decode_on(p_stream)
+	_endif 
+_endmethod
+$
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_loop.accept_body_visitor(p_visitor)
 	.body.accept_body_visitor(p_visitor)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_loop.is_loop?
+	## 
+	>> _true 
 _endmethod
 $

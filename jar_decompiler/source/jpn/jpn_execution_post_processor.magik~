@@ -29,8 +29,7 @@ _method jpn_execution_post_processor.process_file(p_file)
 	p_file.accept_body_visitor(jpn_try_visitor.new())
 	p_file.accept_body_visitor(jpn_andif_orif_visitor.new())
 	p_file.accept_body_visitor(jpn_block_if_visitor.new())
-	p_file.accept_body_visitor(jpn_loop_while_visitor.new())
-	p_file.accept_body_visitor(jpn_iter_visitor.new(p_file))
+	p_file.accept_body_visitor(jpn_iter_visitor.new())
 	p_file.accept_body_visitor(jpn_iter_leave_continue_visitor.new())
 	p_file.accept_body_visitor(jpn_catch_builder_visitor.new())
 	p_file.accept_body_visitor(jpn_handling_builder_visitor.new())
@@ -54,22 +53,89 @@ _method jpn_execution_post_processor.process_file_top(p_file)
 	##
 	## process the top declarations. Notably the !source_file! and "package".
 	##
+	_self.replace_last_return(p_file)
+	
 	_local sts << p_file.body.statements
+#	_global x
+#	x << sts
+#	3.stop
 	_for i_index, i_node _over sts.fast_keys_and_elements()
-	_loop 
-		_if i_node.is_dynamic_store? _andif
-		    i_node.name = "!source_file!"
+	_loop
+		_if _self.is_top_level_proc?(i_node)
 		_then
-			sts[i_index] << dcn_no_op.new()
+			sts[i_index] << _self.convert_to_top_level_proc(i_node)
 
-			# Share the sourcefile with the file_node.
-			p_file.source_file << i_node.value.string_value
-			
 		_elif i_node.is_dynamic_store? _andif
 		      i_node.name = "!current_package!"
 		_then
 			sts[i_index] << i_node.convert_to_package_declaration()
 		_endif
-	_endloop 
+	_endloop
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_execution_post_processor.is_top_level_proc?(p_node)
+	## 
+	_if p_node.is_local_assignment?
+	_then
+		_if p_node.expression.is_send?
+		_then
+			_local name << p_node.expression.name
+			_return name = "define_shared_constant()" _or
+				name = "define_shared_variable()"
+		_endif 
+	_elif p_node.is_call?
+	_then
+		_local name << p_node.name
+		_return name = "def_mixin" _or
+			name = "def_slotted_exemplar" _or
+			name = "def_indexed_exemplar" _or
+			name = "def_enumeration" _or
+			name = "def_enumeration_from"
+	_endif
+	
+	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_execution_post_processor.convert_to_top_level_proc(p_node)
+	##
+	_if p_node.is_local_assignment?
+	_then
+		_if p_node.expression.is_send?
+		_then
+			_local name << p_node.expression.name
+			_local ex << p_node.expression.sender.name.as_symbol()
+			_return dcn_shared_thing.new(ex, name, p_node.expression.args)
+		_endif 
+	_elif p_node.is_call?
+	_then
+		_local name << p_node.name
+		_return dcn_def_object.new(name, p_node.args)
+	_endif
+	_return p_node
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_execution_post_processor.replace_last_return(p_file)
+	## 
+	_local sts << p_file.body.statements
+	_if sts.empty?.not
+	_then
+		_local last << sts.last
+		_if last.is_return?
+		_then
+			_local replace << _if last.expression.is_constant? _orif
+					      last.expression.is_local?
+					  _then >> dcn_no_op.new()
+					  _else >> last.expression
+					  _endif
+			sts[sts.size] << replace
+		
+		_endif 
+	_endif  
 _endmethod
 $

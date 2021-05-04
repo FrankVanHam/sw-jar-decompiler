@@ -21,11 +21,11 @@ _method jpn_ignore_assignment_visitor.accept(p_body)
 		_then 
 			sts[i_index] << dcn_no_op.new()
 			
-		_elif i_node.is_class_of?(dcn_local_assignment) _andif
+		_elif i_node.is_local_assignment? _andif
 		    _self.ignore_left?(i_node)
 		_then
 			sts[i_index] << i_node.expression
-		_elif i_node.is_class_of?(dcn_local_assignment) _andif
+		_elif i_node.is_local_assignment? _andif
 		      _self.ignore?(i_node)
 		_then
 			sts[i_index] << dcn_no_op.new()
@@ -39,7 +39,7 @@ _method jpn_ignore_assignment_visitor.ignore_internal_definition?(p_node)
 	##
 	## Ignore: Object[] __env__;
 	##
-	_if p_node.is_class_of?(dcn_local_declaration).not _then _return _false, :local_declaration _endif
+	_if p_node.is_local_declaration?.not _then _return _false, :local_declaration _endif
 	_return p_node.is_type?("Object") _andif p_node.name = "__env__" 
 _endmethod
 $
@@ -48,9 +48,9 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_ignore_assignment_visitor.ignore_left?(p_node)
 	##
-	_local loc << p_node.only_local()
+	_local loc << p_node.single_local
 	>> loc _isnt _unset _andif
-		(loc.is_class_of?(dcn_local) _orif loc.is_class_of?(dcn_local_declaration)) _andif 
+		(loc.is_local? _orif loc.is_local_declaration?) _andif 
 		loc.name.matches?("*ignored*")
 _endmethod
 $
@@ -58,12 +58,11 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_ignore_assignment_visitor.ignore?(p_node)
 	##
-	_local loc << p_node.only_local()
+	_local loc << p_node.single_local
 	_if loc _is _unset _then _return _false _endif
 
-	_local decl? << loc.is_class_of?(dcn_local_declaration) _orif loc.is_class_of?(dcn_local)
-
-	#_if decl? _andif loc.is_type?("ResultTuple") _then _return _true _endif
+	_local decl? << loc.is_local_declaration? _orif loc.is_local?
+	
 	_if decl? _andif (loc.name = "__env__") _then _return _true  _endif
 	_if decl? _andif (loc.name = "__dynamic_frame__") _then _return _true  _endif
 	_if decl? _andif (loc.name = "__return_catcher__") _then _return _true  _endif
@@ -80,19 +79,13 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_ignore_assignment_visitor.is_env_slicer?(p_node)
 	##
-	# Ignore Object[] objectArray = new Object[]{__env__[1]};
-	_if p_node.is_class_of?(dcn_local_assignment).not _then _return _false, :no_assignment _endif
-	_if p_node.expression.is_class_of?(dcn_vector).not _then _return _false, :no_new _endif
+	# Ignore: Object[] objectArray = new Object[]{__env__[1]};
+	##
+	_if p_node.is_local_assignment?.not _then _return _false, :no_assignment _endif
+	_if p_node.expression.is_vector?.not _then _return _false, :no_new _endif
 	_if p_node.expression.values.empty? _then _return _false, :need_args _endif	
-	_if p_node.expression.values[1].is_class_of?(dcn_array_access).not _then _return _false, :local _endif
+	_if p_node.expression.values[1].is_vector_access?.not _then _return _false, :local _endif
 	
 	>> p_node.expression.values[1].name = "__env__" 
-	
-#	
-#	_if p_node.expression.is_class_of?(dcn_new).not _then _return _false, :no_new _endif
-#	_if p_node.expression.array?.not _then _return _false, :no_arr _endif
-#	_if p_node.expression.args.empty? _then _return _false, :need_args _endif
-#
-#	>> p_node.expression.args[1].name = "__env__" 
 _endmethod
 $

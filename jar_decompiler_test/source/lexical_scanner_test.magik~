@@ -99,6 +99,16 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method lexical_scanner_test.test_dots()
+
+	_local s << deco:lexical_scanner.new(" ... ".read_stream())
+	_local l << s.get()
+	_self.assert_true(l.is_separator?, "should be separator")
+	_self.assert_equals("...", l.value)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method lexical_scanner_test.test_annotation_with_number_value()
 
 	_local s << deco:lexical_scanner.new("  @Topics(value=3) ".read_stream())

@@ -1,0 +1,60 @@
+_package deco
+$
+
+#remex(:dcn_loop)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## 
+def_slotted_exemplar(:dcn_loop,
+	{
+		{:tag,   _unset, :readable},
+		{:body,  _unset, :readable},
+		{:while, _unset, :readable}
+	},
+	:dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_loop.new(p_body, _optional p_while, p_tag)
+	_return _clone.init(p_body,p_while,  p_tag)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_loop.init(p_body, p_while, p_tag)
+	.body  << p_body
+	.tag   << p_tag
+	.while << p_while
+	_return _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_loop.decode_on(p_stream)
+	p_stream.write( "_loop")
+	_if .tag _isnt _unset
+	_then
+		p_stream.write( " @", .tag)
+	_endif 
+	p_stream.newline()
+	p_stream.indent(4)
+	.body.decode_on(p_stream)
+	p_stream.newline()
+	p_stream.unindent(4)
+	p_stream.write( "_endloop")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_loop.accept_body_visitor(p_visitor)
+	.body.accept_body_visitor(p_visitor)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_loop.is_loop?
+	## 
+	>> _true 
+_endmethod
+$

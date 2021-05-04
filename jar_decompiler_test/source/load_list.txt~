@@ -18,7 +18,7 @@ jpn_parser_iter_snippet_test
 jpn_parser_catch_snippet_test
 jpn_parser_handling_snippet_test
 jpn_parser_proc_snippet_test
-jpn_parser_trial_snippet_test
+#jpn_parser_trial_snippet_test
 jpn_parser_slot_snippet_test
 jpn_parser_hierarchy_snippet_test
 jpn_parser_iter_definition_snippet_test
@@ -28,3 +28,7 @@ java_parser_local_test
 jpn_parser_try_3_3_3_condition_snippets_test
 jpn_parser_try_3_3_3_no_condition_snippets_test
 jpn_parser_andif_orif_snippet_test
+
+deco_pragma_tester
+jpn_parser_pragma_snippet_test
+

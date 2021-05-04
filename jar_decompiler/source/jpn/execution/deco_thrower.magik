@@ -1,11 +1,14 @@
 _package deco
 $
 
+#remex(:deco_thrower)
+
 def_slotted_exemplar(:deco_thrower, {}, :deco_execution_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_thrower.make(p_parser, p_value_node, _optional p_arg_node)
+	##
 	_local exp << p_parser.parse_expression(p_value_node)
 	_local arg << _self.parse_argument(p_parser, p_arg_node)
 
@@ -27,9 +30,9 @@ _method deco_thrower.parse_argument(p_parser, p_arg_node)
 _endmethod
 $
 
-
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_thrower.checktag(p_parser)
+	##
 	>> dcn_throw_checktag.new()
 _endmethod
 $

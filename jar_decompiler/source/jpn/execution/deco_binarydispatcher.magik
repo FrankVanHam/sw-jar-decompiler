@@ -26,11 +26,9 @@ deco_binarydispatcher.define_shared_constant(:mapping,
 		"\\g=", ">=",
 		"=", "=",
 		"~=", "~=",
-		"cf", "_cf"
-			    ),
+		"cf", "_cf"),
 	:private )
 $
-
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_binarydispatcher.bootstrap(p_parser, p_operator, p_value1, p_value2)

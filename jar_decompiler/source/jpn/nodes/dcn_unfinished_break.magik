@@ -1,6 +1,8 @@
 _package deco
 $
 
+#remex(:dcn_unfinished_break)
+
 _pragma(classify_level=restricted, topic={decompiler})
 ## Node a _leave statement.
 def_slotted_exemplar( :dcn_unfinished_break,
@@ -26,5 +28,12 @@ _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_unfinished_break.decode_on(p_stream)
 	p_stream.write("_unfinished_break ")
 	.local.decode_on(p_stream)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_unfinished_break.is_unfinished_break?
+	## 
+	>> _true 
 _endmethod
 $

@@ -2,6 +2,10 @@ _package deco
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## Handles pop() and remainder() Java statements that
+## manipulates the result of return values.
+##
 def_slotted_exemplar(:jpn_pop_visitor,{})
 $
 
@@ -21,39 +25,65 @@ _method jpn_pop_visitor.accept(p_body)
 	_loop
 		_if _self.is_remainder?(i_node) _andif (result _isnt _unset)
 		_then
+			# A remainder statement means to ignore the previous results.
 			_if result_reset?.not
 			_then
 				result.reset()
 				result_reset? << _true
 			_endif 
 			sts[i_index] << dcn_no_op.new()
+			
 		_elif _self.is_remainder_assignment?(i_node) _andif (result _isnt _unset)
 		_then
+			#
+			# Object[] c = resultTuple.remainder(2);
+			#
+			# translate to (... gather c) << (scatter resultTuple)
+			#
 			_if result_reset?.not
 			_then
 				result.reset()
 				result_reset? << _true
 			_endif
-			result.set_gather(i_node.only_local())
+			result.set_gather(i_node.single_local)
 			sts[i_index] << dcn_no_op.new()
+			
 		_elif _self.is_pop_assignment?(i_node) _andif (result _isnt _unset)
 		_then
+			#
+			# Object b = resultTuple.pop();
+			#
+			# translates to (.., b) << (scatter resultTuple)
+			#
 			_if result_reset?.not
 			_then
 				result.reset()
 				result_reset? << _true
 			_endif
-			result.append_local(i_node.only_local())
+			result.append_local(i_node.single_local)
 			sts[i_index] << dcn_no_op.new()
 			
 		_elif _self.is_result_tuple?(i_node)
 		_then
-			# this should come last
+			#
+			# Set the target for the pop() and remainders
+			#
+			# This should be the last _elif in the chain
+			#
 			result << i_node
-			result_reset? << _false	
+			result_reset? << _false
+			
 		_endif 
 	_endloop
-	_for i_index, i_node _over sts.fast_keys_and_elements()
+
+	_self.clear_all_pops(sts)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_pop_visitor.clear_all_pops(p_sts)
+	## 
+	_for i_index, i_node _over p_sts.fast_keys_and_elements()
 	_loop
 		_if _self.is_pop_assignment?(i_node)
 		_then
@@ -65,18 +95,19 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_pop_visitor.is_remainder?(p_node)
-	>> p_node.is_class_of?(dcn_remainder)
+	>> p_node.is_remainder?
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_pop_visitor.is_remainder_assignment?(p_node)
-	_if p_node.is_class_of?(dcn_local_assignment)
+	##
+	_if p_node.is_local_assignment?
 	_then
-		_local loc << p_node.only_local()
+		_local loc << p_node.single_local
 		_if loc _isnt _unset
 		_then
-			_return p_node.expression.is_class_of?(dcn_remainder)
+			_return p_node.expression.is_remainder?
 		_else
 			_return _false
 		_endif 
@@ -88,12 +119,13 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_pop_visitor.is_pop_assignment?(p_node)
-	_if p_node.is_class_of?(dcn_local_assignment)
+	##
+	_if p_node.is_local_assignment?
 	_then
-		_local loc << p_node.only_local()
+		_local loc << p_node.single_local
 		_if loc _isnt _unset
 		_then
-			_return p_node.expression.is_class_of?(dcn_pop)
+			_return p_node.expression.is_pop?
 		_else
 			_return _false
 		_endif 
@@ -105,9 +137,10 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_pop_visitor.is_result_tuple?(p_node)
-	_if p_node.is_class_of?(dcn_local_assignment)
+	##
+	_if p_node.is_local_assignment?
 	_then
-		_local loc << p_node.only_local()
+		_local loc << p_node.single_local
 		_if loc _isnt _unset
 		_then
 			

@@ -40,3 +40,10 @@ _method dcn_interrupts.decode_on(p_stream)
 	p_stream.write(_self.class_name, "(", .type, ")")
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_interrupts.is_interrupts?
+	## 
+	>> _true 	
+_endmethod
+$

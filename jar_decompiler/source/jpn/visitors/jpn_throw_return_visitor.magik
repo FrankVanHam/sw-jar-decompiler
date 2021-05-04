@@ -2,6 +2,9 @@ _package deco
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## Convert a throw return X to a "_return X".
+##
 def_slotted_exemplar(:jpn_throw_return_visitor,{})
 $
 
@@ -28,8 +31,8 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method jpn_throw_return_visitor.to_convert?(p_node)
 	##
-	_if p_node.is_class_of?(dcn_throw) _andif
-	    p_node.value.is_class_of?(dcn_return) _andif
+	_if p_node.is_throw? _andif
+	    p_node.value.is_return? _andif
 	    p_node.results.empty?
 	_then
 		_return _true

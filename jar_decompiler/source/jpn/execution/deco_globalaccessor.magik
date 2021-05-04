@@ -8,7 +8,8 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_globalaccessor.bootstrapfetcher2(p_parser, p_command_node, p_package_node, p_name_node)
 
 	_local package << p_package_node.string_value
-	_local name << p_name_node.string_value
+	_local name    << p_name_node.string_value
+	
 	>> dcn_global.new(name, package)
 _endmethod
 $
@@ -18,8 +19,8 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_globalaccessor.bootstrapstorer2(p_parser, p_command_node, p_package_node, p_name_node, p_value_node)
 	##
 	_local package << p_package_node.string_value
-	_local name << p_name_node.string_value
-	_local exp << p_parser.parse_expression(p_value_node)
+	_local name    << p_name_node.string_value
+	_local exp     << p_parser.parse_expression(p_value_node)
 	
 	>> dcn_global_declaration.new(name, package, exp)
 _endmethod

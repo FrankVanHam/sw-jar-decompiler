@@ -1,0 +1,51 @@
+_package deco
+$
+
+#remex(:dcn_super)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+## 
+def_slotted_exemplar(:dcn_super,
+		     {
+			     {:name,           _unset},
+			     {:super,          _unset},
+			     {:super_exemplar, _unset},
+			     {:args,           _unset, :readable}
+		     }, :dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_super.new(p_name, p_super, p_super_exemplar, p_args)
+	>> _clone.init(p_name, p_super, p_super_exemplar, p_args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_super.init(p_name, p_super, p_super_exemplar, p_args)
+	##
+	.name << p_name
+	.super << p_super
+	.super_exemplar  << p_super_exemplar
+	.args << p_args
+	>> _self
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_super.decode_on(p_stream)
+	##
+	p_stream.write("_super")
+	_if .super _isnt _unset
+	_then
+		p_stream.write("(", .super, ")")
+	_endif
+	_local name << _if .name.matches?("*()")
+		       _then >> .name.slice(1, .name.size-2)
+		       _else >> .name
+		       _endif 
+	p_stream.write(".", name, "(")
+	_self.decode_list_on(p_stream, .args)
+	p_stream.write(")")
+_endmethod
+$

@@ -21,6 +21,8 @@ $
 
 #sw_module_manager.save_compiled_module(sw_module_manager.module(:decompile_target))
 
+#deco:decompiler.new().decompile_jar_dir_to_dir("D:\SW526\core\sw_core\libs", "sw_core.*.jar", "c:\temp")
+
 _block 
 	simple_munit_gui.open()
 _endblock
@@ -33,5 +35,26 @@ $
 
 _method object.p
 	print(_self)
+_endmethod
+$
+
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method decompiler.decompile_jar_dir_to_dir(p_search_dir, p_match, p_dir)
+	_local ch << directory_channel.new(p_search_dir, p_match)
+	_loop
+		_local path << ch.get_full()
+		_if path _is _unset _then _leave _endif
+
+		_if path.matches?("*backup_manager_engine*") _then _continue _endif
+		_if path.matches?("*backup_manager_plugin*") _then _continue _endif
+		_if path.matches?("*case_engines*")          _then _continue _endif
+		_if path.matches?("*conflict_dialog*")       _then _continue _endif
+		_if path.matches?("*conflict_viewer_framework*")       _then _continue _endif
+		write("Decompiling: ", path)
+		_self.decompile_jar_to_dir(path, p_dir)
+	_endloop
 _endmethod
 $

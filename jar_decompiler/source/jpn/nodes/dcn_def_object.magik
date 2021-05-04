@@ -1,0 +1,69 @@
+_package deco
+$
+
+#remex(:dcn_def_object)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+##
+## Is the node for any def_* creation statements, like def_slotted_exemplar.
+##
+def_slotted_exemplar( :dcn_def_object,
+		      {
+			      {:name, _unset, :readable},
+			      {:args, _unset, :readable}
+		      }, :dcn_base )
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_def_object.init(p_name, p_args)
+	##
+	.name << p_name
+	.args << p_args
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_def_object.target_name
+	## 
+	>> .args.first.string_value
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_def_object.decode_on(p_stream)
+	##
+	_self.decode_pragma_on(p_stream)
+	_self.decode_comment_on(p_stream, _false)
+	p_stream.write(.name)
+	p_stream.write("(")
+	_self.decode_list_on(p_stream, .args)
+	p_stream.write(")")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_def_object.method_finder
+	##
+	_local id << _self.method_finder_id
+	>> _if id _isnt _unset
+	   _then 
+		   >> dcn_method_finder.new_named(id)
+	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_def_object.method_finder_id
+	##
+	>> _self.package_prefix(_self.target_name)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_def_object.is_def_object?
+	## 
+	>> _true 
+_endmethod
+$

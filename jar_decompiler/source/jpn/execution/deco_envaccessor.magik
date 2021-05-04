@@ -6,49 +6,24 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 def_slotted_exemplar(:deco_envaccessor,
-	{
-		{:var_names, _unset},
-		{:cache,     _unset}
-	}, :deco_execution_base)
-$
-
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_envaccessor.init()
-	.var_names << equality_property_list.new()
-	.cache << equality_property_list.new()
-	 >> _self 
-_endmethod
-$
-
-_block
-	deco_envaccessor.init()
-_endblock
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_envaccessor.reset()
-	.cache.empty()
-	.var_names.empty()
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_envaccessor.set_var_name(p_index, p_value)
-	## 
-	.var_names[p_index] << p_value
-	.cache.remove_key(p_index)
-_endmethod
+	{}, :deco_execution_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_envaccessor.bootstrapreseter(p_parser, p_action, p_var, p_env, p_index)
+	##
+	# Like:
+	# EnvAccessor.bootstrapReseter("resetEnv", (Object)_self, (Object[])__env__, (int)1);
+	#
+	# in this example: the variable self is set at 1.
+	#
+	#
 	_if p_action.string_value = "resetEnv"
 	_then 
 		_local var << p_parser.parse_expression(p_var)
 		_local index << p_parser.parse_expression(p_index)
-
-		.cache[index.string_value] << var
+		
+		p_parser.current_environment.reset(index.string_value, var)
 	_endif 
 	>> dcn_no_op.new()
 _endmethod
@@ -56,14 +31,19 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_envaccessor.bootstrapstorer(p_parser, p_action, p_exp, p_env, p_index)
+	##
+	# Like:
+	# EnvAccessor.bootstrapStorer("storeEnv", (Object)ConstantBuilder.stringBootstrap("string", "hoi"), (Object[])__env__, (int)1);
+	#
+	# in this example: the string "hoi" is set at index 1.
+	#
 	_if p_action.string_value = "storeEnv"
 	_then
 		_local index << p_parser.parse_expression(p_index)
-		
 		_local exp << p_parser.parse_expression(p_exp)
-		.cache[index.string_value] << exp
-
-		_local name << .var_names[index.string_value]
+		
+		_local name << p_parser.current_environment.store(index.string_value, exp)
+		
 		_if name _isnt _unset
 		_then 
 			_local left  << dcn_local.new(name)
@@ -80,46 +60,27 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method deco_envaccessor.bootstrapfetcher(p_parser, p_action, p_env, p_index)
+	##
+	# Like:
+	# EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1)
+	#
+	# in this example: the value at index 1 is returned. Either the
+	# name of the variable is returned or an actual stored value.
+	#
 	_if p_action.string_value = "fetchEnv"
 	_then 
 		_local index << p_parser.parse_expression(p_index)
-
-		_local name << .var_names[index.string_value]
-		_local loc << .cache[index.string_value]
+		_local (name, loc) << p_parser.current_environment.fetch(index.string_value)
 
 		_if name _isnt _unset
 		_then
 			_return dcn_local.new(name)
 		_else
 			_return loc
-		_endif 
-
-#		_if loc _isnt _unset
-#		_then
-#			_return loc
-#		_else
-#			_return dcn_local.new(name)
-#		_endif 
+		_endif
 	_else 
 		_return dcn_no_op.new()
 	_endif 
 _endmethod
 $
 
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_envaccessor.save()
-	##
-	>> property_list.new_with(
-		   :var_names, .var_names.copy(),
-		   :cache, .cache.copy() )
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_envaccessor.restore(p_props)
-	##
-	.var_names << p_props[:var_names]
-	.cache << p_props[:cache]
-_endmethod
-$

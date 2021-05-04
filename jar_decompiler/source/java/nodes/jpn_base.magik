@@ -84,3 +84,10 @@ _method jpn_base.is_array_access?
 	>> _false 
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_base.is_cast?
+	##
+	>> _false 
+_endmethod
+$

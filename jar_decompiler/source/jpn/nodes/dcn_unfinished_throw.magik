@@ -8,7 +8,7 @@ _pragma(classify_level=restricted, topic={decompiler})
 def_slotted_exemplar( :dcn_unfinished_throw,
 		       {
 			       {:expression, _unset, :readable},
-			       {:arg, _unset, :readable}
+			       {:arg,        _unset, :readable}
 		       }, :dcn_base)
 $
 
@@ -35,5 +35,12 @@ _method dcn_unfinished_throw.decode_on(p_stream)
 		p_stream.write(" _with ")
 		.arg.decode_on(p_stream)
 	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_unfinished_throw.is_unfinished_throw?
+	##
+	>> _true 
 _endmethod
 $

@@ -1,17 +1,25 @@
 _package deco
 $
 
-
 #remex(:tblock)
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## A representation of a block of Java code. Either:
+## type=:block     a block with the try stratement
+## type=:try_block a block with the try statement
+## type=:try       a try statement containing the actual try statement
+##
 def_slotted_exemplar(:tblock,
 	{
-		{:block_node, _unset, :readable},
-		{:type, _unset, :readable},
+		# A block node or a try node
+		{:node,        _unset, :readable},
+		{:type,        _unset, :readable},
+
+		# The index of the statements *after* the try statement
 		{:start_index, _unset, :writable},
-		{:parent, _unset, :writable},
-		{:child, _unset, :writable}
+		{:parent,      _unset, :writable},
+		{:child,       _unset, :writable}
 		
 	})
 $
@@ -24,28 +32,12 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method tblock.init(p_node, p_type)
-	_if (p_type _is :try) _andif p_node.is_unfinished_try?.not 
-	_then
-		2.stop
-	_endif
-	_if (p_type _is :try_block) _andif p_node.is_class_of?(dcn_block).not 
-	_then
-		3.stop
-	_endif
-	_if (p_type _is :block) _andif p_node.is_class_of?(dcn_block).not 
-	_then
-		4.stop
-	_endif
-	.block_node << p_node
+	assert((p_type _isnt :try)       _orif p_node.is_unfinished_try?)
+	assert((p_type _isnt :try_block) _orif p_node.is_block?)
+	assert((p_type _isnt :block)     _orif p_node.is_block?)
+	.node << p_node
 	.type << p_type
 	>> _self 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method tblock.replace_child_with(p_node)
-	##
-	_self.statements[.start_index-1] << p_node
 _endmethod
 $
 
@@ -70,7 +62,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method tblock.tag
 	>> _if _self.is_try?
 	   _then >> "try"
-	   _else >> .block_node.name
+	   _else >> .node.name
 	   _endif 
 _endmethod
 $
@@ -78,8 +70,8 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method tblock.statements
 	>> _if .type _is :try
-	   _then >> .block_node.try_body.statements
-	   _else >> .block_node.body.statements
+	   _then >> .node.try_body.statements
+	   _else >> .node.body.statements
 	   _endif 
 _endmethod
 $
@@ -99,6 +91,8 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method tblock.after_try_statements
 	##
+	## Return the statements after the try statement and the branches
+	##
 	_local idx << .start_index
 	_for i_index, i_node _over _self.all_taxonomy_branches()
 	_loop
@@ -110,19 +104,21 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method tblock.try_body << p_body
-	.block_node.try_body << p_body
+	##
+	.node.try_body << p_body
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _iter _method tblock.all_taxonomy_branches()
+	##
 	_if .start_index _is _unset _then _return _endif
 
 	_local sts << _self.statements
 	_for i _over range(.start_index, sts.size)
 	_loop
 		_local n << sts[i]
-		_if n.is_class_of?(dcn_branch) _andif
+		_if n.is_if? _andif
 		    n.taxonomy_includes?
 		_then
 			_loopbody(i, n)
@@ -133,6 +129,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method tblock.taxonomy_branches?
+	##
 	_for i_branch _over _self.all_taxonomy_branches()
 	_loop
 		_return _true

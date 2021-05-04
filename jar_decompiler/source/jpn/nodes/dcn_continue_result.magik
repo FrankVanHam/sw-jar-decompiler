@@ -2,7 +2,7 @@ _package deco
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-## Node a _continue statement.
+## Node for a _continue statement.
 def_slotted_exemplar( :dcn_continue_result,
 		       {
 			       {:local, _unset, :readable}

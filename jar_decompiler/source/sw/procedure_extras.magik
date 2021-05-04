@@ -3,22 +3,17 @@ $
 
 _pragma(classify_level=restricted, topic={decompiler})
 _method procedure.deco_unique_constant_name
-	name << _unset 
-	_for i_global _over package.all_globals()
+	_for i_package _over package.all_packages.fast_elements()
 	_loop 
-		_if i_global.constant? _andif
-		    i_global.value _is _self
-		_then
-			_if name _is _unset
+		_for i_key, i_value _over i_package.fast_keys_and_elements()
+		_loop
+			_if i_value _is _self
 			_then
-				name << i_global.key
-			_else
-				name << _unset
-				_leave
-			_endif 
-		_endif
+				_return i_key
+			_endif
+		_endloop 
 	_endloop
-	_return name
+	>> _self 
 _endmethod
 $
 

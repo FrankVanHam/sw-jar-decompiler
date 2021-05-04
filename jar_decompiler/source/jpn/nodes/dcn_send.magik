@@ -1,20 +1,3 @@
-##
-## File            : $File: (dcn_send.magik) $
-## SCM             : $URL$
-##
-## Copyright       : Realworld Systems
-##                   e-mail  : support@realworld-systems.com
-##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
-##                   tel     : +31(0)345 614406
-##                   fax     : +31(0)345 614319
-##
-## Contains        : 
-##
-##
-## Date written    : 2012-04-05
-## Date changed    : $Date$
-## Revision        : $Rev$
-
 _package deco
 $
 
@@ -25,13 +8,13 @@ _pragma(classify_level=restricted, topic={decompiler})
 ## Node for sending a method
 def_slotted_exemplar(:dcn_send,
 		     {
-			     {:name, _unset, :readable},
-			     {:sender, _unset, :readable},
-			     {:allresults?, _unset, :readable},
-			     {:operator, _unset},
-			     
+			     {:name,         _unset, :readable},
+			     {:sender,       _unset, :readable},
+			     {:allresults?,  _unset, :readable},
+			     {:operator,     _unset},
+			     {:args,         _unset, :readable},
 			     {:top_of_stack, _unset}
-		     }, {:dcn_invocation, :dcn_assign_mixin})
+		     }, {:dcn_base})
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
@@ -43,7 +26,8 @@ _method dcn_send.init(p_sender, p_method, p_args)
 	.name << p_method
 	.sender << p_sender
 	.allresults? << _false 
-	>> _super.init(p_args)
+	.args << p_args
+	>> _self 
 _endmethod
 $
 
@@ -63,7 +47,7 @@ _method dcn_send.decode_on(p_stream)
 		      _endif 
 	
 	p_stream.write(meth, first)
-	_self.decode_node_list_on(p_stream, args)
+	_self.decode_list_on(p_stream, args)
 	p_stream.write(second)
 	_if set?
 	_then
@@ -78,6 +62,14 @@ _method dcn_send.decode_on(p_stream)
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_send.remainder(p_nr)
+	##
+	>> dcn_remainder.new(p_nr)
+_endmethod
+$
+
+
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_send.asallresults()
 	##
@@ -91,43 +83,30 @@ _private _method dcn_send.name_split()
 	##
 	>> _if .name.matches?("\\\\b*]")
 	   _then
-		   >> "", "[", "]", _false, _false 
+		   >> "", "[", "]", _false, _false
+		   
 	   _elif .name.matches?("\\\\b*]\\\\l\\\\l")
 	   _then
-		   >> "", "[", "]", _true, _false 
+		   >> "", "[", "]", _true, _false
+		   
 	   _elif .name.matches?("\\\\b*]^\\\\l\\\\l")
 	   _then
-		   >> "", "[", "]", _true, _true  
-#	   _elif .name.index_of_seq("()\\l\\l") _isnt _unset 
-#	   _then
-#		   >> write_string(".", .name.slice(1,.name.size-8)), "(", ")", _true , _false 
-#	   _elif .name.index_of_seq("()^\\l\\l") _isnt _unset 
-#	   _then
-#		   >> write_string(".", .name.slice(1,.name.size-9)), "(", ")", _true, _true 
-#	   _elif .name.index_of_seq("\\l\\l") _isnt _unset 
-#	   _then
-#		   >> write_string(".", .name.slice(1,.name.size-6)), "", "", _true, _false 
-#	   _elif .name.index_of_seq("^\\l\\l") _isnt _unset 
-#	   _then
-#		   >> write_string(".", .name.slice(1,.name.size-7)), "", "", _true, _true 
-
-
+		   >> "", "[", "]", _true, _true
+		   
 	   _elif .name.matches?("*()^\\\\l\\\\l")
 	   _then
-		   >> write_string(".", .name.slice(1, .name.size-9)), "(", ")", _true, _true 
+		   >> write_string(".", .name.slice(1, .name.size-9)), "(", ")", _true, _true
+		   
 	   _elif .name.matches?("*()\\\\l\\\\l")
 	   _then
 		   >> write_string(".", .name.slice(1, .name.size-8)), "(", ")", _true, _false
-
-
-		   
+ 
 	   _elif .name.matches?("*^\\\\l\\\\l")
 	   _then
 		   >> write_string(".", .name.slice(1, .name.size-7)), "", "", _true, _true 
 	   _elif .name.matches?("*\\\\l\\\\l")
 	   _then
 		   >> write_string(".", .name.slice(1, .name.size-6)), "", "", _true, _false
-
 
 	   _elif .name.matches?("*()")
 	   _then
@@ -145,394 +124,9 @@ _private _method dcn_send.matches?(p_name, p_test)
 _endmethod
 $
 
-
-
-
-
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.new(token, sender, name, args, top_of_stack)
-#	_return _clone.init(token, sender, name, args, _unset, top_of_stack)
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.new_operator_assign(token, sender, name, args, operator, top_of_stack)
-#	_return _clone.init(token, sender, name, args, operator, top_of_stack)
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_private _method dcn_send.init(token, sender, name, args, operator, top_of_stack)
-#	assert(sender _isnt _unset)
-#	
-#	.name << name
-#	.sender << sender
-#	.top_of_stack << top_of_stack
-#	.operator << operator
-#	
-#	_return _super.init(token, args)
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.accept_node_visitor(visitor)
-#	.sender << .sender.accept_node_visitor(visitor)
-#	_return _super.accept_node_visitor(visitor)
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.accept_body_visitor(visitor)
-#	.sender.accept_body_visitor(visitor)
-#	_return _super.accept_body_visitor(visitor)
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.top_of_stack_during_decompile
-#	_return .top_of_stack
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.is_assign?
-#	_return .name.as_charvec().index_of_seq("<<") _isnt _unset 
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.is_send?
-#	_return _true 
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.handler_conditions
-#	assert(_self.is_sys!create?)
-#	_return .args[2].handler_conditions
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.is_sys!create?
-#	_if .name _isnt :|sys!create()| _then _return _false _endif
-#	
-#	_if .args.size <> 2 _then _return _false _endif
-#	
-#	cons << .args[1]
-#	_if _not cons.is_constant? _then _return _false _endif
-#	_if _not cons.is_global?(!sys!condition_handler_cluster!) _then _return _false _endif
-#	
-#	call << .args[2]
-#	_if _not call.is_call? _then _return _false _endif
-#	
-#	# pretty convinced now that this is a sys!create?
-#	_return _true 
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.single_argument
-#	_return _self.expression
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.is_single_assign?
-#	_return _self.is_assign?
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.chain_assign?(value)
-#	##
-#	## Answer if the value if that value that is assigned to me in
-#	## the assignment.
-#	_if value _is _unset _then _return _false _endif
-#	
-#	_if _self.assigned_arg _is value
-#	_then
-#		_return _true
-#	_else
-#		_return value.is_chain_assign_for?(_self)
-#	_endif
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.chain_assign_operator?(op_node, operator, arg, operand_send)
-#	_if (operator _is _unset) _orif (arg _is _unset) _orif (operand_send _is _unset)
-#	_then
-#		_return _false
-#	_endif
-#	_if _not operand_send.is_class_of?(_self)
-#	_then
-#		_return _false
-#	_endif 
-#	_if .operator <> operator _then _return _false _endif 
-#	_if _self.assigned_arg _isnt arg _then _return _false _endif
-#	
-#	_if _not _self.assign_name?(operand_send.name) _then _return _false _endif
-#	_if .sender _isnt operand_send.sender _then _return _false _endif
-#	
-#	_return _true 
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.expression
-#	_return .args[1]
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.is_vector_definition?
-#	_if (.name _isnt :|shallow_copy()|) _then _return _false _endif
-#	_if _not .sender.is_constant? _then _return _false _endif
-#	
-#	value << .sender.value
-#	_if _not value.is_class_of?( simple_vector ) _then _return _false _endif
-#	_if value _is simple_vector _then _return _false _endif
-#	
-#	_return _true 
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.as_vector_definition()
-#	_return dcn_constant.new( .sender.value )
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.assign_name?(n)
-#	_return (write_string(n, "<<") = .name) _orif
-#		(write_string(n, "^<<") = .name)
-#_endmethod
-#$
-#
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.is_hidden_operator_assign_for?(send, args)
-#	## The first element of args is the operation and should not be
-#	## compared .args.
-#	_if .sender <> send.sender _then _return _false _endif
-#	
-#	_if .args.size <> args.size _then _return _false _endif
-#	_if send.assign_name?(.name)
-#	_then
-#		same_args? << _true 
-#		_for i,a _over .args.fast_keys_and_elements()
-#		_loop
-#			_if (args[i] _isnt a)
-#			_then
-#				same_args? << _false
-#			_endif
-#		_endloop			
-#		_if same_args?
-#		_then
-#			_return _true
-#		_endif
-#	_endif
-#	_return _false 
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.has_hidden_operator_assign?	
-#	_if .args _is _unset _then _return _false _endif
-#	_if .args.size = 1
-#	_then 
-#		op << .args[1]
-#		_if _not op.is_op? _then _return _false _endif
-#		_return op.is_hidden_operator_assign_for_send?(_self, .args.slice_to_end(2))
-#	_elif _self.is_assign?
-#	_then
-#		op << .args[1]
-#		_if _not op.is_op? _then _return _false _endif
-#		_return op.is_hidden_operator_assign_for_send?(_self, .args.slice_to_end(2))
-#	_endif
-#	_return _false 
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.as_operator_assign()
-#	_return .args[1].as_operator_assign_send(.token, .sender, .name, .args, .top_of_stack)
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.has_rhs?
-#	_return _not .args.empty?
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.decode_operator_on( a_stream )
-#	_if .operator _isnt _unset
-#	_then
-#		op << dcn_op.translate_op(.operator)
-#		a_stream.write( op )
-#	_endif
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.decode_lhs_on( a_stream )
-#	.sender.decode_as_receiver_on(a_stream)
-#	
-#	_if .args.empty?.not
-#	_then
-#		name << .name
-#		_if name.index_of_seq( "()<<" ) _isnt _unset 
-#		_then
-#			_self.decode_assign_parenthesis_args_on(a_stream, name, _false, _false  )
-#		_elif name.index_of_seq( "()^<<" ) _isnt _unset 
-#		_then
-#			_self.decode_assign_parenthesis_args_on(a_stream, name, _true , _false )
-#		_elif name.index_of_seq( "]<<" ) _isnt _unset
-#		_then
-#			_self.decode_assign_bracket_args_on(a_stream, name, _false, _false  )
-#		_elif name.index_of_seq( "]^<<" ) _isnt _unset
-#		_then
-#			_self.decode_assign_bracket_args_on(a_stream, name, _true, _false  )
-#		_elif name.includes?(%()
-#		_then
-#			_self.decode_parenthesis_args_on(a_stream, name)
-#		_elif name.index_of_seq( "^<<" ) _isnt _unset
-#		_then
-#			_self.decode_assign_args_on(a_stream, name, _true, _false)
-#		_elif name.index_of_seq( "<<" ) _isnt _unset
-#		_then
-#			_self.decode_assign_args_on(a_stream, name, _false, _false )
-#		_elif name[1] = %[
-#		_then
-#			_self.decode_bracket_args_on(a_stream, name)
-#		_else
-#			a_stream.write( ".", name)
-#		_endif
-#	_else
-#		a_stream.write( ".", .name )
-#	_endif
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.decode_rhs_on( a_stream )
-#	assert(.args.empty?.not)
-#	_self.expression.decode_on(a_stream)
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.assigned_arg
-#	_if .args.empty?
-#	_then
-#		_return _unset
-#	_else
-#		_return .args[1]
-#	_endif
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.decode_as_receiver_on( a_stream )
-#	_if _self.scattered?
-#	_then
-#		a_stream.write( "(")
-#		a_stream.write( "_allresults ")
-#		_self.decode_base_on(a_stream)
-#		a_stream.write( ")")
-#	_elif _self.is_assign?
-#	_then
-#		a_stream.write( "(" )
-#		_self.decode_base_on( a_stream )
-#		a_stream.write( ")" )
-#	_else 
-#		_self.decode_base_on( a_stream )
-#	_endif 
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.decode_as_invocable_on( a_stream )
-#	a_stream.write( "(" )
-#	_self.decode_base_on( a_stream )
-#	a_stream.write( ")" )
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.decode_base_on( a_stream )
-#	.sender.decode_as_receiver_on(a_stream)
-#	
-#	_if .args.empty?.not
-#	_then
-#		name << .name
-#		_if name.index_of_seq( "()<<" ) _isnt _unset 
-#		_then
-#			_self.decode_assign_parenthesis_args_on(a_stream, name, _false, _true  )
-#		_elif name.index_of_seq( "()^<<" ) _isnt _unset 
-#		_then
-#			_self.decode_assign_parenthesis_args_on(a_stream, name, _true, _true  )
-#		_elif name.index_of_seq( "]<<" ) _isnt _unset
-#		_then
-#			_self.decode_assign_bracket_args_on(a_stream, name, _false, _true  )
-#		_elif name.index_of_seq( "]^<<" ) _isnt _unset
-#		_then
-#			_self.decode_assign_bracket_args_on(a_stream, name, _true, _true  )
-#		_elif name.includes?(%()
-#		_then
-#			_self.decode_parenthesis_args_on(a_stream, name)
-#		_elif name.index_of_seq( "^<<" ) _isnt _unset
-#		_then
-#			_self.decode_assign_args_on(a_stream, name, _true, _true )
-#		_elif name.index_of_seq( "<<" ) _isnt _unset
-#		_then
-#			_self.decode_assign_args_on(a_stream, name, _false, _true  )
-#		_elif name[1] = %[
-#		_then
-#			_self.decode_bracket_args_on(a_stream, name)
-#		_else
-#			a_stream.write( ".", name)
-#		_endif
-#	_else
-#		a_stream.write( ".", .name )
-#	_endif 
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.decode_receiver_on( a_stream )
-#	_self.decode_lhs_on( a_stream )
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.decode_scattered_on( a_stream, _optional a_parent )
-#	_self.decode_base_on(a_stream, a_parent )
-##	_self.decode_as_receiver_on(a_stream, a_parent )
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.decode_on( a_stream, _optional a_parent, statements )
-#	_if _self.scattered?
-#	_then
-#		a_stream.write( "(")
-#		a_stream.write( "_allresults ")
-#		_self.decode_base_on(a_stream)
-#		a_stream.write( ")")
-#	_else
-#		_self.decode_base_on(a_stream)
-#	_endif 
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_send.show_on(a_stream)
-#	a_stream.write( _self.class_name, "(", .name, ")")
-#_endmethod
-#$
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_send.is_send?
+	##
+	>> _true 
+_endmethod
+$

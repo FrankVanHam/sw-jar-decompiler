@@ -5,7 +5,7 @@ $
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-## node for a gathereding
+## node for a gathered thing
 def_slotted_exemplar(:dcn_gathered,
 		     {
 			     {:expression, _unset, :readable}
@@ -26,7 +26,14 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_gathered.decode_on(p_stream, _gather p_args)
-	.expression.decode_on(p_stream, _scatter p_args)
+_method dcn_gathered.decode_on(p_stream)
+	.expression.decode_on(p_stream)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_gathered.is_gathered?
+	## 
+	>> _true 
 _endmethod
 $

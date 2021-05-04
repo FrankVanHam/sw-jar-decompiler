@@ -1,20 +1,3 @@
-##
-## File            : $File: (dcn_call.magik) $
-## SCM             : $URL$
-##
-## Copyright       : Realworld Systems
-##                   e-mail  : support@realworld-systems.com
-##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
-##                   tel     : +31(0)345 614406
-##                   fax     : +31(0)345 614319
-##
-## Contains        : 
-##
-##
-## Date written    : 2012-04-06
-## Date changed    : $Date$
-## Revision        : $Rev$
-
 _package deco
 $
 
@@ -26,8 +9,9 @@ _pragma(classify_level=restricted, topic={decompiler})
 def_slotted_exemplar(:dcn_call,
 		     {
 			     {:value_node, _unset},
-			     {:env, _unset, :readable}
-		     }, :dcn_invocation)
+			     {:env, _unset, :readable},
+			     {:args, _unset, :readable}
+		     }, :dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
@@ -40,7 +24,8 @@ _pragma(classify_level=restricted, topic={decompiler})
 _private _method dcn_call.init(p_value_node, p_args, _optional p_env)
 	.value_node << p_value_node
 	.env << p_env
-	_return _super.init(p_args)
+	.args << p_args
+	_return _self 
 _endmethod
 $
 
@@ -72,13 +57,14 @@ _method dcn_call.accept_body_visitor(p_visitor)
 _endmethod
 $
 
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_call.accept_node_visitor(visitor)
-#	.proc << .proc.accept_node_visitor(visitor)
-#	_return _super.accept_node_visitor(visitor)
-#_endmethod
-#$
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_call.is_call?
+	## 
+	>> _true 	
+_endmethod
+$
+
+
 #
 #_pragma(classify_level=restricted, topic={decompiler})
 #_method dcn_call.accept_body_visitor(visitor)
@@ -93,68 +79,33 @@ $
 #_endmethod
 #$
 #
+#
+#
 #_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_call.is_call?
-#	_return _true
+#_method dcn_call.decode_as_vector_on(p_stream,  thing)
+#	p_stream.write( "{ ")
+#	_self.decode_args_on(p_stream, .args, .token.scatter?, .token.numargs)
+#	p_stream.write( " }")
 #_endmethod
 #$
 #
 #_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_call.decode_on( a_stream, _optional parent, statements )
-#	_if _self.scattered?
-#	_then
-#		a_stream.write( "(")
-#		a_stream.write( "_allresults ")
-#		_self.decode_base_on(a_stream)
-#		a_stream.write( ")")
-#	_else
-#		_self.decode_base_on(a_stream)
-#	_endif 
-#_endmethod
-#$
-#
-#_method dcn_call.decode_as_call_on(a_stream,  thing)
-#	_if _not .token.tail_recursive?
-#	_then 
-#		thing.decode_as_invocable_on(a_stream)
-#	_else
-#		thing.decode_on(a_stream)
-#	_endif 
-#	a_stream.write( "( ")
-#	_self.decode_args_on(a_stream, .args, .token.scatter?, .token.numargs)
-#	a_stream.write( " )")
+#_method dcn_call.decode_as_binary_operator_on(p_stream, bin)
+#	p_stream.write( "( ")
+#	.args[1].decode_on(p_stream)
+#	p_stream.write( bin.ident )
+#	.args[2].decode_on(p_stream)
+#	p_stream.write( " )")
 #_endmethod
 #$
 #
 #_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_call.decode_as_vector_on(a_stream,  thing)
-#	a_stream.write( "{ ")
-#	_self.decode_args_on(a_stream, .args, .token.scatter?, .token.numargs)
-#	a_stream.write( " }")
+#_method dcn_call.decode_as_global_on(p_stream, name)
+#	p_stream.write(name)
+#	p_stream.write( "( ")
+#	_self.decode_args_on(p_stream, .args, .token.scatter?, .token.numargs)
+#	p_stream.write( " )")
 #_endmethod
 #$
 #
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_call.decode_as_binary_operator_on(a_stream, bin)
-#	a_stream.write( "( ")
-#	.args[1].decode_on(a_stream)
-#	a_stream.write( bin.ident )
-#	.args[2].decode_on(a_stream)
-#	a_stream.write( " )")
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_call.decode_as_global_on(a_stream, name)
-#	a_stream.write(name)
-#	a_stream.write( "( ")
-#	_self.decode_args_on(a_stream, .args, .token.scatter?, .token.numargs)
-#	a_stream.write( " )")
-#_endmethod
-#$
-#
-#_pragma(classify_level=restricted, topic={decompiler})
-#_method dcn_call.decode_base_on(a_stream)
-#	.proc.deco_decode_as_call_on(a_stream, _self )
-#_endmethod
-#$
+

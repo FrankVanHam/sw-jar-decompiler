@@ -46,7 +46,6 @@ lexical_scanner.define_shared_constant(:keywords,
 	:private)
 $
 
-
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexical_scanner.new(p_stream)
 	>> _clone.init(p_stream)
@@ -235,10 +234,14 @@ _private _method lexical_scanner.get_number_token()
 	_loop
 		_if _self.more_to_get?.not _then _leave _endif 
 		_local char << _self.peek_char()
-		
+
 		_if char.decimal_digit? _orif (char = %.)
 		_then
 			out.write(_self.get_char())
+		_elif char = %x _andif out.string = "0"
+		_then
+			_self.get_char()
+			_return _self.get_hexadecimal_number_token()
 		_else
 			_leave 
 		_endif
@@ -246,6 +249,14 @@ _private _method lexical_scanner.get_number_token()
 	>> out.string
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method lexical_scanner.get_hexadecimal_number_token()
+	##
+	>> write_string( "16r", _self.get_token())
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method lexical_scanner.get_token()
