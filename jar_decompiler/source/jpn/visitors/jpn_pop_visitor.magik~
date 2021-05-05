@@ -141,8 +141,9 @@ _method jpn_pop_visitor.is_result_tuple?(p_node)
 	_if p_node.is_local_assignment?
 	_then
 		_local loc << p_node.single_local
-		_if (loc _isnt _unset)
+		_if loc _isnt _unset
 		_then
+			
 			_return loc.is_type?("ResultTuple") _orif loc.is_type?("Object")
 		_else
 			_return _false

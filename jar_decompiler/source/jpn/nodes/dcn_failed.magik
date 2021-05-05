@@ -1,0 +1,32 @@
+_package deco
+$
+
+#remex(:dcn_failed)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:dcn_failed,
+	{}, :dcn_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_failed.new()
+	>> _clone.init()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method dcn_failed.init()
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_failed.decode_on(p_stream)
+	##
+	p_stream.write("####################")
+	p_stream.newline()
+	p_stream.write("## Failed to decompile")
+	p_stream.newline()
+	p_stream.write("####################")
+_endmethod
+$

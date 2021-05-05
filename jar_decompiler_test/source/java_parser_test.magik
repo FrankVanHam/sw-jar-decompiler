@@ -946,3 +946,4 @@ _method java_parser_test.test_or_if()
 	_self.assert_true(m.condition.is_class_of?(deco:jpn_operation), "should be an if operation")
 _endmethod
 $
+

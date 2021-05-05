@@ -1,0 +1,17 @@
+_package deco
+$
+
+#remex(:jpn_failed)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:jpn_failed,
+	{},
+	:jpn_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_failed.parse_statement(p_parser)
+	## 
+	>> p_parser.parse_failed(_self)
+_endmethod
+$

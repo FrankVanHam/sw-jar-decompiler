@@ -1,0 +1,12 @@
+_package deco
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+def_slotted_exemplar(:deco_magikfinalisable, {}, :deco_execution_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_magikfinalisable.class(p_parser)
+	>> dcn_constant.new_literal("MagikFinalisable")
+_endmethod
+$

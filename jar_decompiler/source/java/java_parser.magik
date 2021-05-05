@@ -48,6 +48,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.init(p_scanner)
 	.scanner << peekable_input_stream.new(p_scanner)
 	.context <<  java_context.new()
+	.context.add("__env__")
 	.end_value_stack << stack.new_with(_unset)
 	.operator_stack << stack.new_with(_unset)
 	>> _self
@@ -251,8 +252,6 @@ _method java_parser.parse_method(p_class_name, _optional p_annotations )
 		type << type_or_name_lex
 		name << .scanner.get()
 	_endif
-
-	show(:java_parser, name.value)
 	
 	_local lex << .scanner.peek()
 	_self.ensure_separator("(")
@@ -380,6 +379,12 @@ _method java_parser.parse_statement()
 	_elif lex.value = "try"
 	_then
 		_return _self.parse_try()
+	_elif lex.value = "finally"
+	_then
+		_return _self.parse_finally()
+	_elif lex.value = "catch"
+	_then
+		_return _self.parse_catch()
 	_elif lex.value = "synchronized"
 	_then
 		_return _self.parse_synchronized()
@@ -828,6 +833,31 @@ _private _method java_parser.parse_try()
 		_self.ensure_separator("}")
 	_endif 
 	>> jpn_try.new(try_body, catch_args, catch_body, finally_body)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.parse_catch()
+	##
+	_self.ensure_keyword("catch")
+	_self.ensure_separator("(")
+	catch_args << _self.parse_parameters()
+	_self.ensure_separator(")")
+	_self.ensure_separator("{")
+	catch_body << _self.parse_body(catch_args)
+	_self.ensure_separator("}")
+	>> jpn_body.new()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.parse_finally()
+	## 
+	_self.ensure_keyword("finally")
+	_self.ensure_separator("{")
+	_local finally_body << _self.parse_body()
+	_self.ensure_separator("}")
+	>> jpn_body.new()
 _endmethod
 $
 

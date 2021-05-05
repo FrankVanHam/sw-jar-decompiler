@@ -18,7 +18,10 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method decompiler.init(_optional p_safe?)
-	.safe? << p_safe?.default(_false)
+	##
+	## P_SAFE?: default is _true
+	##
+	.safe? << p_safe?.default(_true)
 	>> _self
 _endmethod
 $

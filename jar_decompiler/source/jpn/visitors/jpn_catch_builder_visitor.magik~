@@ -34,8 +34,6 @@ _method jpn_catch_builder_visitor.accept(p_body)
 	_local sts << p_body.statements
 	_for i_index, i_node _over sts.fast_keys_and_elements()
 	_loop
-		_if i_index < 5 _then _continue _endif
-		
 		_local (catch?, var) << _self.should_convert?(i_node)
 		_if catch?
 		_then

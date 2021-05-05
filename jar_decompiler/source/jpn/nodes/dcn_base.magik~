@@ -131,16 +131,10 @@ _private _method dcn_base.package_prefix(p_name)
 _endmethod
 $
 
+
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_base.accept_body_visitor(visitor)
 	
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_base.is_type?()
-	##
-	>> _false 
 _endmethod
 $
 

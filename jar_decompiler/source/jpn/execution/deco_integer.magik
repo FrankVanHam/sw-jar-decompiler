@@ -10,3 +10,19 @@ _method deco_integer.valueof(p_parser, p_node)
 	>> dcn_constant.new_number(val.string_value)
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_integer.min_value(p_parser)
+	##
+	_local str << (-(2**31)+1).write_string
+	>> dcn_constant.new_number(str)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_integer.max_value(p_parser)
+	##
+	_local str << ((2**31)-1).write_string
+	>> dcn_constant.new_number(str)
+_endmethod
+$
