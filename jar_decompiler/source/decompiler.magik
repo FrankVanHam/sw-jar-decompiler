@@ -31,7 +31,7 @@ _method decompiler.decompile_product(p_product, _optional p_dir)
 	##
 	_for i_module _over p_product.defined_modules.fast_elements()
 	_loop
-		_local jar_file << _self.get_jar_file(i_module, _true)
+		_local jar_file << _self.get_jar_file(i_module)
 		_if jar_file _isnt _unset
 		_then 
 			_local dir << _if p_dir _isnt _unset
@@ -62,7 +62,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method decompiler.get_jar_file(p_module, _optional p_safe?)
+_private _method decompiler.get_jar_file(p_module)
 	# sw_core.interaction_components.1.jar
 	_local prod << p_module.product
 	_local file << write_string(prod.name, ".", p_module.name, ".", p_module.version.default(0), ".jar")
@@ -75,11 +75,7 @@ _private _method decompiler.get_jar_file(p_module, _optional p_safe?)
 	_endloop
 	_if system.file_exists?(jar_file).not 
 	_then
-		jar_file << _unset 
-		_if p_safe? _isnt _true
-		_then 
-			condition.raise(:error, :string, write_string("The module jar file ", file, " does not exist."))
-		_endif 
+		write(write_string("The module jar file ", file, " does not exist."))
 	_endif
 	>> jar_file	
 _endmethod
@@ -197,7 +193,7 @@ _private _method decompiler.classpath
 	##
 	_local classpath << internal_text_output_stream.new()
 	classpath.write(%")
-	classpath.write(smallworld_product.get_java_file("cfr-0.150.jar",:jar_decompiler))
+	classpath.write(smallworld_product.get_java_file("cfr-0.151.jar",:jar_decompiler))
 	classpath.write(%;)
 	_for i_fname _over _self.com_gesmallworld_magik_jars.fast_elements()
 	_loop

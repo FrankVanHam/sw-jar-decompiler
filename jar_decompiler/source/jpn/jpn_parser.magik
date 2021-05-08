@@ -349,12 +349,14 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method jpn_parser.parse_method(p_class_name, p_meth_node)
 	##
+	show(:parse_method, p_class_name, p_meth_node.name)
 	_local (params, scatter?) << _self.parse_method_parameters(p_meth_node)
 	_local iter? << _self.is_iter?(p_meth_node)
 	
 	_local old_env << .current_environment ^<< .current_environment.copy()
 	
 	_self.apply_annotations(p_meth_node)
+
 	_local body << _self.parse_body(p_meth_node.body)
 	
 	.current_environment << old_env
@@ -678,17 +680,26 @@ _method jpn_parser.parse_iter(p_method, p_handle, p_env, p_sender, _gather p_arg
 	# (MethodHandle)cfr_ldc_0(), ref=cfr_ldc_0
 	_local ref << p_handle.expression.name
 	_local ref_method << .current_java_class.find_method(ref)
-	
-	_local (java_loopbody_method, class) << _self.find_loopbody_method(ref_method)
-	
-	_local old_class << .current_java_class ^<< class
-	
-	_local loopbody_method << _self.parse_loopbody_method(class.name, java_loopbody_method)
-	.current_java_class << old_class
-	
-	>> dcn_iter.new(sender, p_method.string_value,
-			loopbody_method.scatter?, loopbody_method.args,
-			loopbody_method.body, args)
+	show(:parse_iter, .current_java_class.name, ref, ref_method)
+
+	_if ref_method _isnt _unset
+	_then 
+		_local (java_loopbody_method, class) << _self.find_loopbody_method(ref_method)
+		
+		_local old_class << .current_java_class ^<< class
+		
+		_local loopbody_method << _self.parse_loopbody_method(class.name, java_loopbody_method)
+		.current_java_class << old_class
+		
+		_return dcn_iter.new(sender, p_method.string_value,
+				     loopbody_method.scatter?, loopbody_method.args,
+				     loopbody_method.body, args)
+	_else
+		_local failed_body << dcn_body.new(rope.new_with(dcn_failed.new()))
+		_return dcn_iter.new(sender, p_method.string_value,
+				     _false, {},
+				     failed_body, args)
+	_endif 
 _endmethod
 $
 
@@ -703,16 +714,24 @@ _method jpn_parser.parse_iter_proc(p_handle,
 	# (MethodHandle)cfr_ldc_0(), ref=cfr_ldc_0
 	_local ref << p_handle.expression.name
 	_local ref_method << .current_java_class.find_method(ref)
-
-	_local (java_loopbody_method, class) << _self.find_loopbody_method(ref_method)
-	
-	_local old_class << .current_java_class ^<< class
-	_local loopbody_method << _self.parse_loopbody_method(class.name, java_loopbody_method)
-	.current_java_class << old_class
-	
-	>> dcn_iter.new(_unset, call.name,
-			loopbody_method.scatter?, loopbody_method.args,
-			loopbody_method.body, args)
+	show(:parse_iter_proc, .current_java_class.name, ref, ref_method)
+	_if ref_method _isnt _unset
+	_then 
+		_local (java_loopbody_method, class) << _self.find_loopbody_method(ref_method)
+		
+		_local old_class << .current_java_class ^<< class
+		_local loopbody_method << _self.parse_loopbody_method(class.name, java_loopbody_method)
+		.current_java_class << old_class
+		
+		_return dcn_iter.new(_unset, call.name,
+				     loopbody_method.scatter?, loopbody_method.args,
+				     loopbody_method.body, args)
+	_else
+		_local failed_body << dcn_body.new(rope.new_with(dcn_failed.new()))
+		_return dcn_iter.new(_unset, call.name,
+				     _false, {},
+				     failed_body, args)
+	_endif 
 _endmethod
 $
 

@@ -670,7 +670,7 @@ _private _method java_parser.parse_identifier()
 	_elif next.is_operator?("<")
 	_then
 		# parse the args and ignore them.
-		_self.parse_execution_args("<",">")
+		_self.parse_args("<",">")
 	_endif
 	>> ident
 _endmethod
@@ -690,7 +690,7 @@ _private _method java_parser.parse_type_identifier()
 		_if next_lex.is_operator?("<")
 		_then
 			# parse the args and ignore them.
-			_self.parse_execution_args("<",">")
+			_self.parse_args("<",">")
 		_endif
 	_endif 
 	>> ident
@@ -700,7 +700,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.parse_array_invocation(p_lex)
 	##
-	_local args << _self.parse_execution_args("[","]")
+	_local args << _self.parse_args("[","]")
 	>> jpn_array_access.new(p_lex, args)
 _endmethod
 $
@@ -724,7 +724,7 @@ _private _method java_parser.parse_synchronized()
 	_self.ensure_separator("{")
 	_local body << _self.parse_body()
 	_self.ensure_separator("}")	
-	>> jpn_synchronized.init(exp, body)
+	>> jpn_synchronized.new(exp, body)
 _endmethod
 $
 
@@ -774,7 +774,7 @@ _private _method java_parser.parse_new()
 	_local lex  << .scanner.peek()
 	_if lex.is_separator?("(")
 	_then 
-		args << _self.parse_execution_args("(",")")
+		args << _self.parse_args("(",")")
 	_elif lex.is_separator?("[")
 	_then
 		args << _self.parse_array_args()
@@ -782,7 +782,7 @@ _private _method java_parser.parse_new()
 		lex << .scanner.peek()
 		_if lex.is_separator?("{")
 		_then
-			args << _self.parse_execution_args("{","}")
+			args << _self.parse_args("{","}")
 		_endif 
 	_else
 		condition.raise(:deco_unexpected_token, :line, lex.line, :column, lex.column, :token, lex.value)
@@ -1004,7 +1004,11 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.parse_parenthesis()
 	##
 	_self.ensure_separator("(")
+	.operator_stack.push(_unset) # forget about the current operator
+	
 	_local type << _self.parse_expression_until(")")
+	
+	.operator_stack.pop()
 	_self.ensure_separator(")")
 	_return jpn_parenthesis.new(type)
 _endmethod
@@ -1039,16 +1043,29 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.parse_method_invocation(p_identifier, p_method)
 	##
-	_local args << _self.parse_execution_args("(",")")
+	_local args << _self.parse_args("(",")")
 	>> jpn_method_invocation.new(p_identifier, p_method, args)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method java_parser.parse_execution_args(p_p1, p_p2)
+_private _method java_parser.parse_args(p_p1, p_p2)
+	##
+	.scanner.get()
+	.operator_stack.push(_unset) # forget about the current operator
+	
+	_local args << _self.do_parse_args(p_p1, p_p2)
+	
+	.scanner.get()
+	.operator_stack.pop()
+	>> args
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.do_parse_args(p_p1, p_p2)
 	##
 	_local args << rope.new()
-	.scanner.get()
 	_loop
 		_local lex << .scanner.peek()
 		_if lex.is_separator? _orif lex.is_operator?
@@ -1066,7 +1083,6 @@ _private _method java_parser.parse_execution_args(p_p1, p_p2)
 
 		_if args.size > 100 _then condition.raise(:deco_decompiler_error, :string, write_string("More then 100 parameters, likely a Java decompiler error")) _endif 
 	_endloop
-	.scanner.get()
 	>> args
 _endmethod
 $

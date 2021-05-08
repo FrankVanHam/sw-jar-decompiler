@@ -31,6 +31,13 @@ _method jpn_iter_result_hider_visitor.accept(p_body)
 
 			_self.clear_last_if_continue(body)
 		_endif
+		_if i_node.is_iter?
+		_then
+			_local body << i_node.body
+			body.accept_body_visitor(jpn_clean_results_visitor.new())
+
+			_self.clear_last_if_continue(body)
+		_endif 
 	_endloop 
 _endmethod
 $

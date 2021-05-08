@@ -68,7 +68,7 @@ _method deco_envaccessor.bootstrapfetcher(p_parser, p_action, p_env, p_index)
 	# name of the variable is returned or an actual stored value.
 	#
 	_if p_action.string_value = "fetchEnv"
-	_then
+	_then 
 		_local index << p_parser.parse_expression(p_index)
 		_local (name, loc) << p_parser.current_environment.fetch(index.string_value)
 

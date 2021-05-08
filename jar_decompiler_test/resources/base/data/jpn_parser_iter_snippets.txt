@@ -1154,4 +1154,319 @@ _iter _method deco_tester.test_recursive_iter()
     _return _unset
 _endmethod
 $
+############
+## jpn_test_recursive_iter
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_tester_4149 {
+    @SourceHash(value=927567814)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    @EnvVars(value={@EnvVar(name="__dynamic_frame__", type=Object.class, start=29, end=64, index=0), @EnvVar(name="__loopenv__", type=Object.class, start=21, end=65, index=1), @EnvVar(name="__loopbody__", type=Object.class, start=13, end=65, index=2)})
+    public static Object deco_tester__test_recursive_iter(MethodHandle __loopbody__, Object[] __loopenv__, Object _self) {
+        Object[] __env__ = new Object[3];
+        EnvAccessor.bootstrapReseter("resetEnv", (Object)__loopbody__, (Object[])__env__, (int)2);
+        EnvAccessor.bootstrapReseter("resetEnv", (Object)__loopenv__, (Object[])__env__, (int)1);
+        EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)0);
+        EnvAccessor.bootstrapStorer("storeEnv", (Object)DynamicScope.getFrame(), (Object[])__env__, (int)0);
+        ProcInvoker.iterNaturalBootstrap("()", (MethodHandle)cfr_ldc_0(), (Object[])__env__, (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "range"), (Object)1, (Object)5);
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @Parent(method="deco_tester__test_recursive_iter")
+    @Debugger(value="MagikDebug")
+    @CodeType(value="LoopBody")
+    public static Object __loopbody_(Object[] __env__, Object i) {
+        ResultTuple resultTuple;
+        DynamicScope __iterator_frame__ = DynamicScope.interjectFrame((DynamicScope)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0)));
+        try {
+            CallSite v = LoopBodyInvoker.bootstrap("_loopbody", (MethodHandle)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)2)), (Object[])EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1), i);
+            ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "show"), (Object)v);
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.interjectFrame(__iterator_frame__);
+            throw throwable;
+        }
+        DynamicScope.interjectFrame(__iterator_frame__);
+        return resultTuple;
+    }
+
+    /*
+     * Works around MethodHandle LDC.
+     */
+    static MethodHandle cfr_ldc_0() {
+        try {
+            return MethodHandles.lookup().findStatic(deco_tester_4149.class, "__loopbody_", MethodType.fromMethodDescriptorString("([Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null));
+        }
+        catch (NoSuchMethodException | IllegalAccessException except) {
+            throw new IllegalArgumentException(except);
+        }
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_tester_4148
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_tester_4148() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_tester", "test_recursive_iter()", deco_tester_4149.class, "deco_tester__test_recursive_iter", 3, 3, true, false, false, 0));
+    }
+
+    @Override
+    public void preload() {
+    }
+}
 #############
+_iter _method deco_tester.test_recursive_iter() 
+    _for i _over range(1, 5)
+    _loop
+         _local v << _loopbody (i)
+        sw:show(v)
+    _endloop
+    _return _unset
+_endmethod
+$
+#############
+## jpn_test_mistery_2
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class view_pool_46759 {
+    @SourceHash(value=179293526)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    @EnvVars(value={@EnvVar(name="__dynamic_frame__", type=Object.class, start=34, end=167, index=0), @EnvVar(name="_self", type=Object.class, start=13, end=185, index=1)})
+    public static Object view_pool__close(Object _self) {
+        Object[] __env__ = new Object[2];
+        EnvAccessor.bootstrapReseter("resetEnv", (Object)_self, (Object[])__env__, (int)1);
+        CallSite callSite = EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1);
+        InterruptInfrastructure.checkAndProcessInterrupts();
+        synchronized (callSite) {
+            try {
+                EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)0);
+                EnvAccessor.bootstrapStorer("storeEnv", (Object)DynamicScope.getFrame(), (Object[])__env__, (int)0);
+                ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("keys()", (MethodHandle)cfr_ldc_0(), (Object[])__env__, (Object)Invoker.bootstrapPrivate("$slot_get_specs_by_view()", (Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1))));
+                ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrap("empty()", (Object)Invoker.bootstrapPrivate("$slot_get_specs_by_view()", (Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1))));
+                EnvAccessor.bootstrapStorer("storeEnv", (Object)DynamicScope.getFrame(), (Object[])__env__, (int)0);
+                ResultTuple cfr_ignored_2 = (ResultTuple)((Object)Invoker.tupleBootstrap("keys()", (MethodHandle)cfr_ldc_1(), (Object[])__env__, (Object)Invoker.bootstrapPrivate("$slot_get_specs_by_thread()", (Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1))));
+                ResultTuple cfr_ignored_3 = (ResultTuple)((Object)Invoker.tupleBootstrap("empty()", (Object)Invoker.bootstrapPrivate("$slot_get_specs_by_thread()", (Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1))));
+                ResultTuple cfr_ignored_4 = (ResultTuple)((Object)Invoker.tupleBootstrap("empty()", (Object)Invoker.bootstrapPrivate("$slot_get_info_by_dataset()", (Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1))));
+            }
+            catch (Throwable throwable) {
+                // MONITOREXIT @DISABLED, blocks:[1, 2] lbl23 : MonitorExitStatement: MONITOREXIT : var2_2
+                InterruptInfrastructure.checkAndProcessInterrupts();
+                throw throwable;
+            }
+        }
+        InterruptInfrastructure.checkAndProcessInterrupts();
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @Parent(method="view_pool__close")
+    @Debugger(value="MagikDebug")
+    @CodeType(value="LoopBody")
+    public static Object __loopbody_(Object[] __env__, Object view) {
+        ResultTuple resultTuple;
+        DynamicScope __iterator_frame__ = DynamicScope.interjectFrame((DynamicScope)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0)));
+        try {
+            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("discard()", (Object)view));
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.interjectFrame(__iterator_frame__);
+            throw throwable;
+        }
+        DynamicScope.interjectFrame(__iterator_frame__);
+        return resultTuple;
+    }
+
+    @Parent(method="view_pool__close")
+    @Debugger(value="MagikDebug")
+    @CodeType(value="LoopBody")
+    public static Object __loopbody_2(Object[] __env__, Object a_thread) {
+        ResultTuple resultTuple;
+        DynamicScope __iterator_frame__ = DynamicScope.interjectFrame((DynamicScope)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0)));
+        try {
+            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrap("remove_dependent()", (Object)a_thread, (Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1)));
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.interjectFrame(__iterator_frame__);
+            throw throwable;
+        }
+        DynamicScope.interjectFrame(__iterator_frame__);
+        return resultTuple;
+    }
+    /*
+     * Works around MethodHandle LDC.
+     */
+    static MethodHandle cfr_ldc_0() {
+        try {
+            return MethodHandles.lookup().findStatic(view_pool_46759.class, "__loopbody_", MethodType.fromMethodDescriptorString("([Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null));
+        }
+        catch (NoSuchMethodException | IllegalAccessException except) {
+            throw new IllegalArgumentException(except);
+        }
+    }
+
+    /*
+     * Works around MethodHandle LDC.
+     */
+    static MethodHandle cfr_ldc_1() {
+        try {
+            return MethodHandles.lookup().findStatic(view_pool_46759.class, "__loopbody_2", MethodType.fromMethodDescriptorString("([Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null));
+        }
+        catch (NoSuchMethodException | IllegalAccessException except) {
+            throw new IllegalArgumentException(except);
+        }
+    }
+
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class view_pool_46758
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public view_pool_46758() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+
+        MagikObjectUtils.createMethod("view_pool", "close()", view_pool_46759.class, "view_pool__close", 1, 1);
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+##########
+_method view_pool.close() 
+     _local callSite << _self
+    _lock callSite
+        _for view _over .specs_by_view.keys()
+        _loop
+            view.discard()
+        _endloop
+        .specs_by_view.empty()
+        _for a_thread _over .specs_by_thread.keys()
+        _loop
+            a_thread.remove_dependent(_self)
+        _endloop
+        .specs_by_thread.empty()
+        .info_by_dataset.empty()
+    _endlock
+    _return _unset
+_endmethod
+$
+##########
+## jpn_iter_finally
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_tester_4167 {
+    @SourceHash(value=-1361536317)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    @EnvVars(value={@EnvVar(name="__dynamic_frame__", type=Object.class, start=21, end=79, index=0), @EnvVar(name="_self", type=Object.class, start=13, end=80, index=1)})
+    public static Object deco_tester__test_finally(Object _self) {
+        Object[] __env__ = new Object[2];
+        EnvAccessor.bootstrapReseter("resetEnv", (Object)_self, (Object[])__env__, (int)1);
+        EnvAccessor.bootstrapReseter("resetEnv", null, (Object[])__env__, (int)0);
+        EnvAccessor.bootstrapStorer("storeEnv", (Object)DynamicScope.getFrame(), (Object[])__env__, (int)0);
+        ResultTuple cfr_ignored_0 = (ResultTuple)((Object)ProcInvoker.iterTupleBootstrap("()", (MethodHandle)cfr_ldc_0(), (Object[])__env__, (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "range"), (Object)1, (Object)5));
+        ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("show()", (Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1), (Object)0));
+        return ResultTuple.EMPTY_TUPLE;
+    }
+
+    @Parent(method="deco_tester__test_finally")
+    @Debugger(value="MagikDebug")
+    @CodeType(value="LoopBody")
+    public static Object __loopbody_(Object[] __env__, Object i) {
+        ResultTuple resultTuple;
+        DynamicScope __iterator_frame__ = DynamicScope.interjectFrame((DynamicScope)((Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)0)));
+        try {
+            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("show()", (Object)EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1), (Object)i));
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.interjectFrame(__iterator_frame__);
+            throw throwable;
+        }
+        DynamicScope.interjectFrame(__iterator_frame__);
+        return resultTuple;
+    }
+
+    /*
+     * Works around MethodHandle LDC.
+     */
+    static MethodHandle cfr_ldc_0() {
+        try {
+            return MethodHandles.lookup().findStatic(deco_tester_4167.class, "__loopbody_", MethodType.fromMethodDescriptorString("([Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null));
+        }
+        catch (NoSuchMethodException | IllegalAccessException except) {
+            throw new IllegalArgumentException(except);
+        }
+    }
+}
+
+/*
+ * Decompiled with CFR 0.151-SNAPSHOT (${git.commit.id.abbrev}).
+ */
+package magik.jar_decompiler_lp.decompile_target;
+
+import com.gesmallworld.magik.commons.runtime.annotations.CodeType;
+import com.gesmallworld.magik.commons.runtime.annotations.Debugger;
+import com.gesmallworld.magik.language.invokers.ConstantBuilder;
+import com.gesmallworld.magik.language.invokers.DynamicAccessor;
+import com.gesmallworld.magik.language.invokers.GlobalAccessor;
+import com.gesmallworld.magik.language.invokers.ProcInvoker;
+import com.gesmallworld.magik.language.invokers.TupleBuilder;
+import com.gesmallworld.magik.language.invokers.VectorBuilder;
+import com.gesmallworld.magik.language.utils.ExecutableMagik;
+import com.gesmallworld.magik.language.utils.MagikObjectUtils;
+import magik.jar_decompiler_lp.decompile_target.deco_tester_4167;
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_tester_4166
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_tester_4166() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_tester", "test_finally()", deco_tester_4167.class, "deco_tester__test_finally", 1, 1);
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+################
+_method deco_tester.test_finally() 
+    _for i _over range(1, 5)
+    _loop
+        _self.show(i)
+    _endloop
+    _self.show(0)
+    _return _unset
+_endmethod
+$
+################

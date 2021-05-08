@@ -34,7 +34,7 @@ _method jpn_catch_builder_visitor.accept(p_body)
 	_local sts << p_body.statements
 	_for i_index, i_node _over sts.fast_keys_and_elements()
 	_loop
-		_if i_index < 5 _then _continue _endif
+		_if i_index < 4 _then _continue _endif
 		
 		_local (catch?, var) << _self.should_convert?(i_node)
 		_if catch?
@@ -45,7 +45,7 @@ _method jpn_catch_builder_visitor.accept(p_body)
 			sts[i_index-3] << dcn_no_op.new()
 
 			_local catch_struct << _self.convert(i_node, tag)
-			_if var _isnt _unset
+			_if (var _isnt _unset) _andif (i_index>4)
 			_then
 				_self.convert_return_local(catch_struct, var)
 				sts[i_index-4] << dcn_local_assignment.new(sts[i_index-4],

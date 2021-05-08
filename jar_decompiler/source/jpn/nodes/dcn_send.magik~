@@ -62,6 +62,14 @@ _method dcn_send.decode_on(p_stream)
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method dcn_send.remainder(p_nr)
+	##
+	>> dcn_remainder.new(p_nr)
+_endmethod
+$
+
+
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_send.asallresults()
 	##

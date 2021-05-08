@@ -8,9 +8,15 @@ def_slotted_exemplar(:deco_tester,
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_tester.activate(_gather args)
-	results << _allresults _super.activate(_scatter args)
-	_self.disabled_check()
-	>> _scatter results
+_iter _method deco_tester.test_recursive_iter()
+
+	_for i _over range(1, 5)
+	_loop 
+		_for e _over _self.test_recursive_iter()
+		_loop
+			_loopbody(e)
+			show(e)
+		_endloop
+	_endloop 
 _endmethod
 $

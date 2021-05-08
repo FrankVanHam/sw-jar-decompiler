@@ -41,12 +41,3 @@ _method deco_procinvoker.iternaturalbootstrap(p_parser, p_brackets, p_method_han
 				    p_env, p_call_node, _scatter p_arg_nodes)
 _endmethod
 $
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_procinvoker.itertuplebootstrap(p_parser, p_brackets, p_method_handler_node,
-					      p_env, p_call_node, _gather p_arg_nodes)
-	## 
-	>> p_parser.parse_iter_proc(p_method_handler_node,
-				    p_env, p_call_node, _scatter p_arg_nodes)
-_endmethod
-$

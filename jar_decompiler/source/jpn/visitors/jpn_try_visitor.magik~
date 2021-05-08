@@ -160,7 +160,7 @@ _private _method jpn_try_visitor.process_no_throw_branch(p_branch, p_tblock, i_i
 			.ordered_tags.first.add(tag)
 		_else
 			_if i_body.statements.size >= 2 _andif
-			    i_body.statements[2].is_if?
+			    i_body.statements[2].is_branch?
 			_then 
 				_local sub_branch << i_body.statements[2]
 				_local tag << write_string("in block",c)

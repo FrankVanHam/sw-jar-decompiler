@@ -15,8 +15,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_constant.init(p_lex, _optional p_array?)
 	##
-	assert(p_lex.is_class_of?(lexeme))
-	
+	assert(p_lex.is_class_of?(lexeme))	
 	.lex << p_lex
 	.array? << p_array?.default(_false)
 	>> _super.init()

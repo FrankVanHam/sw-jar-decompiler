@@ -18,3 +18,21 @@ _method deco_loopbodyinvoker.naturalbootstrap(p_parser, p_name_node, p_method_no
 	_return dcn_loopbody.new(args)
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_loopbodyinvoker.bootstrap(p_parser, p_name_node, p_method_node,
+					      p_end_node, _gather p_args)
+	##
+	_local args << p_parser.parse_args(p_args)
+	_return dcn_loopbody.new(args)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_loopbodyinvoker.tuplebootstrap(p_parser, p_name_node, p_method_node,
+					      p_end_node, _gather p_args)
+	##
+	_local args << p_parser.parse_args(p_args)
+	_return dcn_loopbody.new(args)
+_endmethod
+$

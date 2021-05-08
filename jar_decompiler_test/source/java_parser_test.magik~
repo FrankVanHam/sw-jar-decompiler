@@ -222,19 +222,14 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_new_array_with_array_values()
 	## 
-	## 
-	
 	_local inp << write_string("var5 = new Object[]{__env__[3], __env__[4]};")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
 	_local p << deco:java_parser.new(s)
-	p.define_locals("var5")#, "__env__")
+	p.define_locals("var5", "__env__")
 	
 	_local node << p.parse_statement()
 	_self.assert_true(node.is_class_of?(deco:jpn_assignment), "should be an assignment")
-
-	_global x
-	x << node 
-	_self.assert_equals(1, node.right.args.size)
+	_self.assert_equals(2, node.right.args.size)
 _endmethod
 $
 
@@ -951,3 +946,4 @@ _method java_parser_test.test_or_if()
 	_self.assert_true(m.condition.is_class_of?(deco:jpn_operation), "should be an if operation")
 _endmethod
 $
+

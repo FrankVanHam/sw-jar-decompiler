@@ -8,15 +8,58 @@ def_slotted_exemplar(:deco_tester,
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_iter _method deco_tester.test_recursive_iter()
+_method deco_tester.test_finally()
 
 	_for i _over range(1, 5)
 	_loop 
-		_for e _over _self.test_recursive_iter()
-		_loop
-			_loopbody(e)
-			show(e)
-		_endloop
+		_self.show(i)
+	_finally
+		_self.show(0)
 	_endloop 
+_endmethod
+$
+
+_pragma (classify_level=restricted, topic={swish})
+_method deco_tester.login_ok?()
+
+	av << _self.view.auth_view
+	_if av _isnt _unset _then
+
+		# user gets three login attempts
+
+		_for i _over range(1,3)
+		_loop
+
+			# Inform SWISH need username & password
+
+			_self.put_unsigned_short(_self.LOGIN_PROMPT)
+			# set .info slot so can see who is logged in when print
+			# tics_acp
+			password << _self.get_chars()
+
+			# check username & password against details in
+			# authorisation database
+
+			_try
+				av.check_user_password(username, password)
+				_self.put_unsigned_short(_self.LOGIN_OK)
+				_return _true
+			_when auth_login_failure
+			_endtry
+
+		_finally
+			_return false
+		_endloop
+
+	_else
+
+		av << _unset 
+
+	_endif
+
+	_self.put_unsigned_short(_self.LOGIN_OK)
+
+	_return _true
+
 _endmethod
 $

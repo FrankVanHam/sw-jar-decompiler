@@ -108,7 +108,8 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_clean_results_visitor.is_continue_result_tuple_throw?(p_node)
 	##
 	_if p_node.is_class_of?(dcn_continue) _andif
-	    p_node.results.size = 1 
+	    p_node.results.size = 1 _andif
+	    p_node.results[1].is_local?
 	_then
 		_return p_node.results[1].name.matches?("resultTuple*")
 	_endif
@@ -131,11 +132,13 @@ _method jpn_clean_results_visitor.is_result_tuple?(p_node)
 	_then
 		_return p_node.name = "resultTuple"
 	_elif p_node.is_local_assignment? _andif
-	      p_node.single_local _isnt _unset 
+	      p_node.single_local _isnt _unset _andif
+	      p_node.single_local.is_local?
 	_then
 		_return p_node.single_local.name = "resultTuple"
 	_elif p_node.is_continue? _andif
-	      p_node.results.size = 1
+	      p_node.results.size = 1 _andif
+	      p_node.results[1].is_local?
 	_then
 		_return p_node.results[1].name = "resultTuple"
 	_else
