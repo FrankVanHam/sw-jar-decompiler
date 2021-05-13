@@ -1,2 +1,0 @@
-#deco_pragma_tester
-deco_tester
