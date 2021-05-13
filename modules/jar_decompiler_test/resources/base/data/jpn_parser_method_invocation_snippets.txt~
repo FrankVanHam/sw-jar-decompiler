@@ -835,11 +835,14 @@ implements ExecutableMagik {
 }
 #############
 _method deco_test.test_action() 
-	_self.add_action(sw:sw_action.new(:start_explorer, :caption, _self.message(:explorer), :tooltip, _self.message(:explorer_tt), :short_help_text, _self.message(:explorer_sh), :engine, _self, :image, {:explorer_dialog, _self.module_name}, :action_message, {:|start_explorer_view()|, _true}))
-	_self.action(:find_target).items << {user:no_categories}
-	_self.action(:find_target).value << user:no_categories
-	_self.action(:find_target).enabled? << (object << _false)
-	_return _unset
+    _self.add_action(sw:sw_action.new(:start_explorer, :caption, _self.message(:explorer), :tooltip, _self.message(:explorer_tt), :short_help_text, _self.message(:explorer_sh), :engine, _self, :image, {:explorer_dialog, _self.module_name}, :action_message, {:|start_explorer_view()|, _true}))
+     _local object << {user:no_categories}
+    _self.action(:find_target).items << object
+    object << user:no_categories
+    _self.action(:find_target).value << object
+    object << _false
+    _self.action(:find_target).enabled? << object
+    _return _unset
 _endmethod
 $
 #############
