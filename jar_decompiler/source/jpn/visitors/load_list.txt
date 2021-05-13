@@ -16,3 +16,4 @@ jpn_ignore_environment_building_visitor
 tblock
 tblock_factory
 jpn_andif_orif_visitor
+jpn_compress_variable_visitor

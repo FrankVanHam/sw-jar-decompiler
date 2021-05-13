@@ -28,7 +28,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_andif_orif_visitor.try_accept(p_body)
 	##
-	_for sts, idx1, idx2, i_node _over p_body.pair_of_nodes()
+	_for sts, idx1, idx2 _over p_body.pair_of_nodes()
 	_loop
 		n1 << sts[idx1]
 		n2 << sts[idx2]

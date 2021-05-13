@@ -29,7 +29,7 @@ $
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_unfinished_throw.decode_on(p_stream)
 	p_stream.write("_unfinished_break ")
-	.expression.decode_on(p_stream)
+	.expression.decode_expression_on(p_stream)
 	_if .arg _isnt _unset
 	_then
 		p_stream.write(" _with ")

@@ -44,8 +44,7 @@ implements ExecutableMagik {
 _method deco_test.dynamic_declare() 
     _local resultTuple
     _dynamic user:!current_new!
-    resultTuple << _unset
-    _return resultTuple
+    _return _unset
 _endmethod
 $
 #########
@@ -104,8 +103,7 @@ _method deco_test.dynamic_assign(p_arg)
     _dynamic sw:!current_dsview! << _self
     _dynamic sw:!current_sts! << p_arg
     _dynamic user:!curent_world! << _self.world
-    resultTuple << _unset
-    _return resultTuple
+    _return _unset
 _endmethod
 $
 #########
@@ -158,8 +156,7 @@ _method deco_test.dynamic_use()
     _dynamic user:!current_new!
     user:!current_new!.do()
     _self.run(user:!current_new!)
-    resultTuple << _unset
-    _return resultTuple
+    _return _unset
 _endmethod
 $
 #########

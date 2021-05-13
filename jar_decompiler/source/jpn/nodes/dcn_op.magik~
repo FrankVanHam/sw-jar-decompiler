@@ -13,13 +13,6 @@ def_slotted_exemplar(:dcn_op,
 			     {:operand2, _unset, :readable}
 		     }, :dcn_base)
 $
-
-_pragma(classify_level=restricted, topic={decompiler})
-## Set to false because self decodes to "(a op b)" and with the
-## parenthesis this is a compound statement.
-dcn_op.define_shared_constant(:compound?, _false , :private)
-$
-
 _pragma(classify_level=restricted, topic={decompiler})
 dcn_op.define_shared_constant(
 	:allowed_operators, equality_set.new_with("_not","+","-","/","*","**","_div","_mod","_and","_andif","_orif","_or","=","~=", "_cf","<","<=",">",">=","_xor","_is","_isnt"),
@@ -57,13 +50,6 @@ _private _method dcn_op.init(operator, oper1, oper2)
 	.operand1 << oper1
 	.operand2 << oper2
 	_return _self
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_op.operand1 << op
-	##
-	.operand1 << op
 _endmethod
 $
 
@@ -113,11 +99,11 @@ $
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_op.decode_on(p_stream)
 	p_stream.write( "(" )
-	.operand1.decode_expression_on( p_stream )
+	.operand1.decode_on( p_stream )
 	p_stream.write( " " )
 	p_stream.write( .operator)
 	p_stream.write( " " )
-	.operand2.decode_expression_on( p_stream )
+	.operand2.decode_on( p_stream )
 	p_stream.write( ")" )
 _endmethod
 $

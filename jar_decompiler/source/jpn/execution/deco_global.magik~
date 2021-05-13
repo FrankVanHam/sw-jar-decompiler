@@ -17,7 +17,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method deco_global.init(p_name)
-	##
+	## 
 	 .name << p_name
 	 >> _self 
 _endmethod

@@ -165,6 +165,20 @@ _method lexical_scanner_test.test_number()
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method lexical_scanner_test.test_hexadecimal()
+
+	_local s << deco:lexical_scanner.new("  0x6232 0xA0".read_stream())
+	_local l << s.get()
+	_self.assert_true(l.is_number?, "should be a number")
+	_self.assert_equals("16r6232", l.value)
+	
+	_local l << s.get()
+	_self.assert_true(l.is_number?, "should be a number")
+	_self.assert_equals("16rA0", l.value)
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method lexical_scanner_test.test_special_identifiers()

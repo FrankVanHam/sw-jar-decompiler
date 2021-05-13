@@ -10,6 +10,13 @@ def_slotted_exemplar(:dcn_base, {} )
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
+##
+## Is this a compound statement
+##
+dcn_base.define_shared_constant(:compound?, _false, :private)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
 _method dcn_base.new(_gather p_args)
 	>> _clone.init(_scatter p_args)
 _endmethod
@@ -87,6 +94,21 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.decode_expression_on(p_stream)
+	##
+	_if _self.compound?
+	_then
+		p_stream.write("(")
+		_self.decode_on(p_stream)
+		p_stream.write(")")
+	_else
+		_self.decode_on(p_stream)
+	_endif 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
 _private _method dcn_base.decode_pragma_on(p_stream)
 	##
 	_local finder << _self.method_finder
@@ -131,10 +153,16 @@ _private _method dcn_base.package_prefix(p_name)
 _endmethod
 $
 
-
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_base.accept_body_visitor(visitor)
 	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_base.is_type?()
+	##
+	>> _false 
 _endmethod
 $
 

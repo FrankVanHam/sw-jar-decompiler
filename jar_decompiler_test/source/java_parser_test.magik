@@ -777,6 +777,17 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_loop_label()
+	_local inp << write_string("while (true) lbl-1000: {};")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	
+	_local m << p.parse_statement()
+	_self.assert_true(m.is_class_of?(deco:jpn_loop), "should be a loop")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_loop_tag()
 	_local inp << write_string("block0: while (true) {};")
 	_local s << deco:lexical_scanner.new(inp.read_stream())

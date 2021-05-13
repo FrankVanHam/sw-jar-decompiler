@@ -256,3 +256,40 @@ _method jpn_parser_test.test_alternative_vector_declaration()
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method jpn_parser_test.test_if_not()
+	##
+	_local inp << write_string("if (!bl) { x = 1; };")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	p.define_locals("bl", "x")
+	
+	_local jpn_exp << p.parse_statement()
+	_local jp << deco:jpn_parser.new()
+	_local dcn_node << jp.parse_expression(jpn_exp)
+	
+	_self.assert_true(dcn_node.is_class_of?(deco:dcn_if), "Should be an if")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method jpn_parser_test.test_local_array_access()
+	## 
+	_local inp << write_string("visible_geom = Invoker.bootstrap('\\b]', vis_geoms, Invoker.bootstrapPrivate('$slot_get_field_index()', (Object)_self));")
+	inp << inp.substitute_character(%', %")
+	
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	p.define_locals("visible_geom", "vis_geoms")
+	
+	_local jpn_exp << p.parse_statement()
+	_local jp << deco:jpn_parser.new()
+	_local dcn_node << jp.parse_expression(jpn_exp)
+
+	_self.assert_true(dcn_node.is_local_assignment?, "Should be an assignment")
+	
+	_local out << internal_text_output_stream.new()
+	dcn_node.decode_on(out)
+	_self.assert_equals("visible_geom << vis_geoms[.field_index]", out.string.trim_spaces())
+_endmethod
+$

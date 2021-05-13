@@ -4,31 +4,43 @@ $
 #remex(:decompiler)
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## decompiler for jar files.
+##
 def_slotted_exemplar(:decompiler,
 	{
-		{:safe?, _unset}
+		{:overwrite?, _unset},
+		{:safe?,      _unset}
 	})
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method decompiler.new(_optional p_safe?)
-	>> _clone.init(p_safe?)
+_pragma(classify_level=basic, topic={jar_decompiler})
+_method decompiler.new(_optional p_safe?, p_overwrite?)
+	##
+	## Create a decompiler for the jar files.
+	##
+	## P_SAFE?: continue if a jar decompilation fails. Default is _true
+	## P_OVERWRITE?: overwrite existing files?.        Default is _false
+	##
+	>> _clone.init(p_safe?, p_overwrite?)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method decompiler.init(_optional p_safe?)
-	.safe? << p_safe?.default(_false)
+_private _method decompiler.init(_optional p_safe?, p_overwrite?)
+	##
+	.safe? << p_safe?.default(_true)
+	.overwrite? << p_overwrite?.default(_false)
 	>> _self
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
+_pragma(classify_level=basic, topic={jar_decompiler})
 _method decompiler.decompile_product(p_product, _optional p_dir)
 	##
 	_for i_module _over p_product.defined_modules.fast_elements()
 	_loop
-		_local jar_file << _self.get_jar_file(i_module, _true)
+		_local jar_file << _self.get_jar_file(i_module)
 		_if jar_file _isnt _unset
 		_then 
 			_local dir << _if p_dir _isnt _unset
@@ -45,7 +57,7 @@ _method decompiler.decompile_product(p_product, _optional p_dir)
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
+_pragma(classify_level=basic, topic={jar_decompiler})
 _method decompiler.decompile_module(p_module, _optional p_dir)
 	##
 	## Decompile the jar file of the module into magik files. If P_DIR is given,
@@ -59,7 +71,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method decompiler.get_jar_file(p_module, _optional p_safe?)
+_private _method decompiler.get_jar_file(p_module)
 	# sw_core.interaction_components.1.jar
 	_local prod << p_module.product
 	_local file << write_string(prod.name, ".", p_module.name, ".", p_module.version.default(0), ".jar")
@@ -72,11 +84,7 @@ _private _method decompiler.get_jar_file(p_module, _optional p_safe?)
 	_endloop
 	_if system.file_exists?(jar_file).not 
 	_then
-		jar_file << _unset 
-		_if p_safe? _isnt _true
-		_then 
-			condition.raise(:error, :string, write_string("The module jar file ", file, " does not exist."))
-		_endif 
+		write(write_string("The module jar file ", file, " does not exist."))
 	_endif
 	>> jar_file	
 _endmethod
@@ -100,7 +108,7 @@ $
 
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method decompiler.decompile_jar_dir_to_dir(p_search_dir, p_match, p_dir)
+_private _method decompiler.decompile_jar_dir_to_dir(p_search_dir, p_match, p_dir)
 	_local ch << directory_channel.new(p_search_dir, p_match)
 	_loop
 		_local path << ch.get_full()
@@ -112,7 +120,7 @@ _method decompiler.decompile_jar_dir_to_dir(p_search_dir, p_match, p_dir)
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
+_pragma(classify_level=advanced, topic={jar_decompiler})
 _method decompiler.decompile_jar_to_dir(p_jar_file, p_dir)
 	##
 	_if .safe?
@@ -163,7 +171,6 @@ _private _method decompiler.report_error_proc
 _endmethod
 $
 
-
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method decompiler.com_gesmallworld_magik_jars
 	##
@@ -194,7 +201,7 @@ _private _method decompiler.classpath
 	##
 	_local classpath << internal_text_output_stream.new()
 	classpath.write(%")
-	classpath.write(smallworld_product.get_java_file("cfr-0.150.jar",:jar_decompiler))
+	classpath.write(smallworld_product.get_java_file("cfr-0.151.jar",:jar_decompiler))
 	classpath.write(%;)
 	_for i_fname _over _self.com_gesmallworld_magik_jars.fast_elements()
 	_loop
@@ -228,13 +235,25 @@ _private _method decompiler.write_magik_file(p_dir, p_file_node)
 	(x, dir) << system.pathname_components(file)
 	_self.ensure_directory(dir)
 	_self.ensure_writable(file)
-	
-	 _local out_ind << indentation_stream.new(out << internal_text_output_stream.new())
+
+	_if _self.overwrite_ok?(file)
+	_then
+		_self.do_write_magik_file(file, p_file_node)
+	_else
+		write("skipping ", file)
+	_endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method decompiler.do_write_magik_file(p_file, p_file_node)
+	## 
+	_local out_ind << indentation_stream.new(out << internal_text_output_stream.new())
 	p_file_node.decode_on(out_ind)
 	
-	_local out_file << external_text_output_stream.new(file)
+	_local out_file << external_text_output_stream.new(p_file)
 	_protect
-		write("writing: ", file)
+		write("writing: ", p_file)
 		out_file.write(out.string)
 	_protection
 		out_file.close()
@@ -242,6 +261,13 @@ _private _method decompiler.write_magik_file(p_dir, p_file_node)
 _endmethod
 $
 
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method decompiler.overwrite_ok?(p_file)
+	##
+	_if .overwrite? _then _return _true _endif
+	>> system.file_exists?(p_file).not 
+_endmethod
+$
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method decompiler.ensure_directory(p_dir)

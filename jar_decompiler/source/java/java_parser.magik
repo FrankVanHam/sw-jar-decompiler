@@ -364,7 +364,15 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method java_parser.parse_statement()
 	##
 	_local lex << .scanner.peek()
-	_if lex.value = "return"
+	_local lex2 << .scanner.peek(2)
+
+	_if (lex.is_identifier? _orif lex.is_keyword?) _andif (lex2.value = "=")
+	_then
+		# keywords can be identifiers to (like switch=1), so get them first
+		_local ident << _self.parse_identifier_or_type()
+		_return _self.parse_assignment(ident)
+		
+	_elif lex.value = "return"
 	_then
 		_return _self.parse_return_statement()
 	_elif lex.value = "if"
@@ -391,6 +399,9 @@ _method java_parser.parse_statement()
 	_elif lex.value = "throw"
 	_then
 		_return _self.parse_throw()
+	_elif lex.value = "lbl"
+	_then
+		_return _self.parse_lbl_block()
 	_elif lex.value = "while"
 	_then
 		_return _self.parse_loop()
@@ -593,11 +604,30 @@ _private _method java_parser.parse_sub_expression()
 		_else
 			_return _self.parse_type_identifier()
 		_endif
+	_elif lex.value = "*"
+	_then
+		_self.eat_till(";", "{", "}")
+		_return jpn_failed.new()
 	_else
 		condition.raise(:deco_unexpected_token, :line, lex.line, :column, lex.column, :token, lex.value)
 	_endif
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.eat_till(_gather p_ends)
+	##
+	_local s << equality_set.new_from(p_ends)
+	_for i _over range(1,100)
+	_loop
+		_local lex << .scanner.peek()
+		_if s.includes?(lex.value) _orif lex.is_eof? _then _leave _endif
+
+		.scanner.get()
+	_endloop
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.serves_as_identifier?(p_lex)
@@ -615,6 +645,12 @@ _private _method java_parser.parse_loop(_optional p_tag)
 	_self.ensure_separator("(")
 	_local cond << _self.parse_expression()
 	_self.ensure_separator(")")
+	
+	_local lex << .scanner.peek()
+	_if lex.value = "lbl"
+	_then
+		_self.eat_till(";", "}", "{")
+	_endif
 	_self.ensure_separator("{")
 	_local body << _self.parse_body()
 	_self.ensure_separator("}")
@@ -713,6 +749,21 @@ _private _method java_parser.parse_array_type(p_name)
 	_return jpn_type.new(p_name, _true)
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.parse_lbl_block()
+	##
+	_self.ensure_identifier("lbl")
+	_self.ensure_operator("-")
+	.scanner.get()
+	_self.ensure_operator(":")
+	_self.ensure_separator("{")
+	_local body << _self.parse_body()
+	_self.ensure_separator("}")
+	>> jpn_failed.new()
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.parse_synchronized()
@@ -968,11 +1019,14 @@ _private _method java_parser.parse_block(p_ident)
 	_if lex.is_keyword?("while")
 	_then
 		_return _self.parse_loop(p_ident)
-	_else 
+	_elif lex.is_separator?("{")
+	_then 
 		_self.ensure_separator("{")
 		_local body << _self.parse_body()
 		_self.ensure_separator("}")
 		_return jpn_block.new(p_ident, body)
+	_else
+		_return jpn_label.new(p_ident)
 	_endif 
 _endmethod
 $
@@ -1081,7 +1135,7 @@ _private _method java_parser.do_parse_args(p_p1, p_p2)
 		_endif
 		args.add(_self.parse_expression_until(p_p2))
 
-		_if args.size > 100 _then condition.raise(:deco_decompiler_error, :string, write_string("More then 100 parameters, likely a Java decompiler error")) _endif 
+		_if args.size > 1000 _then condition.raise(:deco_decompiler_error, :string, write_string("More then 100 parameters, likely a Java decompiler error")) _endif 
 	_endloop
 	>> args
 _endmethod

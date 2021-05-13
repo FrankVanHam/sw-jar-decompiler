@@ -359,7 +359,6 @@ _private _method jpn_parser.parse_method(p_class_name, p_meth_node)
 
 	_local body << _self.parse_body(p_meth_node.body)
 	
-	show(:parse_method, :done)
 	.current_environment << old_env
 	
 	_local type << p_meth_node.type
@@ -611,6 +610,13 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.parse_no_op(p_jnode)
+	##
+	>> dcn_no_op.new()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_negated(p_jnode)
 	##
 	_local exp << _self.parse_expression(p_jnode.expression)
@@ -827,7 +833,7 @@ _method jpn_parser.parse_executer_named(exec_name)
 	_local ex << !current_package!.all_packages[:deco][global_ex_name]
 	_if ex _is _unset
 	_then
-		ex << deco_global.new(exec_name)
+		ex << dcn_global.new(exec_name, _unset, _false)
 	_endif
 	_return ex
 _endmethod

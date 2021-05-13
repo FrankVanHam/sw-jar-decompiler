@@ -1,30 +1,33 @@
 _package deco
 $
 
+#remex(:jpn_label)
+
 _pragma(classify_level=restricted, topic={jar_decompiler})
-def_slotted_exemplar(:deco_global,
+def_slotted_exemplar(:jpn_label,
 	{
-		{:name, _unset}
-	}, :deco_execution_base)
+		{:lex_name, _unset, :readable}
+	},
+	:jpn_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_global.new(p_name)
+_method jpn_label.init(p_lex_name)
 	##
-	>> _clone.init(p_name)
+	.lex_name << p_lex_name
+	>> _super.init()
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method deco_global.init(p_name)
-	##
-	 .name << p_name
-	 >> _self 
+_method jpn_label.name
+	>> .lex_name.name
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method deco_global.class(p_parser)
-	>> dcn_constant.new_literal(.name)
+_method jpn_label.parse_statement(p_parser)
+	## 
+	>> p_parser.parse_no_op(_self)
 _endmethod
 $

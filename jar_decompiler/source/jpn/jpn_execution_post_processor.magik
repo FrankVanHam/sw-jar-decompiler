@@ -25,7 +25,7 @@ _method jpn_execution_post_processor.process_file(p_file)
 	# Note: the order is important, do not change it
 	#
 	_self.process_file_top(p_file)
-				
+
 	p_file.accept_body_visitor(jpn_try_visitor.new())
 	p_file.accept_body_visitor(jpn_andif_orif_visitor.new())
 	p_file.accept_body_visitor(jpn_block_if_visitor.new())
@@ -44,6 +44,8 @@ _method jpn_execution_post_processor.process_file(p_file)
 	p_file.accept_body_visitor(jpn_throw_return_visitor.new())
 	p_file.accept_body_visitor(jpn_ignore_environment_building_visitor.new())
 	p_file.accept_body_visitor(jpn_ignore_assignment_visitor.new())
+
+	p_file.accept_body_visitor(jpn_compress_variable_visitor.new())
 	p_file.accept_body_visitor(jpn_cleanup_visitor.new())
 _endmethod
 $

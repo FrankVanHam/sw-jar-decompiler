@@ -66,26 +66,7 @@ _iter _method dcn_body.pair_of_nodes()
 		idx2 << i_index
 		_if idx1 _isnt _unset 
 		_then
-			_loopbody(sts, idx1, idx2)
-		_endif
-	_endloop 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_iter _method dcn_body.triple_of_nodes()
-	##  
-	_local sts << .statements
-	_local idx1 << idx2 << idx3 << _unset 
-	_for i_index, i_node _over sts.fast_keys_and_elements()
-	_loop
-		_if i_node.is_no_op? _then _continue _endif
-		idx1 << idx2
-		idx2 << idx3
-		idx3 << i_index
-		_if idx1 _isnt _unset 
-		_then
-			_loopbody(sts, idx1, idx2, idx3)
+			_loopbody(sts, idx1, idx2, i_node)
 		_endif
 	_endloop 
 _endmethod

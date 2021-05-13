@@ -33,3 +33,4 @@ jpn_operation
 jpn_synchronized
 jpn_soft_return
 jpn_failed
+jpn_label

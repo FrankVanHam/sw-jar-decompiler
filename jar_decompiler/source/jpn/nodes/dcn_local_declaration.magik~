@@ -32,13 +32,6 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_declaration.copy_undeclared()
-	##
-	>> dcn_local.new(.name)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
 _method dcn_local_declaration.is_type?(p_type)
 	assert(p_type.is_class_of?(""))
 	>> .type = p_type

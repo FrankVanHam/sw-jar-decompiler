@@ -39,7 +39,7 @@ $
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_lock.decode_on(p_stream)
 	p_stream.write("_lock ")
-	.expression.decode_on(p_stream)
+	.expression.decode_expression_on(p_stream)
 	p_stream.newline()
 	p_stream.indent(4)
 	.body.decode_on(p_stream)

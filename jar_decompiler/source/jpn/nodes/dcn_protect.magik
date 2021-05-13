@@ -48,7 +48,7 @@ _method dcn_protect.decode_on(p_stream)
 	_if .lock_expression _isnt _unset
 	_then
 		p_stream.write(" _lock ")
-		.lock_expression.decode_on(p_stream)
+		.lock_expression.decode_expression_on(p_stream)
 	_endif  
 	p_stream.newline()
 	p_stream.indent(4)

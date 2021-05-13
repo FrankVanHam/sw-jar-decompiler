@@ -89,6 +89,30 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method lexical_scanner_test.test_special_char1()
+
+	_local str << write_string("'\'|'")
+	str << str.substitute_character(%', %")
+	_local s << deco:lexical_scanner.new(str.read_stream())
+	_local l << s.get()
+	_self.assert_true(l.is_string?, "should be string")
+	_self.assert_equals(l.value, %"+%|)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method lexical_scanner_test.test_char_utf()
+
+	_local str << write_string("'\u0010'")
+	_local s << deco:lexical_scanner.new(str.read_stream())
+	_local l << s.get()
+	
+	_self.assert_true(l.is_string?, "should be a string")
+	_self.assert_equals(16r10, l.value[1].value)	
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method lexical_scanner_test.test_annotation()
 
 	_local s << deco:lexical_scanner.new("  @Topics ".read_stream())

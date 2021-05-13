@@ -25,7 +25,7 @@ _method jpn_execution_post_processor.process_file(p_file)
 	# Note: the order is important, do not change it
 	#
 	_self.process_file_top(p_file)
-				
+
 	p_file.accept_body_visitor(jpn_try_visitor.new())
 	p_file.accept_body_visitor(jpn_andif_orif_visitor.new())
 	p_file.accept_body_visitor(jpn_block_if_visitor.new())
@@ -79,7 +79,7 @@ _private _method jpn_execution_post_processor.is_top_level_proc?(p_node)
 	## 
 	_if p_node.is_local_assignment?
 	_then
-		_if p_node.expression.is_send?
+		_if _self.define_shared?(p_node.expression)
 		_then
 			_local name << p_node.expression.name
 			_return name = "define_shared_constant()" _or
@@ -96,6 +96,15 @@ _private _method jpn_execution_post_processor.is_top_level_proc?(p_node)
 	_endif
 	
 	_return _false 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_execution_post_processor.define_shared?(p_expression)
+	##
+	>> p_expression.is_send? _andif
+		p_expression.args.empty?.not _andif 
+		p_expression.args[1].is_constant?
 _endmethod
 $
 

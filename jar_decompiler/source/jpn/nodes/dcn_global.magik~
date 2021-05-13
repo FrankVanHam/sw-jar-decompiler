@@ -29,19 +29,7 @@ $
 _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_global.decode_on(p_stream)
 	##
-	_if .at? _then p_stream.write("@") _endif
-	_if .package _isnt _unset
-	_then 
-		p_stream.write(.package, ":", .name)
-	_else
-		p_stream.write(.name)
-	_endif 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_global.class(p_parser)
-	## 
-	>> dcn_constant.new_literal(.name)
+	_if .at? _then p_stream.write("@") _endif 
+	p_stream.write(.package, ":", .name)
 _endmethod
 $

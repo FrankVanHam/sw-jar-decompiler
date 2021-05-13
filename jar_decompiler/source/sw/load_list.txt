@@ -1,3 +1,0 @@
-method_extras
-procedure_extras
-object_extras

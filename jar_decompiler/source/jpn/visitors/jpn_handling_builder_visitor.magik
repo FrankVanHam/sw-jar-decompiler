@@ -34,7 +34,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_handling_builder_visitor.accept(p_body)
 	##
-	_for sts, idx1, idx2, i_node _over p_body.pair_of_nodes()
+	_for sts, idx1, idx2 _over p_body.pair_of_nodes()
 	_loop
 		_local n1 << sts[idx1]
 		_local n2 << sts[idx2]

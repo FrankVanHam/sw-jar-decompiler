@@ -4,6 +4,6 @@ conditions
 
 java/
 jpn/
+#sw/
 
-tab_indentation_stream
 decompiler

@@ -1,22 +1,46 @@
 _package deco
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
-##
-def_slotted_exemplar(:deco_tester,
-	{}, :model)
+remex(:deco_tester)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_iter _method deco_tester.test_recursive_iter()
+##
+def_slotted_exemplar(:deco_tester,
+	{
+		{:plugins, _unset},
+		{:plugin_data, _unset},
+		{:default_view_name, _unset}
+		
+	}, :model)
+$
 
-	_for i _over range(1, 5)
-	_loop 
-		_for e _over _self.test_recursive_iter()
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_tester.test_if()
+
+	_if .plugins _is _unset 
+	_then
+		_local actual_plugins << property_list.new()
+		_for plugin_name _over .plugin_data.fast_elements()
 		_loop
-			_loopbody(e)
-			show(e)
-		_endloop
-	_endloop 
+			_if (plugin << _self.framework.plugin( plugin_name) ) _is _unset
+			_then
+				write(_self.message(:cant_find_plugin, plugin_name ))
+				_continue 
+			_endif
+			
+			_local id << plugin.view_information[:id]
+			
+			_if .default_view_name = plugin_name _orif .default_view_name _is _unset 
+			_then
+				.default_view_name << id
+			_endif
+			
+			plugin.owner << _self
+			actual_plugins[ id ] << plugin
+		_endloop 
+		
+		.plugins << actual_plugins
+	_endif	
 _endmethod
 $

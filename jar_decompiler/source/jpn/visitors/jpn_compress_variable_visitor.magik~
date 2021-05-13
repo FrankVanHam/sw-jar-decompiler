@@ -1,0 +1,167 @@
+_package deco
+$
+
+#remex(:jpn_compress_variable_visitor)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## Compress variables assignments.
+## Convert:
+##
+##             _local callSite << _self.framework.plugin(plugin_name)
+##            plugin << callSite
+##            _if (callSite _is _unset)
+##
+## to:
+##            _if (_self.framework.plugin(plugin_name) _is _unset)
+##
+## AND
+## converts:
+##             _local callSite2 << _self
+##            plugin.owner << callSite2
+##            callSite2 << plugin
+##
+## to:
+##            plugin.owner << _self
+##            callSite2 << plugin
+##	    
+##
+def_slotted_exemplar(:jpn_compress_variable_visitor,
+	{})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_compress_variable_visitor.new()
+	>> _clone
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_compress_variable_visitor.accept(p_body)
+	##
+#	_if p_body.statements.size>10
+#	_then
+#		_global x
+#		x << p_body.statements
+#		1.stop
+#	_endif 
+	_for sts, idx1, idx2, idx3 _over p_body.triple_of_nodes()
+	_loop
+		_local n1 << sts[idx1]
+		_local n2 << sts[idx2]
+		_local n3 << sts[idx3]
+		
+		_if _self.should_convert1?(n1, n2, n3)
+		_then
+			sts[idx1] << dcn_no_op.new()
+			sts[idx2] << dcn_no_op.new()		
+			sts[idx3] << _self.convert1(n1, n2, n3)
+		_elif _self.should_convert2?(n1, n2, n3)
+		_then
+			sts[idx1] << dcn_no_op.new()
+			sts[idx2] << _self.convert2(n1, n2, n3)
+			#sts[idx3]
+		_endif
+	_endloop
+	_for sts, idx1, idx2 _over p_body.pair_of_nodes()
+	_loop
+		_local n1 << sts[idx1]
+		_local n2 << sts[idx2]
+		_if _self.should_convert3?(n1, n2)
+		_then
+			sts[idx1] << dcn_no_op.new()
+			sts[idx2] << _self.convert3(n1, n2)
+		_endif
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_compress_variable_visitor.should_convert1?(p_n1, p_n2, p_n3)
+	## 
+	_if p_n1.is_local_assignment?.not _then _return _false, :first_should_be_assignment _endif
+	_if p_n2.is_local_assignment?.not _then _return _false, :second_should_be_assignment _endif
+	_if p_n3.is_if?.not _then _return _false, :third_should_be_if _endif
+
+	_local var << p_n1.single_name
+	_if var _is _unset _then _return _false, :no_var _endif
+	_if var.matches?("callSite*").not _then _return _false, :not_correct_varname _endif
+
+	_if p_n2.expression.is_local?.not _then _return _false, :second_no_var_assign _endif
+	_if p_n2.expression.name <> var _then _return _false, :second_name_does_match _endif
+
+	_if p_n3.condition.is_op?.not _then _return _false, :no_op_as_condition _endif
+	_if p_n3.condition.operand1.is_local?.not _then _return _false, :no_local_as_left_condition _endif
+	_if p_n3.condition.operand1.name <> var _then _return _false, :condition_name_does_match _endif
+		
+	 >> _true 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_compress_variable_visitor.convert1(p_n1, p_n2, p_n3)
+	##
+	_local assign << dcn_local_assignment.new(p_n2.single_local, p_n1.expression)
+	p_n3.condition.operand1 << assign
+	>> p_n3
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_compress_variable_visitor.should_convert2?(p_n1, p_n2, p_n3)
+	## 
+	_if p_n1.is_local_assignment?.not _then _return _false, :first_should_be_assignment _endif
+	_if p_n2.is_send?.not _then _return _false, :second_should_be_send _endif
+	_if p_n3.is_local_assignment?.not _then _return _false, :third_should_be_assignment _endif
+	
+	_local var << p_n1.single_name
+	_if var _is _unset _then _return _false, :no_var _endif
+	_if var.matches?("callSite*").not _then _return _false, :not_correct_varname _endif
+
+	_if p_n2.is_send?.not _then _return _false, :second_is_no_send _endif
+	_if p_n2.args.empty? _then _return _false, :second_is_no_local_send _endif
+	_if p_n2.args[1].is_local?.not _then _return _false, :second_is_no_local_arg _endif
+	_if p_n2.args[1].name <> var _then _return _false, :second_arg_not_correct_name _endif
+		
+	_if p_n3.single_name <> var _then _return _false, :third_name_does_match _endif
+	
+	 >> _true 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_compress_variable_visitor.convert2(p_n1, p_n2, p_n3)
+	##
+	p_n2.args[1] << p_n1.expression
+	>> p_n2
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_compress_variable_visitor.should_convert3?(p_n1, p_n2)
+	## 
+	_if p_n1.is_local_assignment?.not _then _return _false, :first_should_be_assignment _endif
+	_if p_n2.is_send?.not _then _return _false, :second_should_be_send _endif
+	
+	_local var << p_n1.single_name
+	_if var _is _unset _then _return _false, :no_var _endif
+	_if var.matches?("callSite*").not _then _return _false, :not_correct_varname _endif
+
+	_if p_n2.is_send?.not _then _return _false, :second_is_no_send _endif
+	_if p_n2.args.empty? _then _return _false, :second_is_no_args _endif
+	_if p_n2.args[1].is_local?.not _then _return _false, :second_is_no_local_arg _endif
+	_if p_n2.args[1].name <> var _then _return _false, :second_arg_not_correct_name _endif
+		
+	 >> _true 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_compress_variable_visitor.convert3(p_n1, p_n2)
+	##
+	_local assign << dcn_local_assignment.new(p_n1.single_local, p_n1.expression)
+	p_n2.args[1] << assign
+	>> p_n2
+_endmethod
+$
+

@@ -19,34 +19,22 @@ dcn_local_assignment.define_shared_constant(:compound?, _true , :private)
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.new(p_local, p_expression, _optional p_gather?)
-	_return _clone.init(p_local, p_expression, p_gather?)
+_method dcn_local_assignment.new(p_local, p_expression)
+	_return _clone.init(p_local, p_expression)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
-_private _method dcn_local_assignment.init(p_local, p_expression, _optional p_gather?)
+_private _method dcn_local_assignment.init(p_local, p_expression)
 	
 	.local_nodes << rope.new()
 	_if p_local _isnt _unset
 	_then
 		.local_nodes.add(p_local)
 	_endif
-	.gather? << p_gather?.default(_false)
+	.gather? << _false 
 	.expression << p_expression
 	_return _self
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_local_assignment.copy_undeclared()
-	##
-	_local loc << .local_nodes[1]
-	_if loc.is_local_declaration?
-	_then
-		loc << loc.copy_undeclared()
-	_endif
-	_return _self.exemplar.new(loc, .expression, .gather?)
 _endmethod
 $
 
@@ -163,7 +151,7 @@ _method dcn_local_assignment.decode_on(p_stream)
 
 	_if gather?
 	_then
-		_if declare? _then p_stream.write( "_local " ) _endif 
+		_if declare? _then p_stream.write( " _local " ) _endif 
 		p_stream.write( "(" )
 		_local comma? << _false 
 		_for i_node _over .local_nodes.fast_elements()
@@ -180,7 +168,7 @@ _method dcn_local_assignment.decode_on(p_stream)
 		par? << .local_nodes.size>1
 		_if .local_nodes.empty?.not
 		_then
-			_if declare? _then p_stream.write("_local ") _endif 
+			_if declare? _then p_stream.write( " _local " ) _endif 
 			_if par? _then p_stream.write( "(" ) _endif
 			_local comma? << _false 
 			_for i_node _over .local_nodes.fast_elements()

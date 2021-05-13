@@ -1,0 +1,221 @@
+_package deco
+$
+
+#remex(:dcn_method)
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+##
+## Represents a node for a decompiled method from magik.
+##
+def_slotted_exemplar( :dcn_method,
+		      {
+			      {:type,          _unset, :readable},
+			      {:exemplar_name, _unset, :readable},
+			      {:name,          _unset, :readable},
+			      {:iter?,         _unset, :readable},
+			      {:private?,      _unset ,:readable},
+			      {:abstract?,     _unset, :readable}
+		      }, :dcn_callable )
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_method.new(p_class_name, p_method_name, p_args, p_scatter?, p_body, p_type, p_iter?)
+	##
+	>> _clone.init(p_class_name, p_method_name, p_args, p_scatter?, p_body, p_type, p_iter? )
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_method.init(p_class_name, p_method_name, p_args, p_scatter?, p_body, p_type, p_iter? )
+
+	assert(p_body.is_class_of?(dcn_body))
+
+	.private?  << _false 
+	.abstract? << _false
+	.iter?     << p_iter?
+	.type      << p_type
+	>> _super.init(p_class_name, p_method_name, p_args, p_scatter?, p_body)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_method.decode_on(p_stream)
+	##
+	## Write a formated output on the stream
+	##
+	_self.decode_pragma_on(p_stream)
+	_if .abstract?
+	_then
+		p_stream.write( "_abstract ")
+	_endif
+	_if .private?
+	_then
+		p_stream.write( "_private ")
+	_endif
+	_if .iter?
+	_then
+		p_stream.write( "_iter ")
+	_endif
+	
+	p_stream.write( "_method", " ", _self.exemplar_name )
+	_self.decode_name_and_args(p_stream)
+	
+	p_stream.newline()
+	_self.decode_comment_on(p_stream, _true)
+	_self.decode_body_on(p_stream)
+	p_stream.newline()
+	p_stream.write( "_endmethod" )
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_method.decode_name_and_args(p_stream)
+	##
+	name << _self.method_name.as_charvec()
+
+	_if name.index_of_seq( "()<<" ) _isnt _unset 
+	_then
+		_self.decode_assign_parenthesis_args_on(p_stream, name, _false )
+	_elif name.index_of_seq( "()^<<" ) _isnt _unset 
+	_then
+		_self.decode_assign_parenthesis_args_on(p_stream, name, _true )
+	_elif name.index_of_seq( "]<<" ) _isnt _unset
+	_then
+		_self.decode_assign_bracket_args_on(p_stream, name, _false )
+	_elif name.index_of_seq( "]^<<" ) _isnt _unset
+	_then
+		_self.decode_assign_bracket_args_on(p_stream, name, _true )
+	_elif name.includes?(%<)
+	_then
+		_self.decode_assign_on(p_stream)
+	_elif name.includes?(%()
+	_then
+		_self.decode_parenthesis_args_on(p_stream, name)
+	_elif name[1] = %[
+	_then
+		_self.decode_bracket_args_on(p_stream, name)
+	_else
+		p_stream.write( ".", name)
+	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_method.decode_bracket_args_on(p_stream, p_method_name)
+	##
+	p_stream.write( "[" )
+	_for i, name _over .args.fast_keys_and_elements()
+	_loop
+		p_stream.write( name )
+		_if i <> .args.size
+		_then
+			p_stream.write( ", ")
+		_endif
+	_endloop
+	p_stream.write( "]" )
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_method.decode_assign_parenthesis_args_on(p_stream, p_method_name, boot?)
+	_if boot?
+	_then 
+		p_stream.write( ".", p_method_name.slice( 1, p_method_name.size-5))
+	_else
+		p_stream.write( ".", p_method_name.slice( 1, p_method_name.size-4))
+	_endif 
+	p_stream.write( "(" )
+	_self.int!decode_args_on(p_stream, 2)
+	p_stream.write( ") ")
+	_if boot? _then p_stream.write("^") _endif 
+	p_stream.write( "<< " )
+	p_stream.write( .args.first )
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_method.decode_parenthesis_args_on(p_stream, p_method_name)
+	p_stream.write( ".", p_method_name.slice( 1, p_method_name.size-2))
+	p_stream.write( "(" )
+	_self.int!decode_args_on(p_stream, 1)
+	p_stream.write( ") ")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_method.decode_assign_bracket_args_on(p_stream, p_method_name, boot?)
+	p_stream.write( "[" )
+	_self.int!decode_args_on(p_stream, 2)
+	p_stream.write( "]")
+	_if boot? _then p_stream.write( "^") _endif 
+	p_stream.write( "<< " )
+	p_stream.write( .args.first )
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_method.decode_args_on(p_stream)
+	name << _self.method_name
+	p_stream.write( ".", name.slice( 1, name.size-2))
+	p_stream.write( "(" )
+	_if .args > 0
+	_then
+		_self.int!decode_args_on(p_stream, 1)
+	_endif 
+	p_stream.write( ")" )
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_method.decode_assign_on(p_stream)
+	name << _self.method_name
+	p_stream.write( ".", name.slice( 1, name.size-2))
+	p_stream.write( "<< " )
+	p_stream.write( .args[1] )
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_method.accept_body_visitor(p_visitor)
+	.body.accept_body_visitor(p_visitor)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_method.method_name
+	>> .name.default("no_name_given_in_bind")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_method.bind(p_exemplar_name, p_method_name, p_nr_args, p_mandatory_args, p_private?, p_abstract? )
+	##
+	.exemplar_name     << p_exemplar_name
+	.name              << p_method_name
+	.nr_args           << p_nr_args
+	.nr_mandatory_args << p_mandatory_args
+	.private?          << p_private?
+	.abstract?         << p_abstract?
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_private _method dcn_method.method_finder
+	##
+	_local id1 << .name
+	_local id2 << _self.package_prefix(.exemplar_name)
+	>> _if id1 _isnt _unset _and id2 _isnt _unset 
+	   _then 
+		   >> dcn_method_finder.new_method(id1, id2)
+	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_method.is_method?
+	## 
+	>> _true 
+_endmethod
+$

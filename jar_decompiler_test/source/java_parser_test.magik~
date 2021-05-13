@@ -575,6 +575,18 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_char_utf()
+	##
+	_local inp << write_string("Character.valueOf('\u0010')")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+
+	_local m << p.parse_expression()
+	_self.assert_true(m.is_class_of?(deco:jpn_if), "should be an if statement")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_if()
 	##
 	_local inp << write_string("if (thing.value()) { this.do_if(); };")
@@ -946,4 +958,51 @@ _method java_parser_test.test_or_if()
 	_self.assert_true(m.condition.is_class_of?(deco:jpn_operation), "should be an if operation")
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_if_and_assign()
+	##
+	_local inp << write_string("if (a || MagikObjectUtils.isnt(callSite = b != c ? d : e)) {} ;")
+	inp << inp.substitute_character(%', %")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	p.define_locals("callSite", "a", "b", "c", "d", "e")
+
+	_local m << p.parse_statement()
+#	_self.assert_true(m.is_class_of?(deco:jpn_if), "should be an if statement")
+#	_self.assert_true(m.condition.is_class_of?(deco:jpn_operation), "should be an if operation")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_if_and_assign1()
+	##
+	_local inp << write_string("if (a || MagikObjectUtils.isnt(callSite = b != (c ? d : e))) {} ;")
+	inp << inp.substitute_character(%', %")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	p.define_locals("callSite", "a", "b", "c", "d", "e")
+
+	_local m << p.parse_statement()
+#	_self.assert_true(m.is_class_of?(deco:jpn_if), "should be an if statement")
+#	_self.assert_true(m.condition.is_class_of?(deco:jpn_operation), "should be an if operation")
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_if_and_assign2()
+	##
+	_local inp << write_string("if (a || MagikObjectUtils.isnt(callSite = (b != (c ? d : e)))) {} ;")
+	inp << inp.substitute_character(%', %")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s)
+	p.define_locals("callSite", "a", "b", "c", "d", "e")
+
+	_local m << p.parse_statement()
+#	_self.assert_true(m.is_class_of?(deco:jpn_if), "should be an if statement")
+#	_self.assert_true(m.condition.is_class_of?(deco:jpn_operation), "should be an if operation")
+_endmethod
+$
+
+
 
