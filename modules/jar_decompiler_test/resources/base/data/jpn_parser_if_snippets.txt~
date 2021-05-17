@@ -1,4 +1,5 @@
 ## jpn_method_test_if
+@Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
 public class deco_test_3468 {
     @CodeType(value="Method")
@@ -30,6 +31,7 @@ _endmethod
 $
 ###########
 ## jpn_method_test_if_else
+@Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
 public class deco_test_3468 {
     @CodeType(value="Method")
@@ -64,6 +66,7 @@ _endmethod
 $
 ###########
 ## jpn_method_test_if_unset_else
+@Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
 public class deco_test_3468 {
     @CodeType(value="Method")
@@ -98,6 +101,7 @@ _endmethod
 $
 ###########
 ## jpn_method_test_nested
+@Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
 public class deco_test_3468 {
     @CodeType(value="Method")
@@ -143,6 +147,7 @@ $
 
 ###########
 ## jpn_method_test_if_elif
+@Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
 public class deco_test_3468 {
     @CodeType(value="Method")
@@ -183,6 +188,7 @@ $
 
 ###########
 ## jpn_method_test_return_if
+@Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
 public class deco_test_3468 {
     @CodeType(value="Method")
@@ -222,6 +228,7 @@ $
 
 ###########
 ## jpn_method_test_param_if
+@Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
 public class deco_test_3468 {
     @CodeType(value="Method")
@@ -1068,8 +1075,7 @@ _method deco_tester.test_if()
                 .default_view_name << id
             _endif
             plugin.owner << _self
-            callSite2 << plugin
-            actual_plugins[id] << callSite2
+            actual_plugins[id] << (callSite2 << plugin)
         _endloop
         .plugins << actual_plugins
     _endif
@@ -1077,3 +1083,92 @@ _method deco_tester.test_if()
 _endmethod
 $
 ################
+## jpn_if_return
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_tester_4221 {
+    @SourceHash(value=1242265719)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object deco_tester__test_return_slot(Object _self) {
+        ResultTuple resultTuple;
+        DynamicAccessor.bootstrapBinder("!dataset_transaction_done_record_transactions!", "sw", 1);
+        try {
+            Object object;
+            Object object2;
+            boolean bl = MagikObjectUtils.isnt(DynamicAccessor.bootstrapFetcher("!dataset_transaction_done_record_transactions!", "sw"), null);
+            Object object3 = new Boolean(bl);
+            if (bl) {
+                object3 = object2 = Invoker.bootstrap("includes?()", DynamicAccessor.bootstrapFetcher("!dataset_transaction_done_record_transactions!", "sw"), _self);
+            }
+            if (MagikObjectUtils.should_be_boolean(object3)) {
+                object2 = object = new Boolean(MagikObjectUtils.isnt(Invoker.bootstrapPrivate("$slot_get_result()", (Object)_self), null));
+            }
+            if (MagikObjectUtils.should_be_boolean(object2)) {
+                object = Invoker.bootstrap("is_valid?", Invoker.bootstrapPrivate("$slot_get_result()", (Object)_self));
+            }
+            if (MagikObjectUtils.should_be_boolean(object)) {
+                CallSite callSite = Invoker.bootstrapPrivate("$slot_get_result()", (Object)_self);
+                DynamicScope.destroyFrame();
+                return callSite;
+            }
+            resultTuple = ResultTuple.EMPTY_TUPLE;
+        }
+        catch (Throwable throwable) {
+            DynamicScope.destroyFrame();
+            throw throwable;
+        }
+        DynamicScope.destroyFrame();
+        return resultTuple;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_tester_4220
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public deco_tester_4220() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        return TupleBuilder.bootstrap("tb", MagikObjectUtils.createMethod("deco_tester", "test_return_slot()", deco_tester_4221.class, "deco_tester__test_return_slot", 1, 1));
+    }
+
+    @Override
+    public void preload() {
+    }
+}
+#########
+_method deco_tester.test_return_slot() 
+    _local resultTuple
+    _dynamic sw:!dataset_transaction_done_record_transactions!
+    _local object
+    _local object2
+     _local bl << (sw:!dataset_transaction_done_record_transactions! _isnt _unset)
+     _local object3 << bl
+    _if bl
+    _then
+        object3 << (object2 << sw:!dataset_transaction_done_record_transactions!.includes?(_self))
+    _endif
+    _if object3
+    _then
+        object2 << (object << (.result _isnt _unset))
+    _endif
+    _if object2
+    _then
+        object << .result.is_valid?
+    _endif
+    _if object
+    _then
+        _return .result
+    _endif
+    _return _unset
+_endmethod
+$
+#########

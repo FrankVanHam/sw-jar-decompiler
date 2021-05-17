@@ -12,6 +12,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 ##
 def_slotted_exemplar(:jpn_parser,
 	{
+		{:safe?,               _unset},
 		{:in_loopbody?,        _unset},
 		{:current_java_class,  _unset},
 		{:current_environment, _unset, :readable},
@@ -30,15 +31,16 @@ $
 
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_parser.new()
+_method jpn_parser.new(_optional p_safe?)
 	##
-	>> _clone.init()
+	>> _clone.init(p_safe?)
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method jpn_parser.init()
+_private _method jpn_parser.init(_optional p_safe?)
 	##
+	.safe? << p_safe?.default(_true)
 	.in_loopbody? << _false 
 	>> _self
 _endmethod
@@ -52,10 +54,13 @@ _method jpn_parser.parse_file(p_file_node)
 	.jar_node << dcn_jar.new()
 	.current_environment << dcn_environment.new()
 	
-	_for i_node _over p_file_node.content.fast_elements()
+	_for i_class _over p_file_node.subsidiary_classes()
 	_loop
-		# during parsing, the result is added to .jar_node.
-		_self.parse_statement(i_node)
+		_self.parse_implementation_class(i_class)
+	_endloop
+	_for i_class _over p_file_node.primary_classes()
+	_loop
+		_self.parse_execution_class(i_class)
 	_endloop
 	>> .jar_node
 _endmethod
@@ -70,6 +75,35 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_parser.parse_statement(p_jnode)
+	## 
+	>> _if .safe?.not
+	   _then
+		   >> _self.do_parse_statement(p_jnode)
+	   _else
+		   >> _self.parse_statement_safely(p_jnode)
+	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method jpn_parser.parse_statement_safely(p_jnode)
+	## 
+	>> _try _with c
+#		_handling error _with _proc(c) c.report_contents_on(!output!); !traceback!() _endproc 
+		
+		>> _self.do_parse_statement(p_jnode)
+		
+	   _when error
+		   
+		   write("Error parsing statement node: ", p_jnode)
+		   write(c.report_contents_string)
+		   >> dcn_failed.new()  
+	   _endtry 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method jpn_parser.do_parse_statement(p_jnode)
 	##
 	>> p_jnode.parse_statement(_self)
 _endmethod
@@ -258,28 +292,16 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_parser.parse_class(p_class_node)
-	##
-	# reset the metadata in the environments.
-	.current_environment.empty()
-	
-	.jar_node.add_java_class(p_class_node)
-	_if p_class_node.implementation = "ExecutableMagik"
-	_then
-		_self.parse_execution_class(p_class_node)
-	_else
-		_self.parse_implementation_class(p_class_node)
-	_endif
-	>> dcn_no_op.new()
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method jpn_parser.parse_implementation_class(p_class_node)
 	##
 	## Parse the implementation class that holds the actual methods
 	## for the classes.
 	#
+	# reset the metadata in the environments.
+	.current_environment.empty()
+	
+	.jar_node.add_java_class(p_class_node)
+	
 	_local class_name << p_class_node.name
 	_local super_name << p_class_node.implementation
 	
@@ -305,6 +327,11 @@ _private _method jpn_parser.parse_execution_class(p_class_node)
 	## sourcecode. The execution_class will refer to the
 	## implementation_class for the actual implementation.
 	#
+	# reset the metadata in the environments.
+	.current_environment.empty()
+	
+	.jar_node.add_java_class(p_class_node)
+	
 	_local class_name << p_class_node.name
 	_local super_name << p_class_node.implementation
 
@@ -349,6 +376,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method jpn_parser.parse_method(p_class_name, p_meth_node)
 	##
+
 	_local (params, scatter?) << _self.parse_method_parameters(p_meth_node)
 	_local iter? << _self.is_iter?(p_meth_node)
 	
@@ -357,6 +385,7 @@ _private _method jpn_parser.parse_method(p_class_name, p_meth_node)
 	_self.apply_annotations(p_meth_node)
 
 	_local body << _self.parse_body(p_meth_node.body)
+#	_local body << _self.parse_body(p_class_name, p_meth_node.name, p_meth_node.body)
 	
 	.current_environment << old_env
 	

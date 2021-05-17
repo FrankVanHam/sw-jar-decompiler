@@ -36,7 +36,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method dcn_file.get_file_name()
+_method dcn_file.get_file_name()
 	
 	_for i_stat _over .body.statements.fast_elements()
 	_loop

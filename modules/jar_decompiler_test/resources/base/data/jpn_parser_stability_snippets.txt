@@ -1,0 +1,39 @@
+## jpn_skip_these_classes
+public class AppBootstrap {
+    public static void boot() {
+        Bootstrap.getBootstrap().initialise(Bootstrap.class, GeometryBootstrap.class, DatastoreBootstrap.class, GeoDatastoreBootstrap.class, GraphicsBootStrap.class, AcptBootstrap.class, AppBootstrap.class);
+    }
+}
+
+###########
+###########
+## jpn_fail_to_compile_java
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class deco_test_3468 {
+    @CodeType(value="Method")
+    public static Object deco_test__test_failed_java(Object _self) {
+        if (Invoker.bootstrapPrivate("test?", (Object)_self) != null) {
+            ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("doa()", (Object)_self));
+        } else {
+            a = s @ 2;
+        }
+        return ResultTuple.EMPTY_TUPLE;
+    }
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class deco_test_3457
+implements ExecutableMagik {
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("deco_test", "test_failed_java()", deco_test_3468.class, "deco_test__test_failed_java", 1, 1);
+    }
+}
+###########
+_method deco_test.test_failed_java() 
+	## Failed to decompile this line
+_endmethod
+$
+###########

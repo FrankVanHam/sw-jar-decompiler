@@ -5,8 +5,14 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 ##
-## decompiler for jar files.
+## decompiler for jar files. Decompiles a jar file and writes
+## the magik files.
 ##
+## Main method:
+## * decompile_product()
+## * decompile_module()
+## * decompile_jar_dir_to_dir()
+#
 def_slotted_exemplar(:decompiler,
 	{
 		{:overwrite?, _unset},
@@ -38,6 +44,12 @@ $
 _pragma(classify_level=basic, topic={jar_decompiler})
 _method decompiler.decompile_product(p_product, _optional p_dir)
 	##
+	## Decompiles the jar files of P_PRODUCT and creates Magik files in
+	## directory P_DIR. If P_DIR is not given then the Magik files
+	## are created in \source directories in the modules in P_PRODUCT.
+	##
+	## If .overwrite? is true, existing files will be overwriten!
+	## 
 	_for i_module _over p_product.defined_modules.fast_elements()
 	_loop
 		_local jar_file << _self.get_jar_file(i_module)
@@ -60,13 +72,21 @@ $
 _pragma(classify_level=basic, topic={jar_decompiler})
 _method decompiler.decompile_module(p_module, _optional p_dir)
 	##
-	## Decompile the jar file of the module into magik files. If P_DIR is given,
-	## then place the magik files into that directory, otherwise
-	## place it into the module directory.
+	## 
+	## Decompiles the jar file of P_MODULE and creates Magik files in
+	## directory P_DIR. If P_DIR is not given then the Magik files
+	## are created in \source directory of P_MODULE.
+	##
+	## If .overwrite? is true, existing files will be overwriten!
 
 	_local jar_file << _self.get_jar_file(p_module)
-	_local dir << p_dir.default(p_module.full_directory)
-	_self.decompile_jar_to_dir(jar_file, dir)
+	_if jar_file _isnt _unset
+	_then 
+		_local dir << p_dir.default(p_module.full_directory)
+		_self.decompile_jar_to_dir(jar_file, dir)
+	_else
+		write("No jar file found for ", p_module)
+	_endif 
 _endmethod
 $
 
@@ -76,17 +96,18 @@ _private _method decompiler.get_jar_file(p_module)
 	_local prod << p_module.product
 	_local file << write_string(prod.name, ".", p_module.name, ".", p_module.version.default(0), ".jar")
 
+	_local found << _unset 
 	_for i_dir _over _self.directory_to_root(prod.directory)
 	_loop		
 		jar_file << system.pathname_down(i_dir, "libs", file)
 		
-		_if system.file_exists?(jar_file) _then _leave _endif
+		_if system.file_exists?(jar_file)
+		_then
+			found << jar_file
+			_leave
+		_endif
 	_endloop
-	_if system.file_exists?(jar_file).not 
-	_then
-		write(write_string("The module jar file ", file, " does not exist."))
-	_endif
-	>> jar_file	
+	>> found
 _endmethod
 $
 
@@ -106,9 +127,16 @@ _private _iter _method decompiler.directory_to_root(p_dir)
 _endmethod
 $
 
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method decompiler.decompile_jar_dir_to_dir(p_search_dir, p_match, p_dir)
+_pragma(classify_level=basic, topic={jar_decompiler})
+_method decompiler.decompile_jar_dir_to_dir(p_search_dir, p_match, p_dir)
+	##
+	## Decompile all the jar files in P_SEARCH_DIR that matches the
+	## string P_MATCH into P_DIR.
+	##
+	## P_MATCH can contain ? and *. Like "sw_core*.jar"
+	## 
+	## If .overwrite? is true, existing files will be overwriten!
+	#
 	_local ch << directory_channel.new(p_search_dir, p_match)
 	_loop
 		_local path << ch.get_full()
@@ -123,6 +151,10 @@ $
 _pragma(classify_level=advanced, topic={jar_decompiler})
 _method decompiler.decompile_jar_to_dir(p_jar_file, p_dir)
 	##
+	## Decompile the one P_JAR_FILE into PDIR.
+	## 
+	## If .overwrite? is true, existing files will be overwriten!
+	#
 	_if .safe?
 	_then
 		_try
@@ -144,10 +176,10 @@ _method decompiler.int!decompile_jar_to_dir(p_jar_file, p_dir)
 	_local inp << _self.get_java_decompiler_stream(p_jar_file)
 	_protect 
 		_local s << deco:lexical_scanner.new(inp)
-		_local p << deco:java_parser.new(s)
+		_local p << deco:java_parser.new(s, .safe?)
 		_local jpn_jar << p.parse_file()
 		
-		_local jp << deco:jpn_parser.new()
+		_local jp << deco:jpn_parser.new(.safe?)
 		_local dcn_jar << jp.parse_file(jpn_jar)
 		deco:jpn_execution_post_processor.process_jar(dcn_jar)
 		
@@ -240,7 +272,7 @@ _private _method decompiler.write_magik_file(p_dir, p_file_node)
 	_then
 		_self.do_write_magik_file(file, p_file_node)
 	_else
-		write("skipping ", file)
+		write("will not overwrite ", file)
 	_endif 
 _endmethod
 $
@@ -248,7 +280,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method decompiler.do_write_magik_file(p_file, p_file_node)
 	## 
-	_local out_ind << indentation_stream.new(out << internal_text_output_stream.new())
+	_local out_ind << deco:tab_indentation_stream.new(out << internal_text_output_stream.new())
 	p_file_node.decode_on(out_ind)
 	
 	_local out_file << external_text_output_stream.new(p_file)

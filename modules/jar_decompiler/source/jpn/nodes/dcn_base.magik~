@@ -144,11 +144,18 @@ _private _method dcn_base.package_prefix(p_name)
 	_local name << p_name.as_symbol()
 	_for i_pack _over package.all_packages.fast_elements()
 	_loop
-		_if i_pack.includes_key?(name)
+		_local gl << i_pack.global_at(name)
+		_if gl _isnt _unset
 		_then
-			_return write_string(i_pack.name, ":", name)
-		_endif 
-	_endloop
+			_local pck << gl.package
+			_if pck _isnt _unset
+			_then
+				_return write_string(pck.name, ":", p_name)
+			_else
+				_return p_name
+			_endif
+		_endif
+	_endloop 
 	_return _unset 
 _endmethod
 $
@@ -198,7 +205,7 @@ _method dcn_base.decode_list_on(p_stream, p_vec)
 		_then
 			p_stream.write( ", ")
 		_endif
-		elem.decode_on(p_stream)
+		elem.decode_expression_on(p_stream)
 	_endloop
 _endmethod
 $

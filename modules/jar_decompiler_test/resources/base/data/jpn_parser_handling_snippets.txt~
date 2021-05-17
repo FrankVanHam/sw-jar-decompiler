@@ -173,8 +173,6 @@ _endmethod
 $
 ##############
 ## jpn_method_test_multi_handling
-@Debugger(value="MagikDebug")
-@CodeType(value="Subsidiary")
 public class deco_test_3914 {
     @SourceHash(value=-1357316726)
     @Debugger(value="MagikDebug")

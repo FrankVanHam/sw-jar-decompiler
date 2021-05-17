@@ -1,4 +1,5 @@
 ## jpn_method_test_loop
+@Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
 public class deco_test_3468 {
     @CodeType(value="Method")
@@ -9,6 +10,7 @@ public class deco_test_3468 {
     }
 }
 
+@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
 public class deco_test_3457
 implements ExecutableMagik {
@@ -26,6 +28,7 @@ _endmethod
 $
 ###########
 ## jpn_method_test_loop_leave
+@Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
 public class deco_test_3468 {
     @CodeType(value="Method")
@@ -39,6 +42,7 @@ public class deco_test_3468 {
     }
 }
 
+@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
 public class deco_test_3457
 implements ExecutableMagik {
@@ -59,6 +63,7 @@ _endmethod
 $
 ###########
 ## jpn_method_test_loop_continue
+@Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
 public class deco_test_3468 {
     @CodeType(value="Method")
@@ -74,6 +79,7 @@ public class deco_test_3468 {
     }
 }
 
+@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
 public class deco_test_3457
 implements ExecutableMagik {
@@ -98,6 +104,7 @@ $
 
 ###########
 ## jpn_method_test_loop_leave_outer
+@Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
 public class deco_test_3468 {
     @CodeType(value="Method")
@@ -116,6 +123,7 @@ public class deco_test_3468 {
     }
 }
 
+@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
 public class deco_test_3457
 implements ExecutableMagik {
@@ -139,6 +147,7 @@ _endmethod
 $
 ###########
 ## jpn_method_test_loop_exit_condition_last
+@Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
 public class deco_test_3468 {
     @CodeType(value="Method")
@@ -152,6 +161,7 @@ public class deco_test_3468 {
     }
 }
 
+@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
 public class deco_test_3457
 implements ExecutableMagik {
@@ -173,6 +183,7 @@ _endmethod
 $
 ###########
 ## jpn_method_test_loop_exit_condition
+@Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
 public class deco_test_3468 {
     @CodeType(value="Method")
@@ -188,6 +199,7 @@ public class deco_test_3468 {
     }
 }
 
+@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
 public class deco_test_3457
 implements ExecutableMagik {
@@ -213,6 +225,7 @@ _endmethod
 $
 ###########
 ## jpn_method_test_loop_exit_var_condition
+@Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
 public class deco_test_3468 {
     @CodeType(value="Method")
@@ -229,6 +242,7 @@ public class deco_test_3468 {
     }
 }
 
+@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
 public class deco_test_3457
 implements ExecutableMagik {

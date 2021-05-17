@@ -278,6 +278,8 @@ public class deco_test_3293 {
 
 }
 
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
 public class deco_test_3292
 implements ExecutableMagik {
     @Override
@@ -379,6 +381,8 @@ public class deco_test_3293 {
     }
 }
 
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
 public class deco_test_3292
 implements ExecutableMagik {
     @Override
@@ -1240,12 +1244,12 @@ $
 ## jpn_test_mistery_2
 @Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
-public class view_pool_46759 {
+public class deco_test_46759 {
     @SourceHash(value=179293526)
     @Debugger(value="MagikDebug")
     @CodeType(value="Method")
     @EnvVars(value={@EnvVar(name="__dynamic_frame__", type=Object.class, start=34, end=167, index=0), @EnvVar(name="_self", type=Object.class, start=13, end=185, index=1)})
-    public static Object view_pool__close(Object _self) {
+    public static Object deco_test__close(Object _self) {
         Object[] __env__ = new Object[2];
         EnvAccessor.bootstrapReseter("resetEnv", (Object)_self, (Object[])__env__, (int)1);
         CallSite callSite = EnvAccessor.bootstrapFetcher("fetchEnv", (Object[])__env__, (int)1);
@@ -1271,7 +1275,7 @@ public class view_pool_46759 {
         return ResultTuple.EMPTY_TUPLE;
     }
 
-    @Parent(method="view_pool__close")
+    @Parent(method="deco_test__close")
     @Debugger(value="MagikDebug")
     @CodeType(value="LoopBody")
     public static Object __loopbody_(Object[] __env__, Object view) {
@@ -1289,7 +1293,7 @@ public class view_pool_46759 {
         return resultTuple;
     }
 
-    @Parent(method="view_pool__close")
+    @Parent(method="deco_test__close")
     @Debugger(value="MagikDebug")
     @CodeType(value="LoopBody")
     public static Object __loopbody_2(Object[] __env__, Object a_thread) {
@@ -1311,7 +1315,7 @@ public class view_pool_46759 {
      */
     static MethodHandle cfr_ldc_0() {
         try {
-            return MethodHandles.lookup().findStatic(view_pool_46759.class, "__loopbody_", MethodType.fromMethodDescriptorString("([Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null));
+            return MethodHandles.lookup().findStatic(deco_test_46759.class, "__loopbody_", MethodType.fromMethodDescriptorString("([Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null));
         }
         catch (NoSuchMethodException | IllegalAccessException except) {
             throw new IllegalArgumentException(except);
@@ -1323,7 +1327,7 @@ public class view_pool_46759 {
      */
     static MethodHandle cfr_ldc_1() {
         try {
-            return MethodHandles.lookup().findStatic(view_pool_46759.class, "__loopbody_2", MethodType.fromMethodDescriptorString("([Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null));
+            return MethodHandles.lookup().findStatic(deco_test_46759.class, "__loopbody_2", MethodType.fromMethodDescriptorString("([Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null));
         }
         catch (NoSuchMethodException | IllegalAccessException except) {
             throw new IllegalArgumentException(except);
@@ -1334,11 +1338,11 @@ public class view_pool_46759 {
 
 @Debugger(value="MagikDebug")
 @CodeType(value="Primary")
-public class view_pool_46758
+public class deco_test_46758
 implements ExecutableMagik {
     @Debugger(value="MagikDebug")
     @CodeType(value="EmptyConstructor")
-    public view_pool_46758() {
+    public deco_test_46758() {
     }
 
     @Override
@@ -1346,7 +1350,7 @@ implements ExecutableMagik {
     @CodeType(value="TopLevel")
     public Object execute() {
 
-        MagikObjectUtils.createMethod("view_pool", "close()", view_pool_46759.class, "view_pool__close", 1, 1);
+        MagikObjectUtils.createMethod("deco_test", "close()", deco_test_46759.class, "deco_test__close", 1, 1);
     }
 
     @Override
@@ -1354,7 +1358,7 @@ implements ExecutableMagik {
     }
 }
 ##########
-_method view_pool.close() 
+_method deco_test.close() 
      _local callSite << _self
     _lock callSite
         _for view _over .specs_by_view.keys()
@@ -1469,175 +1473,15 @@ _method deco_tester.test_finally()
     _return _unset
 _endmethod
 $
-################
-## jpn_iter_with_labels
-@Debugger(value="MagikDebug")
-@CodeType(value="Subsidiary")
-public class oracle_spatial_object_stream_13915 {
-   @SourceHash(value=-181307059)
-    @Debugger(value="MagikDebug")
-    @CodeType(value="Method")
-    public static Object oracle_spatial_object_stream__get(Object _self) {
-        bounds = null;
-        rec = null;
-        an_rwo = null;
-        c = null;
-        visible_geom = null;
-        vis_geoms = null;
-        asp = null;
-        tag = ConstantBuilder.symbolBootstrap("symbol", "ora_error");
-        stream = DynamicAccessor.bootstrapFetcher("!terminal!", "sw");
-        while (true) lbl-1000:
-        // 2 sources
-        {
-            DynamicAccessor.bootstrapBinder("__catch_tags_dynamic__", "sw", 1);
-            var10_10 = tag;
-            DynamicAccessor.bootstrapStorer("__catch_tags_dynamic__", "sw", (Object)var10_10);
-            try {
-                DynamicAccessor.bootstrapBinder("!current_world!", "sw", 1);
-                DynamicAccessor.bootstrapBinder("!sys!condition_handler_cluster!", "sw", 0);
-                try {
-                    v0 = Invoker.bootstrap("ora_handling_proc()", Invoker.bootstrapPrivate("$slot_get_dataset()", (Object)_self), tag, stream, visible_geom);
-                    ProcInvoker.bootstrap("()", GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "sys!install_handlers"), ConstantBuilder.symbolBootstrap("symbol", "extdb_database_error"), Invoker.bootstrap("extdb_handling_proc()", Invoker.bootstrapPrivate("$slot_get_dataset()", (Object)_self)), ConstantBuilder.symbolBootstrap("symbol", "ora_sc_error"), v0, ConstantBuilder.symbolBootstrap("symbol", "ora_sc_user_error"), v0);
-                    if (Invoker.bootstrapPrivate("$slot_get_scanner()", (Object)_self) != null) {
-                        rec = Invoker.bootstrap("get()", Invoker.bootstrapPrivate("$slot_get_scanner()", (Object)_self));
-                        if (rec != null) {
-                            an_rwo = Invoker.bootstrap("new_from()", Invoker.bootstrapPrivate("$slot_get_rec_exemplar()", (Object)_self), Invoker.bootstrap("values", rec));
-                            var11_11 = (ResultTuple)Invoker.tupleBootstrap("perform()", (Object)an_rwo, (Object)Invoker.bootstrapPrivate("$slot_get_geom_field_name()", (Object)_self));
-                            DynamicScope.destroyFrame();
-                            DynamicScope.destroyFrame();
-                            return var11_11;
-                        }
-                        (ResultTuple)Invoker.tupleBootstrap("close()", (Object)Invoker.bootstrapPrivate("$slot_get_scanner()", (Object)_self));
-                    }
-                    vis_geoms = Invoker.bootstrap("\\b]", Invoker.bootstrapPrivate("$slot_get_scan_info()", (Object)_self), Integer.valueOf(2));
-                    (ResultTuple)Invoker.tupleBootstrapPrivate("$slot_set_field_index()", (Object)_self, (Object)BinaryDispatcher.bootstrap("+", Invoker.bootstrapPrivate("$slot_get_field_index()", (Object)_self), Integer.valueOf(1)));
-                    if (MagikObjectUtils.should_be_boolean(BinaryDispatcher.bootstrap("\\g", Invoker.bootstrapPrivate("$slot_get_field_index()", (Object)_self), Invoker.bootstrap("size", vis_geoms)))) {
-                        var12_12 = null;
-                        DynamicScope.destroyFrame();
-                        DynamicScope.destroyFrame();
-                        return var12_12;
-                    }
-                    visible_geom = Invoker.bootstrap("\\b]", vis_geoms, Invoker.bootstrapPrivate("$slot_get_field_index()", (Object)_self));
-                    c = Invoker.bootstrap("\\b]", Invoker.bootstrap("collections", Invoker.bootstrap("dd", Invoker.bootstrap("owner", visible_geom))), Invoker.bootstrap("name", Invoker.bootstrap("owner", visible_geom)));
-                    bounds = Invoker.bootstrap("\\b]", Invoker.bootstrapPrivate("$slot_get_scan_info()", (Object)_self), Integer.valueOf(1));
-                    (ResultTuple)Invoker.tupleBootstrapPrivate("$slot_set_rec_exemplar()", (Object)_self, (Object)Invoker.bootstrap("record_exemplar", c));
-                    (ResultTuple)Invoker.tupleBootstrapPrivate("$slot_set_geom_field_name()", (Object)_self, (Object)Invoker.bootstrap("name", visible_geom));
-                    asp = Invoker.bootstrap("\\b]", Invoker.bootstrapPrivate("$slot_get_scan_info()", (Object)_self), Integer.valueOf(4));
-                    DynamicAccessor.bootstrapStorer("!current_world!", "sw", (Object)Invoker.bootstrapPrivate("$slot_get_world()", (Object)_self));
-                    (ResultTuple)Invoker.tupleBootstrapPrivate("$slot_set_scanner()", (Object)_self, (Object)Invoker.bootstrap("setup_spatial_stream()", Invoker.bootstrapPrivate("$slot_get_dataset()", (Object)_self), visible_geom, bounds, asp));
-                }
-                catch (Throwable v1) {
-                    DynamicScope.destroyFrame();
-                    throw v1;
-                }
-                DynamicScope.destroyFrame();
-                ** break block10
-            }
-            catch (Thrower.Throw v2) {
-                Thrower.checkTag(v2, var10_10);
-            }
-            break;
-        }
-        catch (Throwable v3) {
-            DynamicScope.destroyFrame();
-            throw v3;
-        }
-lbl-1000:
-        // 2 sources
-
-        {
-            DynamicScope.destroyFrame();
-            ** while (true)
-        }
-    }
-}
-
-@Debugger(value="MagikDebug")
-@CodeType(value="Primary")
-public class oracle_spatial_object_stream_13914
-implements ExecutableMagik {
-    @Debugger(value="MagikDebug")
-    @CodeType(value="EmptyConstructor")
-    public oracle_spatial_object_stream_13914() {
-    }
-
-    @Override
-    @Debugger(value="MagikDebug")
-    @CodeType(value="TopLevel")
-    public Object execute() {
-        MagikObjectUtils.createMethod("oracle_spatial_object_stream", "get()", oracle_spatial_object_stream_13915.class, "oracle_spatial_object_stream__get", 1, 1);
-    }
-
-    @Override
-    public void preload() {
-    }
-}
-#########
-_method oracle_spatial_object_stream.get() 
-    bounds << _unset
-    rec << _unset
-    an_rwo << _unset
-    c << _unset
-    visible_geom << _unset
-    vis_geoms << _unset
-    asp << _unset
-    tag << :ora_error
-    stream << sw:!terminal!
-    _loop
-        _dynamic sw:__catch_tags_dynamic__
-        var10_10 << tag
-        _dynamic sw:__catch_tags_dynamic__ << var10_10
-        _dynamic sw:!current_world!
-        _dynamic sw:!sys!condition_handler_cluster!
-        v0 << .dataset.ora_handling_proc(tag, stream, visible_geom)
-        sw:sys!install_handlers(:extdb_database_error, .dataset.extdb_handling_proc(), :ora_sc_error, v0, :ora_sc_user_error, v0)
-        _if (.scanner _isnt _unset)
-        _then
-            rec << .scanner.get()
-            _if (rec _isnt _unset)
-            _then
-                an_rwo << .rec_exemplar.new_from(rec.values)
-                var11_11 << an_rwo.perform(.geom_field_name)
-                _return var11_11
-            _endif
-            .scanner.close()
-        _endif
-        vis_geoms << .scan_info[2]
-        .field_index << (.field_index + 1)
-        _if (.field_index > vis_geoms.size)
-        _then
-            var12_12 << _unset
-            _return var12_12
-        _endif
-        visible_geom << vis_geoms[.field_index]
-        c << visible_geom.owner.dd.collections[visible_geom.owner.name]
-        bounds << .scan_info[1]
-        .rec_exemplar << c.record_exemplar
-        .geom_field_name << visible_geom.name
-        asp << .scan_info[4]
-        _dynamic sw:!current_world! << .world
-        .scanner << .dataset.setup_spatial_stream(visible_geom, bounds, asp)
-        ####################
-        ## Failed to decompile
-        ####################
-         _leave
-    _endloop
-    
-    ####################
-    ## Failed to decompile
-    ####################
-_endmethod
-$
 #########
 ## jpn_keyword_as_variable
 @Debugger(value="MagikDebug")
 @CodeType(value="Subsidiary")
-public class broadcaster_client_engine_43432 {
+public class deco_test_43432 {
     @SourceHash(value=2134369763)
     @Debugger(value="MagikDebug")
     @CodeType(value="Method")
-    public static Object broadcaster_client_engine__deliver_messages(Object _self) {
+    public static Object deco_test__deliver_messages(Object _self) {
         v1 = (ResultTuple)TupleBuilder.bootstrap("tb", (Object[])Invoker.bootstrapPrivate("for_scatter()", (Object)cookie));
         switch = v1.pop();
         return ResultTuple.EMPTY_TUPLE;
@@ -1646,18 +1490,18 @@ public class broadcaster_client_engine_43432 {
 
 @Debugger(value="MagikDebug")
 @CodeType(value="Primary")
-public class broadcaster_client_engine_43431
+public class deco_test_43431
 implements ExecutableMagik {
     @Debugger(value="MagikDebug")
     @CodeType(value="EmptyConstructor")
-    public broadcaster_client_engine_43431() {
+    public deco_test_43431() {
     }
 
     @Override
     @Debugger(value="MagikDebug")
     @CodeType(value="TopLevel")
     public Object execute() {
-        MagikObjectUtils.createMethod("broadcaster_client_engine", "deliver_messages()", broadcaster_client_engine_43432.class, "broadcaster_client_engine__deliver_messages", 1, 1);
+        MagikObjectUtils.createMethod("deco_test", "deliver_messages()", deco_test_43432.class, "deco_test__deliver_messages", 1, 1);
     }
 
     @Override
@@ -1665,7 +1509,7 @@ implements ExecutableMagik {
     }
 }
 ###################
-_method broadcaster_client_engine.deliver_messages() 
+_method deco_test.deliver_messages() 
     v1 << ( _scatter cookie)
     switch << v1
     _return _unset

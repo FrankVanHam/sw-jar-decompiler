@@ -12,11 +12,14 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_method_definition_test.test_method_no_args()
 	_local s << _self.create_input(
+			    "@Debugger(value='MagikDebug')",
+			    "@CodeType(value='Subsidiary')",
+			    "",
 			      "public class a_class {",
 			      "    public static Object class__a_method() {",
 			      "    }",
 			      "}")
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.get()
 	_self.assert_true(node.is_class_of?(deco:jpn_class), "should be class")
@@ -31,11 +34,13 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_method_definition_test.test_method_illegal_name()
 	_local s << _self.create_input(
+			    "@Debugger(value='MagikDebug')",
+			    "@CodeType(value='Subsidiary')",
 			      "public class a_class {",
 			      "    public static Object deco_test__test_args_asign()\l\l_() {",
 			      "    }",
 			      "}")
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.get()
 	_local m << node.methods[1]
@@ -46,11 +51,13 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_method_definition_test.test_method_illegal_name2()
 	_local s << _self.create_input(
+			    "@Debugger(value='MagikDebug')",
+			    "@CodeType(value='Subsidiary')",
 			      "public class a_class {", 
 			      "    public static Object deco_test__\b]\l\l_() {",
 			      "    }",
 			      "}")
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.get()
 	_local m << node.methods[1]
@@ -61,11 +68,13 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_method_definition_test.test_method_with_args()
 	_local s << _self.create_input(
+			    "@Debugger(value='MagikDebug')",
+			    "@CodeType(value='Subsidiary')",
 			      "public class a_class {",
 			      "    public static Object class__a_method(Object _self, Object c, Object a) {",
 			      "    }",
 			      "}")
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.get()
 	_self.assert_true(node.is_class_of?(deco:jpn_class), "should be class")
@@ -79,11 +88,13 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_method_definition_test.test_method_with_gather_args()
 	_local s << _self.create_input(
+			    "@Debugger(value='MagikDebug')",
+			    "@CodeType(value='Subsidiary')",
 			      "public class a_class {",
 			      "    public static Object class__a_method(Object _self, Object ... c) {",
 			      "    }",
 			      "}")
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.get()
 	_self.assert_true(node.is_class_of?(deco:jpn_class), "should be class")
@@ -98,6 +109,8 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_method_definition_test.test_class_method_with_annotation()
 	_local s << _self.create_input(
+			    "@Debugger(value='MagikDebug')",
+			    "@CodeType(value='Subsidiary')",
 			      "public class a_class {",
 			      "@Override",
 			      "@SourceHash(value=888600578)",
@@ -106,7 +119,7 @@ _method java_parser_method_definition_test.test_class_method_with_annotation()
 			      "    public static Object class__a_method() {",
 			      "    }",
 			      "}")
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.get()
 	_self.assert_true(node.is_class_of?(deco:jpn_class), "should be class")

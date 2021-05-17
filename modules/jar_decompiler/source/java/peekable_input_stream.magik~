@@ -1,0 +1,68 @@
+_package deco
+$
+
+#remex(:peekable_input_stream)
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+##
+## provides the peek() method for stream by wrapping the stream.
+##
+def_slotted_exemplar(:peekable_input_stream,
+	{
+		{:input, _unset},
+		{:cache, _unset}
+	})
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method peekable_input_stream.new(p_stream)
+	##
+	>> _clone.init(p_stream)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method peekable_input_stream.init(p_stream)
+	## 
+	.input << p_stream
+	.cache << rope.new()
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method peekable_input_stream.get()
+	_self.peek()
+	_local lex << .cache.first
+	.cache.remove_first()
+	_return lex
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method peekable_input_stream.peek(_optional p_nr)
+	_local nr << p_nr.default(1)
+	_loop
+		_if .cache.size<nr
+		_then
+			.cache.add(_self.int!get())
+		_else
+			_return .cache[nr]
+		_endif
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method peekable_input_stream.int!get()
+	>> .input.get()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method peekable_input_stream.more_to_get?
+	##
+	>> _self.peek() _isnt _unset 
+_endmethod
+$
+

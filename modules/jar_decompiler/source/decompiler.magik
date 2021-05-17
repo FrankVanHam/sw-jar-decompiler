@@ -61,7 +61,7 @@ _method decompiler.decompile_product(p_product, _optional p_dir)
 				      _else
 					      >> i_module.full_directory
 				      _endif 
-			_self.decompile_jar_to_dir(jar_file, dir)
+			_self.decompile_jar_to_dir(jar_file, dir, _false)
 		_else
 			write("No jar file found for ", i_module)
 		_endif 
@@ -83,7 +83,7 @@ _method decompiler.decompile_module(p_module, _optional p_dir)
 	_if jar_file _isnt _unset
 	_then 
 		_local dir << p_dir.default(p_module.full_directory)
-		_self.decompile_jar_to_dir(jar_file, dir)
+		_self.decompile_jar_to_dir(jar_file, dir, _false )
 	_else
 		write("No jar file found for ", p_module)
 	_endif 
@@ -143,50 +143,51 @@ _method decompiler.decompile_jar_dir_to_dir(p_search_dir, p_match, p_dir)
 		_if path _is _unset _then _leave _endif
 
 		write("Decompiling: ", path)
-		_self.decompile_jar_to_dir(path, p_dir)
+		_self.decompile_jar_to_dir(path, p_dir, _true)
 	_endloop
 _endmethod
 $
 
 _pragma(classify_level=advanced, topic={jar_decompiler})
-_method decompiler.decompile_jar_to_dir(p_jar_file, p_dir)
+_method decompiler.decompile_jar_to_dir(p_jar_file, p_dir, _optional p_include_module?)
 	##
 	## Decompile the one P_JAR_FILE into PDIR.
 	## 
 	## If .overwrite? is true, existing files will be overwriten!
 	#
+	_local include_module? << p_include_module?.default(_true)
 	_if .safe?
 	_then
 		_try
 			_handling error _with _self.report_error_proc
 			
-			_self.int!decompile_jar_to_dir(p_jar_file, p_dir)
+			_self.int!decompile_jar_to_dir(p_jar_file, p_dir, include_module?)
 		_when error
 			
 		_endtry 
 	_else
-		_self.int!decompile_jar_to_dir(p_jar_file, p_dir)
+		_self.int!decompile_jar_to_dir(p_jar_file, p_dir, include_module?)
 	_endif
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method decompiler.int!decompile_jar_to_dir(p_jar_file, p_dir)
+_method decompiler.int!decompile_jar_to_dir(p_jar_file, p_dir, p_include_module?)
 	##
 	_local inp << _self.get_java_decompiler_stream(p_jar_file)
 	_protect 
 		_local s << deco:lexical_scanner.new(inp)
-		_local p << deco:java_parser.new(s)
+		_local p << deco:java_parser.new(s, .safe?)
 		_local jpn_jar << p.parse_file()
 		
-		_local jp << deco:jpn_parser.new()
+		_local jp << deco:jpn_parser.new(.safe?)
 		_local dcn_jar << jp.parse_file(jpn_jar)
 		deco:jpn_execution_post_processor.process_jar(dcn_jar)
 		
 		_for i_file _over dcn_jar.files.fast_elements()
 		_loop
 			_if i_file.empty? _then _continue _endif
-			_self.write_magik_file(p_dir, i_file)
+			_self.write_magik_file(p_dir, i_file, p_include_module?)
 		_endloop
 	_protection
 		inp.close()
@@ -260,9 +261,9 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method decompiler.write_magik_file(p_dir, p_file_node)
+_private _method decompiler.write_magik_file(p_dir, p_file_node, p_include_module?)
 	##
-	_local file << system.pathname_down(p_dir, p_file_node.get_file_name())
+	_local file << system.pathname_down(p_dir, p_file_node.get_file_name(p_include_module?))
 
 	(x, dir) << system.pathname_components(file)
 	_self.ensure_directory(dir)

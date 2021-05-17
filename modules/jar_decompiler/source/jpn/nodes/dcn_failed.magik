@@ -23,10 +23,6 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method dcn_failed.decode_on(p_stream)
 	##
-	p_stream.write("####################")
-	p_stream.newline()
-	p_stream.write("## Failed to decompile")
-	p_stream.newline()
-	p_stream.write("####################")
+	p_stream.write("## Failed to decompile this line")
 _endmethod
 $

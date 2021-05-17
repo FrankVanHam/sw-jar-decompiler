@@ -31,4 +31,4 @@ jpn_parser_andif_orif_snippet_test
 
 deco_pragma_tester
 jpn_parser_pragma_snippet_test
-
+jpn_parser_loop_snippet_test

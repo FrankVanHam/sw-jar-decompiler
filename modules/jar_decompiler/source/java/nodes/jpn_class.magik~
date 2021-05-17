@@ -73,17 +73,3 @@ _method jpn_class.parse_expression(p_parser)
 	>> p_parser.parse_class(_self)
 _endmethod
 $
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_class.type
-	##
-	## Rerturn the type of the class, derived from the annotations.
-	#
-	_for i_ann _over .annotations.fast_elements()
-	_loop
-		_if i_ann.name = "CodeType"
-		_then
-			_return i_ann.value.string_value
-		_endif
-	_endloop 
-_endmethod
-$

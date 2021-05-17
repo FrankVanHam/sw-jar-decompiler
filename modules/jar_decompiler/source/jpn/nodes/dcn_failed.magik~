@@ -1,73 +1,32 @@
 _package deco
 $
 
-#remex(:dcn_body)
+#remex(:dcn_failed)
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-def_slotted_exemplar(:dcn_body,
-	{
-		{:statements, _unset, :readable}
-	}, :dcn_base)
+def_slotted_exemplar(:dcn_failed,
+	{}, :dcn_base)
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method dcn_body.new(_optional p_statements)
-	>> _clone.init(p_statements)
+_method dcn_failed.new()
+	>> _clone.init()
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method dcn_body.init(_optional p_statements)
-	##
-	.statements << _if p_statements _isnt _unset
-		       _then >> rope.new_from(p_statements)
-		       _else >> rope.new()
-		       _endif 
+_private _method dcn_failed.init()
 	>> _self 
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method dcn_body.empty?
-	>> .statements.empty?
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method dcn_body.decode_on(p_stream)
+_method dcn_failed.decode_on(p_stream)
 	##
-	_local c? << _false 
-	_for i_stat _over .statements.fast_elements()
-	_loop
-		_if i_stat.is_no_op? _then _continue _endif
-		_if (c?^<< _true) _then p_stream.newline() _endif
-		
-		i_stat.decode_on(p_stream)
-	_endloop 
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_method dcn_body.accept_body_visitor(p_visitor)
-	p_visitor.accept(_self)
-	_self.accept_body_visitor_in_list(p_visitor, .statements)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={decompiler})
-_iter _method dcn_body.pair_of_nodes()
-	##  
-	_local sts << .statements
-	_local idx1 << idx2 << _unset 
-	_for i_index, i_node _over sts.fast_keys_and_elements()
-	_loop
-		_if i_node.is_no_op? _then _continue _endif
-		idx1 << idx2
-		idx2 << i_index
-		_if idx1 _isnt _unset 
-		_then
-			_loopbody(sts, idx1, idx2, i_node)
-		_endif
-	_endloop 
+	p_stream.write("####################")
+	p_stream.newline()
+	p_stream.write("## Failed to decompile")
+	p_stream.newline()
+	p_stream.write("####################")
 _endmethod
 $

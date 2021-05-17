@@ -16,7 +16,7 @@ _method java_parser_local_test.test_just_type()
 			      "public static Object a_method() {", 
 			      "this.show(type);", 
 			      "}")
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	_local met_node << p.parse_method("a_class")
 	_self.assert_true(met_node.is_class_of?(deco:jpn_method), "should be an method")
 
@@ -51,7 +51,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _private _method java_parser_local_test.assert_local(p_stream)
-	_local p << deco:java_parser.new(p_stream)
+	_local p << deco:java_parser.new(p_stream, _false)
 	_local met_node << p.parse_method("a_class")
 	_self.assert_true(met_node.is_class_of?(deco:jpn_method), "should be an method")
 
@@ -71,7 +71,7 @@ _method java_parser_local_test.test_catch_parameters()
 			      "this.show(type);",
 			      "}",
 			      "}")
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	_local met_node << p.parse_method("a_class")
 	_self.assert_true(met_node.is_class_of?(deco:jpn_method), "should be an method")
 	_local var << met_node.body.statements[1].catch_body.statements[1].args[1]

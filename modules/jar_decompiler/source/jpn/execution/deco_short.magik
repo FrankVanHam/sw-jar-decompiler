@@ -1,0 +1,28 @@
+_package deco
+$
+
+def_slotted_exemplar(:deco_short, {}, :deco_execution_base)
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_short.valueof(p_parser, p_node)
+	_local val << p_parser.parse_expression(p_node)
+	>> dcn_constant.new_number(val.string_value)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_short.min_value(p_parser)
+	##
+	_local str << "-32,768"
+	>> dcn_constant.new_number(str)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_short.max_value(p_parser)
+	##
+	_local str << "32,767"
+	>> dcn_constant.new_number(str)
+_endmethod
+$

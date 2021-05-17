@@ -81,8 +81,7 @@ _method dcn_jar.publish_method(p_class_name, p_java_method_name, p_exemplar_name
 	_then
 		meth.bind(p_exemplar_name, p_method_name, p_nr_args, p_nr_mandatory_args, p_abstract?, p_private?)
 	_else
-		condition.raise(:error, :string,
-				write_string("cannot find method to bind: ", p_class_name, ".", p_java_method_name, " for: ", p_exemplar_name, " mthd: ", p_method_name))
+		condition.raise(:error, :string, "cannot find method to bind")
 	_endif
 	>> meth
 _endmethod

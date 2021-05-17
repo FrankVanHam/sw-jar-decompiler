@@ -36,7 +36,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_method dcn_file.get_file_name()
+_method dcn_file.get_file_name(p_include_module?)
 	
 	_for i_stat _over .body.statements.fast_elements()
 	_loop
@@ -44,7 +44,7 @@ _method dcn_file.get_file_name()
 		    i_stat.name = "!source_file!"
 		_then
 			_local path << i_stat.value.string_value
-			_return _self.get_file_name_from_source_file(path)
+			_return _self.get_file_name_from_source_file(path, p_include_module?)
 			
 		_elif i_stat.is_def_object?
 		_then
@@ -60,7 +60,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method dcn_file.get_file_name_from_source_file(p_file)
+_private _method dcn_file.get_file_name_from_source_file(p_file, p_include_module?)
 	##
 	_local file << p_file.copy()
 	file << file.substitute_string("/","\").substitute_string("\\","\")
@@ -68,6 +68,14 @@ _private _method dcn_file.get_file_name_from_source_file(p_file)
 	_local index << file.lowercase.rindex_of_seq("source")
 	_if index _isnt _unset
 	_then
+		_if p_include_module?
+		_then
+			_local sec_index << file.rindex_of(%\, index-2)
+			index << _if sec_index _isnt _unset
+				 _then >> sec_index+1
+				 _else >> index
+				 _endif 
+		_endif 
 		_return file.slice_to_end(index)
 	_else
 		index << file.rindex_of(%\)

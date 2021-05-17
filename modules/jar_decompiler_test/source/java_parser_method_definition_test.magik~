@@ -16,14 +16,14 @@ _method java_parser_method_definition_test.test_method_no_args()
 			      "    public static Object class__a_method() {",
 			      "    }",
 			      "}")
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.get()
 	_self.assert_true(node.is_class_of?(deco:jpn_class), "should be class")
 	_self.assert_equals(1, node.methods.size, "should have one method")
 
 	_local m << node.methods[1]
-	_self.assert_true(m.args.empty?, "should have no args")
+	_self.assert_true(m.parameters.empty?, "should have no parameters")
 	_self.assert_true(m.body.statements.empty?, "should have no body")
 _endmethod
 $
@@ -35,7 +35,7 @@ _method java_parser_method_definition_test.test_method_illegal_name()
 			      "    public static Object deco_test__test_args_asign()\l\l_() {",
 			      "    }",
 			      "}")
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.get()
 	_local m << node.methods[1]
@@ -50,7 +50,7 @@ _method java_parser_method_definition_test.test_method_illegal_name2()
 			      "    public static Object deco_test__\b]\l\l_() {",
 			      "    }",
 			      "}")
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.get()
 	_local m << node.methods[1]
@@ -65,14 +65,14 @@ _method java_parser_method_definition_test.test_method_with_args()
 			      "    public static Object class__a_method(Object _self, Object c, Object a) {",
 			      "    }",
 			      "}")
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.get()
 	_self.assert_true(node.is_class_of?(deco:jpn_class), "should be class")
 	_self.assert_equals(1, node.methods.size, "should have one method")
 
 	_local m << node.methods[1]
-	_self.assert_equals(3, m.args.size, "should have 3 args")
+	_self.assert_equals(3, m.parameters.size, "should have 3 parameters")
 _endmethod
 $
 
@@ -83,15 +83,15 @@ _method java_parser_method_definition_test.test_method_with_gather_args()
 			      "    public static Object class__a_method(Object _self, Object ... c) {",
 			      "    }",
 			      "}")
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.get()
 	_self.assert_true(node.is_class_of?(deco:jpn_class), "should be class")
 	_self.assert_equals(1, node.methods.size, "should have one method")
 
 	_local m << node.methods[1]
-	_self.assert_equals(2, m.args.size, "should have 2 args")
-	_self.assert_true(m.args[2].varargs?, "last is varargs")
+	_self.assert_equals(2, m.parameters.size, "should have 2 parameters")
+	_self.assert_true(m.parameters[2].varargs?, "last is varargs")
 _endmethod
 $
 
@@ -106,14 +106,14 @@ _method java_parser_method_definition_test.test_class_method_with_annotation()
 			      "    public static Object class__a_method() {",
 			      "    }",
 			      "}")
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.get()
 	_self.assert_true(node.is_class_of?(deco:jpn_class), "should be class")
 	_self.assert_equals(1, node.methods.size, "should have one method")
 
 	_local m << node.methods[1]
-	_self.assert_true(m.args.empty?, "should have no args")
+	_self.assert_true(m.parameters.empty?, "should have no parameters")
 	_self.assert_true(m.body.statements.empty?, "should have no body")
 	_self.assert_equals(4, m.annotations.size)
 	

@@ -184,14 +184,44 @@ _private _method lexical_scanner.get_character()
 	_local char << _self.peek_char()
 	_if char = %\
 	_then
-		_self.get_char() #\
-		str << _self.get_char().write_string
+		str << _self.get_slash_character()
 		_self.get_char() #'
 	_else
 		str << _self.get_char().write_string
 		_self.get_char() #'
 	_endif 
 	>> lexeme.new_string(str, .line, .column)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method lexical_scanner.get_slash_character()
+	##
+	_local str << _unset
+	_self.get_char() #\
+	_local next << _self.get_char()
+	_if next = %u _orif next = %U
+	_then
+		str << _self.get_unicode_character()
+	_else 
+		str << next.write_string
+	_endif
+	>> str 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method lexical_scanner.get_unicode_character()
+	## 
+	_local unicode_str << write_string(
+				      %U,
+				      %+,
+				      _self.get_char(),
+				      _self.get_char(),
+				      _self.get_char(),
+				      _self.get_char())
+	unicode_str << unicode_str.uppercase
+	>> sw:character.from_unicode_representation(unicode_str).write_string 
 _endmethod
 $
 
@@ -327,6 +357,17 @@ _private _method lexical_scanner.proces_special_construct()
 		_self.get_char()
 		_return "\b]" 
 	_endif
+	_if char = %\ _andif _self.peek_char(2) = %b _andif _self.peek_char(3)=%, _andif _self.peek_char(4)=%] _andif _self.peek_char(5)=%_
+	_then
+		_for i _over range(1,5) _loop _self.get_char() _endloop 
+		_return "\b,]_" 
+	_endif
+	_if char = %\ _andif _self.peek_char(2) = %b _andif _self.peek_char(3)=%, _andif _self.peek_char(4)=%] _andif
+	    _self.peek_char(5)=%\ _andif _self.peek_char(6)=%l _andif _self.peek_char(7)=%\ _andif _self.peek_char(8)=%l _andif _self.peek_char(9)=%_
+	_then
+		_for i _over range(1,9) _loop _self.get_char() _endloop 
+		_return "\b,]\l\l_" 
+	_endif
 	_return "" 
 _endmethod
 $
@@ -343,6 +384,7 @@ _private _method lexical_scanner.get_upto(p_end_char)
 		
 		_if char <> p_end_char
 		_then
+			_if char = %\ _then _self.get_char() _endif 
 			out.write(_self.get_char())
 		_else
 			# take the last char and stop

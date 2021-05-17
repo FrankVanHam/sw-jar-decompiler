@@ -13,7 +13,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_package()
 
 	_local s << deco:lexical_scanner.new("package magik.decompile_target;".read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.get()
 	_self.assert_true(node.is_class_of?(deco:jpn_package), "should be package")
@@ -25,7 +25,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_import()
 
 	_local s << deco:lexical_scanner.new("import magik.decompile_target;".read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.get()
 	_self.assert_true(node.is_class_of?(deco:jpn_import), "should be import")
@@ -38,7 +38,7 @@ _method java_parser_test.test_method_invocation()
 	##
 	_local inp << write_string("obj.dothing()")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.parse_expression()
 
@@ -53,7 +53,7 @@ _method java_parser_test.test_negative_constant()
 	##
 	_local inp << write_string("-100")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.parse_expression()
 	_self.assert_true(node.is_class_of?(deco:jpn_negated), "should be an negative")
@@ -65,7 +65,7 @@ _method java_parser_test.test_self_method_invocation()
 	##
 	_local inp << write_string("dothing()")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.parse_expression()
 
@@ -80,7 +80,7 @@ _method java_parser_test.test_concat_method_invocation()
 	##
 	_local inp << write_string("obj.dothing().doanother()")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.parse_expression()
 	_self.assert_true(node.is_class_of?(deco:jpn_method_invocation), "should be an invocation")
@@ -96,7 +96,7 @@ _method java_parser_test.test_concat_cast_method_invocation()
 	##
 	_local inp << write_string("(a).asAllResults();")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.parse_expression()
 	_self.assert_true(node.is_class_of?(deco:jpn_method_invocation), "should be an invocation")
@@ -108,7 +108,7 @@ _method java_parser_test.test_method_invocation_with_args()
 	##
 	_local inp << write_string("obj.dothing(x, y)")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.parse_expression()
 	_self.assert_true(node.is_class_of?(deco:jpn_method_invocation), "should be an invocation")
@@ -120,7 +120,7 @@ _method java_parser_test.test_method_invocation_with_method_handle_args()
 	##
 	_local inp << write_string("obj.dothing((MethodHandle)cfr_ldc_0() )")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.parse_expression()
 	_self.assert_true(node.is_class_of?(deco:jpn_method_invocation), "should be an invocation")
@@ -133,7 +133,7 @@ _method java_parser_test.test_method_invocation_with_casted_args()
 	##
 	_local inp << write_string("obj.dothing((Object) x)")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	p.define_locals("x")
 
 	_local node << p.parse_expression()
@@ -147,7 +147,7 @@ _method java_parser_test.test_assignment()
 	##
 	_local inp << write_string("AType t = obj.dothing()")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.parse_statement()
 	_self.assert_true(node.is_class_of?(deco:jpn_assignment), "should be an assignment")
@@ -159,7 +159,7 @@ _method java_parser_test.test_array_type_assignment()
 	##
 	_local inp << write_string("AType[] t = obj.dothing()")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.parse_statement()
 	_self.assert_true(node.is_class_of?(deco:jpn_assignment), "should be an assignment")
@@ -171,7 +171,7 @@ _method java_parser_test.test_array_type_direct_assignment()
 	##
 	_local inp << write_string("AType[] t = new Object[2]")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.parse_statement()
 	_self.assert_true(node.is_class_of?(deco:jpn_assignment), "should be an assignment")
@@ -183,7 +183,7 @@ _method java_parser_test.test_array_type_direct_array_assignment()
 	##
 	_local inp << write_string("AType[] t = new Object[]{1}")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.parse_statement()
 	_self.assert_true(node.is_class_of?(deco:jpn_assignment), "should be an assignment")
@@ -196,7 +196,7 @@ _method java_parser_test.test_array_type_direct_array_assignment2()
 	##
 	_local inp << write_string("AType[] t = new Object[]{env[0]}")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	p.define_locals("env")
 	
 	_local node << p.parse_statement()
@@ -210,7 +210,7 @@ _method java_parser_test.test_array_type_direct_array_assignment3()
 	##
 	_local inp << write_string("x = env[0]")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	p.define_locals("env")
 	
 	_local node << p.parse_statement()
@@ -224,7 +224,7 @@ _method java_parser_test.test_new_array_with_array_values()
 	## 
 	_local inp << write_string("var5 = new Object[]{__env__[3], __env__[4]};")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	p.define_locals("var5", "__env__")
 	
 	_local node << p.parse_statement()
@@ -237,7 +237,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_class()
 	_local inp << write_string("public class deco_test_34 {", newline_char, "}")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.get()
 	_self.assert_true(node.is_class_of?(deco:jpn_class), "should be class")
@@ -249,7 +249,7 @@ _method java_parser_test.test_new()
 	##
 	_local inp << write_string("new aClass()")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.parse_expression()
 	_self.assert_true(node.is_class_of?(deco:jpn_new), "should be new")
@@ -261,7 +261,7 @@ _method java_parser_test.test_declaration()
 	##
 	_local inp << write_string("ResultTuple resultTuple;")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.parse_statement()
 	_self.assert_true(node.is_declaration?, "should be declaration")
@@ -273,7 +273,7 @@ _method java_parser_test.test_return()
 	##
 	_local inp << write_string("return avar;")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	p.define_locals("avar")
 
 	_local node << p.parse_statement()
@@ -287,7 +287,7 @@ _method java_parser_test.test_return_empty_tuple()
 	##
 	_local inp << write_string("return ResultTuple.EMPTY_TUPLE;")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.parse_statement()
 	_self.assert_true(node.is_class_of?(deco:jpn_return), "should be return")
@@ -301,7 +301,7 @@ _method java_parser_test.test_new_with_args()
 	##
 	_local inp << write_string("new aClass( obj, thing)")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.parse_expression()
 	_self.assert_true(node.is_class_of?(deco:jpn_new), "should be new")
@@ -314,7 +314,7 @@ _method java_parser_test.test_throw()
 	##
 	_local inp << write_string("throw x;")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.parse_statement()
 	_self.assert_true(node.is_class_of?(deco:jpn_throw), "should be throw")
@@ -326,7 +326,7 @@ _method java_parser_test.test_throw_new()
 	##
 	_local inp << write_string("throw new IllegalArgumentException(except);")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.parse_statement()
 	_self.assert_true(node.is_class_of?(deco:jpn_throw), "should be throw")
@@ -346,7 +346,7 @@ _method java_parser_test.test_class_annotation()
 	inp << inp.substitute_character(%', %")
 
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	_local node << p.get()
 
 	_self.assert_true(node.is_class_of?(deco:jpn_class))
@@ -365,7 +365,7 @@ _method java_parser_test.test_multi_value_annotation()
 	inp << inp.substitute_character(%', %")
 
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	_local node << p.get()
 
 	_self.assert_true(node.is_class_of?(deco:jpn_class))
@@ -383,7 +383,7 @@ _method java_parser_test.test_nested_annotation()
 	inp << inp.substitute_character(%', %")
 
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	_local node << p.get()
 
 	_self.assert_true(node.is_class_of?(deco:jpn_class))
@@ -399,7 +399,7 @@ _method java_parser_test.test_class_with_implements()
 				   "implements ExecutableMagik {",
 				   "}")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local node << p.get()
 	_self.assert_true(node.is_class_of?(deco:jpn_class), "should be class")
@@ -412,7 +412,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_class_with_error()
 	_local inp << write_string("public class a_class_name")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_try _with e
 		_local node << p.get()
@@ -433,7 +433,7 @@ _method java_parser_test.test_method_with_args()
 			      "public static Object deco_test__test(Object _self) {",newline_char,
 			      "}",newline_char)
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local m << p.parse_method("deco_test")
 	_self.assert_equals(1, m.parameters.size)
@@ -449,7 +449,7 @@ _method java_parser_test.test_method_definition_without_args()
 			      "}")
 	inp << inp.substitute_character(%', %")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local m << p.parse_method("deco_test")
 	_self.assert_true(m.is_class_of?(deco:jpn_method), "Should be an body")
@@ -464,7 +464,7 @@ _method java_parser_test.test_method_definition_with_question()
 			      "}")
 	inp << inp.substitute_character(%', %")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local m << p.parse_method("deco_test")
 	_self.assert_true(m.is_class_of?(deco:jpn_method), "Should be an body")
@@ -479,7 +479,7 @@ _method java_parser_test.test_method_definition_with_exclamation()
 			      "}")
 	inp << inp.substitute_character(%', %")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local m << p.parse_method("deco_test")
 	_self.assert_true(m.is_class_of?(deco:jpn_method), "Should be an body")
@@ -491,7 +491,7 @@ _method java_parser_test.test_casting()
 	_local inp << write_string(
 			      "(Object)a_var;")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	p.define_locals("a_var")
 
 	_local c << p.parse_statement()
@@ -504,7 +504,7 @@ _method java_parser_test.test_casting_questionmark()
 	_local inp << write_string(
 			      "(Class<?>)a_var;")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	p.define_locals("a_var")
 
 	_local c << p.parse_statement()
@@ -517,7 +517,7 @@ _method java_parser_test.test_double_casting()
 	_local inp << write_string(
 			      "(Object)((AType)a_var);")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local c << p.parse_statement()
 	_self.assert_true(c.is_class_of?(deco:jpn_cast), "should be cast")
@@ -529,7 +529,7 @@ _method java_parser_test.test_double_casting_method()
 	_local inp << write_string(
 			      "(Object)((AType)a_var.do());")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local c << p.parse_statement()
 	_self.assert_true(c.is_class_of?(deco:jpn_cast), "should be cast")
@@ -541,7 +541,7 @@ _method java_parser_test.test_array_casting()
 	_local inp << write_string(
 			      "(Object[])a_var")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local c << p.parse_expression()
 	_self.assert_true(c.is_class_of?(deco:jpn_cast), "should be cast")
@@ -554,7 +554,7 @@ _method java_parser_test.test_keyword_casting()
 	_local inp << write_string(
 			      "(int)a_var")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local c << p.parse_expression()
 	_self.assert_true(c.is_class_of?(deco:jpn_cast), "should be cast")
@@ -566,7 +566,7 @@ _method java_parser_test.test_keyword_array_casting()
 	_local inp << write_string(
 			      "(int[])a_var")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local c << p.parse_expression()
 	_self.assert_true(c.is_class_of?(deco:jpn_cast), "should be cast")
@@ -579,7 +579,7 @@ _method java_parser_test.test_if()
 	##
 	_local inp << write_string("if (thing.value()) { this.do_if(); };")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local m << p.parse_statement()
 	_self.assert_true(m.is_class_of?(deco:jpn_if), "should be an if statement")
@@ -591,7 +591,7 @@ _method java_parser_test.test_if_else()
 	##
 	_local inp << write_string("if (thing.value()) { this.do_if(); } else { thing.do_else();};")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 
 	_local m << p.parse_statement()
 	_self.assert_true(m.is_class_of?(deco:jpn_if), "should be an if statement")
@@ -610,7 +610,7 @@ _method java_parser_test.test_try_catch()
 			      "        }")
 
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	_local m << p.parse_statement()
 
 	_self.assert_true(m.is_class_of?(deco:jpn_try), "should be an try")
@@ -629,7 +629,7 @@ _method java_parser_test.test_try_catch2()
 			      "        }")
 
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	_local m << p.parse_statement()
 
 	_self.assert_true(m.is_class_of?(deco:jpn_try), "should be an try")
@@ -648,7 +648,7 @@ _method java_parser_test.test_try_catches()
 			      "        }")
 
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	_local m << p.parse_statement()
 
 	_self.assert_true(m.is_class_of?(deco:jpn_try), "should be an try")
@@ -662,7 +662,7 @@ _method java_parser_test.test_xxx()
 	inp << inp.substitute_character(%', %")
 
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	_local m << p.parse_statement()
 	#debug_print(m.right)
 	#_self.assert_true(m.right.is_class_of?(deco:jpn_method_invocation), "should be a method invoc")
@@ -675,7 +675,7 @@ _method java_parser_test.test_local_execution()
 	inp << inp.substitute_character(%', %")
 
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	p.define_locals("resultTuple")
 	_local m << p.parse_statement()
 	_self.assert_true(m.is_class_of?(deco:jpn_method_invocation), "should be a method")
@@ -688,7 +688,7 @@ _method java_parser_test.test_void_type()
 	##
 	_local inp << write_string("void obj;")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	_local m << p.parse_statement()
 	
 	_self.assert_true(m.is_declaration?, "should be a local declaration")
@@ -702,7 +702,7 @@ _method java_parser_test.test_assign_typed_local_with_local()
 	inp << inp.substitute_character(%', %")
 
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	p.define_locals("a")
 	_local m << p.parse_statement()
 	
@@ -717,7 +717,7 @@ _method java_parser_test.test_assign_local_with_local()
 	inp << inp.substitute_character(%', %")
 
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	p.define_locals("obj", "a")
 	_local m << p.parse_statement()
 	
@@ -733,7 +733,7 @@ _method java_parser_test.test_assign_local_with_bool()
 	inp << inp.substitute_character(%', %")
 
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	p.define_locals("obj")
 	_local m << p.parse_statement()
 	
@@ -746,7 +746,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_block()
 	_local inp << write_string("block0: {}")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	
 	_local m << p.parse_statement()
 	_self.assert_true(m.is_class_of?(deco:jpn_block), "should be a block")
@@ -757,7 +757,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_break()
 	_local inp << write_string("break block0")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	
 	_local m << p.parse_statement()
 	_self.assert_true(m.is_class_of?(deco:jpn_break), "should be a break")
@@ -768,7 +768,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_loop()
 	_local inp << write_string("while (true) {};")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	
 	_local m << p.parse_statement()
 	_self.assert_true(m.is_class_of?(deco:jpn_loop), "should be a loop")
@@ -777,21 +777,10 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
-_method java_parser_test.test_loop_label()
-	_local inp << write_string("while (true) lbl-1000: {};")
-	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
-	
-	_local m << p.parse_statement()
-	_self.assert_true(m.is_class_of?(deco:jpn_loop), "should be a loop")
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_loop_tag()
 	_local inp << write_string("block0: while (true) {};")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	
 	_local m << p.parse_statement()
 	_self.assert_true(m.is_class_of?(deco:jpn_loop), "should be a loop")
@@ -803,7 +792,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_loop_while()
 	_local inp << write_string("do {} while (!self.test());")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	
 	_local m << p.parse_statement()
 	_self.assert_true(m.is_class_of?(deco:jpn_loop), "should be a loop")
@@ -817,7 +806,7 @@ _method java_parser_test.test_if_break()
 	inp << inp.substitute_character(%', %")
 	
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	p.define_locals("_self")
 	
 	_local m << p.parse_statement()
@@ -831,7 +820,7 @@ _method java_parser_test.test_conditional_operator()
 	inp << inp.substitute_character(%', %")
 	
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	p.define_locals("a", "b", "c")
 	
 	_local m << p.parse_statement()
@@ -848,7 +837,7 @@ _method java_parser_test.test_conditional_nested_operator()
 	inp << inp.substitute_character(%', %")
 	
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	p.define_locals("a", "b", "ba", "bb", "c", "ca", "cb")
 	
 	_local m << p.parse_statement()
@@ -879,7 +868,7 @@ _method java_parser_test.test_conditional_operator1()
 	inp << inp.substitute_character(%', %")
 	
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	
 	_local m << p.parse_statement()
 	_self.assert_true(m.is_class_of?(deco:jpn_assignment), "should be an assignment")
@@ -893,7 +882,7 @@ _method java_parser_test.test_conditional()
 	#inp << write_string("return the_soc != null ? x : null;")
 	inp << inp.substitute_character(%', %")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	p.define_locals("x")
 	_local jpn_exp << p.parse_statement()
 	_self.assert_true(jpn_exp.is_class_of?(deco:jpn_return), "should be a return")
@@ -909,7 +898,7 @@ _method java_parser_test.test_conditional2()
 	_local inp << write_string("return the_soc != null ? x : null;")
 	inp << inp.substitute_character(%', %")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	p.define_locals("x")
 	_local jpn_exp << p.parse_statement()
 	_self.assert_true(jpn_exp.is_class_of?(deco:jpn_return), "should be a return")
@@ -924,7 +913,7 @@ _method java_parser_test.test_comment()
 	_local inp << write_string("/* The code below will print the words Hello World" + newline_char,
 				   "to the screen, and it is amazing */")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	
 	_local jpn_exp << p.parse_statement()
 	_self.assert_unset(jpn_exp, "Comment gives no result")
@@ -937,7 +926,7 @@ _method java_parser_test.test_comment2()
 	_local inp << write_string("// ** MonitorExit[v0] (shouldn't be in output)" + newline_char,
 				   "CallSite callSite2 = callSite;")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	
 	_local jpn_exp << p.parse_statement()
 	_self.assert_true(jpn_exp.is_class_of?(deco:jpn_assignment), "Comment should be skipped")
@@ -949,7 +938,7 @@ _method java_parser_test.test_or_if()
 	##
 	_local inp << write_string("if (a || b) { this.do_if(); };")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	p.define_locals("a", "b")
 
 	_local m << p.parse_statement()
@@ -964,7 +953,7 @@ _method java_parser_test.test_if_and_assign()
 	_local inp << write_string("if (a || MagikObjectUtils.isnt(callSite = b != c ? d : e)) {} ;")
 	inp << inp.substitute_character(%', %")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	p.define_locals("callSite", "a", "b", "c", "d", "e")
 
 	_local m << p.parse_statement()
@@ -979,7 +968,7 @@ _method java_parser_test.test_if_and_assign1()
 	_local inp << write_string("if (a || MagikObjectUtils.isnt(callSite = b != (c ? d : e))) {} ;")
 	inp << inp.substitute_character(%', %")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	p.define_locals("callSite", "a", "b", "c", "d", "e")
 
 	_local m << p.parse_statement()
@@ -994,7 +983,7 @@ _method java_parser_test.test_if_and_assign2()
 	_local inp << write_string("if (a || MagikObjectUtils.isnt(callSite = (b != (c ? d : e)))) {} ;")
 	inp << inp.substitute_character(%', %")
 	_local s << deco:lexical_scanner.new(inp.read_stream())
-	_local p << deco:java_parser.new(s)
+	_local p << deco:java_parser.new(s, _false)
 	p.define_locals("callSite", "a", "b", "c", "d", "e")
 
 	_local m << p.parse_statement()

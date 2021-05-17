@@ -36,7 +36,6 @@ public class deco_test_3468 {
     }
 }
 
-@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
 public class deco_test_3457
 implements ExecutableMagik {
@@ -111,7 +110,6 @@ public class deco_test_3468 {
     }
 }
 
-@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
 public class deco_test_3457
 implements ExecutableMagik {
@@ -182,7 +180,6 @@ public class deco_test_3468 {
     }
 }
 
-@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
 public class deco_test_3457
 implements ExecutableMagik {
@@ -230,7 +227,6 @@ public class deco_test_3468 {
     }
 }
 
-@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
 public class deco_test_3457
 implements ExecutableMagik {
@@ -261,7 +257,6 @@ public class deco_test_3468 {
     }
 }
 
-@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
 public class deco_test_3457
 implements ExecutableMagik {
@@ -291,7 +286,6 @@ public class deco_test_3468 {
     }
 }
 
-@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
 public class deco_test_3457
 implements ExecutableMagik {
@@ -320,7 +314,6 @@ public class deco_test_3468 {
     }
 }
 
-@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
 public class deco_test_3457
 implements ExecutableMagik {
@@ -348,7 +341,6 @@ public class deco_test_3468 {
     }
 }
 
-@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
 public class deco_test_3457
 implements ExecutableMagik {
@@ -379,7 +371,6 @@ public class deco_test_3468 {
     }
 }
 
-@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
 public class deco_test_3457
 implements ExecutableMagik {
@@ -410,7 +401,6 @@ public class deco_test_3468 {
     }
 }
 
-@Debugger(value="MagikDebug")
 @CodeType(value="Primary")
 public class deco_test_3457
 implements ExecutableMagik {

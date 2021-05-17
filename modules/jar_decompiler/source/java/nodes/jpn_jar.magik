@@ -23,3 +23,29 @@ _method jpn_jar.add(p_node)
 	.content.add(p_node)
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_iter _method jpn_jar.subsidiary_classes()
+	## 
+	_for i_node _over .content.fast_elements()
+	_loop
+		_if i_node.is_class? _andif i_node.type = "Subsidiary"
+		_then
+			_loopbody(i_node)
+		_endif
+	_endloop 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_iter _method jpn_jar.primary_classes()
+	## 
+	_for i_node _over .content.fast_elements()
+	_loop
+		_if i_node.is_class? _andif i_node.type = "Primary"
+		_then
+			_loopbody(i_node)
+		_endif
+	_endloop 
+_endmethod
+$
