@@ -1,9 +1,0 @@
-define_package
-assert
-conditions
-
-java/
-jpn/
-#sw/
-
-decompiler
