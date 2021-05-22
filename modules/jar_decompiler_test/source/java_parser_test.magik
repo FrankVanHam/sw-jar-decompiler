@@ -907,7 +907,6 @@ _method java_parser_test.test_conditional()
 	_local jpn_exp << p.parse_statement()
 	_self.assert_true(jpn_exp.is_class_of?(deco:jpn_return), "should be a return")
 
-	jpn_exp.expression.dp
 	_self.assert_true(jpn_exp.expression.is_class_of?(deco:jpn_if), "should be an if")
 _endmethod
 $
