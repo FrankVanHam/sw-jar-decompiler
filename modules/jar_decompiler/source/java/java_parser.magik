@@ -766,6 +766,7 @@ _private _method java_parser.parse_expression_starting(p_exp)
 		_elif lex.is_operator?("-") _orif
 		      lex.is_operator?("+") 
 		_then
+			# is this part of an operation (a-b) or part of a case (Object)-10.
 			_if exp.is_parenthesis?
 			_then
 				exp << _self.parse_cast(exp)

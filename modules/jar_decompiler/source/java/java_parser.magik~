@@ -89,7 +89,9 @@ _method java_parser.get()
 	##
 	_local anns << _self.parse_annotations()
 	_local lex << _self.skip_pre_keywords()
-	
+
+	_if lex.is_eof? _then _return _unset _endif 
+
 	_if lex.is_keyword?
 	_then
 		_if lex.value = "package"
@@ -107,9 +109,22 @@ _method java_parser.get()
 		_elif lex.value = "enum"
 		_then
 			_return _self.parse_enum(anns)
+		_elif lex.value = "module"
+		_then
+			_return _self.parse_module(anns)
 		_else
 			condition.raise(:deco_unexpected_keyword, :line, lex.line, :column, lex.column, :keyword, lex.value)
 		_endif
+	_elif lex.is_annotation?
+	_then
+		_if lex.value = "interface"
+		_then
+			_return _self.parse_interface(anns)
+		_else
+			condition.raise(:deco_unexpected_keyword, :line, lex.line, :column, lex.column, :keyword, lex.value)
+		_endif
+	_else
+		condition.raise(:deco_unexpected_keyword, :line, lex.line, :column, lex.column, :keyword, lex.value)
 	_endif
 _endmethod
 $
@@ -156,7 +171,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.parse_annotation()
 	##
-	_local name << .scanner.get()
+	_local name << _self.parse_name()
 	_local lex  << .scanner.peek()
 	_if lex.is_separator?("(")
 	_then
@@ -250,7 +265,9 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.parse_interface(_optional p_annotations)
 	##
-	_self.ensure_keyword("interface")
+	# Name can ve a keyword or an annotation
+	#_self.ensure_keyword("interface")
+	.scanner.get()
 	
 	_local name_lex << _self.parse_class_name()
 	_local parent   << _self.parse_inheritance()
@@ -274,6 +291,23 @@ _private _method java_parser.parse_enum(_optional p_annotations)
 	
 	_self.ensure_separator("{")
 	write("Skipping interface because not a magik thing ", name_lex.value)
+	_self.skip_section()
+	_self.ensure_separator("}")
+	
+	_return jpn_failed.new()
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.parse_module(_optional p_annotations)
+	##
+	_self.ensure_keyword("module")
+	
+	_local name_lex << _self.parse_class_name()
+	_local parent   << _self.parse_inheritance()
+	
+	_self.ensure_separator("{")
+	write("Skipping module because not a magik thing ", name_lex.value)
 	_self.skip_section()
 	_self.ensure_separator("}")
 	
@@ -311,20 +345,20 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.parse_class_name()
 	##
-	_local name_lex << .scanner.get()
+	_local name_lex << _self.get_token()
 	_loop
 		_local lex << .scanner.peek()
 		_if lex.is_separator?(".")
 		_then
 			.scanner.get()
-			name_lex << .scanner.get()
+			name_lex << _self.get_token()
 		_elif lex.is_operator?("<")
 		_then
 			_self.eat_angle_brackets()
 		_else
 			_leave 
 		_endif
-	_endloop 
+	_endloop
 	_return name_lex
 _endmethod
 $
@@ -410,7 +444,8 @@ _method java_parser.parse_method(p_class_name, _optional p_annotations )
 	
 	_self.optional_keyword("public")
 	_self.optional_keyword("static")
-	_local type_or_name_lex << .scanner.get()
+	_local type_or_name_lex << _self.get_token()
+	_local lex << .scanner.peek()
 	
 	_if type_or_name_lex.value = p_class_name
 	_then
@@ -423,7 +458,7 @@ _method java_parser.parse_method(p_class_name, _optional p_annotations )
 		name << .scanner.get()
 	_endif
 	
-	_local lex << .scanner.peek()
+	lex << .scanner.peek()
 	_self.ensure_separator("(")
 	_local args << _self.parse_parameters()
 	_self.ensure_separator(")")
@@ -707,6 +742,9 @@ _private _method java_parser.parse_expression_starting(p_exp)
 	_loop
 		_local lex << .scanner.peek()
 		
+		_if lex.is_eof? _then _return exp _endif
+		_if lex.is_separator?(";") _then _return exp _endif 
+		
 		_if (stop_value _isnt _unset) _andif (lex.value = stop_value)
 		_then
 			_return exp
@@ -725,6 +763,22 @@ _private _method java_parser.parse_expression_starting(p_exp)
 			_endif
 			exp << _self.parse_condition(exp)
 				
+		_elif lex.is_operator?("-") _orif
+		      lex.is_operator?("+") 
+		_then
+			# is this part of an operation (a-b) or part of a case (Object)-10.
+			_if exp.is_parenthesis?
+			_then
+				exp << _self.parse_cast(exp)
+			_else 
+				# test operator order
+				_if _self.operator_cf?(current_operator, lex.value)
+				_then
+					_return exp
+				_endif
+				exp << _self.parse_test(exp)
+			_endif 
+			
 		_elif lex.is_operator?("!=") _orif
 		      lex.is_operator?("==") _orif
 		      lex.is_operator?("||") _orif
@@ -1412,14 +1466,14 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.parse_dotted_type()
 	##
-	_local name_lex << .scanner.get()
+	_local name_lex << _self.get_token()
 	_local type << jpn_type.new(name_lex)
 	_loop
 		_local lex << .scanner.peek()
 		_if lex.is_separator?(".")
 		_then
 			lex << .scanner.get()
-			type << type.become_dotted(.scanner.get())
+			type << type.become_dotted(_self.get_token())
 		_else
 			_leave 
 		_endif
@@ -1502,5 +1556,48 @@ _private _method java_parser.check_eof(p_lex, p_what)
 		condition.raise(:deco_unexpected_eof, :line, p_lex.line, :column, p_lex.column,
 				:while_doing, p_what)
 	_endif
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.get_token()
+	## 
+	## get a token, taking into account that sometimes a dash is in
+	## the name and we have to accept that.
+	
+	_local name_lex << .scanner.get()
+	_loop
+		_local lex << .scanner.peek()
+		_if lex.is_operator?("-")
+		_then
+			.scanner.get()
+			lex << .scanner.get()
+			name_lex.append(write_string("-", lex.value))
+		_else
+			_leave 
+		_endif
+	_endloop
+	>> name_lex
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.parse_name()
+	## 
+	## Read a name, taking into account that there maybe dots to
+	## extend the name.
+	 _local name_lex << .scanner.get()
+	_loop
+		_local lex << .scanner.peek()
+		_if lex.is_separator?(".")
+		_then
+			.scanner.get()
+			lex << .scanner.get()
+			name_lex.append(write_string(".", lex.value))
+		_else
+			_leave 
+		_endif
+	_endloop
+	>> name_lex
 _endmethod
 $

@@ -42,7 +42,7 @@ lexical_scanner.define_shared_constant(:keywords,
 			      "int","short","try","char","final","interface","static","var",
 			      "class","finally","long","strictfp","void","const","float",
 			      "native","super","volatile","while","package","import",
-			      "class","if","then","else"),
+			      "class","if","then","else","module"),
 	:private)
 $
 
