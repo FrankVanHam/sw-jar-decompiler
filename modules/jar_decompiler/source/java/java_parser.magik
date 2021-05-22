@@ -764,7 +764,21 @@ _private _method java_parser.parse_expression_starting(p_exp)
 			exp << _self.parse_condition(exp)
 				
 		_elif lex.is_operator?("-") _orif
-		      lex.is_operator?("!=") _orif
+		      lex.is_operator?("+") 
+		_then
+			_if exp.is_parenthesis?
+			_then
+				exp << _self.parse_cast(exp)
+			_else 
+				# test operator order
+				_if _self.operator_cf?(current_operator, lex.value)
+				_then
+					_return exp
+				_endif
+				exp << _self.parse_test(exp)
+			_endif 
+			
+		_elif lex.is_operator?("!=") _orif
 		      lex.is_operator?("==") _orif
 		      lex.is_operator?("||") _orif
 		      lex.is_operator?("&&")
