@@ -28,10 +28,3 @@ _method jpn_negated.parse_expression(p_parser)
 	>> p_parser.parse_negated(_self)
 _endmethod
 $
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_negated.string_value
-	## 
-	>> write_string( "-", .expression.string_value)
-_endmethod
-$

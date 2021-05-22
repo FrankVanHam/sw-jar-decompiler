@@ -138,6 +138,7 @@ _method jpn_parser.parse_method_invocation(p_jnode)
 	_if p_jnode.sender.is_this?.not
 	_then
 		(exec, meth) << _self.executer_and_method_from_node(p_jnode)
+#		show(exec, meth, _scatter p_jnode.args.map(_proc(x) >> _try >> x.string_value _when error >> "" _endtry endproc))
 		_return exec.perform(meth, _self, _scatter p_jnode.args)
 	_else
 		_return deco_invoker.boot_method(_self, p_jnode.name, p_jnode.sender, _scatter p_jnode.args)
@@ -384,8 +385,8 @@ _private _method jpn_parser.parse_method(p_class_name, p_meth_node)
 	
 	_self.apply_annotations(p_meth_node)
 
+#	show(p_class_name, p_meth_node.name)
 	_local body << _self.parse_body(p_meth_node.body)
-#	_local body << _self.parse_body(p_class_name, p_meth_node.name, p_meth_node.body)
 	
 	.current_environment << old_env
 	

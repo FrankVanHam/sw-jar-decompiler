@@ -78,9 +78,14 @@ _method lexical_scanner.get()
 		
 		_if char.white_space?.not
 		_then
-			_if char = %/
+			_if char = %/ _andif _self.peek_char(2) = %/
 			_then
-				_self.get_comment()
+				_self.get_short_comment()
+				
+			_elif char = %/ _andif _self.peek_char(2) = %*
+			_then
+				_self.get_long_comment()
+				
 			_elif char = %"
 			_then
 				_return _self.get_string()
@@ -155,16 +160,22 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method lexical_scanner.get_comment()
-	##
+_private _method lexical_scanner.get_short_comment()
+	## // comment
 	_self.get_char()
-	_local char << _self.peek_char()
-	>> _if char = %/
-	   _then
-		   >> lexeme.new_comment(_self.get_upto(newline_char), .line, .column)
-	   _else 
-		   >> lexeme.new_comment(_self.get_upto(%/), .line, .column)
-	   _endif 
+	_self.get_char()
+	>> lexeme.new_comment(_self.get_upto(newline_char), .line, .column)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method lexical_scanner.get_long_comment()
+	## /*
+	##
+	##        */
+	_self.get_char()
+	_self.get_char()
+	>> lexeme.new_comment(_self.get_upto(%/), .line, .column)
 _endmethod
 $
 
@@ -367,6 +378,12 @@ _private _method lexical_scanner.proces_special_construct()
 	_then
 		_for i _over range(1,9) _loop _self.get_char() _endloop 
 		_return "\b,]\l\l_" 
+	_endif
+	_if char = %\ _andif _self.peek_char(2) = %b _andif _self.peek_char(3)=%, _andif _self.peek_char(4)=%] _andif _self.peek_char(5)=%^ _andif
+	    _self.peek_char(6)=%\ _andif _self.peek_char(7)=%l _andif _self.peek_char(8)=%\ _andif _self.peek_char(9)=%l _andif _self.peek_char(10)=%_
+	_then
+		_for i _over range(1,10) _loop _self.get_char() _endloop 
+		_return "\b,]^\l\l_" 
 	_endif
 	_return "" 
 _endmethod

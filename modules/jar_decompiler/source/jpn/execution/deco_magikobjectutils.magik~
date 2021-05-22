@@ -64,7 +64,6 @@ _method deco_magikobjectutils.createmethod(p_parser,
 	##
 	_local exemplar_name << p_exemplar_name.string_value
 	_local method_name << p_method_name.string_value
-
 	_local class_name << _if p_class_name_node.is_cast?
 			     _then >> p_class_name_node.core_expression.string_value
 			     _else >> p_class_name_node.string_value

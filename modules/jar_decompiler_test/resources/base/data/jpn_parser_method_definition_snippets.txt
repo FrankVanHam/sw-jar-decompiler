@@ -443,3 +443,95 @@ _method deco_test[x, y]^<< value
 _endmethod
 $
 #########
+## jpn_weird_proc_names
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class operators_5998 {
+    @SourceHash(value=1252028520)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Proc")
+    public static Object proc__integral_number + integral_number_(Object _self, Object l, Object r) {
+        return (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("error()", (Object)_self, (Object)ConstantBuilder.stringBootstrap("string", "primitive integral_number + integral_number failed")));
+    }
+}
+
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class operators_5997
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public operators_5997() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    @EnvVars(value={@EnvVar(name="p", type=Object.class, start=210, end=319, index=3), @EnvVar(name="exemplars", type=Object.class, start=234, end=319, index=4), @EnvVar(name="name", type=Object.class, start=226, end=319, index=5), @EnvVar(name="__dynamic_frame__", type=Object.class, start=218, end=319, index=2)})
+    public Object execute() {
+        ProcInvoker.naturalBootstrap("()", (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "define_binary_operator_case"), (Object)ConstantBuilder.symbolBootstrap("symbol", "+"), (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "integral_number_mixin"), (Object)GlobalAccessor.bootstrapFetcher2("fetchGlobal2", "sw", "integral_number_mixin"), (Object)ConstantBuilder.procWithEmptyEnvBootstrap("proc", (Class<?>)operators_5998.class, "proc__integral_number + integral_number_", "integral_number + integral_number", 3, 3, 0, 0));
+	}
+}
+       
+#########
+sw:define_binary_operator_case(:|+|, sw:integral_number_mixin, sw:integral_number_mixin, _proc @|integral_number + integral_number|(l, r)
+		_return _self.error("primitive integral_number + integral_number failed")
+_endproc)
+$
+#########
+## jpn_types_with_dashes
+
+import magik.sw_kernel.sys_src.a_name-q_6063;
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Primary")
+public class a_name-q_6062
+implements ExecutableMagik {
+    @Debugger(value="MagikDebug")
+    @CodeType(value="EmptyConstructor")
+    public a_name-q_6062() {
+    }
+
+    @Override
+    @Debugger(value="MagikDebug")
+    @CodeType(value="TopLevel")
+    public Object execute() {
+        MagikObjectUtils.createMethod("a_name_queue", "new()", a_name-q_6063.class, "a_name_queue__new", 2, 2);
+	}
+}
+
+@Debugger(value="MagikDebug")
+@CodeType(value="Subsidiary")
+public class a_name-q_6063 {
+    @SourceHash(value=-399115385)
+    @Debugger(value="MagikDebug")
+    @CodeType(value="Method")
+    public static Object a_name_queue__new(Object _self, Object size) {
+        block1: {
+            if (MagikObjectUtils.should_be_boolean(BinaryDispatcher.bootstrap("\\l", size, Integer.valueOf(0)))) {
+                ResultTuple cfr_ignored_0 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("error()", (Object)_self, (Object)ConstantBuilder.stringBootstrap("string", "a_name_queue.new(): negative size")));
+            }
+            if (!MagikObjectUtils.should_be_boolean(BinaryDispatcher.bootstrap("\\g", size, Integer.valueOf(1019)))) break block1;
+            ResultTuple cfr_ignored_1 = (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("error()", (Object)_self, (Object)ConstantBuilder.stringBootstrap("string", "a_name_queue.new(): too big (max 1019)")));
+        }
+        return (ResultTuple)((Object)Invoker.tupleBootstrapPrivate("init()", (Object)Cloner.makeClone(Cloner.makeClone(_self)), (Object)size));
+    }
+}
+########
+_method a_name_queue.new(size) 
+	_block @block1
+		_if (size < 0)
+		_then
+			_self.error("a_name_queue.new(): negative size")
+		_endif
+		_if  _not((size > 1019))
+		_then
+			 _leave @block1
+		_endif
+		_self.error("a_name_queue.new(): too big (max 1019)")
+	_endblock
+	_return _clone.init(size)
+_endmethod
+$
+########

@@ -8,7 +8,7 @@ _pragma(classify_level=restricted, topic={decompiler})
 ## node representing a constant value.
 def_slotted_exemplar(:dcn_constant,
 		     {
-			     {:type, _unset, :readable},
+			     {:type,         _unset, :readable},
 			     {:string_value, _unset, :readable}
 		     },
 		     :dcn_base)
@@ -112,5 +112,12 @@ _pragma(classify_level=restricted, topic={decompiler})
 _method dcn_constant.is_constant?
 	## 
 	>> _true 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
+_method dcn_constant.name
+	## 
+	>> .string_value
 _endmethod
 $

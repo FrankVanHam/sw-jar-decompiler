@@ -74,7 +74,7 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method jpn_parser.parse_statement(p_jnode)
+_method jpn_parser.parse_statement(p_jnode)
 	## 
 	>> _if .safe?.not
 	   _then

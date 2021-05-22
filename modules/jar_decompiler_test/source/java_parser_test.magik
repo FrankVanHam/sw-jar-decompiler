@@ -358,6 +358,26 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_dotted_class_annotation()
+	##
+	_local inp << write_string("@ChannelHandler.Sharable", newline_char,
+				   "@ChannelHandler.Sharable(value=888600578)", newline_char,
+				   "public class a_class {}"
+		      )
+	inp << inp.substitute_character(%', %")
+
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s, _false)
+	_local node << p.get()
+
+	_self.assert_true(node.is_class_of?(deco:jpn_class))
+	_self.assert_equals(2,node.annotations.size)
+	_self.assert_equals("ChannelHandler.Sharable", node.annotations[1].name)
+	_self.assert_equals("888600578", node.annotations[2].value.string_value)
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method java_parser_test.test_multi_value_annotation()
 	##
 	_local inp << write_string("@EnvVar(name='__dynamic_frame__', type=Object.class, start=21, end=74, index=0)", newline_char,

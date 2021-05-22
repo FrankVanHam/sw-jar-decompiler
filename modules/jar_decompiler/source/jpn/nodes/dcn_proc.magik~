@@ -56,12 +56,7 @@ _method dcn_proc.decode_on(p_stream)
 	p_stream.write( "_proc" )
 	_if .name _isnt _unset
 	_then
-		_if .name.identifier_requires_escape?
-		_then
-			p_stream.write(" @", %|, .name, %|)
-		_else 
-			p_stream.write(" @", .name)
-		_endif 
+		p_stream.write(" @", .name)
 	_endif 
 	
 	p_stream.write( "(" )

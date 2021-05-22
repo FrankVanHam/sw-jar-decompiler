@@ -311,6 +311,11 @@ _private _method lexical_scanner.get_token()
 	_loop
 		_if _self.more_to_get?.not _then _leave _endif
 
+		_if out.string = "proc__"
+		_then
+			_return _self.process_weird_proc_name()
+		_endif 
+
 		_local str << _self.proces_special_construct()
 		_if str.empty?.not
 		_then
@@ -333,6 +338,22 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method lexical_scanner.process_weird_proc_name()
+	## 
+	_local out << internal_text_output_stream.new()
+	out.write("proc__")
+	_loop
+		_if _self.more_to_get?.not _then _leave _endif
+		_local char << _self.peek_char()
+		_if char = %( _then _leave _endif
+		out.write(_self.get_char())
+	_endloop
+	>> out.string 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method lexical_scanner.proces_special_construct()
 	##
 	## Special handling for the java decompiler failure to
@@ -342,6 +363,12 @@ _private _method lexical_scanner.proces_special_construct()
 	_if (char = %?) _orif (char = %!)
 	_then
 		_return _self.get_char().write_string
+	_endif
+	_if char = %_ _andif _self.peek_char(2) = %=
+	_then
+		_self.get_char()
+		_self.get_char()
+		_return "_="
 	_endif 
 	_if char = %( _andif _self.peek_char(2) = %) _andif
 	    (_self.peek_char(3)=%\ _orif _self.peek_char(3)=%^)

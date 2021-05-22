@@ -51,6 +51,26 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method jpn_parser_test.test_negative_cast()
+	## 
+	_local inp << write_string("(Object)-10")
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s, _false)
+	_local jpn_exp << p.parse_expression()
+	_self.assert_true(jpn_exp.is_class_of?(deco:jpn_cast), write_string("Shoud be cast instead of ", jpn_exp.class_name))
+	
+	_local jp << deco:jpn_parser.new(_false)
+	_local dcn_node << jp.parse_expression(jpn_exp)
+	_self.assert_equals("-10" , dcn_node.string_value)
+
+	_local out << internal_text_output_stream.new()
+	dcn_node.decode_on(out)
+	_self.assert_equals("-10", out.string)
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
 _method jpn_parser_test.test_symbol()
 	_local inp << write_string("ConstantBuilder.stringBootstrap('symbol', 'user')").substitute_character(%', %")
 	_local s << deco:lexical_scanner.new(inp.read_stream())

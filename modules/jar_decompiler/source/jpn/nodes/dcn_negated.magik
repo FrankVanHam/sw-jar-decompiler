@@ -27,16 +27,22 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method dcn_negated.decode_on(p_stream)
-	## 
-	p_stream.write(" -(")
-	.expression.decode_expression_on(p_stream)
-	p_stream.write(")")
+	##
+	_if .expression.is_constant?
+	_then 
+		p_stream.write("-")
+		.expression.decode_expression_on(p_stream)
+	_else
+		p_stream.write("-(")
+		.expression.decode_expression_on(p_stream)
+		p_stream.write(")")
+	_endif 
 _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method dcn_negated.string_value
-	## 
+	##
 	>> write_string("-", .expression.string_value)	
 _endmethod
 $

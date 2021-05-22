@@ -38,10 +38,3 @@ _method jpn_operation.parse_expression(p_parser)
 	>> p_parser.parse_operation(_self)
 _endmethod
 $
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method jpn_operation.string_value
-	## 
-	>> write_string(.left.string_value, .operation_lex.string_value, .right.string_value)	
-_endmethod
-$

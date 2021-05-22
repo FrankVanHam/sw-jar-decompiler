@@ -100,20 +100,6 @@ _private _method lexeme.init(p_type, p_value, p_line, p_column)
 _endmethod
 $
 
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method lexeme.append(p_string)
-	##
-	.value << write_string(.value, p_string)
-_endmethod
-$
-
-_pragma(classify_level=restricted, topic={jar_decompiler})
-_method lexeme.string_value
-	## 
-	>> .value
-_endmethod
-$
-
 _pragma(classify_level=debug, topic={jar_decompiler})
 _method lexeme.debug_type
 	>> .type

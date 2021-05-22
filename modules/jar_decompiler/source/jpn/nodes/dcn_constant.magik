@@ -72,8 +72,7 @@ _method dcn_constant.decode_on(p_stream)
 		p_stream.write(%", .string_value, %")
 	_elif .type _is :symbol
 	_then
-		_if .string_value.includes?(%() _orif
-		    .string_value.includes?(%[)
+		_if .string_value.identifier_requires_escape?
 		_then
 			p_stream.write(%:, %|, .string_value, %|)
 		_else 

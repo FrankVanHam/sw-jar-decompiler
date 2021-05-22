@@ -57,6 +57,7 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _method jpn_dotted.string_value
 	##
 	>> write_string(.base.string_value, ".", .add.value)
+	
 _endmethod
 $
 
