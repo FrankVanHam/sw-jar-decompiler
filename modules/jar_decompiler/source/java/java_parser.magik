@@ -920,6 +920,11 @@ _private _method java_parser.parse_loop(_optional p_tag)
 	_self.ensure_separator(")")
 	
 	_local lex << .scanner.peek()
+	_if lex.is_separator?("{").not
+	_then
+		_self.get_token()
+		_self.ensure_operator(":")
+	_endif 
 	_self.ensure_separator("{")
 	_local body << _self.parse_body()
 	_self.ensure_separator("}")

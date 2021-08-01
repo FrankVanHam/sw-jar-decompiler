@@ -283,6 +283,14 @@ _private _method lexical_scanner.get_number_token()
 		_then
 			_self.get_char()
 			_return _self.get_hexadecimal_number_token()
+		_elif char = %e _orif char = %E
+		_then
+			out.write(_self.get_char())
+			_local peek << _self.peek_char()
+			_if peek = %-
+			_then
+				out.write(_self.get_char())
+			_endif 
 		_else
 			_leave 
 		_endif
@@ -395,26 +403,62 @@ _private _method lexical_scanner.proces_special_construct()
 		_self.get_char()
 		_return "\b]" 
 	_endif
-	_if char = %\ _andif _self.peek_char(2) = %b _andif _self.peek_char(3)=%, _andif _self.peek_char(4)=%] _andif _self.peek_char(5)=%_
+	_if char = %\ _andif _self.peek_char(2) = %b
 	_then
-		_for i _over range(1,5) _loop _self.get_char() _endloop 
-		_return "\b,]_" 
-	_endif
-	_if char = %\ _andif _self.peek_char(2) = %b _andif _self.peek_char(3)=%, _andif _self.peek_char(4)=%] _andif
-	    _self.peek_char(5)=%\ _andif _self.peek_char(6)=%l _andif _self.peek_char(7)=%\ _andif _self.peek_char(8)=%l _andif _self.peek_char(9)=%_
-	_then
-		_for i _over range(1,9) _loop _self.get_char() _endloop 
-		_return "\b,]\l\l_" 
-	_endif
-	_if char = %\ _andif _self.peek_char(2) = %b _andif _self.peek_char(3)=%, _andif _self.peek_char(4)=%] _andif _self.peek_char(5)=%^ _andif
-	    _self.peek_char(6)=%\ _andif _self.peek_char(7)=%l _andif _self.peek_char(8)=%\ _andif _self.peek_char(9)=%l _andif _self.peek_char(10)=%_
-	_then
-		_for i _over range(1,10) _loop _self.get_char() _endloop 
-		_return "\b,]^\l\l_" 
-	_endif
+		_local ccount << _self.comma_peek_count(3)
+		_if _self.peek_a_string?(3+ccount, "]_")
+		_then
+			_for i _over range(1,4+ccount) _loop _self.get_char() _endloop 
+			_return write_string("\b", %,*ccount, "]_")
+		_endif
+		_if _self.peek_a_string?(3+ccount,"]\l\l_")
+		_then
+			_for i _over range(1,8+ccount) _loop _self.get_char() _endloop 
+			_return write_string("\b", %,*ccount ,"]\l\l_")
+		_endif
+		_if _self.peek_a_string?(3+ccount,"]^\l\l_")
+		_then
+			_for i _over range(1,9+ccount) _loop _self.get_char() _endloop 
+			_return write_string("\b", %,*ccount ,"]^\l\l_")
+		_endif
+	_endif 
 	_return "" 
 _endmethod
 $
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method lexical_scanner.peek_a_string?(p_start_index, p_string)
+	##
+	_for i_index, i_char _over p_string.fast_keys_and_elements()
+	_loop
+		_if _self.peek_char(p_start_index+i_index-1) <> i_char
+		_then
+			_return _false
+		_endif
+	_endloop
+	_return _true 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method lexical_scanner.comma_peek_count(p_index)
+	##
+	_local comma_count << 0
+	_local index << p_index
+	_loop
+		_local char << _self.peek_char(index)
+		_if char = %,
+		_then
+			comma_count +<< 1
+			index +<< 1
+		_else
+			_leave 
+		_endif 
+	_endloop
+	>> comma_count
+_endmethod
+$
+
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method lexical_scanner.get_upto(p_end_char)

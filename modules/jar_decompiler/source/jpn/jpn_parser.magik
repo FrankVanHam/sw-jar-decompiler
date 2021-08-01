@@ -623,6 +623,8 @@ _private _method jpn_parser.parse_an_operation(p_right, p_jnode)
 	_local op_map << equality_hash_table.new_with(
 				 "==", "=",
 				 "!=", "~=",
+				 "+", "+",
+				 "-", "-",
 				 "||", "_or",
 				 "&&", "_and")
 	_local op << op_map[p_jnode.operation].default("crash!")

@@ -10,6 +10,7 @@ def_slotted_exemplar(:dcn_call,
 		     {
 			     {:value_node, _unset},
 			     {:env, _unset, :readable},
+			     {:allresults?,  _unset, :readable},
 			     {:args, _unset, :readable}
 		     }, :dcn_base)
 $
@@ -24,6 +25,7 @@ _pragma(classify_level=restricted, topic={decompiler})
 _private _method dcn_call.init(p_value_node, p_args, _optional p_env)
 	.value_node << p_value_node
 	.env << p_env
+	.allresults? << _false
 	.args << p_args
 	_return _self 
 _endmethod
@@ -37,8 +39,20 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={decompiler})
+_method dcn_call.asallresults()
+	##
+	.allresults? << _true
+	>> _self 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={decompiler})
 _method dcn_call.decode_on(p_stream)
 	##
+	_if .allresults?
+	_then
+		p_stream.write(" _allresults ")
+	_endif 
 	.value_node.decode_on(p_stream)
 	p_stream.write("(")
 	_local comma? << _false 

@@ -205,14 +205,24 @@ _method dcn_if.decode_on(p_stream)
 		_if i_tag = :if
 		_then
 			p_stream.write( "_if ")
-			i_cond.decode_on(p_stream)
+			_if i_cond _isnt _unset
+			_then 
+				i_cond.decode_on(p_stream)
+			_else
+				p_stream.write( "()")
+			_endif 
 			p_stream.newline()
 			_self.decode_body(i_body, "_then", p_stream)
 		_elif i_tag = :elif
 		_then
 			p_stream.newline()
 			p_stream.write( "_elif ")
-			i_cond.decode_on(p_stream)
+			_if i_cond _isnt _unset
+			_then 
+				i_cond.decode_on(p_stream)
+			_else
+				p_stream.write( "()")
+			_endif 
 			p_stream.newline()
 			_self.decode_body(i_body, "_then", p_stream)
 		_else

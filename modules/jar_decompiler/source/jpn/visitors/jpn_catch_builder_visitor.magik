@@ -39,6 +39,7 @@ _method jpn_catch_builder_visitor.accept(p_body)
 		_local (catch?, var) << _self.should_convert?(i_node)
 		_if catch?
 		_then
+			_if sts[i_index-2].responds_to?(:expression).not _then _continue _endif 
 			_local tag << sts[i_index-2].expression
 			sts[i_index-1] << dcn_no_op.new()
 			sts[i_index-2] << dcn_no_op.new()

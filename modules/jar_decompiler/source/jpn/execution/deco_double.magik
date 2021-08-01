@@ -25,3 +25,9 @@ _method deco_double.negative_infinity(p_parser)
 	>> dcn_constant.new_literal("float.negative_infinity")
 _endmethod
 $
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_method deco_double.nan(p_parser)
+	##
+	>> dcn_constant.new_literal("NaN")
+_endmethod
+$
