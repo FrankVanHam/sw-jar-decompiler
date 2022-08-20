@@ -62,7 +62,7 @@ $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method dcn_environment.store(p_index, p_exp)
-	.cache[p_index] << exp
+	.cache[p_index] << p_exp
 	>> .var_names[p_index]
 _endmethod
 $

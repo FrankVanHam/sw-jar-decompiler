@@ -1010,6 +1010,48 @@ _method java_parser_test.test_if_and_assign2()
 #	_self.assert_true(m.condition.is_class_of?(deco:jpn_operation), "should be an if operation")
 _endmethod
 $
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_to_skip_faulty_method()
+	## 
+	## Test that an incorrect decompiled method is not decompiled
+	## into magik
+	#
+	_local inp << write_string("@Debugger(value='MagikDebug')" , newline_char,
+				   "@CodeType(value='Subsidiary')" , newline_char,
+				   "public class directory_selection_34873 {" , newline_char,
+				   "/*", newline_char,
+				   "* Unable to fully structure code", newline_char,
+				   "*/", newline_char,
+				   "@SourceHash(value=-1487110485)", newline_char,
+				   "@Debugger(value='MagikDebug')", newline_char,
+				   "@CodeType(value='Method')", newline_char,
+				   "public static Object directory_selection__search(Object _self) {****}", newline_char,
+				   "}"
+		      )
+	inp << inp.substitute_character(%', %")
+	
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s, _false)
+	_local m << p.get()
+	
+	_self.assert_true(m.is_class_of?(deco:jpn_class), "should be an class")
+	_self.assert_equals(m.methods.size, 1)
+	_self.assert_true(m.methods[1].body.statements[1].is_class_of?(deco:jpn_failed))
+_endmethod
+$
 
+_pragma(classify_level=restricted, topic={jar_decompiler, test})
+_method java_parser_test.test_comment_with_slash()
+	## 
+	_local inp << write_string("/*", newline_char,
+				   "* Multiple versions of this class in jar - see https://www.benf.org/other/cfr/multi-version-jar.html", newline_char,
+				   "*/")
+	inp << inp.substitute_character(%', %")
+	
+	_local s << deco:lexical_scanner.new(inp.read_stream())
+	_local p << deco:java_parser.new(s, _false)
+	_local m << p.get()
 
-
+	_self.assert_true(s.get_and_erase_last_comment() _isnt _unset, "A comment should have been read")
+_endmethod
+$

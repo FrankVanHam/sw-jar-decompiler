@@ -11,7 +11,8 @@ def_slotted_exemplar(:lexical_scanner,
 	{
 		{:in,     _unset},
 		{:line,   _unset},
-		{:column, _unset}
+		{:column, _unset},
+		{:last_comment, _unset}
 	})
 $
 
@@ -62,6 +63,14 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
+_method lexical_scanner.get_and_erase_last_comment()
+	##
+	>> (.last_comment ^<< _unset) 
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
 _method lexical_scanner.get()
 	##
 	## Get the next token.
@@ -80,11 +89,11 @@ _method lexical_scanner.get()
 		_then
 			_if char = %/ _andif _self.peek_char(2) = %/
 			_then
-				_self.get_short_comment()
+				.last_comment << _self.get_short_comment()
 				
 			_elif char = %/ _andif _self.peek_char(2) = %*
 			_then
-				_self.get_long_comment()
+				.last_comment << _self.get_long_comment()
 				
 			_elif char = %"
 			_then
@@ -175,7 +184,7 @@ _private _method lexical_scanner.get_long_comment()
 	##        */
 	_self.get_char()
 	_self.get_char()
-	>> lexeme.new_comment(_self.get_upto(%/), .line, .column)
+	>> lexeme.new_comment(_self.get_upto2(%*, %/), .line, .column)
 _endmethod
 $
 
@@ -478,6 +487,32 @@ _private _method lexical_scanner.get_upto(p_end_char)
 			# take the last char and stop
 			_self.get_char()
 			_leave
+		_endif
+	_endloop
+	>> out.string
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method lexical_scanner.get_upto2(p_char1, p_char2)
+	##
+	## Get a string next upto the P_END_CHAR
+	##
+	_local out << internal_text_output_stream.new()
+	_loop
+		_if _self.more_to_get?.not _then _leave _endif 
+		_local char << _self.peek_char()
+		_local char2 << _self.peek_char(2)
+		
+		_if char = p_char1 _andif char2 = p_char2
+		_then
+			# take the last chars and stop
+			_self.get_char()
+			_self.get_char()
+			_leave
+		_else	
+			_if char = %\ _then _self.get_char() _endif 
+			out.write(_self.get_char())
 		_endif
 	_endloop
 	>> out.string

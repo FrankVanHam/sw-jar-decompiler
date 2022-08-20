@@ -15,6 +15,7 @@ def_slotted_exemplar(:java_parser,
 	{
 		{:safe?,           _unset},
 		{:context,         _unset},
+		{:core_scanner,    _unset},
 		{:scanner,         _unset},
 		{:end_value_stack, _unset},
 		{:operator_stack,  _unset}
@@ -48,6 +49,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.init(p_scanner, _optional p_safe?)
 	.safe?   << p_safe?.default(_true )
+	.core_scanner << p_scanner
 	.scanner << peekable_input_stream.new(p_scanner)
 	.context <<  java_context.new()
 	.context.add("__env__")
@@ -265,7 +267,7 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.parse_interface(_optional p_annotations)
 	##
-	# Name can ve a keyword or an annotation
+	# Name can be a keyword or an annotation
 	#_self.ensure_keyword("interface")
 	.scanner.get()
 	
@@ -427,7 +429,7 @@ _private _method java_parser.parse_class_methods(p_name)
 		_local next << .scanner.peek()
 		_if next.is_separator? _then _leave _endif
 		_if next.is_eof?       _then _leave _endif
-
+		
 		_local annotations << _self.parse_annotations()
 		_local meth        << _self.parse_method(p_name, annotations)
 		
@@ -475,12 +477,35 @@ $
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.parse_method_body(p_args)
 	##
-	>> _if .safe?.not
-	_then
-		>> _self.parse_body(p_args)
-	_else
-		>> _self.parse_body_safely(p_args)
-	_endif 
+	>> _if _self.comment_suggest_error?
+	   _then
+		   >> _self.skip_parse_body(p_args)
+	   _elif .safe?.not
+	   _then
+		   >> _self.parse_body(p_args)
+	   _else
+		   >> _self.parse_body_safely(p_args)
+	   _endif 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.comment_suggest_error?
+	## 
+	_local comment << .core_scanner.get_and_erase_last_comment()
+	>> (comment _isnt _unset) _andif
+		comment.value.matches?("*Unable to fully structure code*")
+_endmethod
+$
+
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.skip_parse_body(p_args)
+	##
+	_local old_scanner << .scanner ^<< _self.fillup_body_scanner(_true)
+	body << jpn_body.new(rope.new_with(jpn_failed.new()))
+	.scanner << old_scanner
+	>> body
 _endmethod
 $
 
@@ -488,7 +513,9 @@ _pragma(classify_level=restricted, topic={jar_decompiler})
 _private _method java_parser.parse_body_safely(p_args)
 	## 
 	_local old_scanner << .scanner ^<< _self.fillup_body_scanner()
-	_try 
+	_try
+		_handling error _with _self.report_error_proc
+		
 		body << _self.parse_body(p_args)
 	_when error 
 		body << jpn_body.new(rope.new_with(jpn_failed.new()))
@@ -499,16 +526,36 @@ _endmethod
 $
 
 _pragma(classify_level=restricted, topic={jar_decompiler})
-_private _method java_parser.fillup_body_scanner()
+_private _method java_parser.report_error_proc
+	>> _proc(p_condition)
+		   p_condition.report_contents_on(!output!)
+		   !traceback!(!output!)
+	   _endproc 
+_endmethod
+$
+
+_pragma(classify_level=restricted, topic={jar_decompiler})
+_private _method java_parser.fillup_body_scanner(_optional p_stop_on_annotation?)
 	##
-	_local lex << .scanner.peek()
+	## if P_STOP_ON_ANNOTATION? is true then handle the case where the Java decompiler gets it wrong and
+	## does not close the method correctly with a }. In that case
+	## the annotation is considered the stop condition as the
+	## annotation is supposed to be before the next method.
+	##
 	_local list << rope.new()
 	_local counter << 1
 	_loop
 		lex << .scanner.peek()
+		lex2 << .scanner.peek(2)
+		
 		_if lex.is_eof?
 		_then
 			list.add(lex)
+			_leave
+		_elif (p_stop_on_annotation? _is _true) _andif lex2.is_annotation?
+		_then
+			# add peeked } to the list, without getting it from the stream.
+			list.add(lexeme.new_eof(-1,-1))
 			_leave
 		_elif lex.is_separator?("}")
 		_then
@@ -516,7 +563,9 @@ _private _method java_parser.fillup_body_scanner()
 			
 			_if counter = 0
 			_then
-				list.add(lex)
+				# add peeked } to the list, without getting it from the stream.
+				list.add(lexeme.new_eof(-1,-1))
+				#list.add(lex)
 				_leave
 			_endif
 		_elif lex.is_separator?("{")
@@ -622,6 +671,9 @@ _private _method java_parser.parse_body(_optional p_params)
 			_else
 				stats.add(_self.parse_statement())
 			_endif
+		_elif lex.is_eof?
+		_then
+			_leave
 		_else
 			stats.add(_self.parse_statement())
 		_endif

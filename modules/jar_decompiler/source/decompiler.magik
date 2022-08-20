@@ -187,6 +187,28 @@ _method decompiler.decompile_java_to_dir(p_java_file, p_dir, _optional p_include
 _endmethod
 $
 
+_pragma(classify_level=advanced, topic={jar_decompiler})
+_method decompiler.decompile_java_only(p_jar_file, p_to_file)
+	## 
+	## 
+	_local inp << _self.get_java_decompiler_stream(p_jar_file)
+	_local out << external_text_output_stream.new(p_to_file)
+	_protect
+		_loop
+			_if inp.more_to_get?
+			_then
+				out.write(inp.get())
+			_else
+				_leave
+			_endif
+		_endloop
+	_protection
+		out.close()
+	_endprotect 
+_endmethod
+$
+
+
 _pragma(classify_level=restricted, topic={jar_decompiler})
 _method decompiler.int!decompile_jar_to_dir(p_jar_file, p_dir, p_include_module?)
 	##
@@ -278,6 +300,7 @@ _private _method decompiler.get_java_decompiler_stream(p_jar_file)
 	command.add(_self.classpath)
 	command.add("org.benf.cfr.reader.Main")
 	command.add(write_string(%", p_jar_file, %"))
+
 	_local (inp, pid) << system.input_from_command(command)
 	>> inp
 _endmethod
